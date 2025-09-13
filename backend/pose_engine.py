@@ -1,3 +1,4 @@
+# pose_engine.py
 import time
 from typing import List, Dict, Any, Optional, Callable
 import mediapipe as mp
@@ -5,6 +6,7 @@ import cv2
 import math
 import logging
 import signal
+from typing import Tuple, List, Dict
 
 logging.basicConfig(level=logging.INFO)
 mp_pose = mp.solutions.pose
@@ -63,10 +65,9 @@ def save_keypoints(frames, out_path):
         json.dump(frames, fh, indent=2)
     logging.info(f"Keypoints saved to {out_path}")
 
-def process_video(path: str,
-                  max_frames: Optional[int] = None,
+def process_video(path: str, max_frames: Optional[int] = None,
                   visibility_threshold: float = 0.2,
-                  smoothing_alpha: float = 0.25) -> List[Dict[str, Any]]:
+                  smoothing_alpha: float = 0.25) -> Tuple[List[Dict], float]:
     """
     Process a saved video file and return a list of frame entries:
     [{frameIndex, timestamp, keypoints: {name: {x,y,z,score}}}, ...]
@@ -164,7 +165,7 @@ def process_video(path: str,
     pose.close()
     
     logging.info(f"Finished processing {path} frames={processed_frames} duration={processed_frames/fps:.2f}s")
-    return frames
+    return frames, fps
 
 def process_webcam(on_frame_callback: Optional[Callable] = None,
                    max_frames: Optional[int] = None,
@@ -190,8 +191,15 @@ def process_webcam(on_frame_callback: Optional[Callable] = None,
     if not cap.isOpened():
         raise RuntimeError("Cannot open webcam")
 
+    # Set camera resolution for better performance
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    
     fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
-    pose = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5)
+    pose = mp_pose.Pose(static_image_mode=False, 
+                        model_complexity=1,
+                        min_detection_confidence=0.5,
+                        min_tracking_confidence=0.5)
 
     prev_smoothed = {}
     frame_idx = 0
@@ -220,7 +228,7 @@ def process_webcam(on_frame_callback: Optional[Callable] = None,
             if name not in smoothed:
                 smoothed[name] = {"x": None, "y": None, "z": None, "score": 0.0}
 
-        # Draw skeleton overlay on frame (basic)
+        # Draw skeleton overlay on frame
         # Define pairs (connections) to draw lines
         connections = [
             ("left_shoulder", "right_shoulder"), ("left_shoulder", "left_elbow"),
@@ -230,22 +238,25 @@ def process_webcam(on_frame_callback: Optional[Callable] = None,
             ("left_hip", "left_knee"), ("left_knee", "left_ankle"),
             ("right_hip", "right_knee"), ("right_knee", "right_ankle")
         ]
-        # draw lines
+        
+        # Draw lines
         for a, b in connections:
-            if a in smoothed and b in smoothed and smoothed[a]["score"] > 0.2 and smoothed[b]["score"] > 0.2:
+            if (a in smoothed and b in smoothed and 
+                smoothed[a]["score"] > visibility_threshold and 
+                smoothed[b]["score"] > visibility_threshold):
                 x1 = int(smoothed[a]["x"] * w)
                 y1 = int(smoothed[a]["y"] * h)
                 x2 = int(smoothed[b]["x"] * w)
                 y2 = int(smoothed[b]["y"] * h)
                 cv2.line(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-        # draw points
+        # Draw points
         for name, lm in smoothed.items():
-            if lm["score"] > 0.2:  # Only draw points with good visibility
+            if lm["score"] > visibility_threshold:
                 x = int(lm["x"] * w)
                 y = int(lm["y"] * h)
                 score = lm.get("score", 1.0)
-                color = (0, 255, 0) if score >= visibility_threshold else (0, 120, 255)
+                color = (0, 255, 0) if score >= 0.5 else (0, 120, 255)
                 cv2.circle(frame, (x, y), 4, color, -1)
 
         timestamp = frame_idx / fps
