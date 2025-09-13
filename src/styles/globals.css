@@ -95,6 +95,68 @@ form {
   gap: 15px;
 }
 
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group input.error {
+  border-color: var(--risk-score);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+.field-error {
+  color: var(--risk-score);
+  font-size: 0.8em;
+  margin-top: 2px;
+}
+
+.error-message {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: var(--risk-score);
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 0.9em;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.auth-footer p {
+  margin: 0 0 10px 0;
+  color: var(--secondary-text);
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--athlete-blue);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+  padding: 0;
+}
+
+.link-button:hover {
+  color: #8da6e3;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  gap: 20px;
+}
+
 input[type="email"], input[type="password"], input[type="text"], select {
   padding: 12px;
   border-radius: 8px;
@@ -166,6 +228,38 @@ button:disabled {
   align-items: center;
   margin-bottom: 30px;
   flex-wrap: wrap;
+}
+
+.header-left h1 {
+  margin: 0;
+  color: var(--primary-text);
+}
+
+.header-left p {
+  margin: 5px 0 0 0;
+  color: var(--secondary-text);
+  font-size: 0.9em;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logout-btn {
+  background-color: var(--risk-score);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #c53030;
 }
 
 .coach-select {

@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import VideoRecorder from './VideoRecorder';
 import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
 
 const AthleteDashboard: React.FC = () => {
+  const { user, logout } = useAuth();
   const [selectedCoach, setSelectedCoach] = useState('none');
   const [selectedExercise, setSelectedExercise] = useState('squat');
   const [currentSession, setCurrentSession] = useState<any>(null);
@@ -43,20 +45,28 @@ const AthleteDashboard: React.FC = () => {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <h1>Athlete Dashboard</h1>
-        <div className="coach-select">
-          <label htmlFor="coach-dropdown">Select a Coach:</label>
-          <select 
-            id="coach-dropdown"
-            value={selectedCoach}
-            onChange={(e) => setSelectedCoach(e.target.value)}
-          >
-            {coaches.map(coach => (
-              <option key={coach.value} value={coach.value}>
-                {coach.label}
-              </option>
-            ))}
-          </select>
+        <div className="header-left">
+          <h1>Athlete Dashboard</h1>
+          <p>Welcome, {user?.username}!</p>
+        </div>
+        <div className="header-right">
+          <div className="coach-select">
+            <label htmlFor="coach-dropdown">Select a Coach:</label>
+            <select 
+              id="coach-dropdown"
+              value={selectedCoach}
+              onChange={(e) => setSelectedCoach(e.target.value)}
+            >
+              {coaches.map(coach => (
+                <option key={coach.value} value={coach.value}>
+                  {coach.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button onClick={logout} className="logout-btn">
+            Logout
+          </button>
         </div>
       </header>
 

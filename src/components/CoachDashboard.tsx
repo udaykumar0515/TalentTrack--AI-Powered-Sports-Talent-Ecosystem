@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { getAthletes, getSessions, postCoachAction } from '../api/apiClient';
 
 const CoachDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [athletes, setAthletes] = useState<any[]>([]);
   const [sessions, setSessions] = useState<any[]>([]);
   const [filterAthlete, setFilterAthlete] = useState('');
@@ -114,7 +116,15 @@ const CoachDashboard: React.FC = () => {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <h1>Coach Dashboard</h1>
+        <div className="header-left">
+          <h1>Coach Dashboard</h1>
+          <p>Welcome, {user?.username}!</p>
+        </div>
+        <div className="header-right">
+          <button onClick={logout} className="logout-btn">
+            Logout
+          </button>
+        </div>
         <div className="filters">
           <input
             type="text"
