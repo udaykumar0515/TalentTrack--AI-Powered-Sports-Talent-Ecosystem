@@ -4,6 +4,7 @@ import json
 import cv2
 from pathlib import Path
 from pose_engine import process_video, process_webcam, save_keypoints
+from analyzer import compute_metrics, save_signal_to_csv
 import signal
 
 def print_frame_summary(frame_entry):
@@ -86,28 +87,50 @@ def main():
         print()
         
         try:
-            # Process the video
-            frames = process_video(file_path)
+            # Process the video - now returns frames and fps
+            frames, fps = process_video(file_path)
             
-            # Print summary
-            print(f"Processing complete! Processed {len(frames)} frames.")
+            # Analyze the exercise
+            analysis = compute_metrics(frames, exercise, fps)
+            
+            # Print results
+            print(f"Analysis complete!")
+            print(f"Exercise: {exercise}")
+            print(f"Reps detected: {analysis['metrics'].get('reps', 0)}")
+            print(f"Average rep time: {analysis['metrics'].get('avgRepTimeSec', 0):.2f}s")
+            print(f"Form score: {analysis['metrics'].get('formScore', 0):.1f}/100")
+            print(f"Symmetry score: {analysis['metrics'].get('symmetryScore', 0):.1f}/100")
             print()
             
-            # Show a few sample frames
-            sample_indices = [0, len(frames)//2, -1]  # First, middle, and last frame
-            for idx in sample_indices:
-                if 0 <= idx < len(frames):
-                    print(f"Sample frame {idx}:")
-                    print_frame_summary(frames[idx])
-                    print()
+            # Show injury flags if any
+            if analysis['injuryFlags']:
+                print("Injury flags detected:")
+                for flag in analysis['injuryFlags']:
+                    print(f"  - {flag['message']} (frame {flag['frameIndex']})")
+                print()
             
             # Ask if user wants to save results
             save_choice = input("Save results to JSON file? (y/n): ").strip().lower()
             if save_choice == 'y':
                 output_path = f"pose_results_{exercise}_{uuid.uuid4().hex[:8]}.json"
-                save_keypoints(frames, output_path)
+                
+                # Create comprehensive results
+                results = {
+                    "exercise": exercise,
+                    "fps": fps,
+                    "analysis": analysis,
+                    "frames": frames  # Include all frame data if needed for debugging
+                }
+                
+                with open(output_path, 'w') as f:
+                    json.dump(results, f, indent=2)
                 print(f"Results saved to {output_path}")
                 
+                # Also save signal data for debugging/visualization
+                signal_path = f"signal_data_{exercise}_{uuid.uuid4().hex[:8]}.csv"
+                save_signal_to_csv(analysis['signal'], signal_path)
+                print(f"Signal data saved to {signal_path}")
+                    
         except Exception as e:
             print(f"Error processing video: {e}")
     
