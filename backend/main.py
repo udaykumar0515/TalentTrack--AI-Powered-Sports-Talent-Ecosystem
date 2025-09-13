@@ -3,7 +3,8 @@ import uuid
 import json
 import cv2
 from pathlib import Path
-from pose_engine import process_video, process_webcam
+from pose_engine import process_video, process_webcam, save_keypoints
+import signal
 
 def print_frame_summary(frame_entry):
     """Print a summary of the frame data"""
@@ -28,9 +29,8 @@ def webcam_callback(frame_entry, image):
     # Show the video with overlay (optional)
     cv2.imshow("Pose Detection - Press 'q' to quit", image)
     
-    # Check for quit key
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        return True  # Signal to stop processing
+    # Do NOT call waitKey here; process_webcam will handle keyboard events.
+    # Return True if you want to stop programmatically (optional).
     return False
 
 def main():
@@ -65,8 +65,15 @@ def main():
     
     if source_choice == "1":
         print("Starting webcam processing... Press 'q' to quit")
+        print("Press Ctrl+C to exit gracefully")
         print()
-        process_webcam(on_frame_callback=webcam_callback)
+        
+        try:
+            process_webcam(on_frame_callback=webcam_callback)
+        except KeyboardInterrupt:
+            print("Interrupted by user.")
+        finally:
+            cv2.destroyAllWindows()
         
     elif source_choice == "2":
         file_path = input("Enter path to video file: ").strip()
@@ -78,28 +85,31 @@ def main():
         print("This may take a while depending on video length...")
         print()
         
-        # Process the video
-        frames = process_video(file_path)
-        
-        # Print summary
-        print(f"Processing complete! Processed {len(frames)} frames.")
-        print()
-        
-        # Show a few sample frames
-        sample_indices = [0, len(frames)//2, -1]  # First, middle, and last frame
-        for idx in sample_indices:
-            if 0 <= idx < len(frames):
-                print(f"Sample frame {idx}:")
-                print_frame_summary(frames[idx])
-                print()
-        
-        # Ask if user wants to save results
-        save_choice = input("Save results to JSON file? (y/n): ").strip().lower()
-        if save_choice == 'y':
-            output_path = f"pose_results_{exercise}_{uuid.uuid4().hex[:8]}.json"
-            with open(output_path, 'w') as f:
-                json.dump(frames, f, indent=2)
-            print(f"Results saved to {output_path}")
+        try:
+            # Process the video
+            frames = process_video(file_path)
+            
+            # Print summary
+            print(f"Processing complete! Processed {len(frames)} frames.")
+            print()
+            
+            # Show a few sample frames
+            sample_indices = [0, len(frames)//2, -1]  # First, middle, and last frame
+            for idx in sample_indices:
+                if 0 <= idx < len(frames):
+                    print(f"Sample frame {idx}:")
+                    print_frame_summary(frames[idx])
+                    print()
+            
+            # Ask if user wants to save results
+            save_choice = input("Save results to JSON file? (y/n): ").strip().lower()
+            if save_choice == 'y':
+                output_path = f"pose_results_{exercise}_{uuid.uuid4().hex[:8]}.json"
+                save_keypoints(frames, output_path)
+                print(f"Results saved to {output_path}")
+                
+        except Exception as e:
+            print(f"Error processing video: {e}")
     
     else:
         print("Invalid choice. Exiting.")
