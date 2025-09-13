@@ -4,6 +4,7 @@ import mediapipe as mp
 import cv2
 import math
 import logging
+import signal
 
 logging.basicConfig(level=logging.INFO)
 mp_pose = mp.solutions.pose
@@ -55,6 +56,13 @@ def extract_landmarks_from_result(result, width: int, height: int) -> Dict[str, 
     
     return out
 
+def save_keypoints(frames, out_path):
+    """Helper function to save keypoints to JSON file"""
+    import json
+    with open(out_path, "w") as fh:
+        json.dump(frames, fh, indent=2)
+    logging.info(f"Keypoints saved to {out_path}")
+
 def process_video(path: str,
                   max_frames: Optional[int] = None,
                   visibility_threshold: float = 0.2,
@@ -68,11 +76,17 @@ def process_video(path: str,
     if not cap.isOpened():
         raise RuntimeError(f"Cannot open video file: {path}")
 
+    # Check if it's a valid video file
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    if width == 0 or height == 0:
+        cap.release()
+        raise RuntimeError(f"Invalid video file: {path}")
+
     fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH) or 640)
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT) or 480)
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     
-    logging.info(f"Video properties: width={width}, height={height}, fps={fps}")
+    logging.info(f"Video properties: width={width}, height={height}, fps={fps}, total_frames={total_frames}")
 
     pose = mp_pose.Pose(static_image_mode=False,
                         model_complexity=1,
@@ -82,11 +96,22 @@ def process_video(path: str,
     frames = []
     prev_smoothed = {}  # per-joint previous smoothed dict
     frame_idx = 0
+    processed_frames = 0
 
     while True:
         ret, img = cap.read()
         if not ret:
             break
+
+        # Frame skipping for better performance (process every other frame)
+        if frame_idx % 2 == 0:
+            frame_idx += 1
+            continue
+
+        # Progress indicator
+        if frame_idx % 30 == 0 and total_frames > 0:
+            progress = (frame_idx / total_frames) * 100
+            logging.info(f"Processing: {progress:.1f}% complete")
 
         # Convert to RGB for mediapipe
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -113,6 +138,11 @@ def process_video(path: str,
             smoothed[name] = sm
             prev_smoothed[name] = sm  # update
 
+        # Ensure all landmarks are present in every frame
+        for name in LANDMARK_NAMES:
+            if name not in smoothed:
+                smoothed[name] = {"x": None, "y": None, "z": None, "score": 0.0}
+
         timestamp = frame_idx / fps
         frame_entry = {
             "frameIndex": frame_idx,
@@ -120,6 +150,7 @@ def process_video(path: str,
             "keypoints": smoothed
         }
         frames.append(frame_entry)
+        processed_frames += 1
 
         # For development: optionally print one-line JSON-ish summary
         if frame_idx % 30 == 0:  # print every ~second
@@ -132,7 +163,7 @@ def process_video(path: str,
     cap.release()
     pose.close()
     
-    logging.info(f"Finished processing {path} frames={len(frames)} duration={len(frames)/fps:.2f}s")
+    logging.info(f"Finished processing {path} frames={processed_frames} duration={processed_frames/fps:.2f}s")
     return frames
 
 def process_webcam(on_frame_callback: Optional[Callable] = None,
@@ -143,6 +174,18 @@ def process_webcam(on_frame_callback: Optional[Callable] = None,
     Run webcam in real-time and optionally call `on_frame_callback(frame_entry, img_with_overlay)`.
     If on_frame_callback is None, this will show an OpenCV window with overlay skeleton.
     """
+    # Global variable for signal handling
+    global stop_processing
+    stop_processing = False
+    
+    def signal_handler(sig, frame):
+        global stop_processing
+        logging.info("Interrupt signal received, shutting down...")
+        stop_processing = True
+    
+    # Set up signal handler for graceful shutdown
+    signal.signal(signal.SIGINT, signal_handler)
+    
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         raise RuntimeError("Cannot open webcam")
@@ -153,10 +196,11 @@ def process_webcam(on_frame_callback: Optional[Callable] = None,
     prev_smoothed = {}
     frame_idx = 0
 
-    while True:
+    while not stop_processing:
         ret, frame = cap.read()
         if not ret:
             break
+            
         h, w = frame.shape[:2]
         img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         res = pose.process(img_rgb)
@@ -171,6 +215,11 @@ def process_webcam(on_frame_callback: Optional[Callable] = None,
             smoothed[name] = sm
             prev_smoothed[name] = sm
 
+        # Ensure all landmarks are present in every frame
+        for name in LANDMARK_NAMES:
+            if name not in smoothed:
+                smoothed[name] = {"x": None, "y": None, "z": None, "score": 0.0}
+
         # Draw skeleton overlay on frame (basic)
         # Define pairs (connections) to draw lines
         connections = [
@@ -183,7 +232,7 @@ def process_webcam(on_frame_callback: Optional[Callable] = None,
         ]
         # draw lines
         for a, b in connections:
-            if a in smoothed and b in smoothed:
+            if a in smoothed and b in smoothed and smoothed[a]["score"] > 0.2 and smoothed[b]["score"] > 0.2:
                 x1 = int(smoothed[a]["x"] * w)
                 y1 = int(smoothed[a]["y"] * h)
                 x2 = int(smoothed[b]["x"] * w)
@@ -192,22 +241,28 @@ def process_webcam(on_frame_callback: Optional[Callable] = None,
 
         # draw points
         for name, lm in smoothed.items():
-            x = int(lm["x"] * w)
-            y = int(lm["y"] * h)
-            score = lm.get("score", 1.0)
-            color = (0, 255, 0) if score >= visibility_threshold else (0, 120, 255)
-            cv2.circle(frame, (x, y), 4, color, -1)
+            if lm["score"] > 0.2:  # Only draw points with good visibility
+                x = int(lm["x"] * w)
+                y = int(lm["y"] * h)
+                score = lm.get("score", 1.0)
+                color = (0, 255, 0) if score >= visibility_threshold else (0, 120, 255)
+                cv2.circle(frame, (x, y), 4, color, -1)
 
         timestamp = frame_idx / fps
         frame_entry = {"frameIndex": frame_idx, "timestamp": timestamp, "keypoints": smoothed}
+        
         if on_frame_callback:
-            on_frame_callback(frame_entry, frame)
+            # Check if callback returns True (stop signal)
+            should_stop = on_frame_callback(frame_entry, frame)
+            if should_stop:
+                logging.info("process_webcam: stop signal received from callback.")
+                break
         else:
             cv2.imshow("pose_engine - press q to quit", frame)
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                logging.info("process_webcam: 'q' pressed, exiting.")
+                break
 
-        key = cv2.waitKey(1) & 0xFF
-        if key == ord("q"):
-            break
         frame_idx += 1
         if max_frames and frame_idx >= max_frames:
             break
