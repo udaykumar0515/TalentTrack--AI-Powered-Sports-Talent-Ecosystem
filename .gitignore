@@ -24,7 +24,7 @@ dist-ssr
 *.sw?
 .env
 # Python
-myvenv/
+myenv/
 __pycache__/
 *.pyc
 
