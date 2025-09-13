@@ -1,4 +1,4 @@
-
+# analyzer.py
 import math
 from typing import List, Dict, Any, Optional, Tuple
 import numpy as np
@@ -7,6 +7,9 @@ def angle_between_points(a: Tuple[float, float], b: Tuple[float, float], c: Tupl
     """
     Calculate the angle between three points (a-b-c) in degrees.
     """
+    if None in (a, b, c):
+        return 0.0
+        
     ba = (a[0] - b[0], a[1] - b[1])
     bc = (c[0] - b[0], c[1] - b[1])
     
@@ -27,6 +30,9 @@ def distance_between_points(a: Tuple[float, float], b: Tuple[float, float]) -> f
     """
     Calculate Euclidean distance between two points.
     """
+    if None in (a, b):
+        return 0.0
+        
     return math.sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2)
 
 def get_keypoint(keypoints: Dict, name: str, visibility_threshold: float = 0.2) -> Optional[Tuple[float, float]]:
@@ -159,7 +165,7 @@ def compute_squat_metrics(frames: List[Dict], fps: float) -> Tuple[List[float], 
     rep_count, rep_times, rep_frames = detect_reps(smoothed_signal, fps, down_thr=110, up_thr=160)
     
     # Calculate metrics
-    avg_rep_time = sum(rep_times) / len(rep_times) if rep_times else None
+    avg_rep_time = sum(rep_times) / len(rep_times) if rep_times else 0
     form_score = calculate_form_score(signal, rep_frames, min_angle=70, max_angle=180)
     symmetry_score = calculate_symmetry_score(frames, "squat")
     
@@ -167,8 +173,8 @@ def compute_squat_metrics(frames: List[Dict], fps: float) -> Tuple[List[float], 
         "reps": rep_count,
         "repTimes": rep_times,
         "avgRepTimeSec": avg_rep_time,
-        "formScore": form_score,
-        "symmetryScore": symmetry_score,
+        "formScore": form_score or 0,
+        "symmetryScore": symmetry_score or 0,
         "frameCount": len(frames),
         "durationSec": len(frames) / fps
     }
@@ -240,7 +246,7 @@ def compute_pushup_metrics(frames: List[Dict], fps: float) -> Tuple[List[float],
     rep_count, rep_times, rep_frames = detect_reps(smoothed_signal, fps, down_thr=90, up_thr=160)
     
     # Calculate metrics
-    avg_rep_time = sum(rep_times) / len(rep_times) if rep_times else None
+    avg_rep_time = sum(rep_times) / len(rep_times) if rep_times else 0
     form_score = calculate_form_score(signal, rep_frames, min_angle=60, max_angle=180)
     symmetry_score = calculate_symmetry_score(frames, "push-up")
     
@@ -248,8 +254,8 @@ def compute_pushup_metrics(frames: List[Dict], fps: float) -> Tuple[List[float],
         "reps": rep_count,
         "repTimes": rep_times,
         "avgRepTimeSec": avg_rep_time,
-        "formScore": form_score,
-        "symmetryScore": symmetry_score,
+        "formScore": form_score or 0,
+        "symmetryScore": symmetry_score or 0,
         "frameCount": len(frames),
         "durationSec": len(frames) / fps
     }
@@ -292,7 +298,7 @@ def compute_jumping_jack_metrics(frames: List[Dict], fps: float) -> Tuple[List[f
     rep_count, rep_times, rep_frames = detect_reps(smoothed_signal, fps, down_thr=1.4, up_thr=1.05)
     
     # Calculate metrics
-    avg_rep_time = sum(rep_times) / len(rep_times) if rep_times else None
+    avg_rep_time = sum(rep_times) / len(rep_times) if rep_times else 0
     form_score = calculate_form_score(signal, rep_frames, min_val=1.0, max_val=2.0)
     symmetry_score = calculate_symmetry_score(frames, "jumping-jacks")
     
@@ -300,8 +306,8 @@ def compute_jumping_jack_metrics(frames: List[Dict], fps: float) -> Tuple[List[f
         "reps": rep_count,
         "repTimes": rep_times,
         "avgRepTimeSec": avg_rep_time,
-        "formScore": form_score,
-        "symmetryScore": symmetry_score,
+        "formScore": form_score or 0,
+        "symmetryScore": symmetry_score or 0,
         "frameCount": len(frames),
         "durationSec": len(frames) / fps
     }
