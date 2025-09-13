@@ -1,3 +1,4 @@
+# main.py
 import os
 import uuid
 import json
@@ -6,54 +7,56 @@ from pathlib import Path
 from pose_engine import process_video, process_webcam, save_keypoints
 from analyzer import compute_metrics, save_signal_to_csv
 import signal
+from collections import deque
 
-def print_frame_summary(frame_entry):
-    """Print a summary of the frame data"""
-    print(f"Frame {frame_entry['frameIndex']} - Timestamp: {frame_entry['timestamp']:.2f}s")
-    print(f"  Keypoints detected: {len(frame_entry['keypoints'])}")
+def draw_metrics(image, metrics, injury_flags):
+    """Draw metrics on the image with a semi-transparent background"""
+    # Create a semi-transparent background rectangle
+    overlay = image.copy()
+    cv2.rectangle(overlay, (10, 10), (350, 160), (0, 0, 0), -1)
+    cv2.addWeighted(overlay, 0.7, image, 0.3, 0, image)
     
-    # Print a few key landmarks
-    key_landmarks = ["nose", "left_shoulder", "right_shoulder", "left_hip", "right_hip"]
-    for landmark in key_landmarks:
-        if landmark in frame_entry['keypoints']:
-            kp = frame_entry['keypoints'][landmark]
-            # Handle None values gracefully
-            x_val = kp['x'] if kp['x'] is not None else 'N/A'
-            y_val = kp['y'] if kp['y'] is not None else 'N/A'
-            score_val = kp['score'] if kp['score'] is not None else 'N/A'
+    # Draw metrics text
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    color = (0, 255, 0)
+    
+    cv2.putText(image, f"Reps: {metrics.get('reps', 0)}", (20, 40), font, 0.7, color, 2)
+    cv2.putText(image, f"Form: {metrics.get('formScore', 0):.1f}/100", (20, 70), font, 0.7, color, 2)
+    cv2.putText(image, f"Symmetry: {metrics.get('symmetryScore', 0):.1f}/100", (20, 100), font, 0.7, color, 2)
+    
+    # Show latest injury warning if any
+    if injury_flags and len(injury_flags) > 0:
+        latest_warning = injury_flags[-1]['message']
+        cv2.putText(image, f"Warning: {latest_warning}", (20, 130), font, 0.5, (0, 0, 255), 2)
+
+def webcam_callback(exercise, accumulated_frames, analysis_results):
+    """Create a callback function for webcam processing with exercise context"""
+    def callback(frame_entry, image):
+        # Add frame to accumulated frames
+        accumulated_frames.append(frame_entry)
+        
+        # Perform analysis more frequently (every 15 frames)
+        if len(accumulated_frames) % 15 == 0 and len(accumulated_frames) > 30:
+            analysis = compute_metrics(list(accumulated_frames), exercise, 30.0)
+            analysis_results.update({
+                'metrics': analysis['metrics'],
+                'injury_flags': analysis['injuryFlags']
+            })
+        
+        # Always show the latest metrics on the frame
+        if analysis_results['metrics']:
+            draw_metrics(image, analysis_results['metrics'], analysis_results['injury_flags'])
+        
+        # Show the video with overlay
+        cv2.imshow("Pose Detection - Press 'q' to quit", image)
+        
+        # Check for quit key
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            return True
             
-            # Format the values appropriately
-            if isinstance(x_val, float):
-                x_str = f"{x_val:.3f}"
-            else:
-                x_str = str(x_val)
-                
-            if isinstance(y_val, float):
-                y_str = f"{y_val:.3f}"
-            else:
-                y_str = str(y_val)
-                
-            if isinstance(score_val, float):
-                score_str = f"{score_val:.3f}"
-            else:
-                score_str = str(score_val)
-                
-            print(f"  {landmark}: x={x_str}, y={y_str}, score={score_str}")
-            
-def webcam_callback(frame_entry, image):
-    """Callback function for webcam processing"""
-    # Clear terminal (works on most systems)
-    os.system('cls' if os.name == 'nt' else 'clear')
-    
-    # Print frame information
-    print_frame_summary(frame_entry)
-    
-    # Show the video with overlay (optional)
-    cv2.imshow("Pose Detection - Press 'q' to quit", image)
-    
-    # Do NOT call waitKey here; process_webcam will handle keyboard events.
-    # Return True if you want to stop programmatically (optional).
-    return False
+        return False
+        
+    return callback
 
 def main():
     """Main CLI interface for pose detection"""
@@ -90,10 +93,54 @@ def main():
         print("Press Ctrl+C to exit gracefully")
         print()
         
+        # Initialize frame accumulator and analysis results
+        accumulated_frames = deque(maxlen=900)  # Keep last 30 seconds at 30fps
+        analysis_results = {'metrics': {}, 'injury_flags': []}
+        
         try:
-            process_webcam(on_frame_callback=webcam_callback)
+            # Create callback with exercise context
+            callback = webcam_callback(exercise, accumulated_frames, analysis_results)
+            process_webcam(on_frame_callback=callback)
+            
+            # After webcam stops, do final analysis
+            if accumulated_frames:
+                analysis = compute_metrics(list(accumulated_frames), exercise, 30.0)
+                
+                # Print results
+                print(f"\nFinal Analysis:")
+                print(f"Exercise: {exercise}")
+                print(f"Reps detected: {analysis['metrics'].get('reps', 0)}")
+                print(f"Average rep time: {analysis['metrics'].get('avgRepTimeSec', 0):.2f}s")
+                print(f"Form score: {analysis['metrics'].get('formScore', 0):.1f}/100")
+                print(f"Symmetry score: {analysis['metrics'].get('symmetryScore', 0):.1f}/100")
+                
+                # Show injury flags if any
+                if analysis['injuryFlags']:
+                    print("\nInjury flags detected:")
+                    for flag in analysis['injuryFlags']:
+                        print(f"  - {flag['message']} (frame {flag['frameIndex']})")
+                
+                # Ask if user wants to save results
+                save_choice = input("\nSave results to JSON file? (y/n): ").strip().lower()
+                if save_choice == 'y':
+                    output_path = f"pose_results_{exercise}_{uuid.uuid4().hex[:8]}.json"
+                    
+                    # Create comprehensive results
+                    results = {
+                        "exercise": exercise,
+                        "fps": 30.0,
+                        "analysis": analysis,
+                        "frames": list(accumulated_frames)  # Include all frame data if needed for debugging
+                    }
+                    
+                    with open(output_path, 'w') as f:
+                        json.dump(results, f, indent=2)
+                    print(f"Results saved to {output_path}")
+                    
         except KeyboardInterrupt:
             print("Interrupted by user.")
+        except Exception as e:
+            print(f"Error during webcam processing: {e}")
         finally:
             cv2.destroyAllWindows()
         
