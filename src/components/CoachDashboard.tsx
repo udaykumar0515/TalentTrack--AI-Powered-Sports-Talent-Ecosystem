@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getAthletes, getSessions, postCoachAction } from '../api/apiClient';
+import { postCoachAction } from '../api/apiClient';
 
 const CoachDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const [athletes, setAthletes] = useState<any[]>([]);
   const [sessions, setSessions] = useState<any[]>([]);
   const [filterAthlete, setFilterAthlete] = useState('');
 
@@ -16,16 +15,28 @@ const CoachDashboard: React.FC = () => {
 
   const loadDashboardData = async () => {
     try {
-      const [athletesData, sessionsData] = await Promise.all([
-        getAthletes(),
-        getSessions()
-      ]);
-      setAthletes(athletesData);
-      setSessions(sessionsData);
+      // Load sessions from localStorage where coachId matches current coach
+      const allSessions: any[] = [];
+      const keys = Object.keys(localStorage);
+      
+      for (const key of keys) {
+        if (key.startsWith('sessions_')) {
+          try {
+            const userSessions = JSON.parse(localStorage.getItem(key) || '[]');
+            const coachSessions = userSessions.filter((session: any) => 
+              session.coachId === user?.id
+            );
+            allSessions.push(...coachSessions);
+          } catch (error) {
+            console.error('Error parsing sessions for key:', key, error);
+          }
+        }
+      }
+      
+      setSessions(allSessions);
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
-      // Use sample data for demo
-      setSessions(sampleSessionData);
+      setSessions([]);
     }
   };
 

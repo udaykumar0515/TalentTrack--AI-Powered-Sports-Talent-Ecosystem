@@ -53,7 +53,7 @@ const CoachLogin: React.FC = () => {
       return;
     }
 
-    const success = await login(formData.email, formData.password);
+    const success = await login(formData.email, formData.password, 'coach');
     if (success) {
       navigate('/coach/dashboard');
     }

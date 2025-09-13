@@ -481,3 +481,25 @@ button:disabled {
     flex-direction: column;
   }
 }
+
+.no-activity {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--secondary-text);
+  font-style: italic;
+}
+
+.activity-details {
+  margin-top: 8px;
+  font-size: 0.9em;
+  color: var(--secondary-text);
+}
+
+.activity-details > div {
+  margin: 2px 0;
+}
+
+.activity-coach {
+  color: var(--coach-green);
+  font-weight: 500;
+}

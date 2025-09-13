@@ -1,15 +1,18 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useCoaches } from '../contexts/CoachContext';
 import VideoRecorder from './VideoRecorder';
 import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
 
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
+  const { coaches } = useCoaches();
   const [selectedCoach, setSelectedCoach] = useState('none');
   const [selectedExercise, setSelectedExercise] = useState('squat');
   const [currentSession, setCurrentSession] = useState<any>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [sessions, setSessions] = useState<any[]>([]);
 
   const exercises = [
     { value: 'squat', label: 'Squat' },
@@ -17,19 +20,68 @@ const AthleteDashboard: React.FC = () => {
     { value: 'pushup', label: 'Push-up' }
   ];
 
-  const coaches = [
-    { value: 'none', label: 'None' },
-    { value: 'coach1', label: 'Coach A' },
-    { value: 'coach2', label: 'Coach B' }
-  ];
+  // Load sessions from localStorage on component mount
+  useEffect(() => {
+    loadSessions();
+  }, []);
+
+  const loadSessions = () => {
+    try {
+      const storedSessions = localStorage.getItem(`sessions_${user?.id}`) || '[]';
+      setSessions(JSON.parse(storedSessions));
+    } catch (error) {
+      console.error('Error loading sessions:', error);
+    }
+  };
 
   const handleVideoAnalyzed = (session: any) => {
-    setCurrentSession(session);
+    const sessionWithCoach = {
+      ...session,
+      athleteId: user?.id,
+      athleteName: user?.username,
+      coachId: selectedCoach !== 'none' ? selectedCoach : null,
+      coachName: selectedCoach !== 'none' ? coaches.find(c => c.id === selectedCoach)?.username : null,
+      timestamp: new Date().toISOString()
+    };
+    
+    setCurrentSession(sessionWithCoach);
     setIsAnalyzing(false);
+    
+    // Save session to localStorage
+    const updatedSessions = [...sessions, sessionWithCoach];
+    setSessions(updatedSessions);
+    localStorage.setItem(`sessions_${user?.id}`, JSON.stringify(updatedSessions));
   };
 
   const handleStartAnalysis = () => {
     setIsAnalyzing(true);
+  };
+
+  // Helper functions for formatting and status
+  const getStatusClass = (formScore: number) => {
+    if (formScore >= 85) return 'green';
+    if (formScore >= 70) return 'yellow';
+    return 'red';
+  };
+
+  const getStatusText = (formScore: number) => {
+    if (formScore >= 85) return 'Excellent';
+    if (formScore >= 70) return 'Good';
+    if (formScore >= 50) return 'Fair';
+    return 'Poor';
+  };
+
+  const formatDateTime = (timestamp: string) => {
+    if (!timestamp) return 'Unknown';
+    const date = new Date(timestamp);
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+  };
+
+  const formatDuration = (durationSec: number) => {
+    if (!durationSec) return '0s';
+    const minutes = Math.floor(durationSec / 60);
+    const seconds = Math.floor(durationSec % 60);
+    return minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
   };
 
   if (currentSession) {
@@ -57,9 +109,10 @@ const AthleteDashboard: React.FC = () => {
               value={selectedCoach}
               onChange={(e) => setSelectedCoach(e.target.value)}
             >
+              <option value="none">No Coach Selected</option>
               {coaches.map(coach => (
-                <option key={coach.value} value={coach.value}>
-                  {coach.label}
+                <option key={coach.id} value={coach.id}>
+                  {coach.username}
                 </option>
               ))}
             </select>
@@ -111,14 +164,27 @@ const AthleteDashboard: React.FC = () => {
       <section className="activity-feed">
         <h2>Your Recent Activity</h2>
         <div id="metrics-container">
-          {/* Sample metric cards will be populated here */}
-          <div className="metric-card green">
-            <h3>Last Workout</h3>
-            <p><strong>Exercise:</strong> Squats</p>
-            <p><strong>Reps:</strong> 15</p>
-            <p><strong>Form Score:</strong> 92</p>
-            <p><strong>Status:</strong> <span className="risk-level low">Excellent</span></p>
-          </div>
+          {sessions.length === 0 ? (
+            <div className="no-activity">
+              <p>No sessions recorded yet. Start your first workout!</p>
+            </div>
+          ) : (
+            sessions.slice().reverse().map((session, index) => (
+              <div key={index} className={`metric-card ${getStatusClass(session.formScore)}`}>
+                <h3>{session.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}</h3>
+                <p><strong>Reps:</strong> {session.reps || 0}</p>
+                <p><strong>Form Score:</strong> {session.formScore || 0}%</p>
+                <p><strong>Status:</strong> <span className={`risk-level ${getStatusClass(session.formScore)}`}>
+                  {getStatusText(session.formScore)}
+                </span></p>
+                <p><strong>Date:</strong> {formatDateTime(session.timestamp)}</p>
+                <p><strong>Duration:</strong> {formatDuration(session.durationSec)}</p>
+                {session.coachName && (
+                  <p><strong>Coach:</strong> {session.coachName}</p>
+                )}
+              </div>
+            ))
+          )}
         </div>
       </section>
     </div>

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { Coach } from './CoachContext';
 
 export interface User {
   id: string;
@@ -10,7 +11,7 @@ export interface User {
 
 export interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string, expectedRole?: 'athlete' | 'coach') => Promise<boolean>;
   register: (email: string, password: string, username: string, role: 'athlete' | 'coach') => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
@@ -55,16 +56,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loadUser();
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string, expectedRole?: 'athlete' | 'coach'): Promise<boolean> => {
     setIsLoading(true);
     setError(null);
 
     try {
       // Get users from localStorage
       const users = getStoredUsers();
+      console.log('Login attempt for:', email, 'Available users:', users.length);
       const user = users.find(u => u.email === email && u.password === password);
       
       if (user) {
+        // Check if user is trying to login with wrong role
+        if (expectedRole && user.role !== expectedRole) {
+          const roleText = user.role === 'athlete' ? 'athlete' : 'coach';
+          setError(`You are registered as an ${roleText}. Please login as ${roleText} instead.`);
+          return false;
+        }
+
         const { password: _, ...userWithoutPassword } = user;
         setUser(userWithoutPassword);
         localStorage.setItem('user', JSON.stringify(userWithoutPassword));
@@ -88,8 +97,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       // Check if user already exists
       const users = getStoredUsers();
-      if (users.find(u => u.email === email)) {
-        setError('User with this email already exists');
+      const existingUser = users.find(u => u.email === email);
+      if (existingUser) {
+        const roleText = existingUser.role === 'athlete' ? 'athlete' : 'coach';
+        setError(`This email is already registered as an ${roleText}. Please login instead.`);
         return false;
       }
 
@@ -111,6 +122,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Save user
       users.push(newUser);
       localStorage.setItem('users', JSON.stringify(users));
+
+      // If registering as coach, add to coaches list
+      if (role === 'coach') {
+        const coach: Coach = {
+          id: newUser.id,
+          email: newUser.email,
+          username: newUser.username,
+          createdAt: newUser.createdAt
+        };
+        
+        const existingCoaches = JSON.parse(localStorage.getItem('registeredCoaches') || '[]');
+        const updatedCoaches = [...existingCoaches, coach];
+        localStorage.setItem('registeredCoaches', JSON.stringify(updatedCoaches));
+      }
 
       // Auto-login after registration
       const { password: _, ...userWithoutPassword } = newUser;
@@ -143,6 +168,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const generateId = (): string => {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   };
+
 
   const value: AuthContextType = {
     user,

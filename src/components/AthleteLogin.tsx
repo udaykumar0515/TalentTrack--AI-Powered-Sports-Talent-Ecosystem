@@ -53,7 +53,7 @@ const AthleteLogin: React.FC = () => {
       return;
     }
 
-    const success = await login(formData.email, formData.password);
+    const success = await login(formData.email, formData.password, 'athlete');
     if (success) {
       navigate('/athlete/dashboard');
     }
