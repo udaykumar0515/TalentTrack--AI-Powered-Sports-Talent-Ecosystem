@@ -17,8 +17,29 @@ def print_frame_summary(frame_entry):
     for landmark in key_landmarks:
         if landmark in frame_entry['keypoints']:
             kp = frame_entry['keypoints'][landmark]
-            print(f"  {landmark}: x={kp['x']:.3f}, y={kp['y']:.3f}, score={kp['score']:.3f}")
-
+            # Handle None values gracefully
+            x_val = kp['x'] if kp['x'] is not None else 'N/A'
+            y_val = kp['y'] if kp['y'] is not None else 'N/A'
+            score_val = kp['score'] if kp['score'] is not None else 'N/A'
+            
+            # Format the values appropriately
+            if isinstance(x_val, float):
+                x_str = f"{x_val:.3f}"
+            else:
+                x_str = str(x_val)
+                
+            if isinstance(y_val, float):
+                y_str = f"{y_val:.3f}"
+            else:
+                y_str = str(y_val)
+                
+            if isinstance(score_val, float):
+                score_str = f"{score_val:.3f}"
+            else:
+                score_str = str(score_val)
+                
+            print(f"  {landmark}: x={x_str}, y={y_str}, score={score_str}")
+            
 def webcam_callback(frame_entry, image):
     """Callback function for webcam processing"""
     # Clear terminal (works on most systems)
