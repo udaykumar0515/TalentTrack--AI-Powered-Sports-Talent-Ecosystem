@@ -121,46 +121,55 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
 
   return (
     <div className="video-recorder">
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        style={{ display: 'none', width: '100%', maxWidth: '400px', borderRadius: '8px' }}
-      />
+      <div className="video-container">
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          className="live-video"
+        />
+      </div>
 
       {!recordedVideo ? (
-        <>
+        <div className="recording-controls">
           <button
-            id="record-btn"
+            className={`record-btn ${isRecording ? 'recording' : ''}`}
             onClick={isRecording ? stopRecording : startRecording}
             disabled={isAnalyzing}
           >
-            {isRecording ? 'Stop Recording' : 'Record Video'}
+            <span className="record-icon">
+              {isRecording ? '⏹️' : '⏺️'}
+            </span>
+            {isRecording ? 'Stop Recording' : 'Start Recording'}
           </button>
-        </>
+          <p className="recording-hint">
+            {isRecording ? 'Recording in progress...' : 'Click to start recording your exercise'}
+          </p>
+        </div>
       ) : (
-        <div>
-          <p>Video recorded successfully!</p>
-          <div style={{ marginBottom: 8 }}>
-            <button
-              id="analyze-btn"
-              onClick={handleAnalyze}
-              disabled={isAnalyzing}
-            >
-              {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
-            </button>
-            <button onClick={resetRecording} style={{ marginLeft: 8 }}>
-              Record Again
-            </button>
-          </div>
-          <div>
+        <div className="analysis-controls">
+          <div className="video-preview">
             {previewUrl && (
               <video
                 src={previewUrl}
                 controls
-                style={{ width: '100%', maxWidth: 400, borderRadius: 8 }}
+                className="preview-video"
               />
             )}
+          </div>
+          <div className="action-buttons">
+            <button
+              className="analyze-btn"
+              onClick={handleAnalyze}
+              disabled={isAnalyzing}
+            >
+              <span className="analyze-icon">🔍</span>
+              {isAnalyzing ? 'Analyzing...' : 'Analyze Video'}
+            </button>
+            <button onClick={resetRecording} className="retry-btn">
+              <span className="retry-icon">🔄</span>
+              Record Again
+            </button>
           </div>
         </div>
       )}

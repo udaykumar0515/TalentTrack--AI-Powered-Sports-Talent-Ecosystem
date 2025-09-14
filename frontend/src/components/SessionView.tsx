@@ -119,19 +119,10 @@ const SessionView: React.FC<SessionViewProps> = ({
         </div>
       </div>
 
-      <div className="controls-panel">
-        <button onClick={handleSave}>Save Session</button>
-        <button onClick={handleDownloadPDF}>Download PDF Report</button>
-        {!isAthlete && (
-          <>
-            <button onClick={() => alert('Retest requested!')}>
-              Request Re-test
-            </button>
-            <button onClick={() => alert('Note added!')}>
-              Add Note
-            </button>
-          </>
-        )}
+      <div className="session-actions">
+        <button onClick={handleBack} className="back-btn">
+          <span>←</span> Back to Dashboard
+        </button>
       </div>
     </div>
   );

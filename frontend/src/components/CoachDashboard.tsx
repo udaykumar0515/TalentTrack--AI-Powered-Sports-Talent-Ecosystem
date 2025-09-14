@@ -151,22 +151,29 @@ const CoachDashboard: React.FC = () => {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <div className="header-left">
-          <h1>Coach Dashboard</h1>
-          <p>Welcome, {user?.username}!</p>
+          <div className="logo-section">
+            <img src="/logo.png" alt="AI Sports Platform" className="logo" />
+            <div className="welcome-text">
+              <h1>Welcome, {user?.username}!</h1>
+              <p>Monitor athlete performance and provide feedback</p>
+            </div>
+          </div>
         </div>
         <div className="header-right">
+          <div className="filters">
+            <input
+              type="text"
+              id="filter-athlete"
+              placeholder="Search athletes or exercises..."
+              value={filterAthlete}
+              onChange={(e) => setFilterAthlete(e.target.value)}
+              className="search-input"
+            />
+          </div>
           <button onClick={logout} className="logout-btn">
+            <span className="logout-icon">🚪</span>
             Logout
           </button>
-        </div>
-        <div className="filters">
-          <input
-            type="text"
-            id="filter-athlete"
-            placeholder="Filter by athlete name or exercise"
-            value={filterAthlete}
-            onChange={(e) => setFilterAthlete(e.target.value)}
-          />
         </div>
       </header>
 

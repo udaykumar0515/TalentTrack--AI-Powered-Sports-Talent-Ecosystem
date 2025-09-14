@@ -78,33 +78,44 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
       />
 
       {!selectedFile ? (
-        <button
-          id="upload-btn"
-          onClick={handleUpload}
-          disabled={isAnalyzing}
-        >
-          Upload Video
-        </button>
+        <div className="upload-area">
+          <button
+            className="upload-btn"
+            onClick={handleUpload}
+            disabled={isAnalyzing}
+          >
+            <span className="upload-icon">📁</span>
+            Choose Video File
+          </button>
+          <p className="upload-hint">Select a video file to analyze</p>
+        </div>
       ) : (
-        <div>
-          <p>Selected: {selectedFile.name}</p>
+        <div className="upload-preview">
+          <div className="file-info">
+            <span className="file-icon">🎥</span>
+            <span className="file-name">{selectedFile.name}</span>
+          </div>
 
           {previewUrl && (
-            <div style={{ marginBottom: 8 }}>
-              <video src={previewUrl} controls style={{ width: '100%', maxWidth: 400, borderRadius: 8 }} />
+            <div className="video-preview">
+              <video src={previewUrl} controls className="preview-video" />
             </div>
           )}
 
-          <button
-            id="analyze-btn"
-            onClick={handleAnalyze}
-            disabled={isAnalyzing}
-          >
-            {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
-          </button>
-          <button onClick={resetUpload} style={{ marginLeft: 8 }}>
-            Choose Different Video
-          </button>
+          <div className="action-buttons">
+            <button
+              className="analyze-btn"
+              onClick={handleAnalyze}
+              disabled={isAnalyzing}
+            >
+              <span className="analyze-icon">🔍</span>
+              {isAnalyzing ? 'Analyzing...' : 'Analyze Video'}
+            </button>
+            <button onClick={resetUpload} className="retry-btn">
+              <span className="retry-icon">🔄</span>
+              Choose Different Video
+            </button>
+          </div>
         </div>
       )}
     </div>

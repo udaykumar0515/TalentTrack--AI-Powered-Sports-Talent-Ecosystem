@@ -104,6 +104,9 @@ const AthleteDashboard: React.FC = () => {
       console.error('Failed to save session to backend:', err);
       // Optionally show a UI toast to the user
     }
+    
+    // Reset analysis state
+    setIsAnalyzing(false);
   };
   const handleStartAnalysis = () => {
     setIsAnalyzing(true);
@@ -150,18 +153,23 @@ const AthleteDashboard: React.FC = () => {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <div className="header-left">
-          <h1>Athlete Dashboard</h1>
-          <p>Welcome, {user?.username}!</p>
+          <div className="logo-section">
+            <img src="/logo.png" alt="AI Sports Platform" className="logo" />
+            <div className="welcome-text">
+              <h1>Welcome back, {user?.username}!</h1>
+              <p>Track your performance and improve your form</p>
+            </div>
+          </div>
         </div>
         <div className="header-right">
           <div className="coach-select">
-            <label htmlFor="coach-dropdown">Select a Coach:</label>
             <select 
               id="coach-dropdown"
               value={selectedCoach}
               onChange={(e) => setSelectedCoach(e.target.value)}
+              className="coach-dropdown"
             >
-              <option value="none">No Coach Selected</option>
+              <option value="none">Select Coach</option>
               {coaches.map(coach => (
                 <option key={coach.id} value={coach.id}>
                   {coach.username}
@@ -172,19 +180,12 @@ const AthleteDashboard: React.FC = () => {
           <button 
             onClick={() => setShowMessages(!showMessages)} 
             className="messages-btn"
-            style={{ 
-              backgroundColor: messages.filter(m => !m.read).length > 0 ? '#ff6b6b' : '#4CAF50',
-              color: 'white',
-              border: 'none',
-              padding: '8px 16px',
-              borderRadius: '4px',
-              marginRight: '10px',
-              cursor: 'pointer'
-            }}
           >
-            Messages {messages.filter(m => !m.read).length > 0 && `(${messages.filter(m => !m.read).length})`}
+            <span className="message-icon">💬</span>
+            Messages {messages.filter(m => !m.read).length > 0 && <span className="unread-count">({messages.filter(m => !m.read).length})</span>}
           </button>
           <button onClick={logout} className="logout-btn">
+            <span className="logout-icon">🚪</span>
             Logout
           </button>
         </div>
