@@ -1,3 +1,4 @@
+// front/src/api/apiClient.ts
 // API client for backend communication
 const API_BASE_URL = '/api';
 
@@ -5,18 +6,22 @@ const API_BASE_URL = '/api';
 export interface Session {
   sessionId: string;
   athleteId: string;
+  athleteName?: string;
+  coachId?: string | null;
+  coachName?: string | null;
   exercise: string;
-  date: string;
-  durationSec: number;
-  metrics: {
-    reps: number;
+  date?: string;
+  timestamp?: string;
+  durationSec?: number;
+  metrics?: {
+    reps?: number;
     avgRepTimeSec?: number;
-    formScore: number;
+    formScore?: number;
     symmetryScore?: number;
     waistAngleDeg?: number;
     muscleActivations?: { [key: string]: number };
   };
-  injuryFlags: Array<{
+  injuryFlags?: Array<{
     type: string;
     severity: string;
     frameIndex: number;
@@ -26,6 +31,7 @@ export interface Session {
   videoUrl?: string;
   keypointsUrl?: string;
   keypoints?: any;
+  status?: string;
 }
 
 export interface CoachAction {
@@ -36,10 +42,10 @@ export interface CoachAction {
   notes?: string;
 }
 
-// Main analysis function called by VideoRecorder and VideoUploader
-export async function analyzeVideo(file: File, exercise: string, athleteId: string): Promise<Session> {
+// Analyze video: sends form-data, returns Session
+export async function analyzeVideo(file: File | Blob, exercise: string, athleteId: string): Promise<Session> {
   const form = new FormData();
-  form.append('file', file);
+  form.append('file', file as any);
   form.append('exercise', exercise);
   form.append('athleteId', athleteId);
 
@@ -49,6 +55,8 @@ export async function analyzeVideo(file: File, exercise: string, athleteId: stri
   });
 
   if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('analyzeVideo error response:', text);
     throw new Error('Analysis failed');
   }
 
@@ -56,8 +64,8 @@ export async function analyzeVideo(file: File, exercise: string, athleteId: stri
   return session;
 }
 
-// Save session data
-export async function saveSession(session: Session): Promise<void> {
+// Save session (frontend calls this to persist after augmenting with coach)
+export async function saveSession(session: any): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/sessions`, {
     method: 'POST',
     headers: {
@@ -67,31 +75,35 @@ export async function saveSession(session: Session): Promise<void> {
   });
 
   if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('saveSession error response:', text);
     throw new Error('Failed to save session');
   }
+}
+
+// Get sessions (optionally filter by athleteId OR coachId)
+export async function getSessions(athleteId?: string, coachId?: string): Promise<any[]> {
+  let url = `${API_BASE_URL}/sessions`;
+  const params: string[] = [];
+  if (athleteId) params.push(`athleteId=${encodeURIComponent(athleteId)}`);
+  if (coachId) params.push(`coachId=${encodeURIComponent(coachId)}`);
+  if (params.length) url += `?${params.join('&')}`;
+
+  const response = await fetch(url);
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('getSessions error response:', text);
+    throw new Error('Failed to fetch sessions');
+  }
+  return response.json();
 }
 
 // Get list of athletes (for coach dashboard)
 export async function getAthletes(): Promise<any[]> {
   const response = await fetch(`${API_BASE_URL}/athletes`);
-  
+
   if (!response.ok) {
     throw new Error('Failed to get athletes');
-  }
-
-  return response.json();
-}
-
-// Get sessions for a specific athlete or all sessions
-export async function getSessions(athleteId?: string): Promise<any[]> {
-  const url = athleteId 
-    ? `${API_BASE_URL}/sessions?athleteId=${athleteId}`
-    : `${API_BASE_URL}/sessions`;
-    
-  const response = await fetch(url);
-  
-  if (!response.ok) {
-    throw new Error('Failed to get sessions');
   }
 
   return response.json();
@@ -108,17 +120,72 @@ export async function postCoachAction(action: CoachAction): Promise<void> {
   });
 
   if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('postCoachAction error response:', text);
     throw new Error('Failed to post coach action');
+  }
+}
+
+// Get a specific session by ID
+export async function getSessionById(sessionId: string): Promise<Session> {
+  const response = await fetch(`${API_BASE_URL}/sessions/${encodeURIComponent(sessionId)}`);
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('getSessionById error response:', text);
+    throw new Error('Failed to fetch session');
+  }
+
+  return response.json();
+}
+
+// Coach messaging functions
+export interface CoachMessage {
+  id: string;
+  coachId: string;
+  coachName: string;
+  athleteId: string;
+  athleteName: string;
+  sessionId: string;
+  type: 'retest' | 'feedback' | 'note';
+  message: string;
+  timestamp: string;
+  read: boolean;
+}
+
+export async function getAthleteMessages(athleteId: string): Promise<CoachMessage[]> {
+  const response = await fetch(`${API_BASE_URL}/coach-messages/${encodeURIComponent(athleteId)}`);
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('getAthleteMessages error response:', text);
+    throw new Error('Failed to fetch messages');
+  }
+
+  return response.json();
+}
+
+export async function markMessageAsRead(messageId: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/coach-messages/${encodeURIComponent(messageId)}/read`, {
+    method: 'PUT'
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('markMessageAsRead error response:', text);
+    throw new Error('Failed to mark message as read');
   }
 }
 
 // Delete a session
 export async function deleteSession(sessionId: string): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/sessions/${sessionId}`, {
+  const response = await fetch(`${API_BASE_URL}/sessions/${encodeURIComponent(sessionId)}`, {
     method: 'DELETE'
   });
 
   if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('deleteSession error response:', text);
     throw new Error('Failed to delete session');
   }
 }
