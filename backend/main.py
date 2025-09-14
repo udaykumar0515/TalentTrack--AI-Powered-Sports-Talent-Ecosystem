@@ -13,7 +13,6 @@ import threading
 import time
 from fastapi.staticfiles import StaticFiles
 import os
-import hashlib
 import logging
 import sys
 import asyncio
@@ -51,6 +50,18 @@ class AnalysisRequest(BaseModel):
     userName: str
     coachId: Optional[str] = None
     coachName: Optional[str] = None
+
+class CoachMessage(BaseModel):
+    id: str
+    coachId: str
+    coachName: str
+    athleteId: str
+    athleteName: str
+    sessionId: str
+    type: str  # 'retest', 'feedback', 'note'
+    message: str
+    timestamp: str
+    read: bool = False
 
 class SessionResult(BaseModel):
     exercise: str
@@ -113,13 +124,6 @@ def init_data_directories():
 # Initialize on startup
 init_data_directories()
 
-def hash_password(password: str) -> str:
-    """Hash password using SHA-256"""
-    return hashlib.sha256(password.encode()).hexdigest()
-
-def verify_password(password: str, hashed_password: str) -> bool:
-    """Verify password against hash"""
-    return hash_password(password) == hashed_password
 
 def read_json_file(filename: str):
     """Read JSON file with proper error handling"""
@@ -255,6 +259,71 @@ async def get_coaches():
         logger.error(f"Error fetching coaches: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch coaches")
 
+@app.get("/api/athletes", response_model=List[User])
+async def get_athletes():
+    """Get all athletes"""
+    try:
+        athletes = read_json_file("athletes.json")
+        # Return athletes without passwords
+        return [{k: v for k, v in athlete.items() if k != "password"} for athlete in athletes]
+    except Exception as e:
+        logger.error(f"Error fetching athletes: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch athletes")
+
+
+@app.get("/api/sessions")
+async def list_sessions(athleteId: Optional[str] = None, coachId: Optional[str] = None):
+    """
+    Return list of sessions.
+    Optional query params:
+      - athleteId: filter by athlete
+      - coachId: filter by coach
+    """
+    sessions_file = "data/sessions/sessions.json"
+    if not os.path.exists(sessions_file):
+        return []
+
+    try:
+        with open(sessions_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
+        return []
+
+    # Flatten all sessions into a single list
+    all_sessions = []
+    # The data structure is { "athleteId": { "sessions": [...] } }
+    for uid, user_data in (data.items() if isinstance(data, dict) else []):
+        if isinstance(user_data, dict) and "sessions" in user_data:
+            all_sessions.extend(user_data["sessions"])
+
+    if athleteId:
+        return [s for s in all_sessions if s.get("athleteId") == athleteId]
+    if coachId:
+        return [s for s in all_sessions if s.get("coachId") == coachId]
+    return all_sessions
+
+@app.post("/api/sessions")
+async def post_session(session: Dict[str, Any]):
+    """
+    Persist a session object. Expected shape similar to frontend Session.
+    Uses existing save_session_result() helper to ensure consistent storage.
+    """
+    try:
+        # Ensure a sessionId exists
+        sid = session.get("sessionId") or uuid.uuid4().hex[:8]
+        session["sessionId"] = sid
+
+        # Add a timestamp if missing
+        if not session.get("timestamp") and not session.get("date"):
+            session["timestamp"] = datetime.utcnow().isoformat() + "Z"
+
+        # Save it (save_session_result expects same dict format)
+        save_session_result(session)
+        return {"status": "ok", "sessionId": sid}
+    except Exception as e:
+        logger.error(f"Failed to persist session: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save session")
+
 # Authentication endpoints
 @app.post("/api/register", response_model=User)
 async def register(user_data: UserCreate):
@@ -272,11 +341,11 @@ async def register(user_data: UserCreate):
         if any(user["email"] == user_data.email for user in users):
             raise HTTPException(status_code=400, detail="Email already registered")
         
-        # Create new user with hashed password
+        # Create new user with plain text password
         new_user = {
             "id": str(uuid.uuid4()),
             "email": user_data.email,
-            "password": hash_password(user_data.password),
+            "password": user_data.password,
             "username": user_data.username,
             "role": user_data.role,
             "created_at": datetime.now().isoformat()
@@ -309,8 +378,8 @@ async def login(login_data: UserLogin):
         if not user:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
-        # Verify password
-        if not verify_password(login_data.password, user["password"]):
+        # Verify password (direct comparison)
+        if login_data.password != user["password"]:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
         # Check role if specified
@@ -478,6 +547,116 @@ async def get_user_sessions(user_id: str):
     except Exception as e:
         logger.error(f"Error loading sessions: {e}")
         raise HTTPException(status_code=500, detail=f"Error loading sessions: {str(e)}")
+
+@app.get("/api/sessions/{session_id}")
+async def get_session_by_id(session_id: str):
+    """Get a specific session by ID"""
+    try:
+        sessions_file = "data/sessions/sessions.json"
+        if not os.path.exists(sessions_file):
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        with open(sessions_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+        # Search through all sessions to find the one with matching sessionId
+        for user_id, user_data in data.items():
+            if isinstance(user_data, dict) and "sessions" in user_data:
+                for session in user_data["sessions"]:
+                    if session.get("sessionId") == session_id:
+                        return session
+        
+        raise HTTPException(status_code=404, detail="Session not found")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error loading session {session_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Error loading session: {str(e)}")
+
+# Coach messaging endpoints
+@app.post("/api/coach-messages")
+async def create_coach_message(message: CoachMessage):
+    """Create a new coach message"""
+    try:
+        messages_file = "data/coach_messages.json"
+        
+        # Load existing messages
+        messages = []
+        if os.path.exists(messages_file):
+            with open(messages_file, "r", encoding="utf-8") as f:
+                content = f.read().strip()
+                if content:
+                    messages = json.loads(content)
+        
+        # Add new message
+        messages.append(message.dict())
+        
+        # Save back to file
+        with open(messages_file, "w", encoding="utf-8") as f:
+            json.dump(messages, f, indent=2, ensure_ascii=False)
+        
+        logger.info(f"Coach message created: {message.type} for athlete {message.athleteId}")
+        return {"status": "success", "messageId": message.id}
+        
+    except Exception as e:
+        logger.error(f"Error creating coach message: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to create message: {str(e)}")
+
+@app.get("/api/coach-messages/{athlete_id}")
+async def get_athlete_messages(athlete_id: str):
+    """Get all messages for a specific athlete"""
+    try:
+        messages_file = "data/coach_messages.json"
+        
+        if not os.path.exists(messages_file):
+            return []
+        
+        with open(messages_file, "r", encoding="utf-8") as f:
+            content = f.read().strip()
+            if not content:
+                return []
+            
+            messages = json.loads(content)
+            # Filter messages for this athlete and sort by timestamp (newest first)
+            athlete_messages = [msg for msg in messages if msg.get("athleteId") == athlete_id]
+            athlete_messages.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+            return athlete_messages
+            
+    except Exception as e:
+        logger.error(f"Error loading messages for athlete {athlete_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to load messages: {str(e)}")
+
+@app.put("/api/coach-messages/{message_id}/read")
+async def mark_message_read(message_id: str):
+    """Mark a message as read"""
+    try:
+        messages_file = "data/coach_messages.json"
+        
+        if not os.path.exists(messages_file):
+            raise HTTPException(status_code=404, detail="Message not found")
+        
+        with open(messages_file, "r", encoding="utf-8") as f:
+            messages = json.loads(f.read())
+        
+        # Find and update the message
+        for message in messages:
+            if message.get("id") == message_id:
+                message["read"] = True
+                break
+        else:
+            raise HTTPException(status_code=404, detail="Message not found")
+        
+        # Save back to file
+        with open(messages_file, "w", encoding="utf-8") as f:
+            json.dump(messages, f, indent=2, ensure_ascii=False)
+        
+        return {"status": "success"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error marking message as read: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to mark message as read: {str(e)}")
 
 @app.post("/api/analyze")
 async def analyze_video(
