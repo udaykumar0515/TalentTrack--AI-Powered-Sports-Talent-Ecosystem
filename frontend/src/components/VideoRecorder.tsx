@@ -1,9 +1,9 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { analyzeVideo } from '../api/apiClient';
+import { useAuth } from '../contexts/AuthContext';
 
 interface VideoRecorderProps {
   exercise: string;
-  
   onVideoAnalyzed: (session: any) => void;
   onStartAnalysis: () => void;
   isAnalyzing: boolean;
@@ -15,17 +15,20 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
   onStartAnalysis,
   isAnalyzing
 }) => {
+  const { user } = useAuth();
+
   const [isRecording, setIsRecording] = useState(false);
   const [recordedVideo, setRecordedVideo] = useState<Blob | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const startRecording = useCallback(async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: { width: 1280, height: 720 },
-        audio: false 
+        audio: false
       });
       streamRef.current = stream;
 
@@ -36,9 +39,9 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
 
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
-      
+
       const chunks: BlobPart[] = [];
-      
+
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
           chunks.push(event.data);
@@ -48,15 +51,26 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
       mediaRecorder.onstop = () => {
         const videoBlob = new Blob(chunks, { type: 'video/mp4' });
         setRecordedVideo(videoBlob);
-        
+
+        // create preview URL
+        try {
+          const url = URL.createObjectURL(videoBlob);
+          setPreviewUrl(url);
+          if (videoRef.current) {
+            videoRef.current.srcObject = null;
+            videoRef.current.src = url;
+            videoRef.current.style.display = 'block';
+            videoRef.current.muted = true;
+            videoRef.current.play().catch(() => {});
+          }
+        } catch (e) {
+          console.warn('Could not create preview URL:', e);
+        }
+
         // Stop the stream
         if (streamRef.current) {
-          streamRef.current.getTracks().forEach(track => track.stop());
-        }
-        
-        if (videoRef.current) {
-          videoRef.current.style.display = 'none';
-          videoRef.current.srcObject = null;
+          streamRef.current.getTracks().forEach((track) => track.stop());
+          streamRef.current = null;
         }
       };
 
@@ -79,10 +93,10 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
     if (!recordedVideo) return;
 
     onStartAnalysis();
-    
+
     try {
-      // Call backend API to analyze video
-      const session = await analyzeVideo(recordedVideo, exercise, 'athleteA'); // TODO: Get actual athlete ID
+      const athleteId = user?.id ?? 'unknown';
+      const session = await analyzeVideo(recordedVideo as File, exercise, athleteId);
       onVideoAnalyzed(session);
     } catch (error) {
       console.error('Analysis failed:', error);
@@ -92,23 +106,31 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
 
   const resetRecording = () => {
     setRecordedVideo(null);
+    if (previewUrl) {
+      try {
+        URL.revokeObjectURL(previewUrl);
+      } catch (e) {}
+      setPreviewUrl(null);
+    }
     if (videoRef.current) {
       videoRef.current.style.display = 'none';
+      videoRef.current.srcObject = null;
+      videoRef.current.src = '';
     }
   };
 
   return (
     <div className="video-recorder">
-      <video 
-        ref={videoRef} 
-        autoPlay 
-        muted 
+      <video
+        ref={videoRef}
+        autoPlay
+        muted
         style={{ display: 'none', width: '100%', maxWidth: '400px', borderRadius: '8px' }}
       />
-      
+
       {!recordedVideo ? (
         <>
-          <button 
+          <button
             id="record-btn"
             onClick={isRecording ? stopRecording : startRecording}
             disabled={isAnalyzing}
@@ -119,14 +141,27 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
       ) : (
         <div>
           <p>Video recorded successfully!</p>
-          <button 
-            id="analyze-btn"
-            onClick={handleAnalyze}
-            disabled={isAnalyzing}
-          >
-            {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
-          </button>
-          <button onClick={resetRecording}>Record Again</button>
+          <div style={{ marginBottom: 8 }}>
+            <button
+              id="analyze-btn"
+              onClick={handleAnalyze}
+              disabled={isAnalyzing}
+            >
+              {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
+            </button>
+            <button onClick={resetRecording} style={{ marginLeft: 8 }}>
+              Record Again
+            </button>
+          </div>
+          <div>
+            {previewUrl && (
+              <video
+                src={previewUrl}
+                controls
+                style={{ width: '100%', maxWidth: 400, borderRadius: 8 }}
+              />
+            )}
+          </div>
         </div>
       )}
     </div>

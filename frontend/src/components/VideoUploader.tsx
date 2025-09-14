@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { analyzeVideo } from '../api/apiClient';
+import { useAuth } from '../contexts/AuthContext';
 
 interface VideoUploaderProps {
   exercise: string;
-  
   onVideoAnalyzed: (session: any) => void;
   onStartAnalysis: () => void;
   isAnalyzing: boolean;
@@ -15,13 +15,21 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
   onStartAnalysis,
   isAnalyzing
 }) => {
+  const { user } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+      try {
+        const url = URL.createObjectURL(file);
+        setPreviewUrl(url);
+      } catch (e) {
+        setPreviewUrl(null);
+      }
     }
   };
 
@@ -35,10 +43,10 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
     if (!selectedFile) return;
 
     onStartAnalysis();
-    
+
     try {
-      // Call backend API to analyze video
-      const session = await analyzeVideo(selectedFile, exercise, 'athleteA'); // TODO: Get actual athlete ID
+      const athleteId = user?.id ?? 'unknown';
+      const session = await analyzeVideo(selectedFile, exercise, athleteId);
       onVideoAnalyzed(session);
     } catch (error) {
       console.error('Analysis failed:', error);
@@ -51,6 +59,12 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+    if (previewUrl) {
+      try {
+        URL.revokeObjectURL(previewUrl);
+      } catch (e) {}
+      setPreviewUrl(null);
+    }
   };
 
   return (
@@ -62,9 +76,9 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
         onChange={handleFileSelect}
         style={{ display: 'none' }}
       />
-      
+
       {!selectedFile ? (
-        <button 
+        <button
           id="upload-btn"
           onClick={handleUpload}
           disabled={isAnalyzing}
@@ -74,14 +88,23 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
       ) : (
         <div>
           <p>Selected: {selectedFile.name}</p>
-          <button 
+
+          {previewUrl && (
+            <div style={{ marginBottom: 8 }}>
+              <video src={previewUrl} controls style={{ width: '100%', maxWidth: 400, borderRadius: 8 }} />
+            </div>
+          )}
+
+          <button
             id="analyze-btn"
             onClick={handleAnalyze}
             disabled={isAnalyzing}
           >
             {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
           </button>
-          <button onClick={resetUpload}>Choose Different Video</button>
+          <button onClick={resetUpload} style={{ marginLeft: 8 }}>
+            Choose Different Video
+          </button>
         </div>
       )}
     </div>
