@@ -262,6 +262,47 @@ button:disabled {
   background-color: #c53030;
 }
 
+.refresh-btn {
+  background-color: var(--coach-green);
+  margin-right: 10px;
+}
+
+.refresh-btn:hover {
+  background-color: #2d7d32;
+}
+
+.session-count {
+  font-size: 0.9em;
+  color: var(--secondary-text);
+  margin: 5px 0;
+}
+
+.form-score {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.form-score.excellent {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.form-score.good {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.form-score.fair {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.form-score.poor {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
 .coach-select {
   display: flex;
   align-items: center;
@@ -482,11 +523,22 @@ button:disabled {
   }
 }
 
-.no-activity {
+.no-activity, .no-sessions {
   text-align: center;
   padding: 40px 20px;
   color: var(--secondary-text);
   font-style: italic;
+}
+
+.no-sessions ul {
+  text-align: left;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.no-sessions li {
+  margin: 8px 0;
+  color: var(--primary-text);
 }
 
 .activity-details {
@@ -502,4 +554,103 @@ button:disabled {
 .activity-coach {
   color: var(--coach-green);
   font-weight: 500;
+}
+
+/* Messages Section */
+.messages-section {
+  margin: 20px 0;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.messages-section h2 {
+  margin-top: 0;
+  color: var(--primary-text);
+}
+
+.no-messages {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--secondary-text);
+  font-style: italic;
+}
+
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.message-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.message-card.unread {
+  border-left: 4px solid var(--athlete-blue);
+  background: #f8f9ff;
+}
+
+.message-card.read {
+  opacity: 0.8;
+}
+
+.message-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.message-header h3 {
+  margin: 0;
+  font-size: 1.1em;
+  color: var(--primary-text);
+}
+
+.message-time {
+  font-size: 0.85em;
+  color: var(--secondary-text);
+}
+
+.message-content {
+  margin: 8px 0;
+  color: var(--primary-text);
+  line-height: 1.5;
+}
+
+.message-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #e9ecef;
+}
+
+.coach-name {
+  font-size: 0.9em;
+  color: var(--coach-green);
+  font-weight: 500;
+}
+
+.unread-indicator {
+  background: var(--athlete-blue);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75em;
+  font-weight: bold;
 }

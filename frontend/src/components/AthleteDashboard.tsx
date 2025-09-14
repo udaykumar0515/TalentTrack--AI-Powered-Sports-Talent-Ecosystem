@@ -4,6 +4,7 @@ import { useCoaches } from '../contexts/CoachContext';
 import VideoRecorder from './VideoRecorder';
 import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
+import { saveSession, getAthleteMessages, markMessageAsRead, CoachMessage } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -13,6 +14,8 @@ const AthleteDashboard: React.FC = () => {
   const [currentSession, setCurrentSession] = useState<any>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [sessions, setSessions] = useState<any[]>([]);
+  const [messages, setMessages] = useState<CoachMessage[]>([]);
+  const [showMessages, setShowMessages] = useState(false);
 
   const exercises = [
     { value: 'squat', label: 'Squat' },
@@ -20,10 +23,22 @@ const AthleteDashboard: React.FC = () => {
     { value: 'pushup', label: 'Push-up' }
   ];
 
-  // Load sessions from localStorage on component mount
+  // Load sessions and messages on component mount
   useEffect(() => {
     loadSessions();
-  }, []);
+    loadMessages();
+  }, [user?.id]);
+
+  // Load messages every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (user?.id) {
+        loadMessages();
+      }
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [user?.id]);
 
   const loadSessions = () => {
     try {
@@ -34,25 +49,62 @@ const AthleteDashboard: React.FC = () => {
     }
   };
 
-  const handleVideoAnalyzed = (session: any) => {
+  const loadMessages = async () => {
+    if (!user?.id) return;
+    
+    try {
+      const athleteMessages = await getAthleteMessages(user.id);
+      setMessages(athleteMessages);
+    } catch (error) {
+      console.error('Error loading messages:', error);
+    }
+  };
+
+  const handleMarkAsRead = async (messageId: string) => {
+    try {
+      await markMessageAsRead(messageId);
+      setMessages(prev => 
+        prev.map(msg => 
+          msg.id === messageId ? { ...msg, read: true } : msg
+        )
+      );
+    } catch (error) {
+      console.error('Error marking message as read:', error);
+    }
+  };
+
+
+  const handleVideoAnalyzed = async (session: any) => {
+    // existing logic: augment with athlete and coach
     const sessionWithCoach = {
       ...session,
       athleteId: user?.id,
       athleteName: user?.username,
       coachId: selectedCoach !== 'none' ? selectedCoach : null,
       coachName: selectedCoach !== 'none' ? coaches.find(c => c.id === selectedCoach)?.username : null,
-      timestamp: new Date().toISOString()
+      // ensure sessionId exists
+      sessionId: session.sessionId || `sess_${Math.random().toString(36).slice(2,10)}`
     };
-    
+  
+    // Save locally for UI immediacy (existing behavior)
     setCurrentSession(sessionWithCoach);
-    setIsAnalyzing(false);
-    
-    // Save session to localStorage
-    const updatedSessions = [...sessions, sessionWithCoach];
-    setSessions(updatedSessions);
-    localStorage.setItem(`sessions_${user?.id}`, JSON.stringify(updatedSessions));
+    const newSessions = [sessionWithCoach, ...sessions];
+    setSessions(newSessions);
+    try {
+      localStorage.setItem(`sessions_${user?.id}`, JSON.stringify(newSessions));
+    } catch (e) {
+      console.error('Could not persist to localStorage', e);
+    }
+  
+    // NEW: persist to backend
+    try {
+      await saveSession(sessionWithCoach);
+      console.info('Session saved to backend with coach:', sessionWithCoach.coachName || 'No coach selected');
+    } catch (err) {
+      console.error('Failed to save session to backend:', err);
+      // Optionally show a UI toast to the user
+    }
   };
-
   const handleStartAnalysis = () => {
     setIsAnalyzing(true);
   };
@@ -117,6 +169,21 @@ const AthleteDashboard: React.FC = () => {
               ))}
             </select>
           </div>
+          <button 
+            onClick={() => setShowMessages(!showMessages)} 
+            className="messages-btn"
+            style={{ 
+              backgroundColor: messages.filter(m => !m.read).length > 0 ? '#ff6b6b' : '#4CAF50',
+              color: 'white',
+              border: 'none',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              marginRight: '10px',
+              cursor: 'pointer'
+            }}
+          >
+            Messages {messages.filter(m => !m.read).length > 0 && `(${messages.filter(m => !m.read).length})`}
+          </button>
           <button onClick={logout} className="logout-btn">
             Logout
           </button>
@@ -159,6 +226,42 @@ const AthleteDashboard: React.FC = () => {
           <div className="spinner"></div>
           <p>Analyzing your video...</p>
         </div>
+      )}
+
+      {showMessages && (
+        <section className="messages-section">
+          <h2>Messages from Coach</h2>
+          {messages.length === 0 ? (
+            <div className="no-messages">
+              <p>No messages from your coach yet.</p>
+            </div>
+          ) : (
+            <div className="messages-list">
+              {messages.map((message) => (
+                <div 
+                  key={message.id} 
+                  className={`message-card ${message.read ? 'read' : 'unread'}`}
+                  onClick={() => !message.read && handleMarkAsRead(message.id)}
+                >
+                  <div className="message-header">
+                    <h3>
+                      {message.type === 'retest' ? '🔄 Retest Request' : 
+                       message.type === 'feedback' ? '💬 Feedback' : '📝 Note'}
+                    </h3>
+                    <span className="message-time">
+                      {new Date(message.timestamp).toLocaleDateString()} {new Date(message.timestamp).toLocaleTimeString()}
+                    </span>
+                  </div>
+                  <p className="message-content">{message.message}</p>
+                  <div className="message-footer">
+                    <span className="coach-name">From: {message.coachName}</span>
+                    {!message.read && <span className="unread-indicator">New</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
       )}
 
       <section className="activity-feed">
