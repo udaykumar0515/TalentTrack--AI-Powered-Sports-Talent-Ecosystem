@@ -9,8 +9,32 @@
         "timestamp": "2025-09-14T13:41:41.707664Z",
         "athleteId": "test-athlete-123",
         "athleteName": "Test Athlete",
-        "coachId": null,
-        "coachName": null,
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "ad55b062"
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 100,
+        "durationSec": 8.915,
+        "timestamp": "2025-09-14T13:41:41.707664Z",
+        "athleteId": "test-athlete-123",
+        "athleteName": "Test Athlete",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "ad55b062"
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 100,
+        "durationSec": 8.915,
+        "timestamp": "2025-09-14T13:41:41.707664Z",
+        "athleteId": "test-athlete-123",
+        "athleteName": "Test Athlete",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
         "sessionId": "ad55b062"
       }
     ]
@@ -25,9 +49,153 @@
         "timestamp": "2025-09-14T13:46:08.015652Z",
         "athleteId": "athleteA",
         "athleteName": "Athlete",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "bd14dfa8"
+      },
+      {
+        "exercise": "squat",
+        "reps": 5,
+        "formScore": 100,
+        "durationSec": 15.237,
+        "timestamp": "2025-09-14T13:53:41.491384Z",
+        "athleteId": "athleteA",
+        "athleteName": "Athlete",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "ce60b3fb"
+      },
+      {
+        "exercise": "pushup",
+        "reps": 5,
+        "formScore": 63,
+        "durationSec": 30.775,
+        "timestamp": "2025-09-14T14:01:04.610490Z",
+        "athleteId": "athleteA",
+        "athleteName": "Athlete",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "6cbfdb99"
+      },
+      {
+        "exercise": "jumping_jack",
+        "reps": 6,
+        "formScore": 48,
+        "durationSec": 20.73,
+        "timestamp": "2025-09-14T14:02:09.589036Z",
+        "athleteId": "athleteA",
+        "athleteName": "Athlete",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "1e19f4ea"
+      },
+      {
+        "sessionId": "ad55b062",
+        "athleteId": "athleteA",
+        "exercise": "squat",
+        "date": "2025-01-15T10:05:00Z",
+        "durationSec": 28,
+        "metrics": {
+          "reps": 12,
+          "avgRepTimeSec": 2.1,
+          "formScore": 82,
+          "symmetryScore": 92,
+          "waistAngleDeg": 34.2,
+          "muscleActivations": {
+            "left_quadriceps": 0.67
+          }
+        },
+        "injuryFlags": [
+          {
+            "type": "knee_valgus",
+            "severity": "medium",
+            "frameIndex": 86,
+            "message": "Left knee collapsed inward"
+          }
+        ],
+        "thumbnailUrl": "https://images.pexels.com/photos/416778/pexels-photo-416778.jpeg",
+        "videoUrl": "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
+        "keypointsUrl": "/api/keypoints/sess_001.json"
+      }
+    ]
+  },
+  "55851821-5eb5-4e5e-ab78-340bdfff56c1": {
+    "sessions": [
+      {
+        "exercise": "squat",
+        "reps": 0,
+        "formScore": 100,
+        "durationSec": 7.138,
+        "timestamp": "2025-09-14T16:43:23.569154Z",
+        "athleteId": "55851821-5eb5-4e5e-ab78-340bdfff56c1",
+        "athleteName": "Athlete",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "a1302ea2"
+      },
+      {
+        "exercise": "squat",
+        "reps": 0,
+        "formScore": 100,
+        "durationSec": 7.138,
+        "timestamp": "2025-09-14T16:43:23.569154Z",
+        "athleteId": "55851821-5eb5-4e5e-ab78-340bdfff56c1",
+        "athleteName": "Udaykumar_H",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "a1302ea2"
+      }
+    ]
+  },
+  "a4eeee47-f800-4930-9753-95e55ceebfdd": {
+    "sessions": [
+      {
+        "exercise": "squat",
+        "reps": 0,
+        "formScore": 100,
+        "durationSec": 6.505,
+        "timestamp": "2025-09-14T17:09:42.499917Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Athlete",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "38210e0a"
+      },
+      {
+        "exercise": "squat",
+        "reps": 0,
+        "formScore": 100,
+        "durationSec": 6.505,
+        "timestamp": "2025-09-14T17:09:42.499917Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "38210e0a"
+      },
+      {
+        "exercise": "squat",
+        "reps": 0,
+        "formScore": 100,
+        "durationSec": 6.454,
+        "timestamp": "2025-09-14T17:23:10.484289Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Athlete",
         "coachId": null,
         "coachName": null,
-        "sessionId": "bd14dfa8"
+        "sessionId": "f3a5f4e5"
+      },
+      {
+        "exercise": "squat",
+        "reps": 0,
+        "formScore": 100,
+        "durationSec": 6.454,
+        "timestamp": "2025-09-14T17:23:10.484289Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "f3a5f4e5"
       }
     ]
   }
