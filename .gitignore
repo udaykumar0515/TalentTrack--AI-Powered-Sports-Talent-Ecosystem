@@ -24,13 +24,14 @@ dist-ssr
 *.sw?
 .env
 # Python
-myenv/
-__pycache__/
-*.pyc
+backend/myenv/
+backend/__pycache__/
+backend/*.pyc
 
 # Node
-node_modules/
-dist/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
 build/
 
 # system
