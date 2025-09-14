@@ -12,6 +12,8 @@ export interface CoachContextType {
   addCoach: (coach: Coach) => void;
   getCoachById: (id: string) => Coach | undefined;
   isLoading: boolean;
+  error: string | null;
+  refreshCoaches: () => Promise<void>;
 }
 
 const CoachContext = createContext<CoachContextType | undefined>(undefined);
@@ -28,36 +30,49 @@ interface CoachProviderProps {
   children: ReactNode;
 }
 
+const API_BASE = "/api";
+
 export const CoachProvider: React.FC<CoachProviderProps> = ({ children }) => {
   const [coaches, setCoaches] = useState<Coach[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Load coaches from localStorage on mount
-  useEffect(() => {
-    loadCoaches();
-  }, []);
-
-  const loadCoaches = () => {
+  // Load coaches from backend API on mount
+  const fetchCoaches = async () => {
     try {
-      const storedCoaches = localStorage.getItem('registeredCoaches');
-      if (storedCoaches) {
-        setCoaches(JSON.parse(storedCoaches));
+      setIsLoading(true);
+      setError(null);
+      const response = await fetch(`${API_BASE}/coaches`);
+      
+      if (response.ok) {
+        const coachesData = await response.json();
+        setCoaches(coachesData);
+      } else {
+        setError('Failed to load coaches');
+        console.error('Failed to load coaches');
       }
     } catch (error) {
+      setError('Error loading coaches');
       console.error('Error loading coaches:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchCoaches();
+  }, []);
+
   const addCoach = (coach: Coach) => {
-    setCoaches(prevCoaches => {
-      const updatedCoaches = [...prevCoaches, coach];
-      localStorage.setItem('registeredCoaches', JSON.stringify(updatedCoaches));
-      return updatedCoaches;
-    });
+    setCoaches(prevCoaches => [...prevCoaches, coach]);
   };
 
   const getCoachById = (id: string): Coach | undefined => {
     return coaches.find(coach => coach.id === id);
+  };
+
+  const refreshCoaches = async () => {
+    await fetchCoaches();
   };
 
   return (
@@ -65,7 +80,9 @@ export const CoachProvider: React.FC<CoachProviderProps> = ({ children }) => {
       coaches,
       addCoach,
       getCoachById,
-      isLoading
+      isLoading,
+      error,
+      refreshCoaches
     }}>
       {children}
     </CoachContext.Provider>

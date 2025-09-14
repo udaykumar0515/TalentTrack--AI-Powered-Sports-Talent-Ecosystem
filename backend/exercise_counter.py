@@ -24,6 +24,7 @@ import json
 import os
 import uuid
 import datetime
+import argparse
 
 mp_pose = mp.solutions.pose
 LM = mp_pose.PoseLandmark
@@ -31,6 +32,17 @@ DATA_FILE = "sessions/sessions.json"
 
 # Create sessions directory if it doesn't exist
 os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
+
+# Add argument parsing at the beginning of the file
+def parse_arguments():
+    parser = argparse.ArgumentParser(description='Exercise Counter')
+    parser.add_argument('--user-id', required=True, help='User ID')
+    parser.add_argument('--user-name', required=True, help='User name')
+    parser.add_argument('--exercise', required=True, choices=['squat', 'pushups', 'jumping_jacks'], help='Exercise type')
+    parser.add_argument('--coach-id', default='', help='Coach ID')
+    parser.add_argument('--coach-name', default='', help='Coach name')
+    return parser.parse_args()
+
 
 def load_sessions():
     """Return the whole sessions dict loaded from DATA_FILE or {} if not exists."""
@@ -627,24 +639,19 @@ def form_to_status(score):
     if score >= 85: return "Excellent"
     if score >= 70: return "Good"
     if score >= 50: return "Fair"
-    return "Poor"
-
 def main():
-    # ask for user
-    user_id = input("Enter your User ID (or press Enter to use 'anonymous'): ").strip() or "anonymous"
-
-    # optional history view
-    see_hist = input("Show recent history for this user? (y/N): ").strip().lower()
-    if see_hist == "y":
-        show_user_history(user_id)
-
-    # Choose exercise as before
-    exercise = None
-    while exercise is None:
-        exercise = show_menu()
-        if exercise is None:
-            print("Invalid choice or quitting. Exiting.")
-            return
+    args = parse_arguments()
+    user_id = args.user_id
+    user_name = args.user_name
+    exercise = args.exercise
+    coach_id = args.coach_id if args.coach_id else None
+    coach_name = args.coach_name if args.coach_name else None
+    
+    # Remove all interactive input code and use the provided arguments
+    print(f"Starting exercise analysis for {user_name} ({user_id})")
+    print(f"Exercise: {exercise}")
+    if coach_id:
+        print(f"Coach: {coach_name} ({coach_id})")
 
     # open webcam
     cap = cv2.VideoCapture(0)
@@ -702,11 +709,11 @@ def main():
                 if results.pose_landmarks:
                     mp.solutions.drawing_utils.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
                                                               mp.solutions.drawing_utils.DrawingSpec(color=(0,200,0), thickness=2, circle_radius=2),
-                                                              mp.solutions.drawing_utils.DrawingSpec(color=(0,120,255), thickness=2, circle_radius=2))
+                                                              mp.solutions.drawing_utils.DrawingSpec(color(0,120,255), thickness=2, circle_radius=2))
 
                 # overlay (same as before)
                 cv2.rectangle(frame, (0,0), (380, 140), (0,0,0), thickness=-1)
-                cv2.putText(frame, f"User: {user_id}", (10, 18), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200,200,200), 1)
+                cv2.putText(frame, f"User: {user_name}", (10, 18), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200,200,200), 1)
                 cv2.putText(frame, f"Exercise: {exercise.replace('_',' ').title()}", (10, 36), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 1)
                 cv2.putText(frame, f"Reps: {count}", (10, 72), cv2.FONT_HERSHEY_DUPLEX, 1.0, (0,255,0), 2)
                 cv2.putText(frame, f"State: {state}", (150, 72), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200,200,200), 1)
@@ -766,26 +773,19 @@ def main():
         else:
             total_reps = int(detector.counter.count)
 
-        # store session
-        try:
-            session = store_session(user_id, exercise, total_reps, duration)
-        except Exception as e:
-            print("WARNING: Could not store session:", e)
-            session = None
-
-        # Build result summary for frontend / caller
+        # Build result summary for frontend
         result = {
             "userId": user_id,
+            "userName": user_name,
             "exercise": exercise,
             "reps": total_reps,
+            "formScore": int(detector.last_form_score) if hasattr(detector, 'last_form_score') else 0,
             "durationSec": round(duration, 3),
-            "sessionId": session["sessionId"] if session else None
+            "coachId": coach_id,
+            "coachName": coach_name
         }
-        # print JSON result (stdout)
+        
+        # Print as JSON for the parent process to capture
         print(json.dumps(result))
-
-        print("Session finished. Summary:")
-        print(json.dumps(result, indent=2))
-
 if __name__ == "__main__":
     main()

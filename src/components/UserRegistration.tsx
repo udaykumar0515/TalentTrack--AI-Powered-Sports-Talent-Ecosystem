@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useCoaches } from '../contexts/CoachContext';
+
 
 interface UserRegistrationProps {
   role: 'athlete' | 'coach';
@@ -8,6 +10,7 @@ interface UserRegistrationProps {
 }
 
 const UserRegistration: React.FC<UserRegistrationProps> = ({ role, onBack, onSuccess }) => {
+  const { addCoach } = useCoaches();
   const { register, error, isLoading } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
@@ -79,6 +82,16 @@ const UserRegistration: React.FC<UserRegistrationProps> = ({ role, onBack, onSuc
 
     const success = await register(formData.email, formData.password, formData.username, role);
     if (success) {
+      // If registering as a coach, add to CoachContext
+      if (role === 'coach') {
+        const coach = {
+          id: generateId(), // You'll need to implement this or get from auth context
+          email: formData.email,
+          username: formData.username,
+          createdAt: new Date().toISOString()
+        };
+        addCoach(coach);
+      }
       onSuccess();
     }
   };
@@ -164,5 +177,10 @@ const UserRegistration: React.FC<UserRegistrationProps> = ({ role, onBack, onSuc
     </div>
   );
 };
+
+function generateId() {
+  // Simple unique ID generator (not for production use)
+  return 'coach_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+}
 
 export default UserRegistration;

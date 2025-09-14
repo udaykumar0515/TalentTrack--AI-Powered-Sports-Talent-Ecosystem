@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Coach } from './CoachContext';
 
 export interface User {
   id: string;
@@ -16,6 +15,7 @@ export interface AuthContextType {
   logout: () => void;
   isLoading: boolean;
   error: string | null;
+  getAllUsers: () => Promise<{ athletes: User[], coaches: User[] }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,58 +31,48 @@ export const useAuth = () => {
 interface AuthProviderProps {
   children: ReactNode;
 }
+const API_BASE = "/api";
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load user from localStorage on mount
+  // Load user session from localStorage on mount
   useEffect(() => {
-    const loadUser = () => {
-      try {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-        }
-      } catch (error) {
-        console.error('Error loading user from localStorage:', error);
-        localStorage.removeItem('user');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadUser();
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    setIsLoading(false);
   }, []);
 
+  // 🔹 Login using backend
   const login = async (email: string, password: string, expectedRole?: 'athlete' | 'coach'): Promise<boolean> => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // Get users from localStorage
-      const users = getStoredUsers();
-      console.log('Login attempt for:', email, 'Available users:', users.length);
-      const user = users.find(u => u.email === email && u.password === password);
-      
-      if (user) {
-        // Check if user is trying to login with wrong role
-        if (expectedRole && user.role !== expectedRole) {
-          const roleText = user.role === 'athlete' ? 'athlete' : 'coach';
-          setError(`You are registered as an ${roleText}. Please login as ${roleText} instead.`);
-          return false;
-        }
+      const response = await fetch(`${API_BASE}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, role: expectedRole }),
+      });
 
-        const { password: _, ...userWithoutPassword } = user;
-        setUser(userWithoutPassword);
-        localStorage.setItem('user', JSON.stringify(userWithoutPassword));
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
         return true;
       } else {
-        setError('Invalid email or password');
+        const errorData = await response.json();
+        setError(errorData.error || 'Login failed');
         return false;
       }
     } catch (error) {
+      console.error('Login error:', error);
       setError('Login failed. Please try again.');
       return false;
     } finally {
@@ -90,60 +80,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  // 🔹 Register using backend
   const register = async (email: string, password: string, username: string, role: 'athlete' | 'coach'): Promise<boolean> => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // Check if user already exists
-      const users = getStoredUsers();
-      const existingUser = users.find(u => u.email === email);
-      if (existingUser) {
-        const roleText = existingUser.role === 'athlete' ? 'athlete' : 'coach';
-        setError(`This email is already registered as an ${roleText}. Please login instead.`);
+      const response = await fetch(`${API_BASE}/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, username, role }),
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+        return true;
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || 'Registration failed');
         return false;
       }
-
-      if (users.find(u => u.username === username)) {
-        setError('Username already taken');
-        return false;
-      }
-
-      // Create new user
-      const newUser = {
-        id: generateId(),
-        email,
-        password, // In a real app, this would be hashed
-        username,
-        role,
-        createdAt: new Date().toISOString()
-      };
-
-      // Save user
-      users.push(newUser);
-      localStorage.setItem('users', JSON.stringify(users));
-
-      // If registering as coach, add to coaches list
-      if (role === 'coach') {
-        const coach: Coach = {
-          id: newUser.id,
-          email: newUser.email,
-          username: newUser.username,
-          createdAt: newUser.createdAt
-        };
-        
-        const existingCoaches = JSON.parse(localStorage.getItem('registeredCoaches') || '[]');
-        const updatedCoaches = [...existingCoaches, coach];
-        localStorage.setItem('registeredCoaches', JSON.stringify(updatedCoaches));
-      }
-
-      // Auto-login after registration
-      const { password: _, ...userWithoutPassword } = newUser;
-      setUser(userWithoutPassword);
-      localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-      
-      return true;
     } catch (error) {
+      console.error('Registration error:', error);
       setError('Registration failed. Please try again.');
       return false;
     } finally {
@@ -154,21 +116,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    console.log('User logged out');
   };
 
-  const getStoredUsers = (): (User & { password: string })[] => {
+  // 🔹 Fetch all users (for admin/debugging)
+  const getAllUsers = async (): Promise<{ athletes: User[], coaches: User[] }> => {
     try {
-      const stored = localStorage.getItem('users');
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
+      const response = await fetch(`${API_BASE}/users`);
+      if (response.ok) {
+        return await response.json();
+      }
+      return { athletes: [], coaches: [] };
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      return { athletes: [], coaches: [] };
     }
   };
-
-  const generateId = (): string => {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
-  };
-
 
   const value: AuthContextType = {
     user,
@@ -176,7 +139,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     register,
     logout,
     isLoading,
-    error
+    error,
+    getAllUsers,
   };
 
   return (
