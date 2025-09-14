@@ -31,6 +31,7 @@ export const useAuth = () => {
 interface AuthProviderProps {
   children: ReactNode;
 }
+
 const API_BASE = "/api";
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
@@ -55,9 +56,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const response = await fetch(`${API_BASE}/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, role: expectedRole }),
       });
 
@@ -68,7 +67,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return true;
       } else {
         const errorData = await response.json();
-        setError(errorData.error || 'Login failed');
+        setError(errorData.detail || 'Login failed'); // ✅ changed to .detail
         return false;
       }
     } catch (error) {
@@ -88,9 +87,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const response = await fetch(`${API_BASE}/register`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, username, role }),
       });
 
@@ -101,7 +98,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return true;
       } else {
         const errorData = await response.json();
-        setError(errorData.error || 'Registration failed');
+        setError(errorData.detail || 'Registration failed'); // ✅ changed to .detail
         return false;
       }
     } catch (error) {
