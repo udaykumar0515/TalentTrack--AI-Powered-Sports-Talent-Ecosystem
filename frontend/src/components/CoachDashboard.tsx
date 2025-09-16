@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { postCoachAction, getSessions } from '../api/apiClient';
+import VideoGallery from './VideoGallery';
 
 const CoachDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [sessions, setSessions] = useState<any[]>([]);
   const [filterAthlete, setFilterAthlete] = useState('');
+  const [showVideoGallery, setShowVideoGallery] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
@@ -170,12 +172,23 @@ const CoachDashboard: React.FC = () => {
               className="search-input"
             />
           </div>
+          <button 
+            onClick={() => setShowVideoGallery(!showVideoGallery)} 
+            className="gallery-btn"
+          >
+            <span className="gallery-icon">🎥</span>
+            Videos
+          </button>
           <button onClick={logout} className="logout-btn">
             <span className="logout-icon">🚪</span>
             Logout
           </button>
         </div>
       </header>
+
+      {showVideoGallery && (
+        <VideoGallery athleteId={user?.id || ''} isCoach={true} />
+      )}
 
       <section className="athlete-table-section">
         <h2>Athlete Performance</h2>

@@ -8,6 +8,7 @@ import AthleteDashboard from './components/AthleteDashboard';
 import CoachDashboard from './components/CoachDashboard';
 import SessionView from './components/SessionView';
 import ProtectedRoute from './components/ProtectedRoute';
+import OfflineIndicator from './components/OfflineIndicator';
 import './styles/globals.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
       <CoachProvider>
         <Router>
           <div className="App">
+            <OfflineIndicator />
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/athlete/login" element={<AthleteLogin />} />

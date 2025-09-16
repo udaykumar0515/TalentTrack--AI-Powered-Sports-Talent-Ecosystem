@@ -1,6 +1,7 @@
 # main.py
 from fastapi import FastAPI, HTTPException, Depends, status, BackgroundTasks, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import shutil
@@ -74,6 +75,26 @@ class SessionResult(BaseModel):
     coachId: Optional[str] = None
     coachName: Optional[str] = None
 
+class VideoUpload(BaseModel):
+    sessionId: str
+    athleteId: str
+    athleteName: str
+    exercise: str
+    coachId: Optional[str] = None
+    coachName: Optional[str] = None
+
+class VideoMetadata(BaseModel):
+    videoId: str
+    sessionId: str
+    athleteId: str
+    athleteName: str
+    exercise: str
+    videoPath: str
+    uploadedAt: str
+    coachId: Optional[str] = None
+    coachName: Optional[str] = None
+    syncStatus: str = "synced"
+
 app = FastAPI(title="Exercise Analysis API", version="1.0.0")
 
 # Add CORS middleware
@@ -100,7 +121,7 @@ EXERCISE_MAPPING = {
 
 def init_data_directories():
     """Ensure all required data directories exist"""
-    directories = ["data", "data/sessions", "sessions"]
+    directories = ["data", "data/sessions", "sessions", "videos", "videos/athletes", "videos/coaches"]
     for directory in directories:
         os.makedirs(directory, exist_ok=True)
     
@@ -109,7 +130,8 @@ def init_data_directories():
         "data/athletes.json": [],
         "data/coaches.json": [],
         "data/sessions/sessions.json": {},
-        "sessions/sessions.json": {}
+        "sessions/sessions.json": {},
+        "data/videos.json": []
     }
     
     for file_path, default_content in files.items():
@@ -799,6 +821,96 @@ async def analyze_video(
                 logger.info(f"Cleaned up temporary file: {temp_file_path}")
             except Exception as e:
                 logger.warning(f"Could not remove temp file {temp_file_path}: {e}")
+
+# Video storage endpoints
+@app.post("/api/upload-video")
+async def upload_video(
+    file: UploadFile = File(...),
+    session_data: str = Form(...)
+):
+    """Upload video file with session metadata"""
+    try:
+        # Parse session data
+        session_info = json.loads(session_data)
+        session_id = session_info.get("sessionId", str(uuid.uuid4())[:8])
+        
+        # Create video filename
+        video_filename = f"{session_id}_{session_info['exercise']}.mp4"
+        video_path = os.path.join("videos", video_filename)
+        
+        # Save video file
+        with open(video_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        # Create video metadata
+        video_metadata = VideoMetadata(
+            videoId=str(uuid.uuid4()),
+            sessionId=session_id,
+            athleteId=session_info["athleteId"],
+            athleteName=session_info["athleteName"],
+            exercise=session_info["exercise"],
+            videoPath=video_path,
+            uploadedAt=datetime.now().isoformat(),
+            coachId=session_info.get("coachId"),
+            coachName=session_info.get("coachName")
+        )
+        
+        # Save metadata to JSON file
+        videos_file = "data/videos.json"
+        videos = read_json_file("videos.json") if os.path.exists(f"data/{videos_file}") else []
+        videos.append(video_metadata.dict())
+        write_json_file("videos.json", videos)
+        
+        logger.info(f"Video uploaded: {video_filename}")
+        return {"status": "success", "videoId": video_metadata.videoId, "videoPath": video_path}
+        
+    except Exception as e:
+        logger.error(f"Video upload error: {e}")
+        raise HTTPException(status_code=500, detail=f"Video upload failed: {str(e)}")
+
+@app.get("/api/videos/{session_id}")
+async def get_video(session_id: str):
+    """Get video file by session ID"""
+    try:
+        videos = read_json_file("videos.json")
+        video_meta = next((v for v in videos if v["sessionId"] == session_id), None)
+        
+        if not video_meta:
+            raise HTTPException(status_code=404, detail="Video not found")
+        
+        video_path = video_meta["videoPath"]
+        if not os.path.exists(video_path):
+            raise HTTPException(status_code=404, detail="Video file not found")
+        
+        return FileResponse(video_path, media_type="video/mp4")
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error retrieving video: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve video")
+
+@app.get("/api/athlete-videos/{athlete_id}")
+async def get_athlete_videos(athlete_id: str):
+    """Get all videos for a specific athlete"""
+    try:
+        videos = read_json_file("videos.json")
+        athlete_videos = [v for v in videos if v["athleteId"] == athlete_id]
+        return athlete_videos
+    except Exception as e:
+        logger.error(f"Error loading athlete videos: {e}")
+        raise HTTPException(status_code=500, detail="Failed to load videos")
+
+@app.get("/api/coach-videos/{coach_id}")
+async def get_coach_videos(coach_id: str):
+    """Get all videos for athletes under this coach"""
+    try:
+        videos = read_json_file("videos.json")
+        coach_videos = [v for v in videos if v.get("coachId") == coach_id]
+        return coach_videos
+    except Exception as e:
+        logger.error(f"Error loading coach videos: {e}")
+        raise HTTPException(status_code=500, detail="Failed to load videos")
 
 # Test endpoint for API testing
 @app.post("/api/test")

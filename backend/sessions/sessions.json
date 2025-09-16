@@ -196,6 +196,78 @@
         "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
         "coachName": "udaykumar",
         "sessionId": "f3a5f4e5"
+      },
+      {
+        "exercise": "jumping_jack",
+        "reps": 0,
+        "formScore": 30,
+        "durationSec": 13.89,
+        "timestamp": "2025-09-14T18:20:51.939127Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Athlete",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "251f8689"
+      },
+      {
+        "exercise": "jumping_jack",
+        "reps": 0,
+        "formScore": 30,
+        "durationSec": 13.89,
+        "timestamp": "2025-09-14T18:20:51.939127Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "251f8689"
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 100,
+        "durationSec": 29.188,
+        "timestamp": "2025-09-14T19:26:42.311847Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Athlete",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "ef1bc941"
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 100,
+        "durationSec": 29.188,
+        "timestamp": "2025-09-14T19:26:42.311847Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "ef1bc941"
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 100,
+        "durationSec": 19.026,
+        "timestamp": "2025-09-14T19:42:52.412189Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Athlete",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "4ac76ae0"
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 100,
+        "durationSec": 19.026,
+        "timestamp": "2025-09-14T19:42:52.412189Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "4ac76ae0"
       }
     ]
   }
