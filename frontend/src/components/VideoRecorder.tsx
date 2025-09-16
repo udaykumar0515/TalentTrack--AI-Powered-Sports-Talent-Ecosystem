@@ -1,6 +1,8 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { analyzeVideo } from '../api/apiClient';
 import { useAuth } from '../contexts/AuthContext';
+import { offlineStorage } from '../services/OfflineStorage';
+import { videoSyncService } from '../services/VideoSyncService';
 
 interface VideoRecorderProps {
   exercise: string;
@@ -96,11 +98,46 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
 
     try {
       const athleteId = user?.id ?? 'unknown';
-      const session = await analyzeVideo(recordedVideo as File, exercise, athleteId);
-      onVideoAnalyzed(session);
+      
+      // Store video offline first
+      const videoId = await offlineStorage.storeVideo(recordedVideo as Blob, {
+        exercise: exercise,
+        athleteId: athleteId,
+        athleteName: user?.username || 'Athlete',
+        timestamp: new Date().toISOString()
+      });
+
+      // Try to analyze and sync
+      try {
+        const session = await analyzeVideo(recordedVideo as File, exercise, athleteId);
+        onVideoAnalyzed(session);
+        
+        // Try to sync immediately if online
+        if (videoSyncService.getOnlineStatus()) {
+          await videoSyncService.syncPendingVideos();
+        }
+      } catch (analysisError) {
+        console.error('Analysis failed, but video saved offline:', analysisError);
+        
+        // Create a basic session for offline storage
+        const offlineSession = {
+          exercise: exercise,
+          reps: 0,
+          formScore: 0,
+          durationSec: 0,
+          timestamp: new Date().toISOString(),
+          athleteId: athleteId,
+          athleteName: user?.username || 'Athlete',
+          sessionId: videoId,
+          isOffline: true
+        };
+        
+        onVideoAnalyzed(offlineSession);
+        alert('Video saved offline. Analysis will be performed when online.');
+      }
     } catch (error) {
-      console.error('Analysis failed:', error);
-      alert('Video analysis failed. Please try again.');
+      console.error('Error saving video:', error);
+      alert('Error saving video. Please try again.');
     }
   };
 

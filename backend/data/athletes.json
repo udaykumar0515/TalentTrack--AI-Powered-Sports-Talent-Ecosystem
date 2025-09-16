@@ -22,5 +22,14 @@
     "username": "Udaykumar_H",
     "role": "athlete",
     "created_at": "2025-09-14T13:45:34.740216"
+  },
+  {
+    "id": "31ab8af1-91d0-4a86-8a51-2576a516905e",
+    "email": "demo@gmail.com",
+    "password": "",
+    "username": "Demo User",
+    "role": "athlete",
+    "created_at": "2025-09-16T22:21:44.381188",
+    "google_id": "google_1758041504367"
   }
 ]

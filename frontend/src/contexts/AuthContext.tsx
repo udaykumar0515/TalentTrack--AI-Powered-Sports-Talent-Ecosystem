@@ -11,6 +11,7 @@ export interface User {
 export interface AuthContextType {
   user: User | null;
   login: (email: string, password: string, expectedRole?: 'athlete' | 'coach') => Promise<boolean>;
+  googleLogin: (email: string, name: string, role: 'athlete' | 'coach') => Promise<boolean>;
   register: (email: string, password: string, username: string, role: 'athlete' | 'coach') => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
@@ -79,6 +80,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  // 🔹 Google Login using backend
+  const googleLogin = async (email: string, name: string, role: 'athlete' | 'coach'): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(`${API_BASE}/google-login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          name,
+          role,
+          google_id: `google_${Date.now()}` // Mock Google ID for demo
+        }),
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+        return true;
+      } else {
+        const errorData = await response.json();
+        setError(errorData.detail || 'Google login failed');
+        return false;
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      setError('Google login failed. Please try again.');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // 🔹 Register using backend
   const register = async (email: string, password: string, username: string, role: 'athlete' | 'coach'): Promise<boolean> => {
     setIsLoading(true);
@@ -133,6 +170,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const value: AuthContextType = {
     user,
     login,
+    googleLogin,
     register,
     logout,
     isLoading,

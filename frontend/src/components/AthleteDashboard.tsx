@@ -4,6 +4,7 @@ import { useCoaches } from '../contexts/CoachContext';
 import VideoRecorder from './VideoRecorder';
 import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
+import VideoGallery from './VideoGallery';
 import { saveSession, getAthleteMessages, markMessageAsRead, CoachMessage } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
@@ -16,6 +17,7 @@ const AthleteDashboard: React.FC = () => {
   const [sessions, setSessions] = useState<any[]>([]);
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [showMessages, setShowMessages] = useState(false);
+  const [showVideoGallery, setShowVideoGallery] = useState(false);
 
   const exercises = [
     { value: 'squat', label: 'Squat' },
@@ -178,6 +180,13 @@ const AthleteDashboard: React.FC = () => {
             </select>
           </div>
           <button 
+            onClick={() => setShowVideoGallery(!showVideoGallery)} 
+            className="gallery-btn"
+          >
+            <span className="gallery-icon">🎥</span>
+            Videos
+          </button>
+          <button 
             onClick={() => setShowMessages(!showMessages)} 
             className="messages-btn"
           >
@@ -227,6 +236,10 @@ const AthleteDashboard: React.FC = () => {
           <div className="spinner"></div>
           <p>Analyzing your video...</p>
         </div>
+      )}
+
+      {showVideoGallery && (
+        <VideoGallery athleteId={user?.id || ''} />
       )}
 
       {showMessages && (
