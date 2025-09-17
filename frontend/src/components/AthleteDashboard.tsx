@@ -4,9 +4,9 @@ import { useCoaches } from '../contexts/CoachContext';
 import VideoRecorder from './VideoRecorder';
 import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
-import VideoGallery from './VideoGallery';
+import SessionRecordingGallery from './SessionRecordingGallery';
 import ChatSidebar from './ChatSidebar';
-import { saveSession, getAthleteMessages, markMessageAsRead, CoachMessage } from '../api/apiClient';
+import { saveSession, getAthleteMessages, CoachMessage } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -18,7 +18,7 @@ const AthleteDashboard: React.FC = () => {
   const [sessions, setSessions] = useState<any[]>([]);
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [showChat, setShowChat] = useState(false);
-  const [showVideoGallery, setShowVideoGallery] = useState(false);
+  const [showSessionGallery, setShowSessionGallery] = useState(false);
 
   const exercises = [
     { value: 'squat', label: 'Squat' },
@@ -169,11 +169,11 @@ const AthleteDashboard: React.FC = () => {
             </select>
           </div>
           <button 
-            onClick={() => setShowVideoGallery(!showVideoGallery)} 
+            onClick={() => setShowSessionGallery(!showSessionGallery)} 
             className="gallery-btn"
           >
             <span className="gallery-icon">🎥</span>
-            Videos
+            Sessions
           </button>
           <button 
             onClick={() => setShowChat(!showChat)} 
@@ -227,8 +227,8 @@ const AthleteDashboard: React.FC = () => {
         </div>
       )}
 
-      {showVideoGallery && (
-        <VideoGallery athleteId={user?.id || ''} />
+      {showSessionGallery && (
+        <SessionRecordingGallery athleteId={user?.id || ''} />
       )}
 
       <ChatSidebar

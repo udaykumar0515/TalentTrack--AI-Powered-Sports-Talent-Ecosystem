@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getSessions } from '../api/apiClient';
-import VideoGallery from './VideoGallery';
+import SessionRecordingGallery from './SessionRecordingGallery';
 import ChatSidebar from './ChatSidebar';
 
 const CoachDashboard: React.FC = () => {
@@ -10,7 +10,7 @@ const CoachDashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const [sessions, setSessions] = useState<any[]>([]);
   const [filterAthlete, setFilterAthlete] = useState('');
-  const [showVideoGallery, setShowVideoGallery] = useState(false);
+  const [showSessionGallery, setShowSessionGallery] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [selectedAthlete, setSelectedAthlete] = useState<{id: string, name: string} | null>(null);
 
@@ -145,11 +145,11 @@ const CoachDashboard: React.FC = () => {
             />
           </div>
           <button 
-            onClick={() => setShowVideoGallery(!showVideoGallery)} 
+            onClick={() => setShowSessionGallery(!showSessionGallery)} 
             className="gallery-btn"
           >
             <span className="gallery-icon">🎥</span>
-            Videos
+            Sessions
           </button>
           <button onClick={logout} className="logout-btn">
             <span className="logout-icon">🚪</span>
@@ -158,8 +158,8 @@ const CoachDashboard: React.FC = () => {
         </div>
       </header>
 
-      {showVideoGallery && (
-        <VideoGallery athleteId={user?.id || ''} isCoach={true} />
+      {showSessionGallery && (
+        <SessionRecordingGallery coachId={user?.id || ''} isCoach={true} />
       )}
 
       {selectedAthlete && (
