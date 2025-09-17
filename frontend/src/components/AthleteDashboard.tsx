@@ -11,14 +11,14 @@ import { saveSession, getAthleteMessages, CoachMessage } from '../api/apiClient'
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const { coaches } = useCoaches();
-  const [selectedCoach, setSelectedCoach] = useState('none');
+  const [selectedCoach, setSelectedCoach] = useState('udaykuamr'); // Default coach for testing
   const [selectedExercise, setSelectedExercise] = useState('squat');
   const [currentSession, setCurrentSession] = useState<any>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [sessions, setSessions] = useState<any[]>([]);
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [showChat, setShowChat] = useState(false);
-  const [showSessionGallery, setShowSessionGallery] = useState(false);
+  const [selectedSession, setSelectedSession] = useState<any>(null);
 
   const exercises = [
     { value: 'squat', label: 'Squat' },
@@ -30,7 +30,26 @@ const AthleteDashboard: React.FC = () => {
   useEffect(() => {
     loadSessions();
     loadMessages();
+    loadSelectedCoach();
   }, [user?.id]);
+
+  // Load selected coach from localStorage
+  const loadSelectedCoach = () => {
+    if (user?.id) {
+      const storedCoach = localStorage.getItem(`selectedCoach_${user.id}`);
+      if (storedCoach) {
+        setSelectedCoach(storedCoach);
+      }
+    }
+  };
+
+  // Save selected coach to localStorage
+  const handleCoachChange = (coachId: string) => {
+    setSelectedCoach(coachId);
+    if (user?.id) {
+      localStorage.setItem(`selectedCoach_${user.id}`, coachId);
+    }
+  };
 
   // Load messages every 30 seconds
   useEffect(() => {
@@ -46,7 +65,14 @@ const AthleteDashboard: React.FC = () => {
   const loadSessions = () => {
     try {
       const storedSessions = localStorage.getItem(`sessions_${user?.id}`) || '[]';
-      setSessions(JSON.parse(storedSessions));
+      const parsedSessions = JSON.parse(storedSessions);
+      // Add test video URL to all sessions for testing
+      const sessionsWithVideo = parsedSessions.map((session: any) => ({
+        ...session,
+        videoUrl: '/test-video.mp4',
+        thumbnailUrl: '/test-video.mp4'
+      }));
+      setSessions(sessionsWithVideo);
     } catch (error) {
       console.error('Error loading sessions:', error);
     }
@@ -157,7 +183,7 @@ const AthleteDashboard: React.FC = () => {
             <select 
               id="coach-dropdown"
               value={selectedCoach}
-              onChange={(e) => setSelectedCoach(e.target.value)}
+              onChange={(e) => handleCoachChange(e.target.value)}
               className="coach-dropdown"
             >
               <option value="none">Select Coach</option>
@@ -168,13 +194,6 @@ const AthleteDashboard: React.FC = () => {
               ))}
             </select>
           </div>
-          <button 
-            onClick={() => setShowSessionGallery(!showSessionGallery)} 
-            className="gallery-btn"
-          >
-            <span className="gallery-icon">🎥</span>
-            Sessions
-          </button>
           <button 
             onClick={() => setShowChat(!showChat)} 
             className="messages-btn"
@@ -227,9 +246,6 @@ const AthleteDashboard: React.FC = () => {
         </div>
       )}
 
-      {showSessionGallery && (
-        <SessionRecordingGallery athleteId={user?.id || ''} />
-      )}
 
       <ChatSidebar
         isOpen={showChat}
@@ -238,6 +254,74 @@ const AthleteDashboard: React.FC = () => {
         isCoach={false}
         athleteName={user?.username || 'Athlete'}
       />
+
+      {selectedSession && (
+        <div className="video-modal">
+          <div className="video-modal-content">
+            <div className="video-header">
+              <div className="video-title">
+                <h3>
+                  {selectedSession.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'} - {user?.username}
+                </h3>
+                <p className="video-subtitle">
+                  {formatDateTime(selectedSession.timestamp)}
+                </p>
+              </div>
+              <button onClick={() => setSelectedSession(null)} className="close-btn">
+                <span>✕</span>
+              </button>
+            </div>
+            
+            <div className="video-container">
+              {selectedSession.videoUrl ? (
+                <video
+                  src={selectedSession.videoUrl}
+                  controls
+                  className="session-video"
+                  poster={selectedSession.thumbnailUrl}
+                  preload="metadata"
+                >
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <div className="no-video">
+                  <span className="play-icon-large">▶️</span>
+                  <p>Video not available</p>
+                </div>
+              )}
+            </div>
+
+            <div className="session-details">
+              <div className="details-grid">
+                <div className="detail-item">
+                  <strong>Athlete:</strong> {user?.username}
+                </div>
+                {selectedSession.coachName && (
+                  <div className="detail-item">
+                    <strong>Coach:</strong> {selectedSession.coachName}
+                  </div>
+                )}
+                <div className="detail-item">
+                  <strong>Exercise:</strong> {selectedSession.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}
+                </div>
+                <div className="detail-item">
+                  <strong>Duration:</strong> {formatDuration(selectedSession.durationSec)}
+                </div>
+                <div className="detail-item">
+                  <strong>Repetitions:</strong> {selectedSession.reps || 0}
+                </div>
+                <div className="detail-item">
+                  <strong>Form Score:</strong> 
+                  <span className={`ml-2 ${getStatusClass(selectedSession.formScore)}`}>
+                    {selectedSession.formScore || 0}% 
+                    ({getStatusText(selectedSession.formScore)})
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <section className="activity-feed">
         <h2>Your Recent Activity</h2>
@@ -260,6 +344,12 @@ const AthleteDashboard: React.FC = () => {
                 {session.coachName && (
                   <p><strong>Coach:</strong> {session.coachName}</p>
                 )}
+                <button 
+                  className="view-details-btn"
+                  onClick={() => setSelectedSession(session)}
+                >
+                  View Details & Video
+                </button>
               </div>
             ))
           )}

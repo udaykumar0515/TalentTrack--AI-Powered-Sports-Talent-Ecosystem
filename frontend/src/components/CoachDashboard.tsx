@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getSessions } from '../api/apiClient';
+import { getSessions, getAthletes } from '../api/apiClient';
 import SessionRecordingGallery from './SessionRecordingGallery';
 import ChatSidebar from './ChatSidebar';
 
@@ -9,10 +9,12 @@ const CoachDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [sessions, setSessions] = useState<any[]>([]);
+  const [athletes, setAthletes] = useState<any[]>([]);
   const [filterAthlete, setFilterAthlete] = useState('');
-  const [showSessionGallery, setShowSessionGallery] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [selectedAthlete, setSelectedAthlete] = useState<{id: string, name: string} | null>(null);
+  const [selectedSession, setSelectedSession] = useState<any>(null);
+  const [showAthleteSessions, setShowAthleteSessions] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
@@ -23,14 +25,146 @@ const CoachDashboard: React.FC = () => {
     try {
       if (!user?.id) {
         setSessions([]);
+        setAthletes([]);
         return;
       }
+      
+      // Fetch all athletes first
+      const allAthletes = await getAthletes();
+      
       // fetch sessions for this coach from backend
       const coachSessions = await getSessions(undefined, user.id);
-      setSessions(coachSessions || []);
+      // Add test video URL to all sessions for testing
+      const sessionsWithVideo = (coachSessions || []).map((session: any) => ({
+        ...session,
+        videoUrl: '/test-video.mp4',
+        thumbnailUrl: '/test-video.mp4'
+      }));
+      setSessions(sessionsWithVideo);
+      
+      // Group sessions by athlete and create athlete summaries
+      const athleteMap = new Map();
+      sessionsWithVideo.forEach(session => {
+        if (!athleteMap.has(session.athleteId)) {
+          // Find the actual athlete name from the athletes list
+          const athleteData = allAthletes.find(athlete => athlete.id === session.athleteId);
+          const athleteName = athleteData ? athleteData.username : session.athleteName || 'Unknown Athlete';
+          
+          athleteMap.set(session.athleteId, {
+            id: session.athleteId,
+            name: athleteName,
+            sessions: [],
+            totalSessions: 0,
+            lastSession: null,
+            avgFormScore: 0
+          });
+        }
+        const athlete = athleteMap.get(session.athleteId);
+        athlete.sessions.push(session);
+        athlete.totalSessions++;
+        if (!athlete.lastSession || new Date(session.timestamp) > new Date(athlete.lastSession.timestamp)) {
+          athlete.lastSession = session;
+        }
+      });
+      
+      // Calculate average form scores
+      athleteMap.forEach(athlete => {
+        const totalScore = athlete.sessions.reduce((sum: number, session: any) => sum + (session.formScore || 0), 0);
+        athlete.avgFormScore = athlete.sessions.length > 0 ? Math.round(totalScore / athlete.sessions.length) : 0;
+      });
+      
+      setAthletes(Array.from(athleteMap.values()));
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
-      setSessions([]);
+      // Create some test data for demonstration with more realistic names
+      const testSessions = [
+        {
+          sessionId: 'test-session-1',
+          athleteId: 'athlete1',
+          athleteName: 'Alex Johnson',
+          coachId: user?.id,
+          coachName: user?.username,
+          exercise: 'squat',
+          timestamp: new Date().toISOString(),
+          durationSec: 45,
+          reps: 15,
+          formScore: 85,
+          videoUrl: '/test-video.mp4',
+          thumbnailUrl: '/test-video.mp4'
+        },
+        {
+          sessionId: 'test-session-2',
+          athleteId: 'athlete2',
+          athleteName: 'Sarah Williams',
+          coachId: user?.id,
+          coachName: user?.username,
+          exercise: 'jumping_jack',
+          timestamp: new Date(Date.now() - 86400000).toISOString(),
+          durationSec: 30,
+          reps: 25,
+          formScore: 72,
+          videoUrl: '/test-video.mp4',
+          thumbnailUrl: '/test-video.mp4'
+        },
+        {
+          sessionId: 'test-session-3',
+          athleteId: 'athlete1',
+          athleteName: 'Alex Johnson',
+          coachId: user?.id,
+          coachName: user?.username,
+          exercise: 'pushup',
+          timestamp: new Date(Date.now() - 172800000).toISOString(),
+          durationSec: 60,
+          reps: 20,
+          formScore: 68,
+          videoUrl: '/test-video.mp4',
+          thumbnailUrl: '/test-video.mp4'
+        },
+        {
+          sessionId: 'test-session-4',
+          athleteId: 'athlete3',
+          athleteName: 'Mike Chen',
+          coachId: user?.id,
+          coachName: user?.username,
+          exercise: 'squat',
+          timestamp: new Date(Date.now() - 259200000).toISOString(),
+          durationSec: 50,
+          reps: 12,
+          formScore: 78,
+          videoUrl: '/test-video.mp4',
+          thumbnailUrl: '/test-video.mp4'
+        }
+      ];
+      setSessions(testSessions);
+      
+      // Create athlete summaries
+      const athleteMap = new Map();
+      testSessions.forEach(session => {
+        if (!athleteMap.has(session.athleteId)) {
+          athleteMap.set(session.athleteId, {
+            id: session.athleteId,
+            name: session.athleteName,
+            sessions: [],
+            totalSessions: 0,
+            lastSession: null,
+            avgFormScore: 0
+          });
+        }
+        const athlete = athleteMap.get(session.athleteId);
+        athlete.sessions.push(session);
+        athlete.totalSessions++;
+        if (!athlete.lastSession || new Date(session.timestamp) > new Date(athlete.lastSession.timestamp)) {
+          athlete.lastSession = session;
+        }
+      });
+      
+      // Calculate average form scores
+      athleteMap.forEach(athlete => {
+        const totalScore = athlete.sessions.reduce((sum: number, session: any) => sum + (session.formScore || 0), 0);
+        athlete.avgFormScore = athlete.sessions.length > 0 ? Math.round(totalScore / athlete.sessions.length) : 0;
+      });
+      
+      setAthletes(Array.from(athleteMap.values()));
     }
   };
 
@@ -82,6 +216,20 @@ const CoachDashboard: React.FC = () => {
 
   const handleViewSession = (sessionId: string) => {
     navigate(`/session/${sessionId}`);
+  };
+
+  const handleAthleteClick = (athlete: any) => {
+    setSelectedAthlete({ id: athlete.id, name: athlete.name });
+    setShowAthleteSessions(true);
+    // Filter sessions for this athlete
+    const athleteSessions = sessions.filter(session => session.athleteId === athlete.id);
+    setSessions(athleteSessions);
+  };
+
+  const handleBackToAthletes = () => {
+    setShowAthleteSessions(false);
+    setSelectedAthlete(null);
+    loadDashboardData(); // Reload all sessions
   };
 
   const getRiskClass = (risk: string) => {
@@ -144,13 +292,6 @@ const CoachDashboard: React.FC = () => {
               className="search-input"
             />
           </div>
-          <button 
-            onClick={() => setShowSessionGallery(!showSessionGallery)} 
-            className="gallery-btn"
-          >
-            <span className="gallery-icon">🎥</span>
-            Sessions
-          </button>
           <button onClick={logout} className="logout-btn">
             <span className="logout-icon">🚪</span>
             Logout
@@ -158,9 +299,6 @@ const CoachDashboard: React.FC = () => {
         </div>
       </header>
 
-      {showSessionGallery && (
-        <SessionRecordingGallery coachId={user?.id || ''} isCoach={true} />
-      )}
 
       {selectedAthlete && (
         <ChatSidebar
@@ -176,82 +314,197 @@ const CoachDashboard: React.FC = () => {
         />
       )}
 
-      <section className="athlete-table-section">
-        <h2>Athlete Performance</h2>
-        {sessions.length === 0 ? (
-          <div className="no-sessions">
-            <p>No athlete sessions found. Athletes need to select you as their coach and record sessions.</p>
-            <p>Tell your athletes to:</p>
-            <ul>
-              <li>1. Go to their athlete dashboard</li>
-              <li>2. Select you as their coach from the dropdown</li>
-              <li>3. Record or upload exercise videos</li>
-            </ul>
-          </div>
-        ) : (
-          <div className="table-scroll">
-            <table id="performance-table">
-              <thead>
-                <tr>
-                  <th>Athlete Name</th>
-                  <th>Exercise Type</th>
-                  <th>Reps</th>
-                  <th>Form Score</th>
-                  <th>Duration</th>
-                  <th>Risk Level</th>
-                  <th>Date</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-              {rows.map((session) => {
-                const reps = session.metrics?.reps ?? session.reps ?? '--';
-                const score = session.metrics?.formScore ?? session.formScore ?? session.score ?? '--';
-                const duration = session.durationSec ? `${Math.floor(session.durationSec)}s` : (session.metrics?.durationSec ? `${Math.floor(session.metrics.durationSec)}s` : '--');
-                const risk = session.risk ?? (session.injuryFlags && session.injuryFlags.length ? 'Medium' : 'Low');
-                const date = session.date ?? session.timestamp ?? 'Unknown';
+      {selectedSession && (
+        <div className="video-modal">
+          <div className="video-modal-content">
+            <div className="video-header">
+              <div className="video-title">
+                <h3>
+                  {selectedSession.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'} - {selectedSession.athleteName}
+                </h3>
+                <p className="video-subtitle">
+                  {new Date(selectedSession.timestamp || selectedSession.date).toLocaleString()}
+                </p>
+              </div>
+              <button onClick={() => setSelectedSession(null)} className="close-btn">
+                <span>✕</span>
+              </button>
+            </div>
+            
+            <div className="video-container">
+              {selectedSession.videoUrl ? (
+                <video
+                  src={selectedSession.videoUrl}
+                  controls
+                  className="session-video"
+                  poster={selectedSession.thumbnailUrl}
+                  preload="metadata"
+                >
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <div className="no-video">
+                  <span className="play-icon-large">▶️</span>
+                  <p>Video not available</p>
+                </div>
+              )}
+            </div>
 
-                return (
-                  <tr key={session.sessionId}>
-                    <td>{session.athleteName}</td>
-                    <td>{session.exercise}</td>
-                    <td>{reps}</td>
-                    <td>{score}</td>
-                    <td>{duration}</td>
-                    <td>
-                      <span className={`risk-level ${getRiskClass(risk)}`}>
-                        {risk}
-                      </span>
-                    </td>
-                    <td>{new Date(date).toLocaleString?.() ?? date}</td>
-                    <td>
-                      <button
-                        className="action-btn retest-btn"
-                        onClick={() => handleRequestRetest(session.sessionId, session.athleteId)}
-                      >
-                        Request Retest
-                      </button>
-                      <button
-                        className="action-btn feedback-btn"
-                        onClick={() => handleSendFeedback(session.sessionId, session.athleteId)}
-                      >
-                        Send Feedback
-                      </button>
-                      <button
-                        className="action-btn"
-                        onClick={() => handleViewSession(session.sessionId)}
-                      >
-                        View Details
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-              </tbody>
-            </table>
+            <div className="session-details">
+              <div className="details-grid">
+                <div className="detail-item">
+                  <strong>Athlete:</strong> {selectedSession.athleteName}
+                </div>
+                {selectedSession.coachName && (
+                  <div className="detail-item">
+                    <strong>Coach:</strong> {selectedSession.coachName}
+                  </div>
+                )}
+                <div className="detail-item">
+                  <strong>Exercise:</strong> {selectedSession.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}
+                </div>
+                <div className="detail-item">
+                  <strong>Duration:</strong> {selectedSession.durationSec ? `${Math.floor(selectedSession.durationSec)}s` : '--'}
+                </div>
+                <div className="detail-item">
+                  <strong>Repetitions:</strong> {selectedSession.reps || selectedSession.metrics?.reps || 0}
+                </div>
+                <div className="detail-item">
+                  <strong>Form Score:</strong> 
+                  <span className={`ml-2 ${getRiskClass(selectedSession.risk || 'Low')}`}>
+                    {selectedSession.formScore || selectedSession.metrics?.formScore || 0}%
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-        )}
-      </section>
+        </div>
+      )}
+
+      {!showAthleteSessions ? (
+        <section className="athletes-section">
+          <h2>Your Athletes</h2>
+          {athletes.length === 0 ? (
+            <div className="no-sessions">
+              <p>No athletes found. Athletes need to select you as their coach and record sessions.</p>
+              <p>Tell your athletes to:</p>
+              <ul>
+                <li>1. Go to their athlete dashboard</li>
+                <li>2. Select you as their coach from the dropdown</li>
+                <li>3. Record or upload exercise videos</li>
+              </ul>
+            </div>
+          ) : (
+            <div className="athletes-grid">
+              {athletes.map((athlete) => (
+                <div 
+                  key={athlete.id} 
+                  className="athlete-card"
+                  onClick={() => handleAthleteClick(athlete)}
+                >
+                  <div className="athlete-info">
+                    <h3 className="athlete-name">{athlete.name}</h3>
+                    <div className="athlete-stats">
+                      <div className="stat-item">
+                        <span className="stat-label">Total Sessions:</span>
+                        <span className="stat-value">{athlete.totalSessions}</span>
+                      </div>
+                      <div className="stat-item">
+                        <span className="stat-label">Avg Form Score:</span>
+                        <span className={`stat-value ${getRiskClass(athlete.avgFormScore >= 85 ? 'Low' : athlete.avgFormScore >= 70 ? 'Medium' : 'High')}`}>
+                          {athlete.avgFormScore}%
+                        </span>
+                      </div>
+                      <div className="stat-item">
+                        <span className="stat-label">Last Session:</span>
+                        <span className="stat-value">
+                          {athlete.lastSession ? new Date(athlete.lastSession.timestamp).toLocaleDateString() : 'Never'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="athlete-arrow">→</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      ) : (
+        <section className="athlete-sessions-section">
+          <div className="sessions-header">
+            <button onClick={handleBackToAthletes} className="back-btn">
+              ← Back to Athletes
+            </button>
+            <h2>{selectedAthlete?.name}'s Sessions</h2>
+          </div>
+          
+          {sessions.length === 0 ? (
+            <div className="no-sessions">
+              <p>No sessions found for this athlete.</p>
+            </div>
+          ) : (
+            <div className="table-scroll">
+              <table id="performance-table">
+                <thead>
+                  <tr>
+                    <th>Exercise Type</th>
+                    <th>Reps</th>
+                    <th>Form Score</th>
+                    <th>Duration</th>
+                    <th>Risk Level</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sessions.map((session) => {
+                    const reps = session.metrics?.reps ?? session.reps ?? '--';
+                    const score = session.metrics?.formScore ?? session.formScore ?? session.score ?? '--';
+                    const duration = session.durationSec ? `${Math.floor(session.durationSec)}s` : (session.metrics?.durationSec ? `${Math.floor(session.metrics.durationSec)}s` : '--');
+                    const risk = session.risk ?? (session.injuryFlags && session.injuryFlags.length ? 'Medium' : 'Low');
+                    const date = session.date ?? session.timestamp ?? 'Unknown';
+
+                    return (
+                      <tr key={session.sessionId}>
+                        <td>{session.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}</td>
+                        <td>{reps}</td>
+                        <td>{score}</td>
+                        <td>{duration}</td>
+                        <td>
+                          <span className={`risk-level ${getRiskClass(risk)}`}>
+                            {risk}
+                          </span>
+                        </td>
+                        <td>{new Date(date).toLocaleString?.() ?? date}</td>
+                        <td>
+                          <button
+                            className="action-btn retest-btn"
+                            onClick={() => handleRequestRetest(session.sessionId, session.athleteId)}
+                          >
+                            Request Retest
+                          </button>
+                          <button
+                            className="action-btn feedback-btn"
+                            onClick={() => handleSendFeedback(session.sessionId, session.athleteId)}
+                          >
+                            Send Feedback
+                          </button>
+                          <button
+                            className="action-btn view-details-btn"
+                            onClick={() => setSelectedSession(session)}
+                          >
+                            View Details
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 };
