@@ -5,6 +5,7 @@ import VideoRecorder from './VideoRecorder';
 import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
 import VideoGallery from './VideoGallery';
+import ChatSidebar from './ChatSidebar';
 import { saveSession, getAthleteMessages, markMessageAsRead, CoachMessage } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
@@ -16,7 +17,7 @@ const AthleteDashboard: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [sessions, setSessions] = useState<any[]>([]);
   const [messages, setMessages] = useState<CoachMessage[]>([]);
-  const [showMessages, setShowMessages] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const [showVideoGallery, setShowVideoGallery] = useState(false);
 
   const exercises = [
@@ -62,18 +63,6 @@ const AthleteDashboard: React.FC = () => {
     }
   };
 
-  const handleMarkAsRead = async (messageId: string) => {
-    try {
-      await markMessageAsRead(messageId);
-      setMessages(prev => 
-        prev.map(msg => 
-          msg.id === messageId ? { ...msg, read: true } : msg
-        )
-      );
-    } catch (error) {
-      console.error('Error marking message as read:', error);
-    }
-  };
 
 
   const handleVideoAnalyzed = async (session: any) => {
@@ -187,11 +176,11 @@ const AthleteDashboard: React.FC = () => {
             Videos
           </button>
           <button 
-            onClick={() => setShowMessages(!showMessages)} 
+            onClick={() => setShowChat(!showChat)} 
             className="messages-btn"
           >
             <span className="message-icon">💬</span>
-            Messages {messages.filter(m => !m.read).length > 0 && <span className="unread-count">({messages.filter(m => !m.read).length})</span>}
+            Chat {messages.filter(m => !m.read).length > 0 && <span className="unread-count">({messages.filter(m => !m.read).length})</span>}
           </button>
           <button onClick={logout} className="logout-btn">
             <span className="logout-icon">🚪</span>
@@ -242,41 +231,13 @@ const AthleteDashboard: React.FC = () => {
         <VideoGallery athleteId={user?.id || ''} />
       )}
 
-      {showMessages && (
-        <section className="messages-section">
-          <h2>Messages from Coach</h2>
-          {messages.length === 0 ? (
-            <div className="no-messages">
-              <p>No messages from your coach yet.</p>
-            </div>
-          ) : (
-            <div className="messages-list">
-              {messages.map((message) => (
-                <div 
-                  key={message.id} 
-                  className={`message-card ${message.read ? 'read' : 'unread'}`}
-                  onClick={() => !message.read && handleMarkAsRead(message.id)}
-                >
-                  <div className="message-header">
-                    <h3>
-                      {message.type === 'retest' ? '🔄 Retest Request' : 
-                       message.type === 'feedback' ? '💬 Feedback' : '📝 Note'}
-                    </h3>
-                    <span className="message-time">
-                      {new Date(message.timestamp).toLocaleDateString()} {new Date(message.timestamp).toLocaleTimeString()}
-                    </span>
-                  </div>
-                  <p className="message-content">{message.message}</p>
-                  <div className="message-footer">
-                    <span className="coach-name">From: {message.coachName}</span>
-                    {!message.read && <span className="unread-indicator">New</span>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
+      <ChatSidebar
+        isOpen={showChat}
+        onClose={() => setShowChat(false)}
+        athleteId={user?.id || ''}
+        isCoach={false}
+        athleteName={user?.username || 'Athlete'}
+      />
 
       <section className="activity-feed">
         <h2>Your Recent Activity</h2>

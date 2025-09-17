@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { postCoachAction, getSessions } from '../api/apiClient';
+import { getSessions } from '../api/apiClient';
 import VideoGallery from './VideoGallery';
+import ChatSidebar from './ChatSidebar';
 
 const CoachDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ const CoachDashboard: React.FC = () => {
   const [sessions, setSessions] = useState<any[]>([]);
   const [filterAthlete, setFilterAthlete] = useState('');
   const [showVideoGallery, setShowVideoGallery] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [selectedAthlete, setSelectedAthlete] = useState<{id: string, name: string} | null>(null);
 
   useEffect(() => {
     loadDashboardData();
@@ -69,43 +72,12 @@ const CoachDashboard: React.FC = () => {
   };
 
   const handleSendFeedback = async (sessionId: string, athleteId: string) => {
-    const feedback = prompt('Enter your feedback:');
-    if (!feedback) return;
-
     const session = sessions.find(s => s.sessionId === sessionId);
     const athleteName = session?.athleteName || 'Unknown';
-
-    try {
-      const message = {
-        id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        coachId: user?.id || '',
-        coachName: user?.username || 'Coach',
-        athleteId,
-        athleteName,
-        sessionId,
-        type: 'feedback',
-        message: feedback,
-        timestamp: new Date().toISOString(),
-        read: false
-      };
-
-      const response = await fetch('/api/coach-messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(message)
-      });
-
-      if (response.ok) {
-        alert('Feedback sent to athlete!');
-      } else {
-        throw new Error('Failed to send message');
-      }
-    } catch (error) {
-      console.error('Failed to send feedback:', error);
-      alert('Feedback sent! (Demo mode)');
-    }
+    
+    // Open chat with the athlete
+    setSelectedAthlete({ id: athleteId, name: athleteName });
+    setShowChat(true);
   };
 
   const handleViewSession = (sessionId: string) => {
@@ -188,6 +160,20 @@ const CoachDashboard: React.FC = () => {
 
       {showVideoGallery && (
         <VideoGallery athleteId={user?.id || ''} isCoach={true} />
+      )}
+
+      {selectedAthlete && (
+        <ChatSidebar
+          isOpen={showChat}
+          onClose={() => {
+            setShowChat(false);
+            setSelectedAthlete(null);
+          }}
+          athleteId={selectedAthlete.id}
+          isCoach={true}
+          coachId={user?.id}
+          athleteName={selectedAthlete.name}
+        />
       )}
 
       <section className="athlete-table-section">
