@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { analyzeVideo } from '../api/apiClient';
+import { analyzeVideoEnhanced } from '../api/apiClient';
 import { useAuth } from '../contexts/AuthContext';
 
 interface VideoRecorderProps {
@@ -96,7 +96,54 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
 
     try {
       const athleteId = user?.id ?? 'unknown';
-      const session = await analyzeVideo(recordedVideo as File, exercise, athleteId);
+      const athleteName = user?.username ?? 'Athlete';
+      
+      // Use enhanced analysis with metadata
+      const metadata = {
+        session_metadata: {
+          session_type: "practice",
+          difficulty_level: "intermediate",
+          goals: ["form_improvement", "strength"],
+          notes: "Recorded via webcam"
+        },
+        athlete_profile: {
+          age: null,
+          height: null,
+          weight: null,
+          fitness_level: "intermediate",
+          experience_years: 1,
+          dominant_side: "right",
+          injury_history: [],
+          performance_goals: ["form_improvement"]
+        },
+        environmental_data: {
+          location: "indoor",
+          lighting_conditions: "good",
+          surface_type: "hard",
+          temperature: null,
+          humidity: null
+        },
+        device_info: {
+          device_type: "webcam",
+          resolution: "1280x720",
+          fps: 30,
+          camera_angle: "front",
+          distance_from_subject: "medium"
+        },
+        analysis_config: {
+          exercise: exercise,
+          analysis_depth: "comprehensive",
+          focus_areas: ["form", "injury_prevention"],
+          comparison_mode: "self",
+          real_time_feedback: true,
+          biomechanical_analysis: true,
+          muscle_activation_analysis: true,
+          joint_angle_analysis: true,
+          balance_analysis: true
+        }
+      };
+
+      const session = await analyzeVideoEnhanced(recordedVideo as File, exercise, athleteId, athleteName, metadata);
       onVideoAnalyzed(session);
     } catch (error) {
       console.error('Analysis failed:', error);
@@ -120,55 +167,39 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
   };
 
   return (
-    <div className="video-recorder">
-      <div className="video-container">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          className="live-video"
-        />
-      </div>
-
+    <div className="video-recorder-compact">
       {!recordedVideo ? (
-        <div className="recording-controls">
-          <button
-            className={`record-btn ${isRecording ? 'recording' : ''}`}
-            onClick={isRecording ? stopRecording : startRecording}
-            disabled={isAnalyzing}
-          >
-            <span className="record-icon">
-              {isRecording ? '⏹️' : '⏺️'}
-            </span>
-            {isRecording ? 'Stop Recording' : 'Start Recording'}
-          </button>
-          <p className="recording-hint">
-            {isRecording ? 'Recording in progress...' : 'Click to start recording your exercise'}
-          </p>
-        </div>
+        <button
+          className={`record-btn ${isRecording ? 'recording' : ''}`}
+          onClick={isRecording ? stopRecording : startRecording}
+          disabled={isAnalyzing}
+        >
+          <span className="record-icon">
+            {isRecording ? '⏹️' : '⏺️'}
+          </span>
+          {isRecording ? 'Stop' : 'Record'}
+        </button>
       ) : (
-        <div className="analysis-controls">
-          <div className="video-preview">
-            {previewUrl && (
-              <video
-                src={previewUrl}
-                controls
-                className="preview-video"
-              />
-            )}
-          </div>
-          <div className="action-buttons">
+        <div className="video-preview-compact">
+          {previewUrl && (
+            <video
+              src={previewUrl}
+              controls
+              className="preview-video-small"
+            />
+          )}
+          <div className="action-buttons-compact">
             <button
               className="analyze-btn"
               onClick={handleAnalyze}
               disabled={isAnalyzing}
             >
               <span className="analyze-icon">🔍</span>
-              {isAnalyzing ? 'Analyzing...' : 'Analyze Video'}
+              {isAnalyzing ? 'Analyzing...' : 'Analyze'}
             </button>
             <button onClick={resetRecording} className="retry-btn">
               <span className="retry-icon">🔄</span>
-              Record Again
+              Reset
             </button>
           </div>
         </div>

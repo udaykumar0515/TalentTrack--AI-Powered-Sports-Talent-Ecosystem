@@ -4,8 +4,8 @@ import { useCoaches } from '../contexts/CoachContext';
 import VideoRecorder from './VideoRecorder';
 import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
-import SessionRecordingGallery from './SessionRecordingGallery';
 import ChatSidebar from './ChatSidebar';
+import DetailedAnalysisModal from './DetailedAnalysisModal';
 import { saveSession, getAthleteMessages, CoachMessage } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
@@ -18,6 +18,8 @@ const AthleteDashboard: React.FC = () => {
   const [sessions, setSessions] = useState<any[]>([]);
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [showChat, setShowChat] = useState(false);
+  const [selectedSessionForAnalysis, setSelectedSessionForAnalysis] = useState<any>(null);
+  const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false);
   const [selectedSession, setSelectedSession] = useState<any>(null);
 
   const exercises = [
@@ -125,6 +127,12 @@ const AthleteDashboard: React.FC = () => {
     // Reset analysis state
     setIsAnalyzing(false);
   };
+
+  const handleDetailedAnalysis = (session: any) => {
+    setSelectedSessionForAnalysis(session);
+    setShowDetailedAnalysis(true);
+  };
+
   const handleStartAnalysis = () => {
     setIsAnalyzing(true);
   };
@@ -141,6 +149,15 @@ const AthleteDashboard: React.FC = () => {
     if (formScore >= 70) return 'Good';
     if (formScore >= 50) return 'Fair';
     return 'Poor';
+  };
+
+  const getRiskClass = (risk: string) => {
+    switch (risk?.toLowerCase()) {
+      case 'low': return 'low';
+      case 'medium': return 'medium';
+      case 'high': return 'high';
+      default: return 'low';
+    }
   };
 
   const formatDateTime = (timestamp: string) => {
@@ -167,7 +184,7 @@ const AthleteDashboard: React.FC = () => {
   }
 
   return (
-    <div className="dashboard-container">
+    <div className={`dashboard-container ${showChat ? 'chat-open' : ''}`}>
       <header className="dashboard-header">
         <div className="header-left">
           <div className="logo-section">
@@ -208,36 +225,37 @@ const AthleteDashboard: React.FC = () => {
         </div>
       </header>
 
-      <div className="exercise-select">
-        <label htmlFor="exercise-dropdown">Select Exercise:</label>
-        <select 
-          id="exercise-dropdown"
-          value={selectedExercise}
-          onChange={(e) => setSelectedExercise(e.target.value)}
-        >
-          {exercises.map(exercise => (
-            <option key={exercise.value} value={exercise.value}>
-              {exercise.label}
-            </option>
-          ))}
-        </select>
+      <div className="exercise-controls">
+        <div className="exercise-select">
+          <label htmlFor="exercise-dropdown">Select Exercise:</label>
+          <select 
+            id="exercise-dropdown"
+            value={selectedExercise}
+            onChange={(e) => setSelectedExercise(e.target.value)}
+          >
+            {exercises.map(exercise => (
+              <option key={exercise.value} value={exercise.value}>
+                {exercise.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        
+        <div className="video-buttons">
+          <VideoRecorder 
+            exercise={selectedExercise}
+            onVideoAnalyzed={handleVideoAnalyzed}
+            onStartAnalysis={handleStartAnalysis}
+            isAnalyzing={isAnalyzing}
+          />
+          <VideoUploader 
+            exercise={selectedExercise}
+            onVideoAnalyzed={handleVideoAnalyzed}
+            onStartAnalysis={handleStartAnalysis}
+            isAnalyzing={isAnalyzing}
+          />
+        </div>
       </div>
-
-      <section className="video-actions">
-        <VideoRecorder 
-          exercise={selectedExercise}
-          onVideoAnalyzed={handleVideoAnalyzed}
-          onStartAnalysis={handleStartAnalysis}
-          isAnalyzing={isAnalyzing}
-        />
-        <VideoUploader 
-          exercise={selectedExercise}
-          
-          onVideoAnalyzed={handleVideoAnalyzed}
-          onStartAnalysis={handleStartAnalysis}
-          isAnalyzing={isAnalyzing}
-        />
-      </section>
 
       {isAnalyzing && (
         <div className="loading">
@@ -333,28 +351,59 @@ const AthleteDashboard: React.FC = () => {
           ) : (
             sessions.slice().reverse().map((session, index) => (
               <div key={index} className={`metric-card ${getStatusClass(session.formScore)}`}>
-                <h3>{session.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}</h3>
-                <p><strong>Reps:</strong> {session.reps || 0}</p>
-                <p><strong>Form Score:</strong> {session.formScore || 0}%</p>
-                <p><strong>Status:</strong> <span className={`risk-level ${getStatusClass(session.formScore)}`}>
-                  {getStatusText(session.formScore)}
-                </span></p>
-                <p><strong>Date:</strong> {formatDateTime(session.timestamp)}</p>
-                <p><strong>Duration:</strong> {formatDuration(session.durationSec)}</p>
-                {session.coachName && (
-                  <p><strong>Coach:</strong> {session.coachName}</p>
-                )}
-                <button 
-                  className="view-details-btn"
-                  onClick={() => setSelectedSession(session)}
-                >
-                  View Details & Video
-                </button>
+                <div className="session-card-header">
+                  <h3>{session.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}</h3>
+                  <span className="session-date">{formatDateTime(session.timestamp)}</span>
+                </div>
+                
+                <div className="session-metrics">
+                  <div className="metric-item">
+                    <span className="metric-label">Reps</span>
+                    <span className="metric-value">{session.reps || 0}</span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Form Score</span>
+                    <span className={`metric-value ${getStatusClass(session.formScore)}`}>
+                      {session.formScore || 0}%
+                    </span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Duration</span>
+                    <span className="metric-value">{formatDuration(session.durationSec)}</span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Risk Level</span>
+                    <span className={`metric-value ${getRiskClass(session.risk)}`}>
+                      {session.risk || 'Low'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="session-actions">
+                  <button 
+                    className="btn-secondary"
+                    onClick={() => handleDetailedAnalysis(session)}
+                  >
+                    View Analysis
+                  </button>
+                  <button 
+                    className="btn-primary"
+                    onClick={() => setSelectedSession(session)}
+                  >
+                    View Video
+                  </button>
+                </div>
               </div>
             ))
           )}
         </div>
       </section>
+
+      <DetailedAnalysisModal
+        isOpen={showDetailedAnalysis}
+        onClose={() => setShowDetailedAnalysis(false)}
+        session={selectedSessionForAnalysis}
+      />
     </div>
   );
 };

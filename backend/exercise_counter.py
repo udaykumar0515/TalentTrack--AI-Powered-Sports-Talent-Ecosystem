@@ -14,7 +14,7 @@ import time
 import json
 import os
 import uuid
-import datetime
+from datetime import datetime
 import argparse
 import sys
 import logging
@@ -787,12 +787,12 @@ def main():
         if coach_name:
             result["coachName"] = coach_name
 
-        # Add timestamp
-        result["timestamp"] = datetime.now().isoformat()
+    # Add timestamp (use UTC to avoid timezone issues)
+    result["timestamp"] = datetime.utcnow().isoformat() + "Z"
 
-        # Enhanced analysis if requested
-        if args.enhanced_analysis:
-            result = enhance_analysis_result(result, args)
+    # Enhanced analysis if requested
+    if args.enhanced_analysis:
+        result = enhance_analysis_result(result, args)
 
         # Only write final result JSON to stdout (for main.py to parse).
         # All other logs were sent to stderr via logger.

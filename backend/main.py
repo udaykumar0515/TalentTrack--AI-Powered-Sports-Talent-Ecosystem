@@ -424,16 +424,26 @@ def convert_to_comprehensive_result(parsed_data: Dict, session_meta: Optional[Se
     """Convert basic analysis result to comprehensive analysis result"""
     
     # Extract basic data
+    # Calculate risk level based on form score
+    form_score = parsed_data.get("formScore", 0)
+    if form_score < 50:
+        risk_level = "High"
+    elif form_score < 70:
+        risk_level = "Medium"
+    else:
+        risk_level = "Low"
+
     basic_data = {
         "exercise": parsed_data.get("exercise", "unknown"),
         "reps": parsed_data.get("reps", 0),
-        "formScore": parsed_data.get("formScore", 0),
+        "formScore": form_score,
         "durationSec": parsed_data.get("durationSec", 0.0),
-        "timestamp": parsed_data.get("timestamp", datetime.now().isoformat()),
+        "timestamp": parsed_data.get("timestamp", datetime.utcnow().isoformat() + "Z"),
         "athleteId": parsed_data.get("athleteId", "unknown"),
         "athleteName": parsed_data.get("athleteName", "Unknown"),
         "coachId": parsed_data.get("coachId"),
-        "coachName": parsed_data.get("coachName")
+        "coachName": parsed_data.get("coachName"),
+        "risk": risk_level
     }
     
     # Create comprehensive analysis components
@@ -949,16 +959,26 @@ async def start_analysis(request: AnalysisRequest, background_tasks: BackgroundT
                         analysis_results[request.userId] = result
                         
                         # Convert to frontend format and save
+                        # Calculate risk level based on form score
+                        form_score = result.get("formScore", 0)
+                        if form_score < 50:
+                            risk_level = "High"
+                        elif form_score < 70:
+                            risk_level = "Medium"
+                        else:
+                            risk_level = "Low"
+
                         session_data = {
                             "exercise": request.exercise,
                             "reps": result.get("reps", 0),
-                            "formScore": result.get("formScore", 0),
+                            "formScore": form_score,
                             "durationSec": result.get("durationSec", 0),
-                            "timestamp": datetime.now().isoformat() + "Z",
+                            "timestamp": datetime.utcnow().isoformat() + "Z",
                             "athleteId": request.userId,
                             "athleteName": request.userName,
                             "coachId": request.coachId,
-                            "coachName": request.coachName
+                            "coachName": request.coachName,
+                            "risk": risk_level
                         }
                         
                         save_session_result(session_data)
@@ -1424,9 +1444,10 @@ async def analyze_video(
             "reps": int(parsed.get("reps", 0)),
             "formScore": int(parsed.get("formScore", 0)),
             "durationSec": float(parsed.get("durationSec", 0.0)),
-            "timestamp": datetime.now().isoformat() + "Z",
+            "timestamp": datetime.utcnow().isoformat() + "Z",
             "athleteId": athleteId,
             "athleteName": parsed.get("userName", athleteName),
+            "risk": "High" if int(parsed.get("formScore", 0)) < 50 else "Medium" if int(parsed.get("formScore", 0)) < 70 else "Low",
             "coachId": None,
             "coachName": None,
             "sessionId": str(uuid.uuid4())[:8]

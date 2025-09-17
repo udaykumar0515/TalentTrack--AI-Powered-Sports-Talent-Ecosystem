@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getSessions, getAthletes } from '../api/apiClient';
-import SessionRecordingGallery from './SessionRecordingGallery';
 import ChatSidebar from './ChatSidebar';
+import DetailedAnalysisModal from './DetailedAnalysisModal';
 
 const CoachDashboard: React.FC = () => {
-  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [sessions, setSessions] = useState<any[]>([]);
   const [athletes, setAthletes] = useState<any[]>([]);
@@ -15,6 +13,8 @@ const CoachDashboard: React.FC = () => {
   const [selectedAthlete, setSelectedAthlete] = useState<{id: string, name: string} | null>(null);
   const [selectedSession, setSelectedSession] = useState<any>(null);
   const [showAthleteSessions, setShowAthleteSessions] = useState(false);
+  const [selectedSessionForAnalysis, setSelectedSessionForAnalysis] = useState<any>(null);
+  const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
@@ -168,42 +168,6 @@ const CoachDashboard: React.FC = () => {
     }
   };
 
-  const handleRequestRetest = async (sessionId: string, athleteId: string) => {
-    const session = sessions.find(s => s.sessionId === sessionId);
-    const athleteName = session?.athleteName || 'Unknown';
-    
-    try {
-      const message = {
-        id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        coachId: user?.id || '',
-        coachName: user?.username || 'Coach',
-        athleteId,
-        athleteName,
-        sessionId,
-        type: 'retest',
-        message: 'Please redo this exercise for better analysis. Focus on maintaining proper form throughout the movement.',
-        timestamp: new Date().toISOString(),
-        read: false
-      };
-
-      const response = await fetch('/api/coach-messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(message)
-      });
-
-      if (response.ok) {
-        alert('Retest request sent to athlete!');
-      } else {
-        throw new Error('Failed to send message');
-      }
-    } catch (error) {
-      console.error('Failed to send retest request:', error);
-      alert('Retest request sent! (Demo mode)');
-    }
-  };
 
   const handleSendFeedback = async (sessionId: string, athleteId: string) => {
     const session = sessions.find(s => s.sessionId === sessionId);
@@ -214,9 +178,6 @@ const CoachDashboard: React.FC = () => {
     setShowChat(true);
   };
 
-  const handleViewSession = (sessionId: string) => {
-    navigate(`/session/${sessionId}`);
-  };
 
   const handleAthleteClick = (athlete: any) => {
     setSelectedAthlete({ id: athlete.id, name: athlete.name });
@@ -232,45 +193,19 @@ const CoachDashboard: React.FC = () => {
     loadDashboardData(); // Reload all sessions
   };
 
+  const handleDetailedAnalysis = (session: any) => {
+    setSelectedSessionForAnalysis(session);
+    setShowDetailedAnalysis(true);
+  };
+
   const getRiskClass = (risk: string) => {
     return (risk || '').toLowerCase();
   };
 
-  const filteredSessions = sessions.filter((session) =>
-    (session.athleteName || '').toLowerCase().includes(filterAthlete.toLowerCase()) ||
-    (session.exercise || '').toLowerCase().includes(filterAthlete.toLowerCase())
-  );
 
-  // fallback sample data (kept for demo if backend returns nothing)
-  const sampleSessionData = [
-    {
-      sessionId: 'sess_001',
-      athleteId: 'athlete1',
-      athleteName: 'John Doe',
-      exercise: 'Squats',
-      reps: 15,
-      score: 92,
-      risk: 'Low',
-      date: '2025-01-15',
-      metrics: { reps: 15, formScore: 92 }
-    },
-    {
-      sessionId: 'sess_002',
-      athleteId: 'athlete2',
-      athleteName: 'Jane Smith',
-      exercise: 'Jumping Jacks',
-      duration: '1:30',
-      score: 75,
-      risk: 'Medium',
-      date: '2025-01-14',
-      metrics: { formScore: 75 }
-    }
-  ];
-
-  const rows = (filteredSessions.length ? filteredSessions : sampleSessionData);
 
   return (
-    <div className="dashboard-container">
+    <div className={`dashboard-container ${showChat ? 'chat-open' : ''}`}>
       <header className="dashboard-header">
         <div className="header-left">
           <div className="logo-section">
@@ -458,43 +393,65 @@ const CoachDashboard: React.FC = () => {
                 </thead>
                 <tbody>
                   {sessions.map((session) => {
-                    const reps = session.metrics?.reps ?? session.reps ?? '--';
-                    const score = session.metrics?.formScore ?? session.formScore ?? session.score ?? '--';
-                    const duration = session.durationSec ? `${Math.floor(session.durationSec)}s` : (session.metrics?.durationSec ? `${Math.floor(session.metrics.durationSec)}s` : '--');
+                    const reps = session.metrics?.reps ?? session.reps ?? 0;
+                    const score = session.metrics?.formScore ?? session.formScore ?? 0;
+                    const duration = session.durationSec ? `${Math.floor(session.durationSec)}s` : (session.metrics?.durationSec ? `${Math.floor(session.metrics.durationSec)}s` : '0s');
                     const risk = session.risk ?? (session.injuryFlags && session.injuryFlags.length ? 'Medium' : 'Low');
                     const date = session.date ?? session.timestamp ?? 'Unknown';
 
                     return (
-                      <tr key={session.sessionId}>
-                        <td>{session.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}</td>
-                        <td>{reps}</td>
-                        <td>{score}</td>
-                        <td>{duration}</td>
-                        <td>
-                          <span className={`risk-level ${getRiskClass(risk)}`}>
-                            {risk}
-                          </span>
+                      <tr key={session.sessionId} className="session-row">
+                        <td className="exercise-cell">
+                          <div className="exercise-info">
+                            <span className="exercise-name">
+                              {session.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}
+                            </span>
+                            <span className="session-date">
+                              {new Date(date).toLocaleDateString()}
+                            </span>
+                          </div>
                         </td>
-                        <td>{new Date(date).toLocaleString?.() ?? date}</td>
-                        <td>
-                          <button
-                            className="action-btn retest-btn"
-                            onClick={() => handleRequestRetest(session.sessionId, session.athleteId)}
-                          >
-                            Request Retest
-                          </button>
-                          <button
-                            className="action-btn feedback-btn"
-                            onClick={() => handleSendFeedback(session.sessionId, session.athleteId)}
-                          >
-                            Send Feedback
-                          </button>
-                          <button
-                            className="action-btn view-details-btn"
-                            onClick={() => setSelectedSession(session)}
-                          >
-                            View Details
-                          </button>
+                        <td className="metric-cell">
+                          <div className="metric-value">{reps}</div>
+                          <div className="metric-label">Reps</div>
+                        </td>
+                        <td className="metric-cell">
+                          <div className={`metric-value ${getRiskClass(risk)}`}>{score}%</div>
+                          <div className="metric-label">Form</div>
+                        </td>
+                        <td className="metric-cell">
+                          <div className="metric-value">{duration}</div>
+                          <div className="metric-label">Duration</div>
+                        </td>
+                        <td className="metric-cell">
+                          <div className={`metric-value ${getRiskClass(risk)}`}>{risk}</div>
+                          <div className="metric-label">Risk</div>
+                        </td>
+                        <td className="metric-cell">
+                          <div className="metric-value">{new Date(date).toLocaleDateString()}</div>
+                          <div className="metric-label">Date</div>
+                        </td>
+                        <td className="actions-cell">
+                          <div className="action-buttons">
+                            <button
+                              className="btn-secondary btn-sm"
+                              onClick={() => handleDetailedAnalysis(session)}
+                            >
+                              Analysis
+                            </button>
+                            <button
+                              className="btn-primary btn-sm"
+                              onClick={() => setSelectedSession(session)}
+                            >
+                              Video
+                            </button>
+                            <button
+                              className="btn-feedback btn-sm"
+                              onClick={() => handleSendFeedback(session.sessionId, session.athleteId)}
+                            >
+                              Message
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
@@ -505,6 +462,12 @@ const CoachDashboard: React.FC = () => {
           )}
         </section>
       )}
+
+      <DetailedAnalysisModal
+        isOpen={showDetailedAnalysis}
+        onClose={() => setShowDetailedAnalysis(false)}
+        session={selectedSessionForAnalysis}
+      />
     </div>
   );
 };

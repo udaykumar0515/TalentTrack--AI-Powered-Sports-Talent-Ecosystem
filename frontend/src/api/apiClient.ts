@@ -13,6 +13,9 @@ export interface Session {
   date?: string;
   timestamp?: string;
   durationSec?: number;
+  reps?: number;
+  formScore?: number;
+  risk?: string; // Risk level: Low, Medium, High
   metrics?: {
     reps?: number;
     avgRepTimeSec?: number;
@@ -32,6 +35,18 @@ export interface Session {
   keypointsUrl?: string;
   keypoints?: any;
   status?: string;
+  
+  // Enhanced analysis fields
+  biomechanical_metrics?: any;
+  form_analysis?: any;
+  injury_risk_assessment?: any;
+  performance_metrics?: any;
+  recommendations?: any[];
+  session_metadata?: any;
+  athlete_profile?: any;
+  environmental_data?: any;
+  device_info?: any;
+  analysis_config?: any;
 }
 
 export interface CoachAction {
@@ -62,6 +77,57 @@ export async function analyzeVideo(file: File | Blob, exercise: string, athleteI
 
   const session = await response.json();
   return session;
+}
+
+// Enhanced analysis with metadata
+export async function analyzeVideoEnhanced(
+  videoFile: File, 
+  exercise: string, 
+  athleteId: string, 
+  athleteName: string,
+  metadata?: {
+    session_metadata?: any;
+    athlete_profile?: any;
+    environmental_data?: any;
+    device_info?: any;
+    analysis_config?: any;
+  }
+): Promise<any> {
+  const formData = new FormData();
+  formData.append('file', videoFile);
+  formData.append('exercise', exercise);
+  formData.append('athleteId', athleteId);
+  formData.append('athleteName', athleteName);
+
+  // Add metadata if provided
+  if (metadata?.session_metadata) {
+    formData.append('session_metadata', JSON.stringify(metadata.session_metadata));
+  }
+  if (metadata?.athlete_profile) {
+    formData.append('athlete_profile', JSON.stringify(metadata.athlete_profile));
+  }
+  if (metadata?.environmental_data) {
+    formData.append('environmental_data', JSON.stringify(metadata.environmental_data));
+  }
+  if (metadata?.device_info) {
+    formData.append('device_info', JSON.stringify(metadata.device_info));
+  }
+  if (metadata?.analysis_config) {
+    formData.append('analysis_config', JSON.stringify(metadata.analysis_config));
+  }
+
+  const response = await fetch(`${API_BASE_URL}/analyze/enhanced`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('analyzeVideoEnhanced error response:', text);
+    throw new Error('Enhanced video analysis failed');
+  }
+
+  return response.json();
 }
 
 // Save session (frontend calls this to persist after augmenting with coach)
@@ -188,4 +254,53 @@ export async function deleteSession(sessionId: string): Promise<void> {
     console.error('deleteSession error response:', text);
     throw new Error('Failed to delete session');
   }
+}
+
+// Enhanced reporting functions
+export async function getAthleteReport(athleteId: string, reportType: string = "comprehensive", timePeriod: string = "30d"): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/reports/athlete/${encodeURIComponent(athleteId)}?report_type=${reportType}&time_period=${timePeriod}`);
+  
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('getAthleteReport error response:', text);
+    throw new Error('Failed to fetch athlete report');
+  }
+  
+  return response.json();
+}
+
+export async function getCoachDashboard(coachId: string, timePeriod: string = "30d"): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/reports/coach/${encodeURIComponent(coachId)}?time_period=${timePeriod}`);
+  
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('getCoachDashboard error response:', text);
+    throw new Error('Failed to fetch coach dashboard');
+  }
+  
+  return response.json();
+}
+
+export async function compareSessions(athleteId: string, exercise: string, timePeriod: string = "30d"): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/analysis/compare/${encodeURIComponent(athleteId)}?exercise=${exercise}&time_period=${timePeriod}`);
+  
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('compareSessions error response:', text);
+    throw new Error('Failed to compare sessions');
+  }
+  
+  return response.json();
+}
+
+export async function getExerciseBenchmarks(exercise: string): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/analysis/benchmarks/${encodeURIComponent(exercise)}`);
+  
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('getExerciseBenchmarks error response:', text);
+    throw new Error('Failed to fetch exercise benchmarks');
+  }
+  
+  return response.json();
 }

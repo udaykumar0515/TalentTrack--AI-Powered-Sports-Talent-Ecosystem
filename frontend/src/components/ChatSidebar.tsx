@@ -43,7 +43,11 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   const loadMessages = async () => {
     try {
       const athleteMessages = await getAthleteMessages(athleteId);
-      setMessages(athleteMessages);
+      // Sort messages by timestamp (oldest first)
+      const sortedMessages = athleteMessages.sort((a, b) => 
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+      );
+      setMessages(sortedMessages);
     } catch (error) {
       console.error('Error loading messages:', error);
     }
@@ -63,12 +67,12 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   };
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || !coachId) return;
+    if (!newMessage.trim()) return;
 
     const message: CoachMessage = {
       id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      coachId: coachId,
-      coachName: 'You', // This would be the current user's name
+      coachId: isCoach ? (coachId ?? '') : 'athlete', // Ensure coachId is a string
+      coachName: isCoach ? 'You' : athleteName,
       athleteId: athleteId,
       athleteName: athleteName,
       sessionId: '', // Optional for general messages
@@ -88,8 +92,15 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
       });
 
       if (response.ok) {
-        setMessages(prev => [...prev, message]);
+        setMessages(prev => {
+          const updatedMessages = [...prev, message];
+          // Sort messages by timestamp (oldest first)
+          return updatedMessages.sort((a, b) => 
+            new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+          );
+        });
         setNewMessage('');
+        setTimeout(scrollToBottom, 100);
       } else {
         throw new Error('Failed to send message');
       }
@@ -158,8 +169,8 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
             messages.map((message) => (
               <div 
                 key={message.id} 
-                className={`message ${message.coachId === coachId ? 'sent' : 'received'} ${!message.read && message.coachId !== coachId ? 'unread' : ''}`}
-                onClick={() => !message.read && message.coachId !== coachId && handleMarkAsRead(message.id)}
+                className={`message ${message.coachId === (isCoach ? coachId : 'athlete') ? 'sent' : 'received'} ${!message.read && message.coachId !== (isCoach ? coachId : 'athlete') ? 'unread' : ''}`}
+                onClick={() => !message.read && message.coachId !== (isCoach ? coachId : 'athlete') && handleMarkAsRead(message.id)}
               >
                 <div className="message-content">
                   <div className="message-header">
@@ -167,7 +178,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                       {getMessageTypeIcon(message.type)}
                     </span>
                     <span className="message-sender">
-                      {message.coachId === coachId ? 'You' : message.coachName}
+                      {message.coachId === (isCoach ? coachId : 'athlete') ? 'You' : message.coachName}
                     </span>
                     <span className="message-time">
                       {formatTime(message.timestamp)}
@@ -182,7 +193,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                     </div>
                   )}
                 </div>
-                {!message.read && message.coachId !== coachId && (
+                {!message.read && message.coachId !== (isCoach ? coachId : 'athlete') && (
                   <div className="unread-indicator"></div>
                 )}
               </div>
@@ -191,28 +202,26 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
           <div ref={messagesEndRef} />
         </div>
 
-        {isCoach && (
-          <div className="chat-input">
-            <div className="input-container">
-              <textarea
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Type your message..."
-                className="message-input"
-                rows={2}
-                disabled={false}
-              />
-              <button
-                onClick={handleSendMessage}
-                disabled={!newMessage.trim()}
-                className="send-btn"
-              >
-                <Send size={16} />
-              </button>
-            </div>
+        <div className="chat-input">
+          <div className="input-container">
+            <textarea
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Type your message..."
+              className="message-input"
+              rows={2}
+              disabled={false}
+            />
+            <button
+              onClick={handleSendMessage}
+              disabled={!newMessage.trim()}
+              className="send-btn"
+            >
+              <Send size={16} />
+            </button>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

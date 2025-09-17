@@ -196,6 +196,30 @@
         "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
         "coachName": "udaykumar",
         "sessionId": "f3a5f4e5"
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 100,
+        "durationSec": 18.099,
+        "timestamp": "2025-09-17T22:21:13.649826Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Athlete",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "d0e6e6ce"
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 100,
+        "durationSec": 18.099,
+        "timestamp": "2025-09-17T22:21:13.649826Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "d0e6e6ce"
       }
     ]
   }
