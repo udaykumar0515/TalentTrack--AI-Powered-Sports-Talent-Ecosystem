@@ -54,10 +54,62 @@ const SessionRecordingGallery: React.FC<SessionRecordingGalleryProps> = ({
         sessionData = await getSessions(athleteId);
       }
       
+      // Add test video URL to all sessions for testing
+      sessionData = sessionData.map(session => ({
+        ...session,
+        videoUrl: '/test-video.mp4',
+        thumbnailUrl: '/test-video.mp4' // Using video as thumbnail for now
+      }));
+      
       setSessions(sessionData);
     } catch (error) {
       console.error('Error loading sessions:', error);
-      setSessions([]);
+      // Create some test sessions for demonstration
+      const testSessions: SessionData[] = [
+        {
+          sessionId: 'test-session-1',
+          athleteId: athleteId || 'test-athlete',
+          athleteName: 'Test Athlete',
+          coachId: coachId,
+          coachName: 'Test Coach',
+          exercise: 'squat',
+          timestamp: new Date().toISOString(),
+          durationSec: 45,
+          reps: 15,
+          formScore: 85,
+          videoUrl: '/test-video.mp4',
+          thumbnailUrl: '/test-video.mp4'
+        },
+        {
+          sessionId: 'test-session-2',
+          athleteId: athleteId || 'test-athlete',
+          athleteName: 'Test Athlete',
+          coachId: coachId,
+          coachName: 'Test Coach',
+          exercise: 'jumping_jack',
+          timestamp: new Date(Date.now() - 86400000).toISOString(), // Yesterday
+          durationSec: 30,
+          reps: 25,
+          formScore: 72,
+          videoUrl: '/test-video.mp4',
+          thumbnailUrl: '/test-video.mp4'
+        },
+        {
+          sessionId: 'test-session-3',
+          athleteId: athleteId || 'test-athlete',
+          athleteName: 'Test Athlete',
+          coachId: coachId,
+          coachName: 'Test Coach',
+          exercise: 'pushup',
+          timestamp: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
+          durationSec: 60,
+          reps: 20,
+          formScore: 68,
+          videoUrl: '/test-video.mp4',
+          thumbnailUrl: '/test-video.mp4'
+        }
+      ];
+      setSessions(testSessions);
     } finally {
       setLoading(false);
     }
@@ -221,7 +273,10 @@ const SessionRecordingGallery: React.FC<SessionRecordingGalleryProps> = ({
                   controls
                   className="session-video"
                   poster={selectedSession.thumbnailUrl}
-                />
+                  preload="metadata"
+                >
+                  Your browser does not support the video tag.
+                </video>
               ) : (
                 <div className="no-video">
                   <Play size={48} />

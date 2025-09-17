@@ -988,6 +988,11 @@ button:disabled {
   object-fit: cover;
 }
 
+.thumbnail-image[src$=".mp4"] {
+  /* For video files used as thumbnails, show first frame */
+  object-position: center;
+}
+
 .thumbnail-placeholder {
   width: 100%;
   height: 100%;
