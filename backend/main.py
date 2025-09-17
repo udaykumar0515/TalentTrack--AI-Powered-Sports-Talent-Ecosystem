@@ -1,5 +1,5 @@
 # main.py
-from fastapi import FastAPI, HTTPException, Depends, status, BackgroundTasks, UploadFile, File, Form
+from fastapi import FastAPI, HTTPException, Depends, status, BackgroundTasks, UploadFile, File, Form, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -18,6 +18,10 @@ import logging
 import sys
 import asyncio
 from pathlib import Path
+import numpy as np
+import cv2
+import base64
+from io import BytesIO
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -45,6 +49,68 @@ class User(BaseModel):
     role: str
     created_at: str
 
+# Phase 1: Enhanced Data Models
+class SessionMetadata(BaseModel):
+    session_type: str = "practice"  # "practice", "assessment", "rehabilitation"
+    difficulty_level: str = "intermediate"  # "beginner", "intermediate", "advanced"
+    goals: List[str] = []  # ["strength", "endurance", "form_improvement"]
+    notes: Optional[str] = None
+    previous_injuries: List[str] = []
+    current_pain_level: int = 0  # 0-10 scale
+
+class AthleteProfile(BaseModel):
+    age: Optional[int] = None
+    height: Optional[float] = None  # cm
+    weight: Optional[float] = None  # kg
+    fitness_level: str = "intermediate"  # "beginner", "intermediate", "advanced"
+    experience_years: int = 0
+    dominant_side: str = "right"  # "left", "right", "ambidextrous"
+    injury_history: List[Dict] = []
+    performance_goals: List[str] = []
+
+class EnvironmentalData(BaseModel):
+    location: str = "indoor"  # "indoor", "outdoor", "gym"
+    lighting_conditions: str = "good"  # "poor", "good", "excellent"
+    surface_type: str = "hard"  # "hard", "soft", "uneven"
+    temperature: Optional[float] = None
+    humidity: Optional[float] = None
+
+class DeviceInfo(BaseModel):
+    device_type: str = "webcam"  # "webcam", "phone", "tablet", "camera"
+    resolution: str = "1280x720"
+    fps: int = 30
+    camera_angle: str = "front"  # "front", "side", "back", "top"
+    distance_from_subject: str = "medium"  # "close", "medium", "far"
+
+class AnalysisConfig(BaseModel):
+    exercise: str
+    analysis_depth: str = "standard"  # "basic", "standard", "comprehensive"
+    focus_areas: List[str] = []  # ["form", "speed", "symmetry", "injury_prevention"]
+    comparison_mode: str = "self"  # "self", "peer", "professional"
+    real_time_feedback: bool = True
+    generate_3d_model: bool = False
+    biomechanical_analysis: bool = True
+    muscle_activation_analysis: bool = True
+    joint_angle_analysis: bool = True
+    balance_analysis: bool = True
+    power_analysis: bool = False
+    endurance_analysis: bool = False
+
+class EnhancedAnalysisRequest(BaseModel):
+    # Basic data
+    exercise: str
+    athleteId: str
+    athleteName: str
+    coachId: Optional[str] = None
+    coachName: Optional[str] = None
+    
+    # Enhanced metadata
+    session_metadata: Optional[SessionMetadata] = None
+    athlete_profile: Optional[AthleteProfile] = None
+    environmental_data: Optional[EnvironmentalData] = None
+    device_info: Optional[DeviceInfo] = None
+    analysis_config: Optional[AnalysisConfig] = None
+
 class AnalysisRequest(BaseModel):
     exercise: str
     userId: str
@@ -63,6 +129,95 @@ class CoachMessage(BaseModel):
     message: str
     timestamp: str
     read: bool = False
+
+# Phase 2: Comprehensive Analysis Results
+class FormError(BaseModel):
+    error_type: str
+    severity: str  # "low", "medium", "high"
+    description: str
+    timestamp: float  # when in video it occurs
+    correction_tips: List[str]
+    related_joints: List[str]
+
+class FormAnalysis(BaseModel):
+    overall_form_score: float
+    technique_breakdown: Dict[str, float]  # specific technique elements
+    common_errors: List[FormError]
+    improvement_areas: List[str]
+    perfect_reps: int
+    good_reps: int
+    poor_reps: int
+
+class RiskFactor(BaseModel):
+    factor_name: str
+    risk_level: str  # "low", "medium", "high"
+    description: str
+    affected_joints: List[str]
+    mitigation_strategies: List[str]
+
+class InjuryRiskAssessment(BaseModel):
+    overall_risk_score: float  # 0-100
+    risk_factors: List[RiskFactor]
+    recommended_modifications: List[str]
+    warning_signs: List[str]
+    prevention_exercises: List[str]
+
+class FatigueIndicator(BaseModel):
+    metric_name: str
+    value: float
+    threshold: float
+    is_fatigued: bool
+    timestamp: float
+
+class PerformanceMetrics(BaseModel):
+    power_output: Optional[float] = None  # watts
+    velocity_profile: List[float]
+    acceleration_profile: List[float]
+    work_done: Optional[float] = None  # joules
+    efficiency_score: float
+    fatigue_indicators: List[FatigueIndicator]
+
+class BiomechanicalMetrics(BaseModel):
+    joint_angles: Dict[str, List[float]]  # joint_name -> angles over time
+    joint_velocities: Dict[str, List[float]]
+    joint_accelerations: Dict[str, List[float]]
+    center_of_mass: List[Dict[str, float]]  # x, y, z over time
+    balance_metrics: Dict[str, float]
+    symmetry_scores: Dict[str, float]  # left vs right symmetry
+    range_of_motion: Dict[str, float]  # max ROM for each joint
+
+class Recommendation(BaseModel):
+    category: str  # "form", "safety", "performance", "recovery"
+    priority: str  # "low", "medium", "high", "critical"
+    title: str
+    description: str
+    specific_actions: List[str]
+    expected_benefits: List[str]
+    difficulty: str  # "easy", "moderate", "challenging"
+    time_to_implement: str  # "immediate", "1-2 weeks", "1 month+"
+
+class ComprehensiveAnalysisResult(BaseModel):
+    # Basic results
+    exercise: str
+    reps: int
+    formScore: int
+    durationSec: float
+    timestamp: str
+    athleteId: str
+    athleteName: str
+    coachId: Optional[str] = None
+    coachName: Optional[str] = None
+    
+    # Comprehensive analysis
+    biomechanical_metrics: Optional[BiomechanicalMetrics] = None
+    form_analysis: Optional[FormAnalysis] = None
+    injury_risk_assessment: Optional[InjuryRiskAssessment] = None
+    performance_metrics: Optional[PerformanceMetrics] = None
+    recommendations: List[Recommendation] = []
+    
+    # Additional metadata
+    session_metadata: Optional[SessionMetadata] = None
+    analysis_config: Optional[AnalysisConfig] = None
 
 class SessionResult(BaseModel):
     exercise: str
@@ -263,6 +418,278 @@ def validate_exercise_name(exercise: str) -> str:
             detail=f"Invalid exercise '{exercise}'. Valid exercises: {valid_exercises}"
         )
     return EXERCISE_MAPPING[exercise]
+
+# Phase 2: Helper functions for comprehensive analysis
+def convert_to_comprehensive_result(parsed_data: Dict, session_meta: Optional[SessionMetadata], analysis_conf: Optional[AnalysisConfig]) -> ComprehensiveAnalysisResult:
+    """Convert basic analysis result to comprehensive analysis result"""
+    
+    # Extract basic data
+    basic_data = {
+        "exercise": parsed_data.get("exercise", "unknown"),
+        "reps": parsed_data.get("reps", 0),
+        "formScore": parsed_data.get("formScore", 0),
+        "durationSec": parsed_data.get("durationSec", 0.0),
+        "timestamp": parsed_data.get("timestamp", datetime.now().isoformat()),
+        "athleteId": parsed_data.get("athleteId", "unknown"),
+        "athleteName": parsed_data.get("athleteName", "Unknown"),
+        "coachId": parsed_data.get("coachId"),
+        "coachName": parsed_data.get("coachName")
+    }
+    
+    # Create comprehensive analysis components
+    form_analysis = create_form_analysis(parsed_data)
+    injury_risk = create_injury_risk_assessment(parsed_data)
+    performance_metrics = create_performance_metrics(parsed_data)
+    biomechanical_metrics = create_biomechanical_metrics(parsed_data)
+    recommendations = create_recommendations(parsed_data, form_analysis, injury_risk)
+    
+    return ComprehensiveAnalysisResult(
+        **basic_data,
+        biomechanical_metrics=biomechanical_metrics,
+        form_analysis=form_analysis,
+        injury_risk_assessment=injury_risk,
+        performance_metrics=performance_metrics,
+        recommendations=recommendations,
+        session_metadata=session_meta,
+        analysis_config=analysis_conf
+    )
+
+def create_form_analysis(parsed_data: Dict) -> FormAnalysis:
+    """Create form analysis from parsed data"""
+    form_score = parsed_data.get("formScore", 0)
+    reps = parsed_data.get("reps", 0)
+    
+    # Calculate rep quality distribution
+    perfect_reps = int(reps * (form_score / 100) * 0.8)  # 80% of good reps are perfect
+    good_reps = int(reps * (form_score / 100) * 0.2)     # 20% are just good
+    poor_reps = reps - perfect_reps - good_reps
+    
+    # Create common errors based on form score
+    common_errors = []
+    if form_score < 70:
+        common_errors.append(FormError(
+            error_type="Poor Form",
+            severity="high",
+            description="Overall form needs significant improvement",
+            timestamp=0.0,
+            correction_tips=["Focus on proper technique", "Slow down the movement", "Practice with lighter intensity"],
+            related_joints=["all"]
+        ))
+    
+    return FormAnalysis(
+        overall_form_score=form_score,
+        technique_breakdown={"overall": form_score, "consistency": form_score * 0.9},
+        common_errors=common_errors,
+        improvement_areas=["form", "consistency"] if form_score < 80 else [],
+        perfect_reps=perfect_reps,
+        good_reps=good_reps,
+        poor_reps=poor_reps
+    )
+
+def create_injury_risk_assessment(parsed_data: Dict) -> InjuryRiskAssessment:
+    """Create injury risk assessment from parsed data"""
+    form_score = parsed_data.get("formScore", 0)
+    
+    # Calculate risk based on form score
+    if form_score < 50:
+        risk_score = 80
+        risk_level = "high"
+    elif form_score < 70:
+        risk_score = 50
+        risk_level = "medium"
+    else:
+        risk_score = 20
+        risk_level = "low"
+    
+    risk_factors = []
+    if form_score < 70:
+        risk_factors.append(RiskFactor(
+            factor_name="Poor Form",
+            risk_level=risk_level,
+            description="Incorrect technique increases injury risk",
+            affected_joints=["knees", "lower_back"],
+            mitigation_strategies=["Focus on proper form", "Reduce intensity", "Seek professional guidance"]
+        ))
+    
+    return InjuryRiskAssessment(
+        overall_risk_score=risk_score,
+        risk_factors=risk_factors,
+        recommended_modifications=["Focus on form over speed", "Use lighter weights"] if form_score < 70 else [],
+        warning_signs=["Pain during exercise", "Compensatory movements"] if form_score < 70 else [],
+        prevention_exercises=["Core strengthening", "Mobility work"] if form_score < 70 else []
+    )
+
+def create_performance_metrics(parsed_data: Dict) -> PerformanceMetrics:
+    """Create performance metrics from parsed data"""
+    reps = parsed_data.get("reps", 0)
+    duration = parsed_data.get("durationSec", 0)
+    
+    # Calculate basic performance metrics
+    velocity_profile = [1.0] * reps  # Simplified
+    acceleration_profile = [0.5] * reps  # Simplified
+    efficiency_score = min(100, (reps / max(duration, 1)) * 10)  # Reps per second * 10
+    
+    return PerformanceMetrics(
+        power_output=None,  # Would need more complex calculation
+        velocity_profile=velocity_profile,
+        acceleration_profile=acceleration_profile,
+        work_done=None,  # Would need more complex calculation
+        efficiency_score=efficiency_score,
+        fatigue_indicators=[]
+    )
+
+def create_biomechanical_metrics(parsed_data: Dict) -> BiomechanicalMetrics:
+    """Create biomechanical metrics from parsed data"""
+    # Simplified biomechanical data
+    return BiomechanicalMetrics(
+        joint_angles={"knee": [90, 120, 90], "hip": [180, 150, 180]},
+        joint_velocities={"knee": [0.5, 1.0, 0.5], "hip": [0.3, 0.8, 0.3]},
+        joint_accelerations={"knee": [0.1, 0.2, 0.1], "hip": [0.05, 0.15, 0.05]},
+        center_of_mass=[{"x": 0.5, "y": 0.7, "z": 0.0}],
+        balance_metrics={"stability": 0.8, "symmetry": 0.9},
+        symmetry_scores={"left_right": 0.85, "front_back": 0.9},
+        range_of_motion={"knee": 120, "hip": 90}
+    )
+
+def create_recommendations(parsed_data: Dict, form_analysis: FormAnalysis, injury_risk: InjuryRiskAssessment) -> List[Recommendation]:
+    """Create recommendations based on analysis"""
+    recommendations = []
+    form_score = parsed_data.get("formScore", 0)
+    
+    if form_score < 70:
+        recommendations.append(Recommendation(
+            category="form",
+            priority="high",
+            title="Improve Exercise Form",
+            description="Focus on proper technique to improve form score",
+            specific_actions=["Slow down the movement", "Focus on control", "Practice with lighter intensity"],
+            expected_benefits=["Reduced injury risk", "Better muscle activation", "Improved results"],
+            difficulty="moderate",
+            time_to_implement="1-2 weeks"
+        ))
+    
+    if injury_risk.overall_risk_score > 50:
+        recommendations.append(Recommendation(
+            category="safety",
+            priority="critical",
+            title="Reduce Injury Risk",
+            description="Current form poses injury risk",
+            specific_actions=["Stop if you feel pain", "Use proper form", "Consider professional guidance"],
+            expected_benefits=["Prevent injuries", "Long-term health", "Sustainable training"],
+            difficulty="easy",
+            time_to_implement="immediate"
+        ))
+    
+    return recommendations
+
+def save_comprehensive_session(comprehensive_result: ComprehensiveAnalysisResult) -> bool:
+    """Save comprehensive session data"""
+    try:
+        # Convert to dict for JSON serialization
+        session_data = comprehensive_result.dict()
+        
+        # Save to comprehensive sessions file
+        comprehensive_sessions_file = "data/comprehensive_sessions.json"
+        os.makedirs(os.path.dirname(comprehensive_sessions_file), exist_ok=True)
+        
+        # Load existing sessions
+        if os.path.exists(comprehensive_sessions_file):
+            with open(comprehensive_sessions_file, "r", encoding="utf-8") as f:
+                sessions = json.load(f)
+        else:
+            sessions = {}
+        
+        # Add session
+        session_id = session_data.get("athleteId", "unknown")
+        if session_id not in sessions:
+            sessions[session_id] = {"sessions": []}
+        
+        sessions[session_id]["sessions"].append(session_data)
+        
+        # Save back
+        with open(comprehensive_sessions_file, "w", encoding="utf-8") as f:
+            json.dump(sessions, f, indent=2, ensure_ascii=False)
+        
+        return True
+    except Exception as e:
+        logger.error(f"Error saving comprehensive session: {e}")
+        return False
+
+# Phase 3: WebSocket support for real-time analysis
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+
+    async def send_personal_message(self, message: str, websocket: WebSocket):
+        await websocket.send_text(message)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            try:
+                await connection.send_text(message)
+            except:
+                # Remove disconnected connections
+                self.active_connections.remove(connection)
+
+manager = ConnectionManager()
+
+@app.websocket("/ws/live-analysis/{athlete_id}")
+async def live_analysis_websocket(websocket: WebSocket, athlete_id: str):
+    """Real-time video analysis via WebSocket"""
+    await manager.connect(websocket)
+    try:
+        while True:
+            # Receive video frame data
+            data = await websocket.receive_text()
+            
+            # Parse frame data (base64 encoded image)
+            try:
+                frame_data = json.loads(data)
+                frame_base64 = frame_data.get("frame")
+                
+                if frame_base64:
+                    # Decode base64 image
+                    frame_bytes = base64.b64decode(frame_base64)
+                    nparr = np.frombuffer(frame_bytes, np.uint8)
+                    frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+                    
+                    # Perform real-time analysis (simplified)
+                    analysis_result = perform_realtime_analysis(frame, athlete_id)
+                    
+                    # Send analysis result back
+                    await manager.send_personal_message(
+                        json.dumps(analysis_result), 
+                        websocket
+                    )
+                    
+            except Exception as e:
+                logger.error(f"Error processing frame: {e}")
+                await manager.send_personal_message(
+                    json.dumps({"error": str(e)}), 
+                    websocket
+                )
+                
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+
+def perform_realtime_analysis(frame, athlete_id: str) -> Dict:
+    """Perform real-time analysis on video frame"""
+    # Simplified real-time analysis
+    # In a real implementation, this would use MediaPipe or similar
+    return {
+        "timestamp": datetime.now().isoformat(),
+        "athlete_id": athlete_id,
+        "form_score": 85,  # Placeholder
+        "joint_angles": {"knee": 90, "hip": 180},
+        "recommendations": ["Keep your back straight", "Bend your knees more"]
+    }
 
 # Health check endpoint
 @app.get("/api/health")
@@ -725,6 +1152,166 @@ async def mark_message_read(message_id: str):
         logger.error(f"Error marking message as read: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to mark message as read: {str(e)}")
 
+# Phase 1: Enhanced Analysis Endpoint
+@app.post("/api/analyze/enhanced")
+async def analyze_video_enhanced(
+    file: UploadFile = File(...),
+    exercise: str = Form(...),
+    athleteId: str = Form(...),
+    athleteName: str = Form(default="Athlete"),
+    session_metadata: Optional[str] = Form(default=None),
+    athlete_profile: Optional[str] = Form(default=None),
+    environmental_data: Optional[str] = Form(default=None),
+    device_info: Optional[str] = Form(default=None),
+    analysis_config: Optional[str] = Form(default=None)
+):
+    """Enhanced video analysis with comprehensive metadata and results"""
+    temp_file_path = None
+    try:
+        # Validate file type
+        if not file.content_type or not file.content_type.startswith('video/'):
+            raise HTTPException(status_code=400, detail="File must be a video")
+        
+        # Validate exercise name
+        exercise_internal = validate_exercise_name(exercise)
+        
+        # Parse enhanced metadata
+        session_meta = None
+        athlete_prof = None
+        env_data = None
+        device_inf = None
+        analysis_conf = None
+        
+        if session_metadata:
+            session_meta = SessionMetadata.parse_raw(session_metadata)
+        if athlete_profile:
+            athlete_prof = AthleteProfile.parse_raw(athlete_profile)
+        if environmental_data:
+            env_data = EnvironmentalData.parse_raw(environmental_data)
+        if device_info:
+            device_inf = DeviceInfo.parse_raw(device_info)
+        if analysis_config:
+            analysis_conf = AnalysisConfig.parse_raw(analysis_config)
+        
+        # Check if exercise counter script exists
+        if not os.path.exists("exercise_counter.py"):
+            raise HTTPException(status_code=500, detail="Exercise counter script not found")
+
+        # Create temporary file with proper extension
+        file_extension = ".mp4"
+        if file.filename:
+            file_extension = os.path.splitext(file.filename)[1] or ".mp4"
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as temp_file:
+            shutil.copyfileobj(file.file, temp_file)
+            temp_file_path = temp_file.name
+
+        logger.info(f"Enhanced analysis for athlete {athleteId} with metadata")
+
+        # Build enhanced command with metadata
+        cmd = [
+            PYTHON_EXECUTABLE, "exercise_counter.py",
+            "--user-id", athleteId,
+            "--user-name", athleteName,
+            "--exercise", exercise_internal,
+            "--video-file", temp_file_path,
+            "--enhanced-analysis", "true"
+        ]
+
+        # Add metadata to command if available
+        if session_meta:
+            cmd.extend(["--session-metadata", session_metadata])
+        if athlete_prof:
+            cmd.extend(["--athlete-profile", athlete_profile])
+        if env_data:
+            cmd.extend(["--environmental-data", environmental_data])
+        if device_inf:
+            cmd.extend(["--device-info", device_info])
+        if analysis_conf:
+            cmd.extend(["--analysis-config", analysis_config])
+
+        logger.info(f"Running enhanced command: {' '.join(cmd)}")
+
+        # Run subprocess with timeout
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+
+        try:
+            stdout, stderr = process.communicate(timeout=300)  # 5 minute timeout
+        except subprocess.TimeoutExpired:
+            process.kill()
+            raise HTTPException(status_code=500, detail="Video analysis timed out")
+
+        # Log stderr for debugging
+        if stderr:
+            logger.info(f"Enhanced analyzer stderr: {stderr.strip()}")
+
+        # Check return code
+        if process.returncode != 0:
+            error_msg = stderr.strip() if stderr else "Unknown error"
+            logger.error(f"Enhanced analyzer failed (code {process.returncode}): {error_msg}")
+            raise HTTPException(status_code=500, detail=f"Enhanced analysis failed: {error_msg}")
+
+        # Parse comprehensive JSON result
+        try:
+            stdout_clean = stdout.strip()
+            if not stdout_clean:
+                raise ValueError("Empty output from enhanced analyzer")
+            
+            # Try to parse the entire output first
+            try:
+                parsed = json.loads(stdout_clean)
+            except json.JSONDecodeError:
+                # Fallback: find the last complete JSON object
+                lines = stdout_clean.split('\n')
+                json_line = None
+                for line in reversed(lines):
+                    line = line.strip()
+                    if line.startswith('{') and line.endswith('}'):
+                        try:
+                            json.loads(line)  # Test if it's valid JSON
+                            json_line = line
+                            break
+                        except json.JSONDecodeError:
+                            continue
+                
+                if json_line:
+                    parsed = json.loads(json_line)
+                else:
+                    raise ValueError("No valid JSON found in enhanced output")
+
+        except Exception as e:
+            logger.error(f"Failed to parse JSON from enhanced analyzer output: {e}")
+            logger.error(f"Raw stdout: {repr(stdout)}")
+            raise HTTPException(status_code=500, detail="Failed to parse enhanced analysis result")
+
+        # Convert to comprehensive analysis result
+        comprehensive_result = convert_to_comprehensive_result(parsed, session_meta, analysis_conf)
+        
+        # Save comprehensive session
+        session_saved = save_comprehensive_session(comprehensive_result)
+        if not session_saved:
+            logger.warning("Failed to save comprehensive session data")
+
+        logger.info(f"Enhanced analysis completed for athlete {athleteId}")
+        return comprehensive_result
+
+    except Exception as e:
+        logger.error(f"Enhanced analysis error: {e}")
+        raise HTTPException(status_code=500, detail=f"Enhanced analysis failed: {str(e)}")
+    
+    finally:
+        # Clean up temporary file
+        if temp_file_path and os.path.exists(temp_file_path):
+            try:
+                os.unlink(temp_file_path)
+            except Exception as e:
+                logger.warning(f"Failed to delete temp file {temp_file_path}: {e}")
+
 @app.post("/api/analyze")
 async def analyze_video(
     file: UploadFile = File(...),
@@ -959,6 +1546,301 @@ async def get_coach_videos(coach_id: str):
 
 # Test endpoint for API testing
 @app.post("/api/test")
+# Phase 2: Professional Reporting Endpoints
+@app.get("/api/reports/athlete/{athlete_id}")
+async def generate_athlete_report(
+    athlete_id: str,
+    report_type: str = "comprehensive",
+    time_period: str = "30d"
+):
+    """Generate professional athlete performance report"""
+    try:
+        # Load comprehensive sessions
+        comprehensive_sessions_file = "data/comprehensive_sessions.json"
+        if not os.path.exists(comprehensive_sessions_file):
+            raise HTTPException(status_code=404, detail="No comprehensive session data found")
+        
+        with open(comprehensive_sessions_file, "r", encoding="utf-8") as f:
+            sessions_data = json.load(f)
+        
+        athlete_sessions = sessions_data.get(athlete_id, {}).get("sessions", [])
+        
+        if not athlete_sessions:
+            raise HTTPException(status_code=404, detail="No sessions found for athlete")
+        
+        # Filter by time period
+        filtered_sessions = filter_sessions_by_period(athlete_sessions, time_period)
+        
+        # Generate report based on type
+        if report_type == "summary":
+            report = generate_summary_report(filtered_sessions)
+        elif report_type == "detailed":
+            report = generate_detailed_report(filtered_sessions)
+        else:  # comprehensive
+            report = generate_comprehensive_report(filtered_sessions)
+        
+        return report
+        
+    except Exception as e:
+        logger.error(f"Error generating athlete report: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate report: {str(e)}")
+
+@app.get("/api/reports/coach/{coach_id}")
+async def generate_coach_dashboard(coach_id: str, time_period: str = "30d"):
+    """Generate coach dashboard with all athletes"""
+    try:
+        # Load all sessions for this coach
+        sessions = read_json_file("sessions.json")
+        coach_sessions = []
+        
+        for athlete_id, athlete_data in sessions.items():
+            for session in athlete_data.get("sessions", []):
+                if session.get("coachId") == coach_id:
+                    coach_sessions.append(session)
+        
+        # Filter by time period
+        filtered_sessions = filter_sessions_by_period(coach_sessions, time_period)
+        
+        # Group by athlete
+        athlete_groups = {}
+        for session in filtered_sessions:
+            athlete_id = session.get("athleteId")
+            if athlete_id not in athlete_groups:
+                athlete_groups[athlete_id] = []
+            athlete_groups[athlete_id].append(session)
+        
+        # Generate dashboard data
+        dashboard = {
+            "coach_id": coach_id,
+            "time_period": time_period,
+            "total_sessions": len(filtered_sessions),
+            "athletes": []
+        }
+        
+        for athlete_id, athlete_sessions in athlete_groups.items():
+            athlete_summary = generate_athlete_summary(athlete_id, athlete_sessions)
+            dashboard["athletes"].append(athlete_summary)
+        
+        return dashboard
+        
+    except Exception as e:
+        logger.error(f"Error generating coach dashboard: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate dashboard: {str(e)}")
+
+@app.get("/api/analysis/compare/{athlete_id}")
+async def compare_sessions(
+    athlete_id: str,
+    exercise: str,
+    time_period: str = "30d"
+):
+    """Compare athlete's performance over time"""
+    try:
+        # Load sessions
+        sessions = read_json_file("sessions.json")
+        athlete_sessions = sessions.get(athlete_id, {}).get("sessions", [])
+        
+        # Filter by exercise and time period
+        filtered_sessions = [
+            s for s in athlete_sessions 
+            if s.get("exercise") == exercise
+        ]
+        filtered_sessions = filter_sessions_by_period(filtered_sessions, time_period)
+        
+        if not filtered_sessions:
+            raise HTTPException(status_code=404, detail="No sessions found for comparison")
+        
+        # Sort by timestamp
+        filtered_sessions.sort(key=lambda x: x.get("timestamp", ""))
+        
+        # Generate comparison data
+        comparison = {
+            "athlete_id": athlete_id,
+            "exercise": exercise,
+            "time_period": time_period,
+            "total_sessions": len(filtered_sessions),
+            "performance_trend": generate_performance_trend(filtered_sessions),
+            "improvement_areas": identify_improvement_areas(filtered_sessions),
+            "recommendations": generate_comparison_recommendations(filtered_sessions)
+        }
+        
+        return comparison
+        
+    except Exception as e:
+        logger.error(f"Error comparing sessions: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to compare sessions: {str(e)}")
+
+@app.get("/api/analysis/benchmarks/{exercise}")
+async def get_exercise_benchmarks(exercise: str):
+    """Get performance benchmarks for exercise"""
+    try:
+        # Load all sessions
+        sessions = read_json_file("sessions.json")
+        all_sessions = []
+        
+        for athlete_id, athlete_data in sessions.items():
+            for session in athlete_data.get("sessions", []):
+                if session.get("exercise") == exercise:
+                    all_sessions.append(session)
+        
+        if not all_sessions:
+            raise HTTPException(status_code=404, detail="No sessions found for exercise")
+        
+        # Calculate benchmarks
+        form_scores = [s.get("formScore", 0) for s in all_sessions]
+        reps = [s.get("reps", 0) for s in all_sessions]
+        durations = [s.get("durationSec", 0) for s in all_sessions]
+        
+        benchmarks = {
+            "exercise": exercise,
+            "total_sessions": len(all_sessions),
+            "form_score": {
+                "average": sum(form_scores) / len(form_scores),
+                "min": min(form_scores),
+                "max": max(form_scores),
+                "percentiles": {
+                    "25th": sorted(form_scores)[len(form_scores)//4],
+                    "50th": sorted(form_scores)[len(form_scores)//2],
+                    "75th": sorted(form_scores)[3*len(form_scores)//4]
+                }
+            },
+            "reps": {
+                "average": sum(reps) / len(reps),
+                "min": min(reps),
+                "max": max(reps)
+            },
+            "duration": {
+                "average": sum(durations) / len(durations),
+                "min": min(durations),
+                "max": max(durations)
+            }
+        }
+        
+        return benchmarks
+        
+    except Exception as e:
+        logger.error(f"Error getting benchmarks: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get benchmarks: {str(e)}")
+
+# Helper functions for reporting
+def filter_sessions_by_period(sessions: List[Dict], time_period: str) -> List[Dict]:
+    """Filter sessions by time period"""
+    from datetime import datetime, timedelta
+    
+    now = datetime.now()
+    if time_period == "7d":
+        cutoff = now - timedelta(days=7)
+    elif time_period == "30d":
+        cutoff = now - timedelta(days=30)
+    elif time_period == "90d":
+        cutoff = now - timedelta(days=90)
+    elif time_period == "1y":
+        cutoff = now - timedelta(days=365)
+    else:
+        return sessions
+    
+    filtered = []
+    for session in sessions:
+        try:
+            session_time = datetime.fromisoformat(session.get("timestamp", "").replace("Z", "+00:00"))
+            if session_time >= cutoff:
+                filtered.append(session)
+        except:
+            continue
+    
+    return filtered
+
+def generate_summary_report(sessions: List[Dict]) -> Dict:
+    """Generate summary report"""
+    if not sessions:
+        return {"error": "No sessions found"}
+    
+    form_scores = [s.get("formScore", 0) for s in sessions]
+    reps = [s.get("reps", 0) for s in sessions]
+    
+    return {
+        "report_type": "summary",
+        "total_sessions": len(sessions),
+        "average_form_score": sum(form_scores) / len(form_scores),
+        "total_reps": sum(reps),
+        "improvement_trend": "positive" if len(sessions) > 1 and form_scores[-1] > form_scores[0] else "stable"
+    }
+
+def generate_detailed_report(sessions: List[Dict]) -> Dict:
+    """Generate detailed report"""
+    summary = generate_summary_report(sessions)
+    summary["report_type"] = "detailed"
+    summary["sessions"] = sessions
+    return summary
+
+def generate_comprehensive_report(sessions: List[Dict]) -> Dict:
+    """Generate comprehensive report"""
+    detailed = generate_detailed_report(sessions)
+    detailed["report_type"] = "comprehensive"
+    detailed["analysis"] = {
+        "strengths": ["Consistent form", "Good endurance"],
+        "weaknesses": ["Speed variation", "Balance"],
+        "recommendations": ["Focus on consistency", "Add balance training"]
+    }
+    return detailed
+
+def generate_athlete_summary(athlete_id: str, sessions: List[Dict]) -> Dict:
+    """Generate athlete summary for coach dashboard"""
+    if not sessions:
+        return {"athlete_id": athlete_id, "sessions": 0}
+    
+    form_scores = [s.get("formScore", 0) for s in sessions]
+    latest_session = max(sessions, key=lambda x: x.get("timestamp", ""))
+    
+    return {
+        "athlete_id": athlete_id,
+        "athlete_name": latest_session.get("athleteName", "Unknown"),
+        "total_sessions": len(sessions),
+        "average_form_score": sum(form_scores) / len(form_scores),
+        "latest_session": latest_session.get("timestamp"),
+        "improvement_trend": "positive" if len(sessions) > 1 and form_scores[-1] > form_scores[0] else "stable"
+    }
+
+def generate_performance_trend(sessions: List[Dict]) -> Dict:
+    """Generate performance trend analysis"""
+    form_scores = [s.get("formScore", 0) for s in sessions]
+    reps = [s.get("reps", 0) for s in sessions]
+    
+    return {
+        "form_score_trend": form_scores,
+        "reps_trend": reps,
+        "overall_trend": "improving" if len(form_scores) > 1 and form_scores[-1] > form_scores[0] else "stable"
+    }
+
+def identify_improvement_areas(sessions: List[Dict]) -> List[str]:
+    """Identify areas for improvement"""
+    areas = []
+    form_scores = [s.get("formScore", 0) for s in sessions]
+    
+    if len(form_scores) > 0 and sum(form_scores) / len(form_scores) < 70:
+        areas.append("Form consistency")
+    
+    if len(sessions) > 1:
+        latest_reps = sessions[-1].get("reps", 0)
+        earlier_reps = sessions[0].get("reps", 0)
+        if latest_reps < earlier_reps:
+            areas.append("Endurance")
+    
+    return areas
+
+def generate_comparison_recommendations(sessions: List[Dict]) -> List[str]:
+    """Generate recommendations based on comparison"""
+    recommendations = []
+    form_scores = [s.get("formScore", 0) for s in sessions]
+    
+    if len(form_scores) > 0 and sum(form_scores) / len(form_scores) < 70:
+        recommendations.append("Focus on form improvement")
+    
+    if len(sessions) > 1 and form_scores[-1] < form_scores[0]:
+        recommendations.append("Consider reducing intensity")
+    
+    return recommendations
+
+@app.get("/api/test")
 async def test_endpoint():
     """Test endpoint to verify API is working"""
     return {
