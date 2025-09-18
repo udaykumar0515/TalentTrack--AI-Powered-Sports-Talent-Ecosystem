@@ -502,6 +502,58 @@
         "sessionId": "3bd03013",
         "videoUrl": "/api/videos/3bd03013",
         "thumbnailUrl": "/api/videos/3bd03013"
+      },
+      {
+        "exercise": "squat",
+        "reps": 10,
+        "formScore": 100,
+        "durationSec": 26.376,
+        "timestamp": "2025-09-18T19:24:03.097454Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "811d604d"
+      },
+      {
+        "exercise": "squat",
+        "reps": 10,
+        "formScore": 100,
+        "durationSec": 26.376,
+        "timestamp": "2025-09-18T19:24:03.097454Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "811d604d",
+        "videoUrl": "/api/videos/811d604d",
+        "thumbnailUrl": "/api/videos/811d604d"
+      },
+      {
+        "exercise": "squat",
+        "reps": 0,
+        "formScore": 0,
+        "durationSec": 2.436,
+        "timestamp": "2025-09-18T19:34:03.938533Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "ad8a4f28"
+      },
+      {
+        "exercise": "squat",
+        "reps": 0,
+        "formScore": 0,
+        "durationSec": 2.436,
+        "timestamp": "2025-09-18T19:34:03.938533Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "ad8a4f28",
+        "videoUrl": "/api/videos/ad8a4f28",
+        "thumbnailUrl": "/api/videos/ad8a4f28"
       }
     ]
   }

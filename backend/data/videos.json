@@ -1,12 +1,12 @@
 [
   {
-    "videoId": "017cf9bd-f07f-42b7-8ae4-bcab66327a92",
-    "sessionId": "3bd03013",
+    "videoId": "85229b77-e4dc-4d19-afaa-3fc2cd0c58eb",
+    "sessionId": "ad8a4f28",
     "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
     "athleteName": "Udaykumar_H",
     "exercise": "squat",
-    "videoPath": "videos\\athletes\\a4eeee47-f800-4930-9753-95e55ceebfdd\\3bd03013_squat_20250918_152215.mp4",
-    "uploadedAt": "2025-09-18T15:22:15.308126",
+    "videoPath": "videos\\athletes\\a4eeee47-f800-4930-9753-95e55ceebfdd\\ad8a4f28_squat_20250918_193404.mp4",
+    "uploadedAt": "2025-09-18T19:34:04.200673",
     "coachId": null,
     "coachName": null,
     "syncStatus": "synced"
