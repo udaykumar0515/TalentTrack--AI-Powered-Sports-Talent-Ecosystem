@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCoaches } from '../contexts/CoachContext';
 import VideoRecorder from './VideoRecorder';
@@ -21,6 +21,10 @@ const AthleteDashboard: React.FC = () => {
   const [selectedSessionForAnalysis, setSelectedSessionForAnalysis] = useState<any>(null);
   const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false);
   const [selectedSession, setSelectedSession] = useState<any>(null);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [cameraActive, setCameraActive] = useState(false);
 
   const exercises = [
     { value: 'squat', label: 'Squat' },
@@ -34,6 +38,38 @@ const AthleteDashboard: React.FC = () => {
     loadMessages();
     loadSelectedCoach();
   }, [user?.id]);
+
+  // Cleanup camera stream on unmount
+  useEffect(() => {
+    return () => {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [cameraStream]);
+
+  // Update video element when camera stream changes
+  useEffect(() => {
+    if (cameraStream && videoRef.current) {
+      console.log('Updating video element with camera stream');
+      const video = videoRef.current;
+      video.srcObject = cameraStream;
+      
+      // Ensure video plays
+      video.load();
+      video.play()
+        .then(() => {
+          console.log('Video started playing successfully');
+        })
+        .catch(e => {
+          console.log('Video play error:', e);
+          // Try again after a short delay
+          setTimeout(() => {
+            video.play().catch(console.log);
+          }, 100);
+        });
+    }
+  }, [cameraStream]);
 
   // Load selected coach from localStorage
   const loadSelectedCoach = () => {
@@ -68,13 +104,8 @@ const AthleteDashboard: React.FC = () => {
     try {
       const storedSessions = localStorage.getItem(`sessions_${user?.id}`) || '[]';
       const parsedSessions = JSON.parse(storedSessions);
-      // Add test video URL to all sessions for testing
-      const sessionsWithVideo = parsedSessions.map((session: any) => ({
-        ...session,
-        videoUrl: '/test-video.mp4',
-        thumbnailUrl: '/test-video.mp4'
-      }));
-      setSessions(sessionsWithVideo);
+      // Use actual video URLs from sessions, no default video
+      setSessions(parsedSessions);
     } catch (error) {
       console.error('Error loading sessions:', error);
     }
@@ -136,6 +167,66 @@ const AthleteDashboard: React.FC = () => {
   const handleStartAnalysis = () => {
     setIsAnalyzing(true);
   };
+
+  const handleOpenCamera = async () => {
+    try {
+      console.log('Requesting camera access...');
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { 
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          facingMode: 'user'
+        },
+        audio: false
+      });
+      
+      console.log('Camera access granted, setting up stream...');
+      setCameraStream(stream);
+      setCameraActive(true);
+      setCurrentVideoUrl(null);
+      
+    } catch (error: any) {
+      console.error('Error accessing camera:', error);
+      let errorMessage = 'Could not access camera. ';
+      
+      if (error.name === 'NotAllowedError') {
+        errorMessage += 'Please allow camera permissions and try again.';
+      } else if (error.name === 'NotFoundError') {
+        errorMessage += 'No camera found on this device.';
+      } else if (error.name === 'NotReadableError') {
+        errorMessage += 'Camera is being used by another application.';
+      } else {
+        errorMessage += 'Please check your camera settings and try again.';
+      }
+      
+      alert(errorMessage);
+    }
+  };
+
+  const handleStartRecording = () => {
+    // This will be handled by VideoRecorder component
+    console.log('Starting actual recording...');
+  };
+
+  const handleStopRecording = () => {
+    setCameraActive(false);
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(track => track.stop());
+      setCameraStream(null);
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+  };
+
+  const handleStartUploading = () => {
+    setCurrentVideoUrl(null);
+  };
+
+  const handleVideoReady = (videoUrl: string) => {
+    setCurrentVideoUrl(videoUrl);
+  };
+
 
   // Helper functions for formatting and status
   const getStatusClass = (formScore: number) => {
@@ -247,15 +338,57 @@ const AthleteDashboard: React.FC = () => {
             onVideoAnalyzed={handleVideoAnalyzed}
             onStartAnalysis={handleStartAnalysis}
             isAnalyzing={isAnalyzing}
+            onStartRecording={cameraActive ? handleStartRecording : handleOpenCamera}
+            onStopRecording={handleStopRecording}
+            onVideoReady={handleVideoReady}
+            cameraStream={cameraStream}
           />
           <VideoUploader 
             exercise={selectedExercise}
             onVideoAnalyzed={handleVideoAnalyzed}
             onStartAnalysis={handleStartAnalysis}
             isAnalyzing={isAnalyzing}
+            onStartUploading={handleStartUploading}
+            onVideoReady={handleVideoReady}
           />
         </div>
       </div>
+
+
+      {/* Camera Preview Column */}
+      {cameraActive && (
+        <div className="camera-preview-section">
+          <h3>📹 Live Camera Preview - Ready to Record!</h3>
+          <div className="camera-preview-container">
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              playsInline
+              className="camera-preview-video"
+            />
+            <div className="camera-status">
+              <span className="status-indicator">●</span>
+              <span>Camera Active - Click "Start Recording" to begin</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Uploaded Video Preview */}
+      {currentVideoUrl && (
+        <div className="video-preview-section">
+          <h3>Video Preview</h3>
+          <div className="video-preview-container">
+            <video
+              src={currentVideoUrl}
+              controls
+              className="video-preview-video"
+              autoPlay
+            />
+          </div>
+        </div>
+      )}
 
       {isAnalyzing && (
         <div className="loading">

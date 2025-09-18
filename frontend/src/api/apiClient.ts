@@ -85,13 +85,7 @@ export async function analyzeVideoEnhanced(
   exercise: string, 
   athleteId: string, 
   athleteName: string,
-  metadata?: {
-    session_metadata?: any;
-    athlete_profile?: any;
-    environmental_data?: any;
-    device_info?: any;
-    analysis_config?: any;
-  }
+  metadata?: any // Kept for compatibility but not used
 ): Promise<any> {
   const formData = new FormData();
   formData.append('file', videoFile);
@@ -99,24 +93,10 @@ export async function analyzeVideoEnhanced(
   formData.append('athleteId', athleteId);
   formData.append('athleteName', athleteName);
 
-  // Add metadata if provided
-  if (metadata?.session_metadata) {
-    formData.append('session_metadata', JSON.stringify(metadata.session_metadata));
-  }
-  if (metadata?.athlete_profile) {
-    formData.append('athlete_profile', JSON.stringify(metadata.athlete_profile));
-  }
-  if (metadata?.environmental_data) {
-    formData.append('environmental_data', JSON.stringify(metadata.environmental_data));
-  }
-  if (metadata?.device_info) {
-    formData.append('device_info', JSON.stringify(metadata.device_info));
-  }
-  if (metadata?.analysis_config) {
-    formData.append('analysis_config', JSON.stringify(metadata.analysis_config));
-  }
+  // Note: Backend only expects: file, exercise, athleteId, athleteName
+  // Metadata fields are ignored as backend doesn't support them
 
-  const response = await fetch(`${API_BASE_URL}/analyze/enhanced`, {
+  const response = await fetch(`${API_BASE_URL}/analyze`, {
     method: 'POST',
     body: formData,
   });
@@ -124,7 +104,7 @@ export async function analyzeVideoEnhanced(
   if (!response.ok) {
     const text = await response.text().catch(() => '');
     console.error('analyzeVideoEnhanced error response:', text);
-    throw new Error('Enhanced video analysis failed');
+    throw new Error('Video analysis failed');
   }
 
   return response.json();

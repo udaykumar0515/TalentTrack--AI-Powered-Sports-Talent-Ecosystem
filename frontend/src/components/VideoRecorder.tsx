@@ -7,13 +7,21 @@ interface VideoRecorderProps {
   onVideoAnalyzed: (session: any) => void;
   onStartAnalysis: () => void;
   isAnalyzing: boolean;
+  onStartRecording?: () => void;
+  onStopRecording?: () => void;
+  onVideoReady?: (videoUrl: string) => void;
+  cameraStream?: MediaStream | null;
 }
 
 const VideoRecorder: React.FC<VideoRecorderProps> = ({
   exercise,
   onVideoAnalyzed,
   onStartAnalysis,
-  isAnalyzing
+  isAnalyzing,
+  onStartRecording,
+  onStopRecording,
+  onVideoReady,
+  cameraStream
 }) => {
   const { user } = useAuth();
 
@@ -21,23 +29,16 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
   const [recordedVideo, setRecordedVideo] = useState<Blob | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const startRecording = useCallback(async () => {
+  const startRecording = useCallback(() => {
+    if (!cameraStream) {
+      console.error('No camera stream available');
+      return;
+    }
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 1280, height: 720 },
-        audio: false
-      });
-      streamRef.current = stream;
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.style.display = 'block';
-      }
-
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = new MediaRecorder(cameraStream);
       mediaRecorderRef.current = mediaRecorder;
 
       const chunks: BlobPart[] = [];
@@ -56,38 +57,34 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
         try {
           const url = URL.createObjectURL(videoBlob);
           setPreviewUrl(url);
-          if (videoRef.current) {
-            videoRef.current.srcObject = null;
-            videoRef.current.src = url;
-            videoRef.current.style.display = 'block';
-            videoRef.current.muted = true;
-            videoRef.current.play().catch(() => {});
+          if (onVideoReady) {
+            onVideoReady(url);
           }
         } catch (e) {
           console.warn('Could not create preview URL:', e);
-        }
-
-        // Stop the stream
-        if (streamRef.current) {
-          streamRef.current.getTracks().forEach((track) => track.stop());
-          streamRef.current = null;
         }
       };
 
       mediaRecorder.start();
       setIsRecording(true);
+      if (onStartRecording) {
+        onStartRecording();
+      }
     } catch (error) {
       console.error('Error starting recording:', error);
-      alert('Failed to access camera. Please check permissions.');
+      alert('Failed to start recording.');
     }
-  }, []);
+  }, [cameraStream, onStartRecording, onVideoReady]);
 
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+      if (onStopRecording) {
+        onStopRecording();
+      }
     }
-  }, [isRecording]);
+  }, [isRecording, onStopRecording]);
 
   const handleAnalyze = async () => {
     if (!recordedVideo) return;
@@ -143,8 +140,21 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
         }
       };
 
-      const session = await analyzeVideoEnhanced(recordedVideo as File, exercise, athleteId, athleteName, metadata);
-      onVideoAnalyzed(session);
+      // Convert Blob to File for analysis
+      const videoFile = new File([recordedVideo], `recording_${Date.now()}.mp4`, { 
+        type: 'video/mp4' 
+      });
+      
+      const session = await analyzeVideoEnhanced(videoFile, exercise, athleteId, athleteName, metadata);
+      
+      // Add the video URL to the session
+      const sessionWithVideo = {
+        ...session,
+        videoUrl: previewUrl, // Use the blob URL for the recorded video
+        thumbnailUrl: previewUrl
+      };
+      
+      onVideoAnalyzed(sessionWithVideo);
     } catch (error) {
       console.error('Analysis failed:', error);
       alert('Video analysis failed. Please try again.');
@@ -166,42 +176,58 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
     }
   };
 
+  const getButtonText = () => {
+    if (isRecording) return 'Stop Recording';
+    if (cameraStream) return 'Start Recording';
+    return 'Open Camera';
+  };
+
+  const getButtonIcon = () => {
+    if (isRecording) return '⏹️';
+    if (cameraStream) return '⏺️';
+    return '📹';
+  };
+
+  const handleButtonClick = () => {
+    if (isRecording) {
+      stopRecording();
+    } else if (cameraStream) {
+      startRecording();
+    } else {
+      // This should trigger camera access in parent component
+      if (onStartRecording) {
+        onStartRecording();
+      }
+    }
+  };
+
   return (
     <div className="video-recorder-compact">
-      {!recordedVideo ? (
-        <button
-          className={`record-btn ${isRecording ? 'recording' : ''}`}
-          onClick={isRecording ? stopRecording : startRecording}
-          disabled={isAnalyzing}
-        >
-          <span className="record-icon">
-            {isRecording ? '⏹️' : '⏺️'}
-          </span>
-          {isRecording ? 'Stop' : 'Record'}
-        </button>
-      ) : (
-        <div className="video-preview-compact">
-          {previewUrl && (
-            <video
-              src={previewUrl}
-              controls
-              className="preview-video-small"
-            />
-          )}
-          <div className="action-buttons-compact">
-            <button
-              className="analyze-btn"
-              onClick={handleAnalyze}
-              disabled={isAnalyzing}
-            >
-              <span className="analyze-icon">🔍</span>
-              {isAnalyzing ? 'Analyzing...' : 'Analyze'}
-            </button>
-            <button onClick={resetRecording} className="retry-btn">
-              <span className="retry-icon">🔄</span>
-              Reset
-            </button>
-          </div>
+      <button
+        className={`record-btn ${isRecording ? 'recording' : ''} ${cameraStream ? 'camera-ready' : ''}`}
+        onClick={handleButtonClick}
+        disabled={isAnalyzing}
+      >
+        <span className="record-icon">
+          {getButtonIcon()}
+        </span>
+        {getButtonText()}
+      </button>
+      
+      {recordedVideo && (
+        <div className="action-buttons-compact">
+          <button
+            className="analyze-btn"
+            onClick={handleAnalyze}
+            disabled={isAnalyzing}
+          >
+            <span className="analyze-icon">🔍</span>
+            {isAnalyzing ? 'Analyzing...' : 'Analyze'}
+          </button>
+          <button onClick={resetRecording} className="retry-btn">
+            <span className="retry-icon">🔄</span>
+            Reset
+          </button>
         </div>
       )}
     </div>

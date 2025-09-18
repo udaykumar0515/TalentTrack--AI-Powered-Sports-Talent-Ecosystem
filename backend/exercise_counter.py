@@ -671,6 +671,11 @@ def main():
     last_frame_time = time.time()
     fps = 0.0
     session_start_time = time.time()
+    
+    # Get video properties for accurate duration calculation
+    video_fps = cap.get(cv2.CAP_PROP_FPS)
+    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    video_duration = frame_count / video_fps if video_fps > 0 else 0
 
     try:
         while True:
@@ -756,19 +761,29 @@ def main():
         pose.close()
 
         session_end_time = time.time()
-        duration = session_end_time - session_start_time
+        # Use actual video duration if available, otherwise fall back to analysis time
+        if video_duration > 0:
+            duration = video_duration
+        else:
+            duration = session_end_time - session_start_time
 
         if exercise == "jumping_jacks" and hasattr(detector, "jj_count"):
             total_reps = int(getattr(detector, "jj_count", detector.counter.count))
         else:
             total_reps = int(detector.counter.count)
 
+        # Set form score to 0 if no reps detected, otherwise use the detected form score
+        if total_reps == 0:
+            form_score = 0
+        else:
+            form_score = int(detector.last_form_score) if hasattr(detector, 'last_form_score') and detector.last_form_score is not None else 75
+
         result = {
             "userId": user_id,
             "userName": user_name,
             "exercise": exercise,
             "reps": total_reps,
-            "formScore": int(detector.last_form_score) if hasattr(detector, 'last_form_score') and detector.last_form_score is not None else 75,
+            "formScore": form_score,
             "durationSec": round(duration, 3)
         }
 

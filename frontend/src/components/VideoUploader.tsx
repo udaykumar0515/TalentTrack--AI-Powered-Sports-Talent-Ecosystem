@@ -7,13 +7,17 @@ interface VideoUploaderProps {
   onVideoAnalyzed: (session: any) => void;
   onStartAnalysis: () => void;
   isAnalyzing: boolean;
+  onStartUploading?: () => void;
+  onVideoReady?: (videoUrl: string) => void;
 }
 
 const VideoUploader: React.FC<VideoUploaderProps> = ({
   exercise,
   onVideoAnalyzed,
   onStartAnalysis,
-  isAnalyzing
+  isAnalyzing,
+  onStartUploading,
+  onVideoReady
 }) => {
   const { user } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -27,6 +31,9 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
       try {
         const url = URL.createObjectURL(file);
         setPreviewUrl(url);
+        if (onVideoReady) {
+          onVideoReady(url);
+        }
       } catch (e) {
         setPreviewUrl(null);
       }
@@ -36,6 +43,9 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
   const handleUpload = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
+      if (onStartUploading) {
+        onStartUploading();
+      }
     }
   };
 
@@ -94,7 +104,16 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
       };
 
       const session = await analyzeVideoEnhanced(selectedFile, exercise, athleteId, athleteName, metadata);
-      onVideoAnalyzed(session);
+      
+      // Add the video URL to the session
+      const videoUrl = URL.createObjectURL(selectedFile);
+      const sessionWithVideo = {
+        ...session,
+        videoUrl: videoUrl,
+        thumbnailUrl: videoUrl
+      };
+      
+      onVideoAnalyzed(sessionWithVideo);
     } catch (error) {
       console.error('Analysis failed:', error);
       alert('Video analysis failed. Please try again.');
