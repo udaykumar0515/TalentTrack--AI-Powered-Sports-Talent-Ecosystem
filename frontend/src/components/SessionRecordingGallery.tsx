@@ -19,8 +19,8 @@ interface SessionData {
   durationSec?: number;
   reps?: number;
   formScore?: number;
-  videoUrl?: string;
-  thumbnailUrl?: string;
+  videoUrl?: string | null;
+  thumbnailUrl?: string | null;
   metrics?: {
     reps?: number;
     formScore?: number;
@@ -57,8 +57,8 @@ const SessionRecordingGallery: React.FC<SessionRecordingGalleryProps> = ({
       // Add test video URL to all sessions for testing
       sessionData = sessionData.map(session => ({
         ...session,
-        videoUrl: '/test-video.mp4',
-        thumbnailUrl: '/test-video.mp4' // Using video as thumbnail for now
+        videoUrl: null,
+        thumbnailUrl: null
       }));
       
       setSessions(sessionData);
@@ -272,15 +272,17 @@ const SessionRecordingGallery: React.FC<SessionRecordingGalleryProps> = ({
                   src={selectedSession.videoUrl}
                   controls
                   className="session-video"
-                  poster={selectedSession.thumbnailUrl}
+                  poster={selectedSession.thumbnailUrl || undefined}
                   preload="metadata"
                 >
                   Your browser does not support the video tag.
                 </video>
               ) : (
                 <div className="no-video">
-                  <Play size={48} />
-                  <p>Video not available</p>
+                  <div className="exercise-text-display">
+                    <h2>{selectedSession.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}</h2>
+                    <p>No video recording available for this session</p>
+                  </div>
                 </div>
               )}
             </div>

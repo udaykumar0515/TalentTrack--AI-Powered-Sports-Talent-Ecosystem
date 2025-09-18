@@ -104,8 +104,13 @@ const AthleteDashboard: React.FC = () => {
     try {
       const storedSessions = localStorage.getItem(`sessions_${user?.id}`) || '[]';
       const parsedSessions = JSON.parse(storedSessions);
-      // Use actual video URLs from sessions, no default video
-      setSessions(parsedSessions);
+      // Clean up any test video URLs - treat them as no video
+      const cleanedSessions = parsedSessions.map((session: any) => ({
+        ...session,
+        videoUrl: session.videoUrl && !session.videoUrl.includes('test-video') ? session.videoUrl : null,
+        thumbnailUrl: session.thumbnailUrl && !session.thumbnailUrl.includes('test-video') ? session.thumbnailUrl : null
+      }));
+      setSessions(cleanedSessions);
     } catch (error) {
       console.error('Error loading sessions:', error);
     }
