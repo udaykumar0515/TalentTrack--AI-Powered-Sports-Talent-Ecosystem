@@ -438,8 +438,10 @@ const AthleteDashboard: React.FC = () => {
                 </video>
               ) : (
                 <div className="no-video">
-                  <span className="play-icon-large">▶️</span>
-                  <p>Video not available</p>
+                  <div className="exercise-text-display">
+                    <h2>{selectedSession.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}</h2>
+                    <p>No video recording available for this session</p>
+                  </div>
                 </div>
               )}
             </div>
