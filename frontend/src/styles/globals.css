@@ -479,6 +479,17 @@ button:disabled {
   margin-top: 0.5rem;
 }
 
+.loading-analytics, .no-analytics {
+  text-align: center;
+  padding: 2rem;
+  opacity: 0.8;
+}
+
+.loading-analytics p, .no-analytics p {
+  margin: 0;
+  font-size: 1rem;
+}
+
 /* Coach Analytics Styles */
 .coach-analytics-grid {
   display: grid;

@@ -186,7 +186,9 @@ const CoachDashboard: React.FC = () => {
     
     setLoadingAnalytics(true);
     try {
+      console.log('Loading coach predictive analytics for user:', user.id);
       const analytics = await getCoachPredictiveAnalytics(user.id);
+      console.log('Coach predictive analytics loaded:', analytics);
       setPredictiveAnalytics(analytics);
     } catch (error) {
       console.error('Error loading predictive analytics:', error);

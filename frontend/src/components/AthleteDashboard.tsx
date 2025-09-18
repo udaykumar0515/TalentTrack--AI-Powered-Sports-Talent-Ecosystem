@@ -128,6 +128,7 @@ const AthleteDashboard: React.FC = () => {
       try {
         const backendSessions = await getSessions(user.id);
         console.log('Loaded sessions from backend:', backendSessions);
+        console.log('First session predictive analytics:', backendSessions[0]?.predictiveAnalytics);
         
         // Clean up any test video URLs - treat them as no video
         const cleanedSessions = backendSessions.map((session: any) => ({
@@ -191,10 +192,14 @@ const AthleteDashboard: React.FC = () => {
     
     setLoadingAnalytics(true);
     try {
+      console.log('Loading predictive analytics for user:', user.id);
+      console.log('User object:', user);
       const analytics = await getAthletePredictiveAnalytics(user.id);
+      console.log('Predictive analytics loaded:', analytics);
       setPredictiveAnalytics(analytics);
     } catch (error) {
       console.error('Error loading predictive analytics:', error);
+      console.error('Error details:', error);
     } finally {
       setLoadingAnalytics(false);
     }
@@ -611,73 +616,98 @@ const AthleteDashboard: React.FC = () => {
 
       <section className="activity-feed">
         {/* Predictive Analytics Section */}
-        {predictiveAnalytics && !predictiveAnalytics.error && (
+        {loadingAnalytics && (
+          <div className="predictive-analytics-section">
+            <h2>Performance Insights</h2>
+            <div className="loading-analytics">
+              <p>Loading performance insights...</p>
+            </div>
+          </div>
+        )}
+        {(predictiveAnalytics && !predictiveAnalytics.error) || (sessions.length > 0 && sessions[0].predictiveAnalytics) && (
           <div className="predictive-analytics-section">
             <h2>Performance Insights</h2>
             <div className="analytics-grid">
-              {/* Injury Risk */}
-              <div className={`analytics-card ${predictiveAnalytics.injury_risk?.risk_level || 'low'}-risk`}>
-                <h3>Injury Risk</h3>
-                <div className="risk-level">
-                  <span className={`risk-badge ${predictiveAnalytics.injury_risk?.risk_level || 'low'}`}>
-                    {predictiveAnalytics.injury_risk?.risk_level?.toUpperCase() || 'LOW'}
-                  </span>
-                  <span className="risk-score">{predictiveAnalytics.injury_risk?.risk_score || 0}%</span>
-                </div>
-                {predictiveAnalytics.injury_risk?.factors?.length > 0 && (
-                  <ul className="risk-factors">
-                    {predictiveAnalytics.injury_risk.factors.map((factor: string, index: number) => (
-                      <li key={index}>{factor}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+              {(() => {
+                const analyticsData = predictiveAnalytics || (sessions.length > 0 ? sessions[0].predictiveAnalytics : null);
+                if (!analyticsData) return null;
+                
+                return (
+                  <>
+                    {/* Injury Risk */}
+                    <div className={`analytics-card ${analyticsData.injury_risk?.risk_level || 'low'}-risk`}>
+                      <h3>Injury Risk</h3>
+                      <div className="risk-level">
+                        <span className={`risk-badge ${analyticsData.injury_risk?.risk_level || 'low'}`}>
+                          {analyticsData.injury_risk?.risk_level?.toUpperCase() || 'LOW'}
+                        </span>
+                        <span className="risk-score">{analyticsData.injury_risk?.risk_score || 0}%</span>
+                      </div>
+                      {analyticsData.injury_risk?.factors?.length > 0 && (
+                        <ul className="risk-factors">
+                          {analyticsData.injury_risk.factors.map((factor: string, index: number) => (
+                            <li key={index}>{factor}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
 
-              {/* Improvement Potential */}
-              <div className={`analytics-card ${predictiveAnalytics.improvement_potential?.potential || 'unknown'}-potential`}>
-                <h3>Improvement Potential</h3>
-                <div className="potential-level">
-                  <span className={`potential-badge ${predictiveAnalytics.improvement_potential?.potential || 'unknown'}`}>
-                    {predictiveAnalytics.improvement_potential?.potential?.toUpperCase() || 'UNKNOWN'}
-                  </span>
-                  <span className="potential-score">{predictiveAnalytics.improvement_potential?.score || 0}%</span>
-                </div>
-                {predictiveAnalytics.improvement_potential?.suggestions?.length > 0 && (
-                  <ul className="improvement-suggestions">
-                    {predictiveAnalytics.improvement_potential.suggestions.slice(0, 2).map((suggestion: string, index: number) => (
-                      <li key={index}>{suggestion}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+                    {/* Improvement Potential */}
+                    <div className={`analytics-card ${analyticsData.improvement_potential?.potential || 'unknown'}-potential`}>
+                      <h3>Improvement Potential</h3>
+                      <div className="potential-level">
+                        <span className={`potential-badge ${analyticsData.improvement_potential?.potential || 'unknown'}`}>
+                          {analyticsData.improvement_potential?.potential?.toUpperCase() || 'UNKNOWN'}
+                        </span>
+                        <span className="potential-score">{analyticsData.improvement_potential?.score || 0}%</span>
+                      </div>
+                      {analyticsData.improvement_potential?.suggestions?.length > 0 && (
+                        <ul className="improvement-suggestions">
+                          {analyticsData.improvement_potential.suggestions.slice(0, 2).map((suggestion: string, index: number) => (
+                            <li key={index}>{suggestion}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
 
-              {/* Future Performance Prediction */}
-              {predictiveAnalytics.future_performance?.predictions && (
-                <div className="analytics-card future-prediction">
-                  <h3>30-Day Forecast</h3>
-                  <div className="prediction-details">
-                    {predictiveAnalytics.future_performance.predictions.form_score && (
-                      <div className="prediction-item">
-                        <span className="metric">Form Score:</span>
-                        <span className="current">{predictiveAnalytics.future_performance.predictions.form_score.current}</span>
-                        <span className="arrow">→</span>
-                        <span className="predicted">{Math.round(predictiveAnalytics.future_performance.predictions.form_score.predicted)}</span>
+                    {/* Future Performance Prediction */}
+                    {analyticsData.future_performance?.predictions && (
+                      <div className="analytics-card future-prediction">
+                        <h3>30-Day Forecast</h3>
+                        <div className="prediction-details">
+                          {analyticsData.future_performance.predictions.form_score && (
+                            <div className="prediction-item">
+                              <span className="metric">Form Score:</span>
+                              <span className="current">{analyticsData.future_performance.predictions.form_score.current}</span>
+                              <span className="arrow">→</span>
+                              <span className="predicted">{Math.round(analyticsData.future_performance.predictions.form_score.predicted)}</span>
+                            </div>
+                          )}
+                          {analyticsData.future_performance.predictions.reps && (
+                            <div className="prediction-item">
+                              <span className="metric">Reps:</span>
+                              <span className="current">{analyticsData.future_performance.predictions.reps.current}</span>
+                              <span className="arrow">→</span>
+                              <span className="predicted">{Math.round(analyticsData.future_performance.predictions.reps.predicted)}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="confidence">
+                          Confidence: {Math.round(analyticsData.future_performance.overall_confidence || 0)}%
+                        </div>
                       </div>
                     )}
-                    {predictiveAnalytics.future_performance.predictions.reps && (
-                      <div className="prediction-item">
-                        <span className="metric">Reps:</span>
-                        <span className="current">{predictiveAnalytics.future_performance.predictions.reps.current}</span>
-                        <span className="arrow">→</span>
-                        <span className="predicted">{Math.round(predictiveAnalytics.future_performance.predictions.reps.predicted)}</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="confidence">
-                    Confidence: {Math.round(predictiveAnalytics.future_performance.overall_confidence || 0)}%
-                  </div>
-                </div>
-              )}
+                  </>
+                );
+              })()}
+            </div>
+          </div>
+        )}
+        {!loadingAnalytics && !predictiveAnalytics && !(sessions.length > 0 && sessions[0].predictiveAnalytics) && (
+          <div className="predictive-analytics-section">
+            <h2>Performance Insights</h2>
+            <div className="no-analytics">
+              <p>No performance insights available yet. Complete more sessions to see your analytics!</p>
             </div>
           </div>
         )}
