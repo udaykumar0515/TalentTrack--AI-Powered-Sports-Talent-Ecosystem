@@ -171,6 +171,348 @@ def sufficient_visibility(landmarks, indices, img_w, img_h, min_vis=0.45):
             return False
     return True
 
+class CheatDetector:
+    """
+    Comprehensive cheat detection system for exercise analysis
+    Detects various cheating patterns and suspicious activities
+    """
+    
+    def __init__(self, exercise_name):
+        self.exercise = exercise_name
+        self.frame_count = 0
+        self.movement_history = []
+        self.timing_history = []
+        self.form_history = []
+        self.cheat_flags = {
+            'too_fast_reps': False,
+            'inconsistent_form': False,
+            'minimal_movement': False,
+            'suspicious_timing': False,
+            'form_deterioration': False,
+            'repetitive_pattern': False
+        }
+        
+        # Exercise-specific thresholds
+        self.thresholds = self._get_exercise_thresholds()
+    
+    def _get_exercise_thresholds(self):
+        """Get cheat detection thresholds for specific exercises"""
+        if self.exercise == "squat":
+            return {
+                'min_rep_duration': 0.8,  # Minimum seconds per rep
+                'max_rep_duration': 8.0,  # Maximum seconds per rep
+                'min_knee_angle_change': 30,  # Minimum knee angle change
+                'min_hip_movement': 0.1,  # Minimum hip vertical movement
+                'form_consistency_threshold': 0.7,  # Minimum form consistency
+                'max_speed_variation': 0.5,  # Maximum speed variation between reps
+                'min_visibility_frames': 0.8  # Minimum visibility frames per rep
+            }
+        elif self.exercise == "pushups":
+            return {
+                'min_rep_duration': 0.6,
+                'max_rep_duration': 6.0,
+                'min_elbow_angle_change': 40,
+                'min_shoulder_movement': 0.08,
+                'form_consistency_threshold': 0.75,
+                'max_speed_variation': 0.4,
+                'min_visibility_frames': 0.85
+            }
+        elif self.exercise == "jumping_jacks":
+            return {
+                'min_rep_duration': 0.4,
+                'max_rep_duration': 3.0,
+                'min_arm_movement': 0.15,
+                'min_leg_movement': 0.12,
+                'form_consistency_threshold': 0.8,
+                'max_speed_variation': 0.3,
+                'min_visibility_frames': 0.9
+            }
+        else:
+            return {
+                'min_rep_duration': 0.5,
+                'max_rep_duration': 5.0,
+                'min_movement': 0.1,
+                'form_consistency_threshold': 0.7,
+                'max_speed_variation': 0.5,
+                'min_visibility_frames': 0.8
+            }
+    
+    def analyze_frame(self, landmarks, form_score, rep_count, is_rep_active):
+        """Analyze current frame for cheating patterns"""
+        self.frame_count += 1
+        
+        # Extract key metrics
+        metrics = self._extract_metrics(landmarks)
+        if metrics:
+            self.movement_history.append(metrics)
+            # Keep only last 30 frames for analysis
+            if len(self.movement_history) > 30:
+                self.movement_history.pop(0)
+        
+        # Store form score
+        self.form_history.append(form_score)
+        if len(self.form_history) > 30:
+            self.form_history.pop(0)
+        
+        # Detect cheating patterns
+        self._detect_too_fast_reps(rep_count, is_rep_active)
+        self._detect_inconsistent_form()
+        self._detect_minimal_movement()
+        self._detect_suspicious_timing()
+        self._detect_form_deterioration()
+        self._detect_repetitive_patterns()
+        
+        return self.get_cheat_summary()
+    
+    def _extract_metrics(self, landmarks):
+        """Extract key movement metrics from landmarks"""
+        try:
+            if self.exercise == "squat":
+                return self._extract_squat_metrics(landmarks)
+            elif self.exercise == "pushups":
+                return self._extract_pushup_metrics(landmarks)
+            elif self.exercise == "jumping_jacks":
+                return self._extract_jj_metrics(landmarks)
+            else:
+                return self._extract_generic_metrics(landmarks)
+        except:
+            return None
+    
+    def _extract_squat_metrics(self, landmarks):
+        """Extract squat-specific metrics"""
+        def g(idx): return lm_coord(landmarks, idx, 640, 480)
+        
+        left_hip = g(LM.LEFT_HIP)
+        right_hip = g(LM.RIGHT_HIP)
+        left_knee = g(LM.LEFT_KNEE)
+        right_knee = g(LM.RIGHT_KNEE)
+        left_ankle = g(LM.LEFT_ANKLE)
+        right_ankle = g(LM.RIGHT_ANKLE)
+        
+        if all(coord[2] > 0.4 for coord in [left_hip, right_hip, left_knee, right_knee, left_ankle, right_ankle]):
+            # Calculate hip center height
+            hip_center_y = (left_hip[1] + right_hip[1]) / 2
+            
+            # Calculate knee angles
+            left_knee_angle = angle_between(left_hip, left_knee, left_ankle) or 180
+            right_knee_angle = angle_between(right_hip, right_knee, right_ankle) or 180
+            avg_knee_angle = (left_knee_angle + right_knee_angle) / 2
+            
+            return {
+                'hip_height': hip_center_y,
+                'knee_angle': avg_knee_angle,
+                'frame_time': time.time()
+            }
+        return None
+    
+    def _extract_pushup_metrics(self, landmarks):
+        """Extract pushup-specific metrics"""
+        def g(idx): return lm_coord(landmarks, idx, 640, 480)
+        
+        left_shoulder = g(LM.LEFT_SHOULDER)
+        right_shoulder = g(LM.RIGHT_SHOULDER)
+        left_elbow = g(LM.LEFT_ELBOW)
+        right_elbow = g(LM.RIGHT_ELBOW)
+        left_wrist = g(LM.LEFT_WRIST)
+        right_wrist = g(LM.RIGHT_WRIST)
+        
+        if all(coord[2] > 0.4 for coord in [left_shoulder, right_shoulder, left_elbow, right_elbow, left_wrist, right_wrist]):
+            # Calculate shoulder height
+            shoulder_center_y = (left_shoulder[1] + right_shoulder[1]) / 2
+            
+            # Calculate elbow angles
+            left_elbow_angle = angle_between(left_shoulder, left_elbow, left_wrist) or 180
+            right_elbow_angle = angle_between(right_shoulder, right_elbow, right_wrist) or 180
+            avg_elbow_angle = (left_elbow_angle + right_elbow_angle) / 2
+            
+            return {
+                'shoulder_height': shoulder_center_y,
+                'elbow_angle': avg_elbow_angle,
+                'frame_time': time.time()
+            }
+        return None
+    
+    def _extract_jj_metrics(self, landmarks):
+        """Extract jumping jack-specific metrics"""
+        def g(idx): return lm_coord(landmarks, idx, 640, 480)
+        
+        left_shoulder = g(LM.LEFT_SHOULDER)
+        right_shoulder = g(LM.RIGHT_SHOULDER)
+        left_wrist = g(LM.LEFT_WRIST)
+        right_wrist = g(LM.RIGHT_WRIST)
+        left_hip = g(LM.LEFT_HIP)
+        right_hip = g(LM.RIGHT_HIP)
+        left_ankle = g(LM.LEFT_ANKLE)
+        right_ankle = g(LM.RIGHT_ANKLE)
+        
+        if all(coord[2] > 0.4 for coord in [left_shoulder, right_shoulder, left_wrist, right_wrist, left_hip, right_hip, left_ankle, right_ankle]):
+            # Calculate arm spread
+            arm_distance = ((left_wrist[0] - right_wrist[0])**2 + (left_wrist[1] - right_wrist[1])**2)**0.5
+            
+            # Calculate leg spread
+            leg_distance = ((left_ankle[0] - right_ankle[0])**2 + (left_ankle[1] - right_ankle[1])**2)**0.5
+            
+            return {
+                'arm_distance': arm_distance,
+                'leg_distance': leg_distance,
+                'frame_time': time.time()
+            }
+        return None
+    
+    def _extract_generic_metrics(self, landmarks):
+        """Extract generic movement metrics"""
+        def g(idx): return lm_coord(landmarks, idx, 640, 480)
+        
+        # Use hip center as reference point
+        left_hip = g(LM.LEFT_HIP)
+        right_hip = g(LM.RIGHT_HIP)
+        
+        if left_hip[2] > 0.4 and right_hip[2] > 0.4:
+            hip_center_y = (left_hip[1] + right_hip[1]) / 2
+            return {
+                'hip_height': hip_center_y,
+                'frame_time': time.time()
+            }
+        return None
+    
+    def _detect_too_fast_reps(self, rep_count, is_rep_active):
+        """Detect if reps are being performed too fast"""
+        if len(self.timing_history) < 2:
+            return
+        
+        # Check if current rep is too fast
+        if is_rep_active and len(self.timing_history) > 0:
+            current_time = time.time()
+            last_rep_time = self.timing_history[-1]
+            rep_duration = current_time - last_rep_time
+            
+            if rep_duration < self.thresholds['min_rep_duration']:
+                self.cheat_flags['too_fast_reps'] = True
+                self.suspicious_patterns.append(f"Rep {rep_count}: Too fast ({rep_duration:.2f}s)")
+    
+    def _detect_inconsistent_form(self):
+        """Detect inconsistent form across reps"""
+        if len(self.form_history) < 10:
+            return
+        
+        recent_forms = self.form_history[-10:]
+        form_variance = np.var(recent_forms)
+        
+        if form_variance > (1 - self.thresholds['form_consistency_threshold']) * 100:
+            self.cheat_flags['inconsistent_form'] = True
+            self.suspicious_patterns.append(f"Inconsistent form detected (variance: {form_variance:.2f})")
+    
+    def _detect_minimal_movement(self):
+        """Detect minimal movement patterns"""
+        if len(self.movement_history) < 5:
+            return
+        
+        recent_movements = self.movement_history[-5:]
+        
+        if self.exercise == "squat":
+            hip_heights = [m['hip_height'] for m in recent_movements if 'hip_height' in m]
+            if hip_heights:
+                hip_range = max(hip_heights) - min(hip_heights)
+                if hip_range < self.thresholds['min_hip_movement']:
+                    self.cheat_flags['minimal_movement'] = True
+                    self.suspicious_patterns.append(f"Minimal hip movement detected (range: {hip_range:.3f})")
+        
+        elif self.exercise == "pushups":
+            shoulder_heights = [m['shoulder_height'] for m in recent_movements if 'shoulder_height' in m]
+            if shoulder_heights:
+                shoulder_range = max(shoulder_heights) - min(shoulder_heights)
+                if shoulder_range < self.thresholds['min_shoulder_movement']:
+                    self.cheat_flags['minimal_movement'] = True
+                    self.suspicious_patterns.append(f"Minimal shoulder movement detected (range: {shoulder_range:.3f})")
+        
+        elif self.exercise == "jumping_jacks":
+            arm_distances = [m['arm_distance'] for m in recent_movements if 'arm_distance' in m]
+            leg_distances = [m['leg_distance'] for m in recent_movements if 'leg_distance' in m]
+            
+            if arm_distances and leg_distances:
+                arm_range = max(arm_distances) - min(arm_distances)
+                leg_range = max(leg_distances) - min(leg_distances)
+                
+                if arm_range < self.thresholds['min_arm_movement'] or leg_range < self.thresholds['min_leg_movement']:
+                    self.cheat_flags['minimal_movement'] = True
+                    self.suspicious_patterns.append(f"Minimal arm/leg movement detected (arm: {arm_range:.3f}, leg: {leg_range:.3f})")
+    
+    def _detect_suspicious_timing(self):
+        """Detect suspicious timing patterns"""
+        if len(self.timing_history) < 3:
+            return
+        
+        # Check for too regular timing (robotic pattern)
+        intervals = []
+        for i in range(1, len(self.timing_history)):
+            intervals.append(self.timing_history[i] - self.timing_history[i-1])
+        
+        if len(intervals) >= 2:
+            interval_variance = np.var(intervals)
+            if interval_variance < 0.1:  # Very consistent timing
+                self.cheat_flags['suspicious_timing'] = True
+                self.suspicious_patterns.append("Suspiciously regular timing pattern detected")
+    
+    def _detect_form_deterioration(self):
+        """Detect if form is deteriorating over time"""
+        if len(self.form_history) < 15:
+            return
+        
+        # Split form history into two halves
+        mid_point = len(self.form_history) // 2
+        first_half = self.form_history[:mid_point]
+        second_half = self.form_history[mid_point:]
+        
+        if len(first_half) > 0 and len(second_half) > 0:
+            first_avg = np.mean(first_half)
+            second_avg = np.mean(second_half)
+            
+            # If form significantly deteriorates
+            if first_avg - second_avg > 20:  # 20 point drop
+                self.cheat_flags['form_deterioration'] = True
+                self.suspicious_patterns.append(f"Form deterioration detected (first: {first_avg:.1f}, second: {second_avg:.1f})")
+    
+    def _detect_repetitive_patterns(self):
+        """Detect repetitive movement patterns that might indicate cheating"""
+        if len(self.movement_history) < 20:
+            return
+        
+        # Check for identical movement patterns
+        recent_movements = self.movement_history[-10:]
+        
+        if self.exercise == "squat" and all('knee_angle' in m for m in recent_movements):
+            knee_angles = [m['knee_angle'] for m in recent_movements]
+            if len(set([round(a, 1) for a in knee_angles])) < 3:  # Less than 3 unique angles
+                self.cheat_flags['repetitive_pattern'] = True
+                self.suspicious_patterns.append("Repetitive knee angle pattern detected")
+        
+        elif self.exercise == "pushups" and all('elbow_angle' in m for m in recent_movements):
+            elbow_angles = [m['elbow_angle'] for m in recent_movements]
+            if len(set([round(a, 1) for a in elbow_angles])) < 3:
+                self.cheat_flags['repetitive_pattern'] = True
+                self.suspicious_patterns.append("Repetitive elbow angle pattern detected")
+    
+    def record_rep_completion(self):
+        """Record when a rep is completed for timing analysis"""
+        self.timing_history.append(time.time())
+        # Keep only last 10 rep timings
+        if len(self.timing_history) > 10:
+            self.timing_history.pop(0)
+    
+    def get_cheat_summary(self):
+        """Get summary of detected cheating patterns"""
+        cheat_count = sum(1 for flag in self.cheat_flags.values() if flag)
+        cheat_percentage = (cheat_count / len(self.cheat_flags)) * 100
+        
+        return {
+            'cheat_detected': cheat_count > 0,
+            'cheat_percentage': cheat_percentage,
+            'cheat_flags': self.cheat_flags.copy(),
+            'suspicious_patterns': self.suspicious_patterns.copy(),
+            'total_flags': cheat_count,
+            'confidence': min(100, cheat_percentage * 1.2)  # Confidence score
+        }
+
 class ExerciseDetector:
     """
     Complete ExerciseDetector with:
@@ -178,6 +520,7 @@ class ExerciseDetector:
      - form scoring helper score_jj_form (0..100)
      - push-up and squat scoring helpers (used in-process)
      - calibration support
+     - comprehensive cheat detection algorithms
     """
 
     def __init__(self, exercise_name, img_w, img_h):
@@ -193,6 +536,11 @@ class ExerciseDetector:
             "torso_angle": EWMA(0.35),
             "form_score": EWMA(0.4)
         }
+        
+        # Cheat detection variables
+        self.cheat_detector = CheatDetector(exercise_name)
+        self.rep_history = []  # Store rep timing and form data
+        self.suspicious_patterns = []  # Track suspicious activities
 
         if exercise_name == "squat":
             self.counter = RepetitionCounter(up_thresh=160.0, down_thresh=100.0, min_time_between=0.3)
@@ -393,7 +741,29 @@ class ExerciseDetector:
             form_score = float(np.clip(form_score_val * 100.0, 0.0, 100.0))
 
             count, state = self.counter.update(knee_sm) if visibility_ok else (self.counter.count, self.counter.state)
-            return {"count": count, "state": state, "debug": debug, "form_score": form_score, "coverage_ok": visibility_ok, "missing_msg": missing_msg}
+            
+            # Cheat detection analysis
+            is_rep_active = state in ["down", "up"]
+            cheat_analysis = self.cheat_detector.analyze_frame(landmarks, form_score, count, is_rep_active)
+            
+            # Record rep completion for timing analysis
+            if count > len(self.rep_history):
+                self.cheat_detector.record_rep_completion()
+                self.rep_history.append({
+                    'rep_count': count,
+                    'form_score': form_score,
+                    'timestamp': time.time()
+                })
+            
+            return {
+                "count": count, 
+                "state": state, 
+                "debug": debug, 
+                "form_score": form_score, 
+                "coverage_ok": visibility_ok, 
+                "missing_msg": missing_msg,
+                "cheat_detection": cheat_analysis
+            }
 
         # --- PUSHUPS ---
         elif self.exercise == "pushups":
@@ -458,7 +828,29 @@ class ExerciseDetector:
             self.last_form_score = self.smoothers["form_score"].update(form_score)
 
             count, state = self.counter.update(elbow_sm) if visibility_ok else (self.counter.count, self.counter.state)
-            return {"count": count, "state": state, "debug": debug, "form_score": self.last_form_score, "coverage_ok": visibility_ok, "missing_msg": missing_msg}
+            
+            # Cheat detection analysis
+            is_rep_active = state in ["down", "up"]
+            cheat_analysis = self.cheat_detector.analyze_frame(landmarks, self.last_form_score, count, is_rep_active)
+            
+            # Record rep completion for timing analysis
+            if count > len(self.rep_history):
+                self.cheat_detector.record_rep_completion()
+                self.rep_history.append({
+                    'rep_count': count,
+                    'form_score': self.last_form_score,
+                    'timestamp': time.time()
+                })
+            
+            return {
+                "count": count, 
+                "state": state, 
+                "debug": debug, 
+                "form_score": self.last_form_score, 
+                "coverage_ok": visibility_ok, 
+                "missing_msg": missing_msg,
+                "cheat_detection": cheat_analysis
+            }
 
         # --- JUMPING JACKS ---
         elif self.exercise == "jumping_jacks":
@@ -544,7 +936,28 @@ class ExerciseDetector:
             form_score = self.score_jj_form(wrists_norm_sm, ankles_norm_sm, wrist_positions, shoulder_width_px)
             self.last_form_score = self.smoothers["form_score"].update(form_score)
 
-            return {"count": count, "state": state, "debug": debug, "form_score": self.last_form_score, "coverage_ok": visibility_ok, "missing_msg": missing_msg}
+            # Cheat detection analysis
+            is_rep_active = state in ["open", "closed"]
+            cheat_analysis = self.cheat_detector.analyze_frame(landmarks, self.last_form_score, count, is_rep_active)
+            
+            # Record rep completion for timing analysis
+            if count > len(self.rep_history):
+                self.cheat_detector.record_rep_completion()
+                self.rep_history.append({
+                    'rep_count': count,
+                    'form_score': self.last_form_score,
+                    'timestamp': time.time()
+                })
+            
+            return {
+                "count": count, 
+                "state": state, 
+                "debug": debug, 
+                "form_score": self.last_form_score, 
+                "coverage_ok": visibility_ok, 
+                "missing_msg": missing_msg,
+                "cheat_detection": cheat_analysis
+            }
 
         # default fallback
         return {"count": self.counter.count, "state": self.counter.state, "debug": debug, "form_score": None, "coverage_ok": visibility_ok, "missing_msg": missing_msg}
@@ -819,13 +1232,32 @@ def main():
         else:
             form_score = int(detector.last_form_score) if hasattr(detector, 'last_form_score') and detector.last_form_score is not None else 75
 
+        # Get final cheat detection summary
+        final_cheat_analysis = detector.cheat_detector.get_cheat_summary()
+        
+        # Calculate risk level based on cheat detection
+        risk_level = "low"
+        if final_cheat_analysis['cheat_percentage'] > 50:
+            risk_level = "high"
+        elif final_cheat_analysis['cheat_percentage'] > 25:
+            risk_level = "medium"
+
         result = {
             "userId": user_id,
             "userName": user_name,
             "exercise": exercise,
             "reps": total_reps,
             "formScore": form_score,
-            "durationSec": round(duration, 3)
+            "durationSec": round(duration, 3),
+            "cheatDetection": {
+                "cheatDetected": final_cheat_analysis['cheat_detected'],
+                "cheatPercentage": round(final_cheat_analysis['cheat_percentage'], 1),
+                "totalFlags": final_cheat_analysis['total_flags'],
+                "confidence": round(final_cheat_analysis['confidence'], 1),
+                "riskLevel": risk_level,
+                "flags": final_cheat_analysis['cheat_flags'],
+                "suspiciousPatterns": final_cheat_analysis['suspicious_patterns']
+            }
         }
 
         # Only write final result JSON to stdout (for main.py to parse).

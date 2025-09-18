@@ -345,6 +345,18 @@ const AthleteDashboard: React.FC = () => {
     }
   };
 
+  const getCheatDetectionClass = (cheatDetection: any) => {
+    if (!cheatDetection) return 'clean';
+    if (cheatDetection.cheatDetected) {
+      switch (cheatDetection.riskLevel?.toLowerCase()) {
+        case 'high': return 'high-risk';
+        case 'medium': return 'medium-risk';
+        default: return 'low-risk';
+      }
+    }
+    return 'clean';
+  };
+
   const formatDateTime = (timestamp: string) => {
     if (!timestamp) return 'Unknown';
     const date = new Date(timestamp);
@@ -625,9 +637,9 @@ const AthleteDashboard: React.FC = () => {
                     <span className="metric-value">{formatDuration(session.durationSec)}</span>
                   </div>
                   <div className="metric-item">
-                    <span className="metric-label">Risk Level</span>
-                    <span className={`metric-value ${getRiskClass(session.risk)}`}>
-                      {session.risk || 'Low'}
+                    <span className="metric-label">Cheat Detection</span>
+                    <span className={`metric-value ${getCheatDetectionClass(session.cheatDetection)}`}>
+                      {session.cheatDetection?.cheatDetected ? '⚠️ Detected' : '✅ Clean'}
                     </span>
                   </div>
                 </div>

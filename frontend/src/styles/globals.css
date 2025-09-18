@@ -353,6 +353,12 @@ button:disabled {
 .risk-level.medium { color: var(--caution-score); }
 .risk-level.high { color: var(--risk-score); }
 
+/* Cheat detection colors */
+.clean { color: var(--good-score); }
+.low-risk { color: var(--caution-score); }
+.medium-risk { color: #f97316; }
+.high-risk { color: var(--risk-score); }
+
 .action-btn {
   padding: 6px 12px;
   margin: 2px;

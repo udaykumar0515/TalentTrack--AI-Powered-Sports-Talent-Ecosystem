@@ -100,6 +100,89 @@ const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({ isOpen, o
             </div>
           </div>
 
+          {/* Cheat Detection Section */}
+          {session.cheatDetection && (
+            <div className="bg-orange-50 p-6 rounded-lg border-l-4 border-orange-400">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-orange-600" />
+                Cheat Detection Analysis
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Cheat Detection Status */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">Cheat Detected:</span>
+                    <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      session.cheatDetection.cheatDetected 
+                        ? 'bg-red-100 text-red-800' 
+                        : 'bg-green-100 text-green-800'
+                    }`}>
+                      {session.cheatDetection.cheatDetected ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">Risk Level:</span>
+                    <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getRiskLevelColor(session.cheatDetection.riskLevel)}`}>
+                      {session.cheatDetection.riskLevel?.toUpperCase() || 'LOW'}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">Confidence:</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {session.cheatDetection.confidence?.toFixed(1) || 0}%
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">Total Flags:</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {session.cheatDetection.totalFlags || 0}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Cheat Detection Flags */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-700 mb-2">Detection Flags:</h4>
+                  <div className="space-y-2">
+                    {session.cheatDetection.flags && Object.entries(session.cheatDetection.flags).map(([flag, detected]) => (
+                      <div key={flag} className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600 capitalize">
+                          {flag.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
+                        </span>
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          detected ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                        }`}>
+                          {detected ? 'Detected' : 'Clean'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Suspicious Patterns */}
+              {session.cheatDetection.suspiciousPatterns && session.cheatDetection.suspiciousPatterns.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="font-medium text-gray-700 mb-2">Suspicious Patterns Detected:</h4>
+                  <div className="bg-red-50 p-3 rounded-lg">
+                    <ul className="space-y-1">
+                      {session.cheatDetection.suspiciousPatterns.map((pattern: string, index: number) => (
+                        <li key={index} className="text-sm text-red-800 flex items-start gap-2">
+                          <span className="text-red-500 mt-0.5">•</span>
+                          {pattern}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Enhanced Analysis Sections */}
           {session.form_analysis && (
             <div className="bg-gray-50 p-6 rounded-lg">

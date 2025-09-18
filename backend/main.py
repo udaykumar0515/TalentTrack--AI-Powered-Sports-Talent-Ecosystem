@@ -790,6 +790,9 @@ async def analyze_video(
         coach_name = athlete_data.get("coachName") if athlete_data else None
 
         # Construct session data for frontend & storage
+        # Extract cheat detection data
+        cheat_detection = parsed.get("cheatDetection", {})
+        
         session_data = {
             "exercise": exercise,  # Use original exercise name for frontend
             "reps": int(parsed.get("reps", 0)),
@@ -800,7 +803,16 @@ async def analyze_video(
             "athleteName": parsed.get("userName", athleteName),
             "coachId": coach_id,
             "coachName": coach_name,
-            "sessionId": str(uuid.uuid4())[:8]
+            "sessionId": str(uuid.uuid4())[:8],
+            "cheatDetection": {
+                "cheatDetected": cheat_detection.get("cheatDetected", False),
+                "cheatPercentage": cheat_detection.get("cheatPercentage", 0.0),
+                "totalFlags": cheat_detection.get("totalFlags", 0),
+                "confidence": cheat_detection.get("confidence", 0.0),
+                "riskLevel": cheat_detection.get("riskLevel", "low"),
+                "flags": cheat_detection.get("flags", {}),
+                "suspiciousPatterns": cheat_detection.get("suspiciousPatterns", [])
+            }
         }
 
         # Save session result
