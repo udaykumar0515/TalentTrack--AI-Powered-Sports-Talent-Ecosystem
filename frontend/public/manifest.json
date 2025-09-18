@@ -1,7 +1,7 @@
 {
-  "name": "AI Sports Talent Platform",
-  "short_name": "SportsAI",
-  "description": "AI-powered sports talent development platform for rural athletes",
+  "name": "TalentTrack - AI-Powered Sports Talent Ecosystem",
+  "short_name": "TalentTrack",
+  "description": "Democratizing Sports Talent Discovery Through AI-Powered Video Analysis",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

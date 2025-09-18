@@ -1,5 +1,5 @@
 # 🔧 Technical Documentation
-## AI-Powered Sports Talent Ecosystem
+## TalentTrack - AI-Powered Sports Talent Ecosystem
 
 > **Deep Dive into the Technical Architecture and Implementation**
 

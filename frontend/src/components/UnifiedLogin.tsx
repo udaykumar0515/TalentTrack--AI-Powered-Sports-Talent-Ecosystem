@@ -106,6 +106,14 @@ const UnifiedLogin: React.FC = () => {
       
       <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-xl p-6 w-full max-w-md relative transform hover:scale-105 transition-transform duration-300">
         <div className="flex flex-col items-center mb-6">
+          <div className="text-center mb-4">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              🏃‍♂️ TalentTrack
+            </h1>
+            <p className="text-sm text-gray-600">
+              AI-Powered Sports Talent Ecosystem
+            </p>
+          </div>
           <div className="relative">
             {formData.role === 'athlete' ? (
               <Trophy className="w-16 h-16 text-blue-600 mb-3 animate-bounce" />
@@ -114,9 +122,9 @@ const UnifiedLogin: React.FC = () => {
             )}
             <Sparkles className="absolute -right-1 -top-1 w-5 h-5 text-yellow-400 animate-spin" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Welcome {formData.role === 'athlete' ? 'Athlete' : 'Coach'}!
-          </h1>
+          </h2>
           <p className="text-gray-600 text-sm text-center flex items-center gap-2">
             <Trophy className="w-4 h-4" />
             {formData.role === 'athlete' 

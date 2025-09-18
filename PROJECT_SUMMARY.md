@@ -1,5 +1,5 @@
 # 📋 Project Summary
-## AI-Powered Sports Talent Ecosystem - HackWithHyderabad 2025
+## TalentTrack - AI-Powered Sports Talent Ecosystem - HackWithHyderabad 2025
 
 ---
 

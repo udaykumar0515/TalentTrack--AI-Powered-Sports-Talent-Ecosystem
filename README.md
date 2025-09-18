@@ -1,9 +1,9 @@
-# 🏃‍♂️ AI-Powered Sports Talent Ecosystem
+# 🏃‍♂️ TalentTrack - AI-Powered Sports Talent Ecosystem
 ## HackWithHyderabad Hackathon 2025
 
 [![Hackathon](https://img.shields.io/badge/Hackathon-HackWithHyderabad-blue)](https://hackwithhyderabad.com)
-[![AI](https://img.shields.io/badge/AI-Powered-green)](https://github.com)
-[![Sports](https://img.shields.io/badge/Sports-Tech-orange)](https://github.com)
+[![AI](https://img.shields.io/badge/AI-Powered-green)](https://github.com/udaykumar0515/TalentTrack---AI-Powered-Sports-Talent-Ecosystem-)
+[![Sports](https://img.shields.io/badge/Sports-Tech-orange)](https://github.com/udaykumar0515/TalentTrack---AI-Powered-Sports-Talent-Ecosystem-)
 
 > **Democratizing Sports Talent Discovery Through AI-Powered Video Analysis**
 
@@ -366,14 +366,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Contact and Support
 
 ### Hackathon Team
-- **Project Lead**: [Your Name]
-- **Email**: [your.email@example.com]
-- **GitHub**: [@yourusername]
+- **Project Lead**: Uday Kumar
+- **Email**: udaykumar0515@gmail.com
+- **GitHub**: [@udaykumar0515](https://github.com/udaykumar0515)
+- **Repository**: [TalentTrack - AI-Powered Sports Talent Ecosystem](https://github.com/udaykumar0515/TalentTrack---AI-Powered-Sports-Talent-Ecosystem-)
 
 ### Support Channels
 - **Documentation**: [docs/](docs/)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/ai-sports-talent-ecosystem/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/ai-sports-talent-ecosystem/discussions)
+- **Issues**: [GitHub Issues](https://github.com/udaykumar0515/TalentTrack---AI-Powered-Sports-Talent-Ecosystem-/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/udaykumar0515/TalentTrack---AI-Powered-Sports-Talent-Ecosystem-/discussions)
 
 ---
 

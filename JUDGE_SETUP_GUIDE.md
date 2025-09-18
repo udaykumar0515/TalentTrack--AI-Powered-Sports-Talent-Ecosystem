@@ -1,5 +1,5 @@
 # 🏆 Judge Setup Guide
-## AI-Powered Sports Talent Ecosystem
+## TalentTrack - AI-Powered Sports Talent Ecosystem
 
 > **Quick setup guide for hackathon judges to test the application**
 
