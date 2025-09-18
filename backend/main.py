@@ -1,5 +1,5 @@
 # main.py
-from fastapi import FastAPI, HTTPException, Depends, status, BackgroundTasks, UploadFile, File, Form
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -10,14 +10,10 @@ import json
 import uuid
 from datetime import datetime
 import subprocess
-import threading
 import time
-from fastapi.staticfiles import StaticFiles
 import os
 import logging
 import sys
-import asyncio
-from pathlib import Path
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -45,12 +41,6 @@ class User(BaseModel):
     role: str
     created_at: str
 
-class AnalysisRequest(BaseModel):
-    exercise: str
-    userId: str
-    userName: str
-    coachId: Optional[str] = None
-    coachName: Optional[str] = None
 
 class CoachMessage(BaseModel):
     id: str
@@ -64,24 +54,6 @@ class CoachMessage(BaseModel):
     timestamp: str
     read: bool = False
 
-class SessionResult(BaseModel):
-    exercise: str
-    reps: int
-    formScore: int
-    durationSec: float
-    timestamp: str
-    athleteId: str
-    athleteName: str
-    coachId: Optional[str] = None
-    coachName: Optional[str] = None
-
-class VideoUpload(BaseModel):
-    sessionId: str
-    athleteId: str
-    athleteName: str
-    exercise: str
-    coachId: Optional[str] = None
-    coachName: Optional[str] = None
 
 class VideoMetadata(BaseModel):
     videoId: str
@@ -106,9 +78,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global state for exercise analysis
-current_process = None
-analysis_results = {}
 
 # Exercise name mapping
 EXERCISE_MAPPING = {
@@ -229,20 +198,6 @@ def save_session_result(session_data: Dict[str, Any]) -> bool:
         logger.error(f"Error saving session: {e}")
         return False
 
-def terminate_process_safely(process):
-    """Safely terminate a subprocess"""
-    if process and process.poll() is None:
-        try:
-            process.terminate()
-            process.wait(timeout=5)
-            logger.info("Process terminated gracefully")
-        except subprocess.TimeoutExpired:
-            logger.warning("Process didn't terminate gracefully, killing it")
-            try:
-                process.kill()
-                process.wait(timeout=2)
-            except subprocess.TimeoutExpired:
-                logger.error("Failed to kill process")
 
 def validate_exercise_name(exercise: str) -> str:
     """Validate and normalize exercise name"""
@@ -454,157 +409,7 @@ async def google_login(google_data: GoogleLoginRequest):
         logger.error(f"Google login error: {e}")
         raise HTTPException(status_code=500, detail="Google login failed")
 
-# Exercise analysis endpoints
-@app.post("/api/start-analysis")
-async def start_analysis(request: AnalysisRequest, background_tasks: BackgroundTasks):
-    """Start live exercise analysis"""
-    global current_process
-    
-    try:
-        # Validate exercise name
-        exercise_internal = validate_exercise_name(request.exercise)
-        
-        # Stop any existing analysis
-        terminate_process_safely(current_process)
-        
-        # Check if exercise counter script exists
-        if not os.path.exists("exercise_counter.py"):
-            raise HTTPException(status_code=500, detail="Exercise counter script not found")
-        
-        # Run exercise counter in background
-        def run_exercise_counter():
-            global current_process
-            try:
-                cmd = [
-                    PYTHON_EXECUTABLE, "exercise_counter.py",
-                    "--user-id", request.userId,
-                    "--user-name", request.userName,
-                    "--exercise", exercise_internal
-                ]
-                
-                if request.coachId:
-                    cmd.extend(["--coach-id", request.coachId])
-                if request.coachName:
-                    cmd.extend(["--coach-name", request.coachName])
-                
-                logger.info(f"Starting exercise analysis for user {request.userId} with command: {' '.join(cmd)}")
-                
-                current_process = subprocess.Popen(
-                    cmd,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True
-                )
-                
-                # Add timeout to prevent hanging
-                try:
-                    stdout, stderr = current_process.communicate(timeout=300)  # 5 minute timeout
-                except subprocess.TimeoutExpired:
-                    logger.error("Exercise counter timed out")
-                    terminate_process_safely(current_process)
-                    return
-                
-                if stderr:
-                    logger.info(f"Analyzer stderr: {stderr.strip()}")
-                
-                if current_process.returncode == 0 and stdout.strip():
-                    try:
-                        result = json.loads(stdout.strip())
-                        analysis_results[request.userId] = result
-                        
-                        # Convert to frontend format and save
-                        session_data = {
-                            "exercise": request.exercise,
-                            "reps": result.get("reps", 0),
-                            "formScore": result.get("formScore", 0),
-                            "durationSec": result.get("durationSec", 0),
-                            "timestamp": datetime.now().isoformat() + "Z",
-                            "athleteId": request.userId,
-                            "athleteName": request.userName,
-                            "coachId": request.coachId,
-                            "coachName": request.coachName
-                        }
-                        
-                        save_session_result(session_data)
-                        logger.info(f"Analysis completed for user {request.userId}")
-                        
-                    except json.JSONDecodeError as e:
-                        logger.error(f"Failed to parse exercise counter output: {stdout}, error: {e}")
-                else:
-                    logger.error(f"Exercise counter failed with return code {current_process.returncode}")
-                    if stderr:
-                        logger.error(f"Exercise counter stderr: {stderr}")
-                    
-            except Exception as e:
-                logger.error(f"Error running exercise counter: {e}")
-            finally:
-                current_process = None
-        
-        background_tasks.add_task(run_exercise_counter)
-        
-        return {"status": "started", "message": "Exercise analysis started"}
-    
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error starting analysis: {e}")
-        raise HTTPException(status_code=500, detail="Failed to start analysis")
 
-@app.get("/api/analysis-status/{user_id}")
-async def get_analysis_status(user_id: str):
-    """Get analysis status for a user"""
-    try:
-        if user_id in analysis_results:
-            return {"status": "completed", "result": analysis_results[user_id]}
-        
-        # Check if process is still running
-        global current_process
-        if current_process and current_process.poll() is None:
-            return {"status": "processing", "message": "Analysis in progress"}
-        
-        return {"status": "idle", "message": "No analysis running"}
-    except Exception as e:
-        logger.error(f"Error getting analysis status: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get analysis status")
-
-@app.post("/api/stop-analysis")
-async def stop_analysis():
-    """Stop current analysis"""
-    global current_process
-    
-    try:
-        if current_process and current_process.poll() is None:
-            terminate_process_safely(current_process)
-            current_process = None
-            logger.info("Analysis stopped by user")
-            return {"status": "stopped", "message": "Analysis stopped"}
-        
-        return {"status": "inactive", "message": "No active analysis"}
-    except Exception as e:
-        logger.error(f"Error stopping analysis: {e}")
-        raise HTTPException(status_code=500, detail="Failed to stop analysis")
-
-@app.get("/api/user-sessions/{user_id}")
-async def get_user_sessions(user_id: str):
-    """Get all sessions for a specific user"""
-    try:
-        sessions_file = "data/sessions/sessions.json"
-        if os.path.exists(sessions_file):
-            with open(sessions_file, "r", encoding="utf-8") as f:
-                content = f.read().strip()
-                if content:
-                    sessions = json.loads(content)
-                    user_sessions = sessions.get(user_id, {}).get("sessions", [])
-                    # Sort by timestamp (newest first)
-                    user_sessions.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
-                    return user_sessions
-        return []
-    except json.JSONDecodeError as e:
-        logger.error(f"Invalid JSON in sessions file: {e}")
-        raise HTTPException(status_code=500, detail="Corrupted session data")
-    except Exception as e:
-        logger.error(f"Error loading sessions: {e}")
-        raise HTTPException(status_code=500, detail=f"Error loading sessions: {str(e)}")
 
 @app.get("/api/sessions/{session_id}")
 async def get_session_by_id(session_id: str):
@@ -937,38 +742,6 @@ async def get_video(session_id: str):
         logger.error(f"Error retrieving video: {e}")
         raise HTTPException(status_code=500, detail="Failed to retrieve video")
 
-@app.get("/api/athlete-videos/{athlete_id}")
-async def get_athlete_videos(athlete_id: str):
-    """Get all videos for a specific athlete"""
-    try:
-        videos = read_json_file("videos.json")
-        athlete_videos = [v for v in videos if v["athleteId"] == athlete_id]
-        return athlete_videos
-    except Exception as e:
-        logger.error(f"Error loading athlete videos: {e}")
-        raise HTTPException(status_code=500, detail="Failed to load videos")
-
-@app.get("/api/coach-videos/{coach_id}")
-async def get_coach_videos(coach_id: str):
-    """Get all videos for athletes under this coach"""
-    try:
-        videos = read_json_file("videos.json")
-        coach_videos = [v for v in videos if v.get("coachId") == coach_id]
-        return coach_videos
-    except Exception as e:
-        logger.error(f"Error loading coach videos: {e}")
-        raise HTTPException(status_code=500, detail="Failed to load videos")
-
-# Test endpoint for API testing
-@app.post("/api/test")
-async def test_endpoint():
-    """Test endpoint to verify API is working"""
-    return {
-        "message": "API is working!",
-        "timestamp": datetime.now().isoformat(),
-        "python_executable": PYTHON_EXECUTABLE,
-        "exercise_counter_exists": os.path.exists("exercise_counter.py")
-    }
 
 if __name__ == "__main__":
     import uvicorn

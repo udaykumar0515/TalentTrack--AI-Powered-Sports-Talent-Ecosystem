@@ -49,35 +49,7 @@ export interface Session {
   analysis_config?: any;
 }
 
-export interface CoachAction {
-  type: 'retest' | 'feedback' | 'note';
-  athleteId: string;
-  sessionId: string;
-  reason?: string;
-  notes?: string;
-}
 
-// Analyze video: sends form-data, returns Session
-export async function analyzeVideo(file: File | Blob, exercise: string, athleteId: string): Promise<Session> {
-  const form = new FormData();
-  form.append('file', file as any);
-  form.append('exercise', exercise);
-  form.append('athleteId', athleteId);
-
-  const response = await fetch(`${API_BASE_URL}/analyze`, {
-    method: 'POST',
-    body: form
-  });
-
-  if (!response.ok) {
-    const text = await response.text().catch(() => '');
-    console.error('analyzeVideo error response:', text);
-    throw new Error('Analysis failed');
-  }
-
-  const session = await response.json();
-  return session;
-}
 
 // Enhanced analysis with metadata
 export async function analyzeVideoEnhanced(
@@ -155,22 +127,6 @@ export async function getAthletes(): Promise<any[]> {
   return response.json();
 }
 
-// Coach actions (retest requests, feedback, notes)
-export async function postCoachAction(action: CoachAction): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/coachActions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(action)
-  });
-
-  if (!response.ok) {
-    const text = await response.text().catch(() => '');
-    console.error('postCoachAction error response:', text);
-    throw new Error('Failed to post coach action');
-  }
-}
 
 // Get a specific session by ID
 export async function getSessionById(sessionId: string): Promise<Session> {
@@ -223,67 +179,7 @@ export async function markMessageAsRead(messageId: string): Promise<void> {
   }
 }
 
-// Delete a session
-export async function deleteSession(sessionId: string): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/sessions/${encodeURIComponent(sessionId)}`, {
-    method: 'DELETE'
-  });
 
-  if (!response.ok) {
-    const text = await response.text().catch(() => '');
-    console.error('deleteSession error response:', text);
-    throw new Error('Failed to delete session');
-  }
-}
-
-// Enhanced reporting functions
-export async function getAthleteReport(athleteId: string, reportType: string = "comprehensive", timePeriod: string = "30d"): Promise<any> {
-  const response = await fetch(`${API_BASE_URL}/reports/athlete/${encodeURIComponent(athleteId)}?report_type=${reportType}&time_period=${timePeriod}`);
-  
-  if (!response.ok) {
-    const text = await response.text().catch(() => '');
-    console.error('getAthleteReport error response:', text);
-    throw new Error('Failed to fetch athlete report');
-  }
-  
-  return response.json();
-}
-
-export async function getCoachDashboard(coachId: string, timePeriod: string = "30d"): Promise<any> {
-  const response = await fetch(`${API_BASE_URL}/reports/coach/${encodeURIComponent(coachId)}?time_period=${timePeriod}`);
-  
-  if (!response.ok) {
-    const text = await response.text().catch(() => '');
-    console.error('getCoachDashboard error response:', text);
-    throw new Error('Failed to fetch coach dashboard');
-  }
-  
-  return response.json();
-}
-
-export async function compareSessions(athleteId: string, exercise: string, timePeriod: string = "30d"): Promise<any> {
-  const response = await fetch(`${API_BASE_URL}/analysis/compare/${encodeURIComponent(athleteId)}?exercise=${exercise}&time_period=${timePeriod}`);
-  
-  if (!response.ok) {
-    const text = await response.text().catch(() => '');
-    console.error('compareSessions error response:', text);
-    throw new Error('Failed to compare sessions');
-  }
-  
-  return response.json();
-}
-
-export async function getExerciseBenchmarks(exercise: string): Promise<any> {
-  const response = await fetch(`${API_BASE_URL}/analysis/benchmarks/${encodeURIComponent(exercise)}`);
-  
-  if (!response.ok) {
-    const text = await response.text().catch(() => '');
-    console.error('getExerciseBenchmarks error response:', text);
-    throw new Error('Failed to fetch exercise benchmarks');
-  }
-  
-  return response.json();
-}
 
 // Upload video file to backend storage
 export async function uploadVideo(videoFile: File, sessionData: any): Promise<any> {
