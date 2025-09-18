@@ -186,6 +186,14 @@ def save_session_result(session_data: Dict[str, Any]) -> bool:
         if "sessionId" not in session_data:
             session_data["sessionId"] = str(uuid.uuid4())[:8]
         
+        # Check if session with same sessionId already exists
+        session_id = session_data["sessionId"]
+        existing_sessions = sessions[user_id]["sessions"]
+        
+        # Remove any existing session with the same sessionId to prevent duplicates
+        sessions[user_id]["sessions"] = [s for s in existing_sessions if s.get("sessionId") != session_id]
+        
+        # Add the new session
         sessions[user_id]["sessions"].append(session_data)
         
         # Save back to file
@@ -242,7 +250,7 @@ async def get_athletes():
 @app.get("/api/sessions")
 async def list_sessions(athleteId: Optional[str] = None, coachId: Optional[str] = None):
     """
-    Return list of sessions.
+    Return list of sessions with video URLs.
     Optional query params:
       - athleteId: filter by athlete
       - coachId: filter by coach
@@ -257,12 +265,25 @@ async def list_sessions(athleteId: Optional[str] = None, coachId: Optional[str] 
     except Exception:
         return []
 
+    # Load video metadata
+    videos = read_json_file("videos.json")
+    video_map = {v["sessionId"]: v for v in videos}
+
     # Flatten all sessions into a single list
     all_sessions = []
     # The data structure is { "athleteId": { "sessions": [...] } }
     for uid, user_data in (data.items() if isinstance(data, dict) else []):
         if isinstance(user_data, dict) and "sessions" in user_data:
-            all_sessions.extend(user_data["sessions"])
+            for session in user_data["sessions"]:
+                # Add video URL if available
+                session_id = session.get("sessionId")
+                if session_id and session_id in video_map:
+                    session["videoUrl"] = f"/api/videos/{session_id}"
+                    session["thumbnailUrl"] = f"/api/videos/{session_id}"
+                else:
+                    session["videoUrl"] = None
+                    session["thumbnailUrl"] = None
+                all_sessions.append(session)
 
     if athleteId:
         return [s for s in all_sessions if s.get("athleteId") == athleteId]
@@ -413,7 +434,7 @@ async def google_login(google_data: GoogleLoginRequest):
 
 @app.get("/api/sessions/{session_id}")
 async def get_session_by_id(session_id: str):
-    """Get a specific session by ID"""
+    """Get a specific session by ID with video URL"""
     try:
         sessions_file = "data/sessions/sessions.json"
         if not os.path.exists(sessions_file):
@@ -422,11 +443,22 @@ async def get_session_by_id(session_id: str):
         with open(sessions_file, "r", encoding="utf-8") as f:
             data = json.load(f)
         
+        # Load video metadata
+        videos = read_json_file("videos.json")
+        video_map = {v["sessionId"]: v for v in videos}
+        
         # Search through all sessions to find the one with matching sessionId
         for user_id, user_data in data.items():
             if isinstance(user_data, dict) and "sessions" in user_data:
                 for session in user_data["sessions"]:
                     if session.get("sessionId") == session_id:
+                        # Add video URL if available
+                        if session_id in video_map:
+                            session["videoUrl"] = f"/api/videos/{session_id}"
+                            session["thumbnailUrl"] = f"/api/videos/{session_id}"
+                        else:
+                            session["videoUrl"] = None
+                            session["thumbnailUrl"] = None
                         return session
         
         raise HTTPException(status_code=404, detail="Session not found")
@@ -703,7 +735,7 @@ async def upload_video(
         )
         
         # Save metadata to JSON file
-        videos_file = "data/videos.json"
+        videos_file = "videos.json"
         videos = read_json_file("videos.json") if os.path.exists(f"data/{videos_file}") else []
         videos.append(video_metadata.dict())
         write_json_file("videos.json", videos)

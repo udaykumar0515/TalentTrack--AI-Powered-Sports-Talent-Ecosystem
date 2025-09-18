@@ -6,7 +6,7 @@ import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
-import { saveSession, getAthleteMessages, CoachMessage } from '../api/apiClient';
+import { saveSession, getAthleteMessages, CoachMessage, getSessions } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -34,9 +34,12 @@ const AthleteDashboard: React.FC = () => {
 
   // Load sessions and messages on component mount
   useEffect(() => {
-    loadSessions();
-    loadMessages();
+    const loadData = async () => {
+      await loadSessions();
+      await loadMessages();
     loadSelectedCoach();
+    };
+    loadData();
   }, [user?.id]);
 
   // Cleanup camera stream on unmount
@@ -100,9 +103,40 @@ const AthleteDashboard: React.FC = () => {
     return () => clearInterval(interval);
   }, [user?.id]);
 
-  const loadSessions = () => {
+  const loadSessions = async () => {
     try {
-      const storedSessions = localStorage.getItem(`sessions_${user?.id}`) || '[]';
+      if (!user?.id) return;
+      
+      // Load from backend first
+      try {
+        const backendSessions = await getSessions(user.id);
+        console.log('Loaded sessions from backend:', backendSessions);
+        
+        // Clean up any test video URLs - treat them as no video
+        const cleanedSessions = backendSessions.map((session: any) => ({
+          ...session,
+          videoUrl: session.videoUrl && !session.videoUrl.includes('test-video') ? session.videoUrl : null,
+          thumbnailUrl: session.thumbnailUrl && !session.thumbnailUrl.includes('test-video') ? session.thumbnailUrl : null
+        }));
+        
+        // Sort sessions by timestamp (latest first)
+        const sortedSessions = cleanedSessions.sort((a: any, b: any) => {
+          const timestampA = new Date(a.timestamp || a.date || 0).getTime();
+          const timestampB = new Date(b.timestamp || b.date || 0).getTime();
+          return timestampB - timestampA; // Descending order (newest first)
+        });
+        
+        setSessions(sortedSessions);
+        
+        // Also update localStorage with backend data
+        localStorage.setItem(`sessions_${user.id}`, JSON.stringify(sortedSessions));
+        return;
+      } catch (backendError) {
+        console.warn('Failed to load sessions from backend, falling back to localStorage:', backendError);
+      }
+      
+      // Fallback to localStorage if backend fails
+      const storedSessions = localStorage.getItem(`sessions_${user.id}`) || '[]';
       const parsedSessions = JSON.parse(storedSessions);
       // Clean up any test video URLs - treat them as no video
       const cleanedSessions = parsedSessions.map((session: any) => ({
@@ -110,7 +144,15 @@ const AthleteDashboard: React.FC = () => {
         videoUrl: session.videoUrl && !session.videoUrl.includes('test-video') ? session.videoUrl : null,
         thumbnailUrl: session.thumbnailUrl && !session.thumbnailUrl.includes('test-video') ? session.thumbnailUrl : null
       }));
-      setSessions(cleanedSessions);
+      
+      // Sort sessions by timestamp (latest first)
+      const sortedSessions = cleanedSessions.sort((a: any, b: any) => {
+        const timestampA = new Date(a.timestamp || a.date || 0).getTime();
+        const timestampB = new Date(b.timestamp || b.date || 0).getTime();
+        return timestampB - timestampA; // Descending order (newest first)
+      });
+      
+      setSessions(sortedSessions);
     } catch (error) {
       console.error('Error loading sessions:', error);
     }
@@ -141,23 +183,27 @@ const AthleteDashboard: React.FC = () => {
       sessionId: session.sessionId || `sess_${Math.random().toString(36).slice(2,10)}`
     };
   
-    // Save locally for UI immediacy (existing behavior)
+    // Set current session for UI
     setCurrentSession(sessionWithCoach);
-    const newSessions = [sessionWithCoach, ...sessions];
-    setSessions(newSessions);
-    try {
-      localStorage.setItem(`sessions_${user?.id}`, JSON.stringify(newSessions));
-    } catch (e) {
-      console.error('Could not persist to localStorage', e);
-    }
   
-    // NEW: persist to backend
+    // Save to backend first
     try {
       await saveSession(sessionWithCoach);
       console.info('Session saved to backend with coach:', sessionWithCoach.coachName || 'No coach selected');
+      
+      // Reload sessions from backend to get complete, up-to-date list
+      await loadSessions();
     } catch (err) {
       console.error('Failed to save session to backend:', err);
-      // Optionally show a UI toast to the user
+      
+      // Fallback: add to local state if backend save fails
+      const newSessions = [sessionWithCoach, ...sessions];
+      setSessions(newSessions);
+      try {
+        localStorage.setItem(`sessions_${user?.id}`, JSON.stringify(newSessions));
+      } catch (e) {
+        console.error('Could not persist to localStorage', e);
+      }
     }
     
     // Reset analysis state and clear video preview
