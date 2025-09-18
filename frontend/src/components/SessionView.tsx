@@ -68,6 +68,28 @@ const SessionView: React.FC<SessionViewProps> = ({
     }
   };
 
+  const getCheatDetectionClass = (cheatDetection: any) => {
+    if (!cheatDetection) return 'green';
+    if (cheatDetection.cheatDetected) {
+      switch (cheatDetection.riskLevel?.toLowerCase()) {
+        case 'high': return 'red';
+        case 'medium': return 'yellow';
+        default: return 'yellow';
+      }
+    }
+    return 'green';
+  };
+
+  const getPerformanceLevelClass = (level: string) => {
+    switch (level?.toLowerCase()) {
+      case 'elite': return 'purple';
+      case 'advanced': return 'yellow';
+      case 'intermediate': return 'green';
+      case 'beginner': return 'blue';
+      default: return 'gray';
+    }
+  };
+
   if (!session) {
     return (
       <div className="loading">
@@ -141,6 +163,27 @@ const SessionView: React.FC<SessionViewProps> = ({
             <h3>Session ID</h3>
             <p className="metric-value">{session.sessionId || 'Unknown'}</p>
           </div>
+
+          {/* Performance Level Card */}
+          {session.benchmarking && (
+            <div className={`metric-card ${getPerformanceLevelClass(session.benchmarking.performance_level?.level)}`}>
+              <h3>Performance Level</h3>
+              <p className="metric-value">
+                {session.benchmarking.performance_level?.level?.toUpperCase() || 'N/A'}
+              </p>
+              <p className="metric-status">
+                Score: {session.benchmarking.performance_level?.score || 0}/100
+              </p>
+              <div className="cheat-details">
+                <p className="cheat-percentage">
+                  Global Rank: #{session.benchmarking.global_rank || 'N/A'}
+                </p>
+                <p className="cheat-flags">
+                  Percentile: {session.benchmarking.peer_comparison?.percentile || 0}%
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

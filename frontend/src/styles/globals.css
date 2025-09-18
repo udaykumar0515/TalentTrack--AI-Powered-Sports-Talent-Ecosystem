@@ -359,6 +359,206 @@ button:disabled {
 .medium-risk { color: #f97316; }
 .high-risk { color: var(--risk-score); }
 
+/* Performance level colors */
+.unknown { color: #6b7280; }
+.beginner { color: #3b82f6; }
+.intermediate { color: #10b981; }
+.advanced { color: #f59e0b; }
+.elite { color: #8b5cf6; }
+
+/* Predictive Analytics Styles */
+.predictive-analytics-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  color: white;
+}
+
+.predictive-analytics-section h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.analytics-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.analytics-card h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.risk-level, .potential-level {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.risk-badge, .potential-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.risk-badge.low { background: #10b981; color: white; }
+.risk-badge.medium { background: #f59e0b; color: white; }
+.risk-badge.high { background: #ef4444; color: white; }
+
+.potential-badge.unknown { background: #6b7280; color: white; }
+.potential-badge.low { background: #ef4444; color: white; }
+.potential-badge.medium { background: #f59e0b; color: white; }
+.potential-badge.high { background: #10b981; color: white; }
+
+.risk-score, .potential-score {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.risk-factors, .improvement-suggestions {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+.risk-factors li, .improvement-suggestions li {
+  margin-bottom: 0.25rem;
+}
+
+.prediction-details {
+  margin-bottom: 0.75rem;
+}
+
+.prediction-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.prediction-item .metric {
+  font-weight: 600;
+  min-width: 80px;
+}
+
+.prediction-item .current {
+  color: #fbbf24;
+}
+
+.prediction-item .arrow {
+  color: #d1d5db;
+}
+
+.prediction-item .predicted {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.confidence {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* Coach Analytics Styles */
+.coach-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.analytics-card.high-risk-athletes {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.analytics-card.high-potential-athletes {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.analytics-card.team-overview {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.risk-count, .potential-count {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.athlete-list {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: 0.875rem;
+}
+
+.athlete-list li {
+  margin-bottom: 0.25rem;
+  opacity: 0.9;
+}
+
+.team-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.stat-label {
+  opacity: 0.8;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: #fbbf24;
+}
+
+/* SessionView performance level colors */
+.metric-card.purple { background-color: #f3e8ff; border-left: 4px solid #8b5cf6; }
+.metric-card.yellow { background-color: #fef3c7; border-left: 4px solid #f59e0b; }
+.metric-card.green { background-color: #d1fae5; border-left: 4px solid #10b981; }
+.metric-card.blue { background-color: #dbeafe; border-left: 4px solid #3b82f6; }
+.metric-card.gray { background-color: #f3f4f6; border-left: 4px solid #6b7280; }
+
+/* Cheat detection details */
+.cheat-details {
+  margin-top: 8px;
+  font-size: 0.8rem;
+}
+
+.cheat-percentage,
+.cheat-flags {
+  margin: 2px 0;
+  color: #666;
+}
+
 .action-btn {
   padding: 6px 12px;
   margin: 2px;

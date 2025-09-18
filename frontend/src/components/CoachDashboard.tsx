@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { getSessions, getAthletes } from '../api/apiClient';
+import { getSessions, getAthletes, getCoachPredictiveAnalytics } from '../api/apiClient';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
 
@@ -16,9 +16,12 @@ const CoachDashboard: React.FC = () => {
   const [selectedSessionForAnalysis, setSelectedSessionForAnalysis] = useState<any>(null);
   const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false);
   const [taggedSessionId, setTaggedSessionId] = useState<string>('');
+  const [predictiveAnalytics, setPredictiveAnalytics] = useState<any>(null);
+  const [loadingAnalytics, setLoadingAnalytics] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
+    loadPredictiveAnalytics();
     // reload when user changes (login/logout)
   }, [user?.id]);
 
@@ -178,6 +181,20 @@ const CoachDashboard: React.FC = () => {
     }
   };
 
+  const loadPredictiveAnalytics = async () => {
+    if (!user?.id) return;
+    
+    setLoadingAnalytics(true);
+    try {
+      const analytics = await getCoachPredictiveAnalytics(user.id);
+      setPredictiveAnalytics(analytics);
+    } catch (error) {
+      console.error('Error loading predictive analytics:', error);
+    } finally {
+      setLoadingAnalytics(false);
+    }
+  };
+
 
   const handleSendFeedback = async (sessionId: string, athleteId: string) => {
     const session = sessions.find(s => s.sessionId === sessionId);
@@ -213,6 +230,28 @@ const CoachDashboard: React.FC = () => {
 
   const getRiskClass = (risk: string) => {
     return (risk || '').toLowerCase();
+  };
+
+  const getCheatDetectionClass = (cheatDetection: any) => {
+    if (!cheatDetection) return 'clean';
+    if (cheatDetection.cheatDetected) {
+      switch (cheatDetection.riskLevel?.toLowerCase()) {
+        case 'high': return 'high-risk';
+        case 'medium': return 'medium-risk';
+        default: return 'low-risk';
+      }
+    }
+    return 'clean';
+  };
+
+  const getPerformanceLevelClass = (level: string) => {
+    switch (level?.toLowerCase()) {
+      case 'elite': return 'elite';
+      case 'advanced': return 'advanced';
+      case 'intermediate': return 'intermediate';
+      case 'beginner': return 'beginner';
+      default: return 'unknown';
+    }
   };
 
 
@@ -335,6 +374,84 @@ const CoachDashboard: React.FC = () => {
 
       {!showAthleteSessions ? (
         <section className="athletes-section">
+          {/* Predictive Analytics Section */}
+          {predictiveAnalytics && !predictiveAnalytics.error && (
+            <div className="predictive-analytics-section">
+              <h2>Team Performance Insights</h2>
+              <div className="coach-analytics-grid">
+                {/* High Risk Athletes */}
+                <div className="analytics-card high-risk-athletes">
+                  <h3>⚠️ High Risk Athletes</h3>
+                  <div className="risk-count">
+                    {predictiveAnalytics.high_risk_athletes?.length || 0} athletes
+                  </div>
+                  {predictiveAnalytics.high_risk_athletes?.length > 0 && (
+                    <ul className="athlete-list">
+                      {predictiveAnalytics.high_risk_athletes.slice(0, 3).map((athleteId: string) => {
+                        const athlete = athletes.find(a => a.id === athleteId);
+                        return (
+                          <li key={athleteId}>
+                            {athlete?.name || 'Unknown Athlete'}
+                          </li>
+                        );
+                      })}
+                      {predictiveAnalytics.high_risk_athletes.length > 3 && (
+                        <li>+{predictiveAnalytics.high_risk_athletes.length - 3} more</li>
+                      )}
+                    </ul>
+                  )}
+                </div>
+
+                {/* High Potential Athletes */}
+                <div className="analytics-card high-potential-athletes">
+                  <h3>⭐ High Potential Athletes</h3>
+                  <div className="potential-count">
+                    {predictiveAnalytics.high_potential_athletes?.length || 0} athletes
+                  </div>
+                  {predictiveAnalytics.high_potential_athletes?.length > 0 && (
+                    <ul className="athlete-list">
+                      {predictiveAnalytics.high_potential_athletes.slice(0, 3).map((athleteId: string) => {
+                        const athlete = athletes.find(a => a.id === athleteId);
+                        return (
+                          <li key={athleteId}>
+                            {athlete?.name || 'Unknown Athlete'}
+                          </li>
+                        );
+                      })}
+                      {predictiveAnalytics.high_potential_athletes.length > 3 && (
+                        <li>+{predictiveAnalytics.high_potential_athletes.length - 3} more</li>
+                      )}
+                    </ul>
+                  )}
+                </div>
+
+                {/* Team Overview */}
+                <div className="analytics-card team-overview">
+                  <h3>📊 Team Overview</h3>
+                  <div className="team-stats">
+                    <div className="stat">
+                      <span className="stat-label">Total Athletes:</span>
+                      <span className="stat-value">{predictiveAnalytics.total_athletes || 0}</span>
+                    </div>
+                    <div className="stat">
+                      <span className="stat-label">Total Sessions:</span>
+                      <span className="stat-value">{predictiveAnalytics.total_sessions || 0}</span>
+                    </div>
+                    <div className="stat">
+                      <span className="stat-label">Avg Sessions/Athlete:</span>
+                      <span className="stat-value">
+                        {predictiveAnalytics.total_athletes > 0 
+                          ? Math.round((predictiveAnalytics.total_sessions || 0) / predictiveAnalytics.total_athletes)
+                          : 0
+                        }
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <h2>Your Athletes</h2>
           {athletes.length === 0 ? (
             <div className="no-sessions">
@@ -412,6 +529,8 @@ const CoachDashboard: React.FC = () => {
                     <th>Form Score</th>
                     <th>Duration</th>
                     <th>Risk Level</th>
+                    <th>Performance Level</th>
+                    <th>Global Rank</th>
                     <th>Date</th>
                     <th>Actions</th>
                   </tr>
@@ -451,6 +570,22 @@ const CoachDashboard: React.FC = () => {
                         <td className="metric-cell">
                           <div className={`metric-value ${getRiskClass(risk)}`}>{risk}</div>
                           <div className="metric-label">Risk</div>
+                        </td>
+                        <td className="metric-cell">
+                          <div className={`metric-value ${getPerformanceLevelClass(session.benchmarking?.performance_level?.level)}`}>
+                            {session.benchmarking?.performance_level?.level?.toUpperCase() || 'N/A'}
+                          </div>
+                          <div className="metric-label">
+                            Score: {session.benchmarking?.performance_level?.score || 0}
+                          </div>
+                        </td>
+                        <td className="metric-cell">
+                          <div className="metric-value">
+                            #{session.benchmarking?.global_rank || 'N/A'}
+                          </div>
+                          <div className="metric-label">
+                            {session.benchmarking?.peer_comparison?.percentile || 0}%
+                          </div>
                         </td>
                         <td className="metric-cell">
                           <div className="metric-value">{new Date(date).toLocaleDateString()}</div>

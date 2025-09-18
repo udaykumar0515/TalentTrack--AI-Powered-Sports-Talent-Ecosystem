@@ -14,6 +14,8 @@ import time
 import os
 import logging
 import sys
+from benchmarking_utils import benchmarking_engine
+from predictive_analytics import predictive_analytics
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -361,6 +363,46 @@ async def submit_feedback(feedback_data: dict):
     except Exception as e:
         logger.error(f"Error submitting feedback: {e}")
         raise HTTPException(status_code=500, detail="Failed to submit feedback")
+
+@app.get("/api/benchmarks/leaderboard/{exercise}")
+async def get_leaderboard(exercise: str, coach_id: Optional[str] = None):
+    """Get leaderboard for specific exercise"""
+    try:
+        leaderboard = benchmarking_engine.generate_leaderboard(exercise, coach_id)
+        return {"exercise": exercise, "leaderboard": leaderboard}
+    except Exception as e:
+        logger.error(f"Error getting leaderboard: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get leaderboard")
+
+@app.get("/api/benchmarks/standards/{exercise}")
+async def get_exercise_standards(exercise: str):
+    """Get performance standards for specific exercise"""
+    try:
+        standards = benchmarking_engine.benchmarks.get("exercise_standards", {}).get(exercise, {})
+        return {"exercise": exercise, "standards": standards}
+    except Exception as e:
+        logger.error(f"Error getting standards: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get standards")
+
+@app.get("/api/predictive-analytics/athlete/{athlete_id}")
+async def get_athlete_predictive_analytics(athlete_id: str):
+    """Get predictive analytics for a specific athlete"""
+    try:
+        analytics = predictive_analytics.get_predictive_analytics(athlete_id)
+        return analytics
+    except Exception as e:
+        logger.error(f"Error getting athlete predictive analytics: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get predictive analytics")
+
+@app.get("/api/predictive-analytics/coach/{coach_id}")
+async def get_coach_predictive_analytics(coach_id: str):
+    """Get predictive analytics for all athletes under a coach"""
+    try:
+        analytics = predictive_analytics.get_coach_predictive_analytics(coach_id)
+        return analytics
+    except Exception as e:
+        logger.error(f"Error getting coach predictive analytics: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get coach predictive analytics")
 
 @app.delete("/api/sessions/{session_id}")
 async def delete_session(session_id: str):
@@ -793,6 +835,21 @@ async def analyze_video(
         # Extract cheat detection data
         cheat_detection = parsed.get("cheatDetection", {})
         
+        # Generate benchmarking data
+        temp_session_data = {
+            "exercise": exercise,
+            "reps": int(parsed.get("reps", 0)),
+            "formScore": int(parsed.get("formScore", 0)),
+            "durationSec": float(parsed.get("durationSec", 0.0)),
+            "athleteId": athleteId,
+            "coachId": coach_id
+        }
+        
+        benchmarking_data = benchmarking_engine.get_benchmarking_data(temp_session_data)
+        
+        # Generate predictive analytics data
+        predictive_data = predictive_analytics.get_predictive_analytics(athleteId)
+        
         session_data = {
             "exercise": exercise,  # Use original exercise name for frontend
             "reps": int(parsed.get("reps", 0)),
@@ -812,7 +869,9 @@ async def analyze_video(
                 "riskLevel": cheat_detection.get("riskLevel", "low"),
                 "flags": cheat_detection.get("flags", {}),
                 "suspiciousPatterns": cheat_detection.get("suspiciousPatterns", [])
-            }
+            },
+            "benchmarking": benchmarking_data,
+            "predictiveAnalytics": predictive_data
         }
 
         # Save session result

@@ -35,6 +35,16 @@ const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({ isOpen, o
     }
   };
 
+  const getPerformanceLevelColor = (level: string) => {
+    switch (level?.toLowerCase()) {
+      case 'elite': return 'text-purple-600 bg-purple-100';
+      case 'advanced': return 'text-yellow-600 bg-yellow-100';
+      case 'intermediate': return 'text-green-600 bg-green-100';
+      case 'beginner': return 'text-blue-600 bg-blue-100';
+      default: return 'text-gray-600 bg-gray-100';
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -174,6 +184,107 @@ const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({ isOpen, o
                         <li key={index} className="text-sm text-red-800 flex items-start gap-2">
                           <span className="text-red-500 mt-0.5">•</span>
                           {pattern}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Benchmarking Section */}
+          {session.benchmarking && (
+            <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-400">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-blue-600" />
+                Performance Benchmarking
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Performance Level */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">Performance Level:</span>
+                    <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getPerformanceLevelColor(session.benchmarking.performance_level?.level)}`}>
+                      {session.benchmarking.performance_level?.level?.toUpperCase() || 'UNKNOWN'}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">Level Score:</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {session.benchmarking.performance_level?.score || 0}/100
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">Global Rank:</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      #{session.benchmarking.global_rank || 'N/A'}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">Coach Rank:</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      #{session.benchmarking.coach_rank || 'N/A'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Peer Comparison */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">Percentile:</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {session.benchmarking.peer_comparison?.percentile || 0}%
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">Performance Score:</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {session.benchmarking.peer_comparison?.performance_score || 0}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">Average Score:</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {session.benchmarking.peer_comparison?.average_score || 0}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-700">Total Athletes:</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      {session.benchmarking.total_global_athletes || 0}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Performance Description */}
+              {session.benchmarking.performance_level?.description && (
+                <div className="mt-4">
+                  <h4 className="font-medium text-gray-700 mb-2">Performance Description:</h4>
+                  <p className="text-sm text-gray-600 bg-white p-3 rounded-lg">
+                    {session.benchmarking.performance_level.description}
+                  </p>
+                </div>
+              )}
+
+              {/* Improvement Suggestions */}
+              {session.benchmarking.improvement_suggestions && session.benchmarking.improvement_suggestions.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="font-medium text-gray-700 mb-2">Improvement Suggestions:</h4>
+                  <div className="bg-green-50 p-3 rounded-lg">
+                    <ul className="space-y-1">
+                      {session.benchmarking.improvement_suggestions.map((suggestion: string, index: number) => (
+                        <li key={index} className="text-sm text-green-800 flex items-start gap-2">
+                          <span className="text-green-500 mt-0.5">•</span>
+                          {suggestion}
                         </li>
                       ))}
                     </ul>

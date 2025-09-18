@@ -191,6 +191,7 @@ class CheatDetector:
             'form_deterioration': False,
             'repetitive_pattern': False
         }
+        self.suspicious_patterns = []
         
         # Exercise-specific thresholds
         self.thresholds = self._get_exercise_thresholds()

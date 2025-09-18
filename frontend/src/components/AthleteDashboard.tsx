@@ -6,7 +6,7 @@ import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
-import { saveSession, getAthleteMessages, getSessions, deleteSession } from '../api/apiClient';
+import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthletePredictiveAnalytics } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -25,6 +25,8 @@ const AthleteDashboard: React.FC = () => {
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
   const [selectedSessionMenu, setSelectedSessionMenu] = useState<string | null>(null);
+  const [predictiveAnalytics, setPredictiveAnalytics] = useState<any>(null);
+  const [loadingAnalytics, setLoadingAnalytics] = useState(false);
 
   const exercises = [
     { value: 'squat', label: 'Squat' },
@@ -37,6 +39,7 @@ const AthleteDashboard: React.FC = () => {
     const loadData = async () => {
       await loadSessions();
       await loadMessages();
+      await loadPredictiveAnalytics();
     loadSelectedCoach();
     };
     loadData();
@@ -180,6 +183,20 @@ const AthleteDashboard: React.FC = () => {
       // Messages are handled by ChatSidebar component
     } catch (error) {
       console.error('Error loading messages:', error);
+    }
+  };
+
+  const loadPredictiveAnalytics = async () => {
+    if (!user?.id) return;
+    
+    setLoadingAnalytics(true);
+    try {
+      const analytics = await getAthletePredictiveAnalytics(user.id);
+      setPredictiveAnalytics(analytics);
+    } catch (error) {
+      console.error('Error loading predictive analytics:', error);
+    } finally {
+      setLoadingAnalytics(false);
     }
   };
 
@@ -355,6 +372,16 @@ const AthleteDashboard: React.FC = () => {
       }
     }
     return 'clean';
+  };
+
+  const getPerformanceLevelClass = (level: string) => {
+    switch (level?.toLowerCase()) {
+      case 'elite': return 'elite';
+      case 'advanced': return 'advanced';
+      case 'intermediate': return 'intermediate';
+      case 'beginner': return 'beginner';
+      default: return 'unknown';
+    }
   };
 
   const formatDateTime = (timestamp: string) => {
@@ -583,6 +610,78 @@ const AthleteDashboard: React.FC = () => {
       )}
 
       <section className="activity-feed">
+        {/* Predictive Analytics Section */}
+        {predictiveAnalytics && !predictiveAnalytics.error && (
+          <div className="predictive-analytics-section">
+            <h2>Performance Insights</h2>
+            <div className="analytics-grid">
+              {/* Injury Risk */}
+              <div className={`analytics-card ${predictiveAnalytics.injury_risk?.risk_level || 'low'}-risk`}>
+                <h3>Injury Risk</h3>
+                <div className="risk-level">
+                  <span className={`risk-badge ${predictiveAnalytics.injury_risk?.risk_level || 'low'}`}>
+                    {predictiveAnalytics.injury_risk?.risk_level?.toUpperCase() || 'LOW'}
+                  </span>
+                  <span className="risk-score">{predictiveAnalytics.injury_risk?.risk_score || 0}%</span>
+                </div>
+                {predictiveAnalytics.injury_risk?.factors?.length > 0 && (
+                  <ul className="risk-factors">
+                    {predictiveAnalytics.injury_risk.factors.map((factor: string, index: number) => (
+                      <li key={index}>{factor}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              {/* Improvement Potential */}
+              <div className={`analytics-card ${predictiveAnalytics.improvement_potential?.potential || 'unknown'}-potential`}>
+                <h3>Improvement Potential</h3>
+                <div className="potential-level">
+                  <span className={`potential-badge ${predictiveAnalytics.improvement_potential?.potential || 'unknown'}`}>
+                    {predictiveAnalytics.improvement_potential?.potential?.toUpperCase() || 'UNKNOWN'}
+                  </span>
+                  <span className="potential-score">{predictiveAnalytics.improvement_potential?.score || 0}%</span>
+                </div>
+                {predictiveAnalytics.improvement_potential?.suggestions?.length > 0 && (
+                  <ul className="improvement-suggestions">
+                    {predictiveAnalytics.improvement_potential.suggestions.slice(0, 2).map((suggestion: string, index: number) => (
+                      <li key={index}>{suggestion}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              {/* Future Performance Prediction */}
+              {predictiveAnalytics.future_performance?.predictions && (
+                <div className="analytics-card future-prediction">
+                  <h3>30-Day Forecast</h3>
+                  <div className="prediction-details">
+                    {predictiveAnalytics.future_performance.predictions.form_score && (
+                      <div className="prediction-item">
+                        <span className="metric">Form Score:</span>
+                        <span className="current">{predictiveAnalytics.future_performance.predictions.form_score.current}</span>
+                        <span className="arrow">→</span>
+                        <span className="predicted">{Math.round(predictiveAnalytics.future_performance.predictions.form_score.predicted)}</span>
+                      </div>
+                    )}
+                    {predictiveAnalytics.future_performance.predictions.reps && (
+                      <div className="prediction-item">
+                        <span className="metric">Reps:</span>
+                        <span className="current">{predictiveAnalytics.future_performance.predictions.reps.current}</span>
+                        <span className="arrow">→</span>
+                        <span className="predicted">{Math.round(predictiveAnalytics.future_performance.predictions.reps.predicted)}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="confidence">
+                    Confidence: {Math.round(predictiveAnalytics.future_performance.overall_confidence || 0)}%
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         <h2>Your Recent Activity</h2>
         <div id="metrics-container">
           {sessions.length === 0 ? (
@@ -637,9 +736,15 @@ const AthleteDashboard: React.FC = () => {
                     <span className="metric-value">{formatDuration(session.durationSec)}</span>
                   </div>
                   <div className="metric-item">
-                    <span className="metric-label">Cheat Detection</span>
-                    <span className={`metric-value ${getCheatDetectionClass(session.cheatDetection)}`}>
-                      {session.cheatDetection?.cheatDetected ? '⚠️ Detected' : '✅ Clean'}
+                    <span className="metric-label">Performance Level</span>
+                    <span className={`metric-value ${getPerformanceLevelClass(session.benchmarking?.performance_level?.level)}`}>
+                      {session.benchmarking?.performance_level?.level?.toUpperCase() || 'N/A'}
+                    </span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Peer Rank</span>
+                    <span className="metric-value">
+                      #{session.benchmarking?.peer_comparison?.rank || 'N/A'}
                     </span>
                   </div>
                 </div>
