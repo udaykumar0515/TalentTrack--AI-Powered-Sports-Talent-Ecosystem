@@ -551,6 +551,335 @@ button:disabled {
   color: #fbbf24;
 }
 
+/* Training Plan Styles */
+.training-plan-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  color: white;
+}
+
+.training-plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.training-plan-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.generate-plan-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.generate-plan-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.generate-plan-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loading-training-plan, .no-training-plan {
+  text-align: center;
+  padding: 2rem;
+  opacity: 0.8;
+}
+
+.loading-training-plan p, .no-training-plan p {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+}
+
+/* Analysis Summary */
+.analysis-summary {
+  margin-bottom: 2rem;
+}
+
+.analysis-summary h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.analysis-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.analysis-card h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.analysis-card ul {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: 0.875rem;
+}
+
+.analysis-card li {
+  margin-bottom: 0.25rem;
+  opacity: 0.9;
+}
+
+.analysis-card.gaps {
+  border-left: 4px solid #ef4444;
+}
+
+.analysis-card.strengths {
+  border-left: 4px solid #10b981;
+}
+
+/* Weekly Schedule */
+.weekly-schedule {
+  margin-bottom: 2rem;
+}
+
+.weekly-schedule h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.schedule-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.day-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.priority-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.priority-badge.high {
+  background: #ef4444;
+  color: white;
+}
+
+.priority-badge.medium {
+  background: #f59e0b;
+  color: white;
+}
+
+.priority-badge.low {
+  background: #6b7280;
+  color: white;
+}
+
+.exercise-info {
+  margin-bottom: 0.75rem;
+}
+
+.exercise-name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.exercise-details {
+  font-size: 0.875rem;
+  opacity: 0.8;
+  margin-bottom: 0.25rem;
+}
+
+.exercise-focus {
+  font-size: 0.875rem;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.exercise-instructions {
+  margin-bottom: 0.75rem;
+}
+
+.exercise-instructions h5 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.exercise-instructions ul {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: 0.8rem;
+}
+
+.exercise-instructions li {
+  margin-bottom: 0.25rem;
+  opacity: 0.9;
+}
+
+.exercise-duration {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  text-align: center;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Progression Plan */
+.progression-plan {
+  margin-bottom: 2rem;
+}
+
+.progression-plan h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.progression-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.progression-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.week-header {
+  margin-bottom: 0.75rem;
+}
+
+.week-header h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.week-focus {
+  font-size: 0.875rem;
+  opacity: 0.9;
+  font-style: italic;
+}
+
+.week-targets {
+  margin-bottom: 0.75rem;
+}
+
+.target {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.target-label {
+  opacity: 0.8;
+}
+
+.target-value {
+  font-weight: 600;
+  color: #fbbf24;
+}
+
+.week-metrics h5 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.week-metrics ul {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: 0.8rem;
+}
+
+.week-metrics li {
+  margin-bottom: 0.25rem;
+  opacity: 0.9;
+}
+
+/* Coaching Notes */
+.coaching-notes h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.note-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.note-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.note-text {
+  font-size: 0.875rem;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
 /* SessionView performance level colors */
 .metric-card.purple { background-color: #f3e8ff; border-left: 4px solid #8b5cf6; }
 .metric-card.yellow { background-color: #fef3c7; border-left: 4px solid #f59e0b; }

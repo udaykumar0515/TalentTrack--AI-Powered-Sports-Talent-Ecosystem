@@ -16,6 +16,7 @@ import logging
 import sys
 from benchmarking_utils import benchmarking_engine
 from predictive_analytics import predictive_analytics
+from training_plans import training_plan_generator
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -403,6 +404,46 @@ async def get_coach_predictive_analytics(coach_id: str):
     except Exception as e:
         logger.error(f"Error getting coach predictive analytics: {e}")
         raise HTTPException(status_code=500, detail="Failed to get coach predictive analytics")
+
+@app.get("/api/training-plans/athlete/{athlete_id}")
+async def get_athlete_training_plan(athlete_id: str):
+    """Get training plan for a specific athlete"""
+    try:
+        plan = training_plan_generator.get_training_plan(athlete_id)
+        return plan
+    except Exception as e:
+        logger.error(f"Error getting athlete training plan: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get training plan")
+
+@app.post("/api/training-plans/athlete/{athlete_id}/generate")
+async def generate_athlete_training_plan(athlete_id: str):
+    """Generate new training plan for athlete"""
+    try:
+        plan = training_plan_generator.generate_training_plan(athlete_id)
+        return plan
+    except Exception as e:
+        logger.error(f"Error generating training plan: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate training plan")
+
+@app.put("/api/training-plans/athlete/{athlete_id}")
+async def update_athlete_training_plan(athlete_id: str, updates: dict):
+    """Update training plan for athlete"""
+    try:
+        plan = training_plan_generator.update_training_plan(athlete_id, updates)
+        return plan
+    except Exception as e:
+        logger.error(f"Error updating training plan: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update training plan")
+
+@app.get("/api/training-plans/coach/{coach_id}")
+async def get_coach_training_plans(coach_id: str):
+    """Get all training plans for coach's athletes"""
+    try:
+        plans = training_plan_generator.get_coach_training_plans(coach_id)
+        return plans
+    except Exception as e:
+        logger.error(f"Error getting coach training plans: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get coach training plans")
 
 @app.delete("/api/sessions/{session_id}")
 async def delete_session(session_id: str):
@@ -850,6 +891,9 @@ async def analyze_video(
         # Generate predictive analytics data
         predictive_data = predictive_analytics.get_predictive_analytics(athleteId)
         
+        # Generate training plan data
+        training_plan_data = training_plan_generator.generate_training_plan(athleteId)
+        
         session_data = {
             "exercise": exercise,  # Use original exercise name for frontend
             "reps": int(parsed.get("reps", 0)),
@@ -871,7 +915,8 @@ async def analyze_video(
                 "suspiciousPatterns": cheat_detection.get("suspiciousPatterns", [])
             },
             "benchmarking": benchmarking_data,
-            "predictiveAnalytics": predictive_data
+            "predictiveAnalytics": predictive_data,
+            "trainingPlan": training_plan_data
         }
 
         # Save session result

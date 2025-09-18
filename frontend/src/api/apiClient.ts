@@ -273,3 +273,51 @@ export const getCoachPredictiveAnalytics = async (coachId: string) => {
   
   return response.json();
 };
+
+export const getAthleteTrainingPlan = async (athleteId: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/training-plans/athlete/${athleteId}`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch athlete training plan');
+  }
+  
+  return response.json();
+};
+
+export const generateAthleteTrainingPlan = async (athleteId: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/training-plans/athlete/${athleteId}/generate`, {
+    method: 'POST'
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to generate training plan');
+  }
+  
+  return response.json();
+};
+
+export const updateAthleteTrainingPlan = async (athleteId: string, updates: any) => {
+  const response = await fetch(`${API_BASE_URL}/api/training-plans/athlete/${athleteId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(updates)
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to update training plan');
+  }
+  
+  return response.json();
+};
+
+export const getCoachTrainingPlans = async (coachId: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/training-plans/coach/${coachId}`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch coach training plans');
+  }
+  
+  return response.json();
+};

@@ -1,44 +1,131 @@
+# Dependencies
+node_modules/
+backend/myenv/
+backend/__pycache__/
+__pycache__/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
 # Logs
-logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-.env
-# Python
-backend/myenv/
-backend/__pycache__/
-backend/*.pyc
+# Coverage directory used by tools like istanbul
+coverage/
 
-# Node
-frontend/node_modules/
+# Build outputs
+dist/
+build/
 frontend/dist/
 frontend/build/
-build/
 
-# system
-.DS_Store
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# MediaPipe and OpenCV large files
+*.dll
+*.pyd
+*.so
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
 .env
-*.log
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# temporary
-backend/tmp/
-EOF
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# User API files (auto-generated)
+user_api.py
+
+# Large video files (keep only small test videos)
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.webm
+
+# Keep only essential videos
+!frontend/public/test-video.mp4
+!Bodyweight Squats.mp4

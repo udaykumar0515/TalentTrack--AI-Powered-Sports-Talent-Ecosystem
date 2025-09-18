@@ -6,7 +6,7 @@ import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
-import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthletePredictiveAnalytics } from '../api/apiClient';
+import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthletePredictiveAnalytics, getAthleteTrainingPlan, generateAthleteTrainingPlan } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -27,6 +27,8 @@ const AthleteDashboard: React.FC = () => {
   const [selectedSessionMenu, setSelectedSessionMenu] = useState<string | null>(null);
   const [predictiveAnalytics, setPredictiveAnalytics] = useState<any>(null);
   const [loadingAnalytics, setLoadingAnalytics] = useState(false);
+  const [trainingPlan, setTrainingPlan] = useState<any>(null);
+  const [loadingTrainingPlan, setLoadingTrainingPlan] = useState(false);
 
   const exercises = [
     { value: 'squat', label: 'Squat' },
@@ -40,6 +42,7 @@ const AthleteDashboard: React.FC = () => {
       await loadSessions();
       await loadMessages();
       await loadPredictiveAnalytics();
+      await loadTrainingPlan();
     loadSelectedCoach();
     };
     loadData();
@@ -202,6 +205,38 @@ const AthleteDashboard: React.FC = () => {
       console.error('Error details:', error);
     } finally {
       setLoadingAnalytics(false);
+    }
+  };
+
+  const loadTrainingPlan = async () => {
+    if (!user?.id) return;
+    
+    setLoadingTrainingPlan(true);
+    try {
+      console.log('Loading training plan for user:', user.id);
+      const plan = await getAthleteTrainingPlan(user.id);
+      console.log('Training plan loaded:', plan);
+      setTrainingPlan(plan);
+    } catch (error) {
+      console.error('Error loading training plan:', error);
+    } finally {
+      setLoadingTrainingPlan(false);
+    }
+  };
+
+  const generateNewTrainingPlan = async () => {
+    if (!user?.id) return;
+    
+    setLoadingTrainingPlan(true);
+    try {
+      console.log('Generating new training plan for user:', user.id);
+      const plan = await generateAthleteTrainingPlan(user.id);
+      console.log('New training plan generated:', plan);
+      setTrainingPlan(plan);
+    } catch (error) {
+      console.error('Error generating training plan:', error);
+    } finally {
+      setLoadingTrainingPlan(false);
     }
   };
 
@@ -708,6 +743,168 @@ const AthleteDashboard: React.FC = () => {
             <h2>Performance Insights</h2>
             <div className="no-analytics">
               <p>No performance insights available yet. Complete more sessions to see your analytics!</p>
+            </div>
+          </div>
+        )}
+
+        {/* Training Plan Section */}
+        {loadingTrainingPlan && (
+          <div className="training-plan-section">
+            <h2>Your Training Plan</h2>
+            <div className="loading-training-plan">
+              <p>Loading your personalized training plan...</p>
+            </div>
+          </div>
+        )}
+        {(trainingPlan && !trainingPlan.error) || (sessions.length > 0 && sessions[0].trainingPlan) && (
+          <div className="training-plan-section">
+            <div className="training-plan-header">
+              <h2>Your Training Plan</h2>
+              <button 
+                className="btn-secondary generate-plan-btn"
+                onClick={generateNewTrainingPlan}
+                disabled={loadingTrainingPlan}
+              >
+                {loadingTrainingPlan ? 'Generating...' : 'Generate New Plan'}
+              </button>
+            </div>
+            
+            {(() => {
+              const planData = trainingPlan || (sessions.length > 0 ? sessions[0].trainingPlan : null);
+              if (!planData) return null;
+              
+              return (
+                <>
+                  {/* Analysis Summary */}
+                  {planData.analysis && (
+                    <div className="analysis-summary">
+                      <h3>Performance Analysis</h3>
+                      <div className="analysis-grid">
+                        {planData.analysis.gaps.length > 0 && (
+                          <div className="analysis-card gaps">
+                            <h4>Areas to Improve</h4>
+                            <ul>
+                              {planData.analysis.gaps.map((gap: string, index: number) => (
+                                <li key={index}>{gap}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {planData.analysis.strengths.length > 0 && (
+                          <div className="analysis-card strengths">
+                            <h4>Your Strengths</h4>
+                            <ul>
+                              {planData.analysis.strengths.map((strength: string, index: number) => (
+                                <li key={index}>{strength}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Weekly Schedule */}
+                  {planData.weekly_schedule && planData.weekly_schedule.length > 0 && (
+                    <div className="weekly-schedule">
+                      <h3>This Week's Schedule</h3>
+                      <div className="schedule-grid">
+                        {planData.weekly_schedule.map((day: any, index: number) => (
+                          <div key={index} className="schedule-card">
+                            <div className="day-header">
+                              <h4>{day.day}</h4>
+                              <span className={`priority-badge ${day.priority}`}>{day.priority}</span>
+                            </div>
+                            <div className="exercise-info">
+                              <div className="exercise-name">{day.exercise}</div>
+                              <div className="exercise-details">
+                                {day.sets} sets × {day.reps} reps
+                              </div>
+                              <div className="exercise-focus">{day.focus}</div>
+                            </div>
+                            <div className="exercise-instructions">
+                              <h5>Instructions:</h5>
+                              <ul>
+                                {day.instructions.map((instruction: string, idx: number) => (
+                                  <li key={idx}>{instruction}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div className="exercise-duration">
+                              Duration: {day.estimated_duration}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Progression Plan */}
+                  {planData.progression_plan && (
+                    <div className="progression-plan">
+                      <h3>4-Week Progression Plan</h3>
+                      <div className="progression-grid">
+                        {planData.progression_plan.weeks.map((week: any, index: number) => (
+                          <div key={index} className="progression-card">
+                            <div className="week-header">
+                              <h4>Week {week.week}</h4>
+                              <div className="week-focus">{week.focus}</div>
+                            </div>
+                            <div className="week-targets">
+                              <div className="target">
+                                <span className="target-label">Form Target:</span>
+                                <span className="target-value">{week.form_target}%</span>
+                              </div>
+                              <div className="target">
+                                <span className="target-label">Reps Target:</span>
+                                <span className="target-value">{week.reps_target}</span>
+                              </div>
+                            </div>
+                            <div className="week-metrics">
+                              <h5>Key Metrics:</h5>
+                              <ul>
+                                {week.key_metrics.map((metric: string, idx: number) => (
+                                  <li key={idx}>{metric}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Coaching Notes */}
+                  {planData.coaching_notes && planData.coaching_notes.length > 0 && (
+                    <div className="coaching-notes">
+                      <h3>Coaching Notes</h3>
+                      <div className="notes-list">
+                        {planData.coaching_notes.map((note: string, index: number) => (
+                          <div key={index} className="note-item">
+                            <span className="note-icon">💡</span>
+                            <span className="note-text">{note}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+          </div>
+        )}
+        {!loadingTrainingPlan && !trainingPlan && !(sessions.length > 0 && sessions[0].trainingPlan) && (
+          <div className="training-plan-section">
+            <h2>Your Training Plan</h2>
+            <div className="no-training-plan">
+              <p>No training plan available yet. Generate your personalized plan!</p>
+              <button 
+                className="btn-primary generate-plan-btn"
+                onClick={generateNewTrainingPlan}
+                disabled={loadingTrainingPlan}
+              >
+                {loadingTrainingPlan ? 'Generating...' : 'Generate Training Plan'}
+              </button>
             </div>
           </div>
         )}
