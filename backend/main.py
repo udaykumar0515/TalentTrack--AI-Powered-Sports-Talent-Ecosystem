@@ -313,6 +313,57 @@ async def post_session(session: Dict[str, Any]):
         logger.error(f"Failed to persist session: {e}")
         raise HTTPException(status_code=500, detail="Failed to save session")
 
+@app.delete("/api/sessions/{session_id}")
+async def delete_session(session_id: str):
+    """Delete a session by ID"""
+    try:
+        # Load all sessions
+        sessions_file = "data/sessions/sessions.json"
+        if not os.path.exists(sessions_file):
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        with open(sessions_file, "r", encoding="utf-8") as f:
+            content = f.read().strip()
+            if not content:
+                raise HTTPException(status_code=404, detail="Session not found")
+            sessions_data = json.loads(content)
+        
+        # Find and remove the session
+        session_found = False
+        for user_id, user_data in sessions_data.items():
+            if "sessions" in user_data:
+                original_count = len(user_data["sessions"])
+                user_data["sessions"] = [s for s in user_data["sessions"] if s.get("sessionId") != session_id]
+                if len(user_data["sessions"]) < original_count:
+                    session_found = True
+                    break
+        
+        if not session_found:
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        # Save updated sessions
+        with open(sessions_file, "w", encoding="utf-8") as f:
+            json.dump(sessions_data, f, indent=2, ensure_ascii=False)
+        
+        # Also try to delete associated video file
+        try:
+            video_file_path = f"videos/athletes/*/{session_id}_*.mp4"
+            import glob
+            video_files = glob.glob(video_file_path)
+            for video_file in video_files:
+                if os.path.exists(video_file):
+                    os.remove(video_file)
+                    logger.info(f"Deleted video file: {video_file}")
+        except Exception as e:
+            logger.warning(f"Could not delete video file for session {session_id}: {e}")
+        
+        return {"message": "Session deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting session: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete session")
+
 # Authentication endpoints
 @app.post("/api/register", response_model=User)
 async def register(user_data: UserCreate):

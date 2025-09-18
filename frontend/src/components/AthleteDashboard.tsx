@@ -6,7 +6,7 @@ import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
-import { saveSession, getAthleteMessages, getSessions } from '../api/apiClient';
+import { saveSession, getAthleteMessages, getSessions, deleteSession } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -24,6 +24,7 @@ const AthleteDashboard: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
+  const [selectedSessionMenu, setSelectedSessionMenu] = useState<string | null>(null);
 
   const exercises = [
     { value: 'squat', label: 'Squat' },
@@ -101,6 +102,20 @@ const AthleteDashboard: React.FC = () => {
 
     return () => clearInterval(interval);
   }, [user?.id]);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (selectedSessionMenu && !(event.target as Element).closest('.session-menu')) {
+        setSelectedSessionMenu(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [selectedSessionMenu]);
 
   const loadSessions = async () => {
     try {
@@ -213,6 +228,33 @@ const AthleteDashboard: React.FC = () => {
   const handleDetailedAnalysis = (session: any) => {
     setSelectedSessionForAnalysis(session);
     setShowDetailedAnalysis(true);
+  };
+
+  const handleDeleteSession = async (sessionId: string) => {
+    if (!window.confirm('Are you sure you want to delete this session? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      // Call backend API to delete session
+      await deleteSession(sessionId);
+
+      // Remove session from local state
+      const newSessions = sessions.filter(session => session.sessionId !== sessionId);
+      setSessions(newSessions);
+
+      // Update localStorage
+      try {
+        localStorage.setItem(`sessions_${user?.id}`, JSON.stringify(newSessions));
+      } catch (e) {
+        console.error('Could not update localStorage', e);
+      }
+
+      console.log('Session deleted successfully');
+    } catch (error) {
+      console.error('Error deleting session:', error);
+      alert('Failed to delete session. Please try again.');
+    }
   };
 
   const handleStartAnalysis = () => {
@@ -539,7 +581,31 @@ const AthleteDashboard: React.FC = () => {
             sessions.map((session, index) => (
               <div key={index} className={`metric-card ${getStatusClass(session.formScore)}`}>
                 <div className="session-card-header">
-                  <h3>{session.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}</h3>
+                  <div className="session-title-row">
+                    <h3>{session.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}</h3>
+                    <div className="session-menu">
+                      <button 
+                        className="btn-menu"
+                        onClick={() => setSelectedSessionMenu(session.sessionId)}
+                        title="More options"
+                      >
+                        <span className="three-dots">⋯</span>
+                      </button>
+                      {selectedSessionMenu === session.sessionId && (
+                        <div className="menu-dropdown">
+                          <button 
+                            className="menu-item delete"
+                            onClick={() => {
+                              setSelectedSessionMenu(null);
+                              handleDeleteSession(session.sessionId);
+                            }}
+                          >
+                            🗑️ Delete Session
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   <span className="session-date">{formatDateTime(session.timestamp)}</span>
                 </div>
                 

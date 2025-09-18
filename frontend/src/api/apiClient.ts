@@ -116,6 +116,22 @@ export async function getSessions(athleteId?: string, coachId?: string): Promise
   return response.json();
 }
 
+// Delete a session
+export async function deleteSession(sessionId: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/sessions/${sessionId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('deleteSession error response:', text);
+    throw new Error('Failed to delete session');
+  }
+}
+
 // Get list of athletes (for coach dashboard)
 export async function getAthletes(): Promise<any[]> {
   const response = await fetch(`${API_BASE_URL}/athletes`);

@@ -117,18 +117,6 @@
         "exercise": "squat",
         "reps": 0,
         "formScore": 100,
-        "durationSec": 6.505,
-        "timestamp": "2025-09-14T17:09:42.499917Z",
-        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
-        "athleteName": "Athlete",
-        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
-        "coachName": "udaykumar",
-        "sessionId": "38210e0a"
-      },
-      {
-        "exercise": "squat",
-        "reps": 0,
-        "formScore": 100,
         "durationSec": 6.454,
         "timestamp": "2025-09-14T17:23:10.484289Z",
         "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
