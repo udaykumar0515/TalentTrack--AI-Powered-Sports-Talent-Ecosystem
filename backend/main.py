@@ -17,6 +17,7 @@ import sys
 from benchmarking_utils import benchmarking_engine
 from predictive_analytics import predictive_analytics
 from training_plans import training_plan_generator
+from injury_alerts import injury_alert_system
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -444,6 +445,72 @@ async def get_coach_training_plans(coach_id: str):
     except Exception as e:
         logger.error(f"Error getting coach training plans: {e}")
         raise HTTPException(status_code=500, detail="Failed to get coach training plans")
+
+@app.get("/api/injury-alerts/athlete/{athlete_id}")
+async def get_athlete_injury_analysis(athlete_id: str):
+    """Get injury risk analysis for a specific athlete"""
+    try:
+        analysis = injury_alert_system.analyze_athlete_injury_risk(athlete_id)
+        return analysis
+    except Exception as e:
+        logger.error(f"Error getting athlete injury analysis: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get injury analysis")
+
+@app.get("/api/injury-alerts/coach/{coach_id}")
+async def get_coach_injury_alerts(coach_id: str):
+    """Get all injury alerts for coach's athletes"""
+    try:
+        alerts = injury_alert_system.get_coach_alerts(coach_id)
+        return alerts
+    except Exception as e:
+        logger.error(f"Error getting coach injury alerts: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get injury alerts")
+
+@app.post("/api/injury-alerts/athlete/{athlete_id}/analyze")
+async def analyze_athlete_injury_risk(athlete_id: str):
+    """Run injury risk analysis for athlete and create alert if needed"""
+    try:
+        analysis = injury_alert_system.analyze_athlete_injury_risk(athlete_id)
+        
+        # Create alert if risk is detected
+        if analysis.get("overall_risk"):
+            alert = injury_alert_system.create_injury_alert(athlete_id, analysis)
+            analysis["alert_created"] = alert
+        
+        return analysis
+    except Exception as e:
+        logger.error(f"Error analyzing athlete injury risk: {e}")
+        raise HTTPException(status_code=500, detail="Failed to analyze injury risk")
+
+@app.put("/api/injury-alerts/{alert_id}/acknowledge")
+async def acknowledge_injury_alert(alert_id: str, coach_id: str):
+    """Acknowledge an injury alert"""
+    try:
+        result = injury_alert_system.acknowledge_alert(alert_id, coach_id)
+        return result
+    except Exception as e:
+        logger.error(f"Error acknowledging injury alert: {e}")
+        raise HTTPException(status_code=500, detail="Failed to acknowledge alert")
+
+@app.put("/api/injury-alerts/{alert_id}/resolve")
+async def resolve_injury_alert(alert_id: str, coach_id: str):
+    """Resolve an injury alert"""
+    try:
+        result = injury_alert_system.resolve_alert(alert_id, coach_id)
+        return result
+    except Exception as e:
+        logger.error(f"Error resolving injury alert: {e}")
+        raise HTTPException(status_code=500, detail="Failed to resolve alert")
+
+@app.post("/api/injury-alerts/bulk-analysis")
+async def run_bulk_injury_analysis():
+    """Run injury risk analysis for all athletes"""
+    try:
+        results = injury_alert_system.run_bulk_analysis()
+        return results
+    except Exception as e:
+        logger.error(f"Error running bulk injury analysis: {e}")
+        raise HTTPException(status_code=500, detail="Failed to run bulk analysis")
 
 @app.delete("/api/sessions/{session_id}")
 async def delete_session(session_id: str):
@@ -894,6 +961,9 @@ async def analyze_video(
         # Generate training plan data
         training_plan_data = training_plan_generator.generate_training_plan(athleteId)
         
+        # Generate injury risk analysis
+        injury_analysis = injury_alert_system.analyze_athlete_injury_risk(athleteId)
+        
         session_data = {
             "exercise": exercise,  # Use original exercise name for frontend
             "reps": int(parsed.get("reps", 0)),
@@ -916,7 +986,8 @@ async def analyze_video(
             },
             "benchmarking": benchmarking_data,
             "predictiveAnalytics": predictive_data,
-            "trainingPlan": training_plan_data
+            "trainingPlan": training_plan_data,
+            "injuryAnalysis": injury_analysis
         }
 
         # Save session result

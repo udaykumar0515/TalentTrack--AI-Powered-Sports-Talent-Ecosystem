@@ -321,3 +321,79 @@ export const getCoachTrainingPlans = async (coachId: string) => {
   
   return response.json();
 };
+
+export const getAthleteInjuryAnalysis = async (athleteId: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/injury-alerts/athlete/${athleteId}`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch athlete injury analysis');
+  }
+  
+  return response.json();
+};
+
+export const getCoachInjuryAlerts = async (coachId: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/injury-alerts/coach/${coachId}`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch coach injury alerts');
+  }
+  
+  return response.json();
+};
+
+export const analyzeAthleteInjuryRisk = async (athleteId: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/injury-alerts/athlete/${athleteId}/analyze`, {
+    method: 'POST'
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to analyze athlete injury risk');
+  }
+  
+  return response.json();
+};
+
+export const acknowledgeInjuryAlert = async (alertId: string, coachId: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/injury-alerts/${alertId}/acknowledge`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ coach_id: coachId })
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to acknowledge injury alert');
+  }
+  
+  return response.json();
+};
+
+export const resolveInjuryAlert = async (alertId: string, coachId: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/injury-alerts/${alertId}/resolve`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ coach_id: coachId })
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to resolve injury alert');
+  }
+  
+  return response.json();
+};
+
+export const runBulkInjuryAnalysis = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/injury-alerts/bulk-analysis`, {
+    method: 'POST'
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to run bulk injury analysis');
+  }
+  
+  return response.json();
+};

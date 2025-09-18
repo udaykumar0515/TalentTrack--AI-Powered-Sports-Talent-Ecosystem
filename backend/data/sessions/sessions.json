@@ -351,6 +351,56 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.012230Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_1",
+          "analyzed_at": "2025-09-19T01:06:42.580720Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 42.9% of recent sessions",
+              "cheat_rate": 0.42857142857142855,
+              "cheat_types": {
+                "too_fast_reps": 3,
+                "inconsistent_form": 1,
+                "minimal_movement": 1,
+                "form_deterioration": 1
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": true,
+              "severity": "medium",
+              "details": "Performance declining for 3 consecutive sessions",
+              "reps_trend": -3.964285714285716,
+              "consecutive_declining": 3
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load",
+            "Monitor for signs of overtraining",
+            "Consider deload week or active recovery"
+          ],
+          "total_sessions_analyzed": 7
         }
       },
       {
@@ -703,6 +753,56 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.012230Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_1",
+          "analyzed_at": "2025-09-19T01:06:42.580720Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 42.9% of recent sessions",
+              "cheat_rate": 0.42857142857142855,
+              "cheat_types": {
+                "too_fast_reps": 3,
+                "inconsistent_form": 1,
+                "minimal_movement": 1,
+                "form_deterioration": 1
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": true,
+              "severity": "medium",
+              "details": "Performance declining for 3 consecutive sessions",
+              "reps_trend": -3.964285714285716,
+              "consecutive_declining": 3
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load",
+            "Monitor for signs of overtraining",
+            "Consider deload week or active recovery"
+          ],
+          "total_sessions_analyzed": 7
         }
       },
       {
@@ -1046,6 +1146,56 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.012230Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_1",
+          "analyzed_at": "2025-09-19T01:06:42.580720Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 42.9% of recent sessions",
+              "cheat_rate": 0.42857142857142855,
+              "cheat_types": {
+                "too_fast_reps": 3,
+                "inconsistent_form": 1,
+                "minimal_movement": 1,
+                "form_deterioration": 1
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": true,
+              "severity": "medium",
+              "details": "Performance declining for 3 consecutive sessions",
+              "reps_trend": -3.964285714285716,
+              "consecutive_declining": 3
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load",
+            "Monitor for signs of overtraining",
+            "Consider deload week or active recovery"
+          ],
+          "total_sessions_analyzed": 7
         }
       },
       {
@@ -1397,6 +1547,56 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.012230Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_1",
+          "analyzed_at": "2025-09-19T01:06:42.580720Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 42.9% of recent sessions",
+              "cheat_rate": 0.42857142857142855,
+              "cheat_types": {
+                "too_fast_reps": 3,
+                "inconsistent_form": 1,
+                "minimal_movement": 1,
+                "form_deterioration": 1
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": true,
+              "severity": "medium",
+              "details": "Performance declining for 3 consecutive sessions",
+              "reps_trend": -3.964285714285716,
+              "consecutive_declining": 3
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load",
+            "Monitor for signs of overtraining",
+            "Consider deload week or active recovery"
+          ],
+          "total_sessions_analyzed": 7
         }
       },
       {
@@ -1748,6 +1948,56 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.012230Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_1",
+          "analyzed_at": "2025-09-19T01:06:42.580720Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 42.9% of recent sessions",
+              "cheat_rate": 0.42857142857142855,
+              "cheat_types": {
+                "too_fast_reps": 3,
+                "inconsistent_form": 1,
+                "minimal_movement": 1,
+                "form_deterioration": 1
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": true,
+              "severity": "medium",
+              "details": "Performance declining for 3 consecutive sessions",
+              "reps_trend": -3.964285714285716,
+              "consecutive_declining": 3
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load",
+            "Monitor for signs of overtraining",
+            "Consider deload week or active recovery"
+          ],
+          "total_sessions_analyzed": 7
         }
       },
       {
@@ -2091,6 +2341,56 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.012230Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_1",
+          "analyzed_at": "2025-09-19T01:06:42.580720Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 42.9% of recent sessions",
+              "cheat_rate": 0.42857142857142855,
+              "cheat_types": {
+                "too_fast_reps": 3,
+                "inconsistent_form": 1,
+                "minimal_movement": 1,
+                "form_deterioration": 1
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": true,
+              "severity": "medium",
+              "details": "Performance declining for 3 consecutive sessions",
+              "reps_trend": -3.964285714285716,
+              "consecutive_declining": 3
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load",
+            "Monitor for signs of overtraining",
+            "Consider deload week or active recovery"
+          ],
+          "total_sessions_analyzed": 7
         }
       },
       {
@@ -2500,6 +2800,56 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.012230Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_1",
+          "analyzed_at": "2025-09-19T01:06:42.580720Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 42.9% of recent sessions",
+              "cheat_rate": 0.42857142857142855,
+              "cheat_types": {
+                "too_fast_reps": 3,
+                "inconsistent_form": 1,
+                "minimal_movement": 1,
+                "form_deterioration": 1
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": true,
+              "severity": "medium",
+              "details": "Performance declining for 3 consecutive sessions",
+              "reps_trend": -3.964285714285716,
+              "consecutive_declining": 3
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load",
+            "Monitor for signs of overtraining",
+            "Consider deload week or active recovery"
+          ],
+          "total_sessions_analyzed": 7
         }
       }
     ]
@@ -2856,6 +3206,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.026877Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_2",
+          "analyzed_at": "2025-09-19T01:06:42.649527Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -3197,6 +3585,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.026877Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_2",
+          "analyzed_at": "2025-09-19T01:06:42.649527Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -3549,6 +3975,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.026877Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_2",
+          "analyzed_at": "2025-09-19T01:06:42.649527Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -3898,6 +4362,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.026877Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_2",
+          "analyzed_at": "2025-09-19T01:06:42.649527Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -4237,6 +4739,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.026877Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_2",
+          "analyzed_at": "2025-09-19T01:06:42.649527Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -4586,6 +5126,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.026877Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_2",
+          "analyzed_at": "2025-09-19T01:06:42.649527Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       }
     ]
@@ -4942,6 +5520,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.107890Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_3",
+          "analyzed_at": "2025-09-19T01:06:42.733772Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 50.0% of recent sessions",
+              "cheat_rate": 0.5,
+              "cheat_types": {
+                "too_fast_reps": 3
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -5296,6 +5917,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.107890Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_3",
+          "analyzed_at": "2025-09-19T01:06:42.733772Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 50.0% of recent sessions",
+              "cheat_rate": 0.5,
+              "cheat_types": {
+                "too_fast_reps": 3
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -5637,6 +6301,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.107890Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_3",
+          "analyzed_at": "2025-09-19T01:06:42.733772Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 50.0% of recent sessions",
+              "cheat_rate": 0.5,
+              "cheat_types": {
+                "too_fast_reps": 3
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -5989,6 +6696,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.107890Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_3",
+          "analyzed_at": "2025-09-19T01:06:42.733772Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 50.0% of recent sessions",
+              "cheat_rate": 0.5,
+              "cheat_types": {
+                "too_fast_reps": 3
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -6343,6 +7093,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.107890Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_3",
+          "analyzed_at": "2025-09-19T01:06:42.733772Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 50.0% of recent sessions",
+              "cheat_rate": 0.5,
+              "cheat_types": {
+                "too_fast_reps": 3
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -6686,6 +7479,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.107890Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_3",
+          "analyzed_at": "2025-09-19T01:06:42.733772Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 50.0% of recent sessions",
+              "cheat_rate": 0.5,
+              "cheat_types": {
+                "too_fast_reps": 3
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       }
     ]
@@ -7027,6 +7863,44 @@
             "High improvement potential - athlete ready for advanced training"
           ],
           "next_review_date": "2025-09-26T00:43:56.196873Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_4",
+          "analyzed_at": "2025-09-19T01:06:42.791352Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -7354,6 +8228,44 @@
             "High improvement potential - athlete ready for advanced training"
           ],
           "next_review_date": "2025-09-26T00:43:56.196873Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_4",
+          "analyzed_at": "2025-09-19T01:06:42.791352Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -7689,6 +8601,44 @@
             "High improvement potential - athlete ready for advanced training"
           ],
           "next_review_date": "2025-09-26T00:43:56.196873Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_4",
+          "analyzed_at": "2025-09-19T01:06:42.791352Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -8025,6 +8975,44 @@
             "High improvement potential - athlete ready for advanced training"
           ],
           "next_review_date": "2025-09-26T00:43:56.196873Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_4",
+          "analyzed_at": "2025-09-19T01:06:42.791352Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -8350,6 +9338,44 @@
             "High improvement potential - athlete ready for advanced training"
           ],
           "next_review_date": "2025-09-26T00:43:56.196873Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_4",
+          "analyzed_at": "2025-09-19T01:06:42.791352Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -8686,6 +9712,44 @@
             "High improvement potential - athlete ready for advanced training"
           ],
           "next_review_date": "2025-09-26T00:43:56.196873Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_4",
+          "analyzed_at": "2025-09-19T01:06:42.791352Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       }
     ]
@@ -9019,6 +10083,44 @@
             "High improvement potential - athlete ready for advanced training"
           ],
           "next_review_date": "2025-09-26T00:43:56.299875Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_5",
+          "analyzed_at": "2025-09-19T01:06:42.844874Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -9357,6 +10459,44 @@
             "High improvement potential - athlete ready for advanced training"
           ],
           "next_review_date": "2025-09-26T00:43:56.299875Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_5",
+          "analyzed_at": "2025-09-19T01:06:42.844874Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -9695,6 +10835,44 @@
             "High improvement potential - athlete ready for advanced training"
           ],
           "next_review_date": "2025-09-26T00:43:56.299875Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_5",
+          "analyzed_at": "2025-09-19T01:06:42.844874Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -10024,6 +11202,44 @@
             "High improvement potential - athlete ready for advanced training"
           ],
           "next_review_date": "2025-09-26T00:43:56.299875Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_5",
+          "analyzed_at": "2025-09-19T01:06:42.844874Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -10362,6 +11578,44 @@
             "High improvement potential - athlete ready for advanced training"
           ],
           "next_review_date": "2025-09-26T00:43:56.299875Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_5",
+          "analyzed_at": "2025-09-19T01:06:42.844874Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -10700,6 +11954,44 @@
             "High improvement potential - athlete ready for advanced training"
           ],
           "next_review_date": "2025-09-26T00:43:56.299875Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_5",
+          "analyzed_at": "2025-09-19T01:06:42.844874Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       }
     ]
@@ -11060,6 +12352,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.368880Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_6",
+          "analyzed_at": "2025-09-19T01:06:42.910825Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -11405,6 +12735,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.368880Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_6",
+          "analyzed_at": "2025-09-19T01:06:42.910825Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -11758,6 +13126,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.368880Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_6",
+          "analyzed_at": "2025-09-19T01:06:42.910825Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -12112,6 +13518,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.368880Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_6",
+          "analyzed_at": "2025-09-19T01:06:42.910825Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -12457,6 +13901,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.368880Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_6",
+          "analyzed_at": "2025-09-19T01:06:42.910825Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -12810,6 +14292,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.368880Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_6",
+          "analyzed_at": "2025-09-19T01:06:42.910825Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       }
     ]
@@ -13166,6 +14686,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.469010Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_7",
+          "analyzed_at": "2025-09-19T01:06:42.954715Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 50.0% of recent sessions",
+              "cheat_rate": 0.5,
+              "cheat_types": {
+                "too_fast_reps": 3
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -13517,6 +15080,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.469010Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_7",
+          "analyzed_at": "2025-09-19T01:06:42.954715Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 50.0% of recent sessions",
+              "cheat_rate": 0.5,
+              "cheat_types": {
+                "too_fast_reps": 3
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -13862,6 +15468,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.469010Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_7",
+          "analyzed_at": "2025-09-19T01:06:42.954715Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 50.0% of recent sessions",
+              "cheat_rate": 0.5,
+              "cheat_types": {
+                "too_fast_reps": 3
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -14214,6 +15863,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.469010Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_7",
+          "analyzed_at": "2025-09-19T01:06:42.954715Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 50.0% of recent sessions",
+              "cheat_rate": 0.5,
+              "cheat_types": {
+                "too_fast_reps": 3
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -14567,6 +16259,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.469010Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_7",
+          "analyzed_at": "2025-09-19T01:06:42.954715Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 50.0% of recent sessions",
+              "cheat_rate": 0.5,
+              "cheat_types": {
+                "too_fast_reps": 3
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -14910,6 +16645,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.469010Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_7",
+          "analyzed_at": "2025-09-19T01:06:42.954715Z",
+          "overall_risk": true,
+          "overall_severity": "medium",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "medium",
+              "details": "High cheat rate: 50.0% of recent sessions",
+              "cheat_rate": 0.5,
+              "cheat_types": {
+                "too_fast_reps": 3
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       }
     ]
@@ -15243,6 +17021,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.569010Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_8",
+          "analyzed_at": "2025-09-19T01:06:43.020623Z",
+          "overall_risk": true,
+          "overall_severity": "high",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "high",
+              "details": "High cheat rate: 66.7% of recent sessions",
+              "cheat_rate": 0.6666666666666666,
+              "cheat_types": {
+                "too_fast_reps": 4
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -15580,6 +17401,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.569010Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_8",
+          "analyzed_at": "2025-09-19T01:06:43.020623Z",
+          "overall_risk": true,
+          "overall_severity": "high",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "high",
+              "details": "High cheat rate: 66.7% of recent sessions",
+              "cheat_rate": 0.6666666666666666,
+              "cheat_types": {
+                "too_fast_reps": 4
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -15917,6 +17781,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.569010Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_8",
+          "analyzed_at": "2025-09-19T01:06:43.020623Z",
+          "overall_risk": true,
+          "overall_severity": "high",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "high",
+              "details": "High cheat rate: 66.7% of recent sessions",
+              "cheat_rate": 0.6666666666666666,
+              "cheat_types": {
+                "too_fast_reps": 4
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -16248,6 +18155,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.569010Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_8",
+          "analyzed_at": "2025-09-19T01:06:43.020623Z",
+          "overall_risk": true,
+          "overall_severity": "high",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "high",
+              "details": "High cheat rate: 66.7% of recent sessions",
+              "cheat_rate": 0.6666666666666666,
+              "cheat_types": {
+                "too_fast_reps": 4
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -16587,6 +18537,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.569010Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_8",
+          "analyzed_at": "2025-09-19T01:06:43.020623Z",
+          "overall_risk": true,
+          "overall_severity": "high",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "high",
+              "details": "High cheat rate: 66.7% of recent sessions",
+              "cheat_rate": 0.6666666666666666,
+              "cheat_types": {
+                "too_fast_reps": 4
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -16927,6 +18920,49 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.569010Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_8",
+          "analyzed_at": "2025-09-19T01:06:43.020623Z",
+          "overall_risk": true,
+          "overall_severity": "high",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": true,
+              "severity": "high",
+              "details": "High cheat rate: 66.7% of recent sessions",
+              "cheat_rate": 0.6666666666666666,
+              "cheat_types": {
+                "too_fast_reps": 4
+              },
+              "technique_breakdown": false
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Address technique breakdown - may indicate compensation",
+            "Consider rest day or lighter training load"
+          ],
+          "total_sessions_analyzed": 6
         }
       }
     ]
@@ -17284,6 +19320,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.682018Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_9",
+          "analyzed_at": "2025-09-19T01:06:43.080382Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -17627,6 +19701,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.682018Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_9",
+          "analyzed_at": "2025-09-19T01:06:43.080382Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -17978,6 +20090,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.682018Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_9",
+          "analyzed_at": "2025-09-19T01:06:43.080382Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -18329,6 +20479,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.682018Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_9",
+          "analyzed_at": "2025-09-19T01:06:43.080382Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -18672,6 +20860,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.682018Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_9",
+          "analyzed_at": "2025-09-19T01:06:43.080382Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -19023,6 +21249,44 @@
             "High form violation rate - prioritize technique over intensity"
           ],
           "next_review_date": "2025-09-26T00:43:56.682018Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_9",
+          "analyzed_at": "2025-09-19T01:06:43.080382Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       }
     ]
@@ -19362,6 +21626,44 @@
             "Rep count declining - consider rest days or form focus"
           ],
           "next_review_date": "2025-09-26T00:43:56.764013Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_10",
+          "analyzed_at": "2025-09-19T01:06:43.140404Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -19698,6 +22000,44 @@
             "Rep count declining - consider rest days or form focus"
           ],
           "next_review_date": "2025-09-26T00:43:56.764013Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_10",
+          "analyzed_at": "2025-09-19T01:06:43.140404Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -20025,6 +22365,44 @@
             "Rep count declining - consider rest days or form focus"
           ],
           "next_review_date": "2025-09-26T00:43:56.764013Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_10",
+          "analyzed_at": "2025-09-19T01:06:43.140404Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -20360,6 +22738,44 @@
             "Rep count declining - consider rest days or form focus"
           ],
           "next_review_date": "2025-09-26T00:43:56.764013Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_10",
+          "analyzed_at": "2025-09-19T01:06:43.140404Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -20696,6 +23112,44 @@
             "Rep count declining - consider rest days or form focus"
           ],
           "next_review_date": "2025-09-26T00:43:56.764013Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_10",
+          "analyzed_at": "2025-09-19T01:06:43.140404Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       },
       {
@@ -21021,6 +23475,44 @@
             "Rep count declining - consider rest days or form focus"
           ],
           "next_review_date": "2025-09-26T00:43:56.764013Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_10",
+          "analyzed_at": "2025-09-19T01:06:43.140404Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
         }
       }
     ]

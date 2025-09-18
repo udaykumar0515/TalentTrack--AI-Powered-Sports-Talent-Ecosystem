@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { getSessions, getAthletes, getCoachPredictiveAnalytics } from '../api/apiClient';
+import { getSessions, getAthletes, getCoachPredictiveAnalytics, getCoachInjuryAlerts, acknowledgeInjuryAlert, resolveInjuryAlert } from '../api/apiClient';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
 
@@ -18,10 +18,13 @@ const CoachDashboard: React.FC = () => {
   const [taggedSessionId, setTaggedSessionId] = useState<string>('');
   const [predictiveAnalytics, setPredictiveAnalytics] = useState<any>(null);
   const [loadingAnalytics, setLoadingAnalytics] = useState(false);
+  const [injuryAlerts, setInjuryAlerts] = useState<any>(null);
+  const [loadingAlerts, setLoadingAlerts] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
     loadPredictiveAnalytics();
+    loadInjuryAlerts();
     // reload when user changes (login/logout)
   }, [user?.id]);
 
@@ -194,6 +197,44 @@ const CoachDashboard: React.FC = () => {
       console.error('Error loading predictive analytics:', error);
     } finally {
       setLoadingAnalytics(false);
+    }
+  };
+
+  const loadInjuryAlerts = async () => {
+    if (!user?.id) return;
+    
+    setLoadingAlerts(true);
+    try {
+      console.log('Loading injury alerts for coach:', user.id);
+      const alerts = await getCoachInjuryAlerts(user.id);
+      console.log('Injury alerts loaded:', alerts);
+      setInjuryAlerts(alerts);
+    } catch (error) {
+      console.error('Error loading injury alerts:', error);
+    } finally {
+      setLoadingAlerts(false);
+    }
+  };
+
+  const handleAcknowledgeAlert = async (alertId: string) => {
+    if (!user?.id) return;
+    
+    try {
+      await acknowledgeInjuryAlert(alertId, user.id);
+      await loadInjuryAlerts(); // Reload alerts
+    } catch (error) {
+      console.error('Error acknowledging alert:', error);
+    }
+  };
+
+  const handleResolveAlert = async (alertId: string) => {
+    if (!user?.id) return;
+    
+    try {
+      await resolveInjuryAlert(alertId, user.id);
+      await loadInjuryAlerts(); // Reload alerts
+    } catch (error) {
+      console.error('Error resolving alert:', error);
     }
   };
 
@@ -451,6 +492,102 @@ const CoachDashboard: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Injury Alerts Section */}
+          {loadingAlerts && (
+            <div className="injury-alerts-section">
+              <h2>Injury Alerts</h2>
+              <div className="loading-alerts">
+                <p>Loading injury alerts...</p>
+              </div>
+            </div>
+          )}
+          {injuryAlerts && !injuryAlerts.error && (
+            <div className="injury-alerts-section">
+              <div className="alerts-header">
+                <h2>🚨 Injury Alerts</h2>
+                <div className="alerts-summary">
+                  <span className={`alert-count high ${injuryAlerts.high_priority > 0 ? 'active' : ''}`}>
+                    {injuryAlerts.high_priority} High Priority
+                  </span>
+                  <span className={`alert-count medium ${injuryAlerts.medium_priority > 0 ? 'active' : ''}`}>
+                    {injuryAlerts.medium_priority} Medium Priority
+                  </span>
+                  <span className={`alert-count low ${injuryAlerts.low_priority > 0 ? 'active' : ''}`}>
+                    {injuryAlerts.low_priority} Low Priority
+                  </span>
+                </div>
+              </div>
+              
+              {injuryAlerts.alerts && injuryAlerts.alerts.length > 0 ? (
+                <div className="alerts-list">
+                  {injuryAlerts.alerts.map((alert: any) => (
+                    <div key={alert.id} className={`alert-card ${alert.severity}`}>
+                      <div className="alert-header">
+                        <div className="alert-info">
+                          <h3 className="athlete-name">{alert.athlete_name}</h3>
+                          <span className={`severity-badge ${alert.severity}`}>
+                            {alert.severity.toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="alert-actions">
+                          {!alert.acknowledged && (
+                            <button 
+                              className="btn-acknowledge"
+                              onClick={() => handleAcknowledgeAlert(alert.id)}
+                            >
+                              Acknowledge
+                            </button>
+                          )}
+                          <button 
+                            className="btn-resolve"
+                            onClick={() => handleResolveAlert(alert.id)}
+                          >
+                            Resolve
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div className="alert-details">
+                        <div className="risk-factors">
+                          <h4>Risk Factors:</h4>
+                          <ul>
+                            {alert.risk_factors.map((factor: string, index: number) => (
+                              <li key={index}>{factor.replace('_', ' ').toUpperCase()}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        
+                        <div className="recommendations">
+                          <h4>Recommendations:</h4>
+                          <ul>
+                            {alert.recommendations.slice(0, 3).map((rec: string, index: number) => (
+                              <li key={index}>{rec}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <div className="alert-footer">
+                        <span className="alert-time">
+                          {new Date(alert.created_at).toLocaleString()}
+                        </span>
+                        {alert.acknowledged && (
+                          <span className="acknowledged-badge">
+                            ✓ Acknowledged
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="no-alerts">
+                  <p>🎉 No injury alerts at this time. All athletes are performing safely!</p>
+                </div>
+              )}
             </div>
           )}
 
