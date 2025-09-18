@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { getSessions, getAthletes } from '../api/apiClient';
+import { getSessions, getAthletes, getCoachMessages } from '../api/apiClient';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
 
@@ -15,10 +15,23 @@ const CoachDashboard: React.FC = () => {
   const [showAthleteSessions, setShowAthleteSessions] = useState(false);
   const [selectedSessionForAnalysis, setSelectedSessionForAnalysis] = useState<any>(null);
   const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false);
+  const [unreadMessages, setUnreadMessages] = useState<{[athleteId: string]: number}>({});
 
   useEffect(() => {
     loadDashboardData();
+    loadMessages();
     // reload when user changes (login/logout)
+  }, [user?.id]);
+
+  // Load messages every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (user?.id) {
+        loadMessages();
+      }
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, [user?.id]);
 
   const loadDashboardData = async () => {
@@ -40,7 +53,14 @@ const CoachDashboard: React.FC = () => {
         videoUrl: session.videoUrl || null,
         thumbnailUrl: session.thumbnailUrl || null
       }));
-      setSessions(sessionsWithVideo);
+      // Sort sessions by timestamp (latest first)
+      const sortedSessions = sessionsWithVideo.sort((a: any, b: any) => {
+        const timestampA = new Date(a.timestamp || a.date || 0).getTime();
+        const timestampB = new Date(b.timestamp || b.date || 0).getTime();
+        return timestampB - timestampA; // Descending order (newest first)
+      });
+      
+      setSessions(sortedSessions);
       
       // Group sessions by athlete and create athlete summaries
       const athleteMap = new Map();
@@ -168,6 +188,25 @@ const CoachDashboard: React.FC = () => {
     }
   };
 
+  const loadMessages = async () => {
+    if (!user?.id) return;
+    
+    try {
+      const coachMessages = await getCoachMessages(user.id);
+      
+      // Count unread messages per athlete (only messages from athletes to coach)
+      const unreadCounts: {[athleteId: string]: number} = {};
+      coachMessages.forEach((message: any) => {
+        // Only count messages from athletes (not from coach) that are unread
+        if (!message.read && message.coachId !== user.id) {
+          unreadCounts[message.athleteId] = (unreadCounts[message.athleteId] || 0) + 1;
+        }
+      });
+      setUnreadMessages(unreadCounts);
+    } catch (error) {
+      console.error('Error loading messages:', error);
+    }
+  };
 
   const handleSendFeedback = async (sessionId: string, athleteId: string) => {
     const session = sessions.find(s => s.sessionId === sessionId);
@@ -340,7 +379,15 @@ const CoachDashboard: React.FC = () => {
                   onClick={() => handleAthleteClick(athlete)}
                 >
                   <div className="athlete-info">
-                    <h3 className="athlete-name">{athlete.name}</h3>
+                    <div className="athlete-name-container">
+                      <h3 className="athlete-name">{athlete.name}</h3>
+                      {unreadMessages[athlete.id] > 0 && (
+                        <div className="unread-indicator">
+                          <span className="unread-dot"></span>
+                          <span className="unread-count">{unreadMessages[athlete.id]}</span>
+                        </div>
+                      )}
+                    </div>
                     <div className="athlete-stats">
                       <div className="stat-item">
                         <span className="stat-label">Total Sessions:</span>
@@ -373,6 +420,14 @@ const CoachDashboard: React.FC = () => {
               ← Back to Athletes
             </button>
             <h2>{selectedAthlete?.name}'s Sessions</h2>
+            <button 
+              className="btn-primary"
+              onClick={() => {
+                setShowChat(true);
+              }}
+            >
+              💬 Message {selectedAthlete?.name}
+            </button>
           </div>
           
           {sessions.length === 0 ? (
@@ -409,7 +464,7 @@ const CoachDashboard: React.FC = () => {
                               {session.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}
                             </span>
                             <span className="session-date">
-                              {new Date(date).toLocaleDateString()}
+                              {new Date(date).toLocaleDateString()} {new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </span>
                           </div>
                         </td>
@@ -431,7 +486,7 @@ const CoachDashboard: React.FC = () => {
                         </td>
                         <td className="metric-cell">
                           <div className="metric-value">{new Date(date).toLocaleDateString()}</div>
-                          <div className="metric-label">Date</div>
+                          <div className="metric-label">{new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                         </td>
                         <td className="actions-cell">
                           <div className="action-buttons">

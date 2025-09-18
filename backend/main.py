@@ -521,6 +521,30 @@ async def get_athlete_messages(athlete_id: str):
         logger.error(f"Error loading messages for athlete {athlete_id}: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to load messages: {str(e)}")
 
+@app.get("/api/coach-messages/coach/{coach_id}")
+async def get_coach_messages(coach_id: str):
+    """Get all messages for a specific coach"""
+    try:
+        messages_file = "data/coach_messages.json"
+        
+        if not os.path.exists(messages_file):
+            return []
+        
+        with open(messages_file, "r", encoding="utf-8") as f:
+            content = f.read().strip()
+            if not content:
+                return []
+            
+            messages = json.loads(content)
+            # Filter messages for this coach and sort by timestamp (newest first)
+            coach_messages = [msg for msg in messages if msg.get("coachId") == coach_id]
+            coach_messages.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+            return coach_messages
+            
+    except Exception as e:
+        logger.error(f"Error loading messages for coach {coach_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to load messages: {str(e)}")
+
 @app.put("/api/coach-messages/{message_id}/read")
 async def mark_message_read(message_id: str):
     """Mark a message as read"""

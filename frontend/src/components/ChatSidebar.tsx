@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Send, MessageCircle } from 'lucide-react';
-import { getAthleteMessages, markMessageAsRead, CoachMessage } from '../api/apiClient';
+import { X, Send, MessageCircle, Tag } from 'lucide-react';
+import { getAthleteMessages, markMessageAsRead, getSessions, CoachMessage } from '../api/apiClient';
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -21,11 +21,15 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
 }) => {
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [selectedSessionId, setSelectedSessionId] = useState<string>('');
+  const [showSessionSelector, setShowSessionSelector] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen && athleteId) {
       loadMessages();
+      loadSessions();
       // Refresh messages every 10 seconds when chat is open
       const interval = setInterval(loadMessages, 10000);
       return () => clearInterval(interval);
@@ -53,6 +57,21 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
     }
   };
 
+  const loadSessions = async () => {
+    try {
+      const athleteSessions = await getSessions(athleteId);
+      // Sort sessions by timestamp (newest first)
+      const sortedSessions = athleteSessions.sort((a, b) => {
+        const timestampA = new Date(a.timestamp || a.date || 0).getTime();
+        const timestampB = new Date(b.timestamp || b.date || 0).getTime();
+        return timestampB - timestampA; // Descending order (newest first)
+      });
+      setSessions(sortedSessions);
+    } catch (error) {
+      console.error('Error loading sessions:', error);
+    }
+  };
+
   const handleMarkAsRead = async (messageId: string) => {
     try {
       await markMessageAsRead(messageId);
@@ -75,7 +94,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
       coachName: isCoach ? 'You' : athleteName,
       athleteId: athleteId,
       athleteName: athleteName,
-      sessionId: '', // Optional for general messages
+      sessionId: selectedSessionId, // Include selected session if any
       type: 'feedback',
       message: newMessage.trim(),
       timestamp: new Date().toISOString(),
@@ -142,6 +161,24 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
     }
   };
 
+  const getSessionDetails = (sessionId: string) => {
+    const session = sessions.find(s => s.sessionId === sessionId);
+    if (!session) return null;
+    
+    const exercise = session.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise';
+    const date = new Date(session.timestamp || session.date);
+    const dateStr = date.toLocaleDateString();
+    const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    return {
+      exercise,
+      date: dateStr,
+      time: timeStr,
+      reps: session.reps || 0,
+      formScore: session.formScore || 0
+    };
+  };
+
   return (
     <div className={`chat-sidebar-overlay ${isOpen ? 'open' : ''}`}>
       <div className="chat-sidebar">
@@ -186,6 +223,21 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                   </div>
                   <div className="message-text">
                     {message.message}
+                    {message.sessionId && (() => {
+                      const sessionDetails = getSessionDetails(message.sessionId);
+                      return sessionDetails ? (
+                        <div className="message-session-info">
+                          📋 Tagged to: {sessionDetails.exercise} on {sessionDetails.date} at {sessionDetails.time}
+                          <div className="session-metrics-small">
+                            {sessionDetails.reps} reps • {sessionDetails.formScore}% form
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="message-session-info">
+                          📋 Tagged to session: {message.sessionId}
+                        </div>
+                      );
+                    })()}
                   </div>
                   {message.type !== 'feedback' && (
                     <div className="message-type-label">
@@ -203,6 +255,56 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         </div>
 
         <div className="chat-input">
+          {/* Session Tagging */}
+          <div className="session-tagging">
+            <button
+              className={`session-tag-btn ${selectedSessionId ? 'tagged' : ''}`}
+              onClick={() => setShowSessionSelector(!showSessionSelector)}
+            >
+              <Tag size={16} />
+              {selectedSessionId ? 'Tagged to Session' : 'Tag to Session'}
+            </button>
+            
+            {showSessionSelector && (
+              <div className="session-selector">
+                <div className="session-selector-header">
+                  <h4>Select a session to tag</h4>
+                  <button 
+                    className="clear-session-btn"
+                    onClick={() => setSelectedSessionId('')}
+                  >
+                    Clear
+                  </button>
+                </div>
+                <div className="session-list">
+                  {sessions.map((session) => (
+                    <div
+                      key={session.sessionId}
+                      className={`session-item ${selectedSessionId === session.sessionId ? 'selected' : ''}`}
+                      onClick={() => {
+                        setSelectedSessionId(session.sessionId);
+                        setShowSessionSelector(false);
+                      }}
+                    >
+                      <div className="session-info">
+                        <span className="session-exercise">
+                          {session.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}
+                        </span>
+                        <span className="session-date">
+                          {new Date(session.timestamp || session.date).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="session-metrics">
+                        <span className="session-reps">{session.reps || 0} reps</span>
+                        <span className="session-score">{session.formScore || 0}%</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="input-container">
             <textarea
               value={newMessage}

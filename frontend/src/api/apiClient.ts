@@ -167,6 +167,18 @@ export async function getAthleteMessages(athleteId: string): Promise<CoachMessag
   return response.json();
 }
 
+export async function getCoachMessages(coachId: string): Promise<CoachMessage[]> {
+  const response = await fetch(`${API_BASE_URL}/coach-messages/coach/${encodeURIComponent(coachId)}`);
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('getCoachMessages error response:', text);
+    throw new Error('Failed to fetch coach messages');
+  }
+
+  return response.json();
+}
+
 export async function markMessageAsRead(messageId: string): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/coach-messages/${encodeURIComponent(messageId)}/read`, {
     method: 'PUT'
