@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { getSessions, getAthletes, getCoachMessages } from '../api/apiClient';
+import { getSessions, getAthletes } from '../api/apiClient';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
 
@@ -15,24 +15,13 @@ const CoachDashboard: React.FC = () => {
   const [showAthleteSessions, setShowAthleteSessions] = useState(false);
   const [selectedSessionForAnalysis, setSelectedSessionForAnalysis] = useState<any>(null);
   const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false);
-  const [unreadMessages, setUnreadMessages] = useState<{[athleteId: string]: number}>({});
+  const [taggedSessionId, setTaggedSessionId] = useState<string>('');
 
   useEffect(() => {
     loadDashboardData();
-    loadMessages();
     // reload when user changes (login/logout)
   }, [user?.id]);
 
-  // Load messages every 30 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (user?.id) {
-        loadMessages();
-      }
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, [user?.id]);
 
   const loadDashboardData = async () => {
     try {
@@ -188,29 +177,13 @@ const CoachDashboard: React.FC = () => {
     }
   };
 
-  const loadMessages = async () => {
-    if (!user?.id) return;
-    
-    try {
-      const coachMessages = await getCoachMessages(user.id);
-      
-      // Count unread messages per athlete (only messages from athletes to coach)
-      const unreadCounts: {[athleteId: string]: number} = {};
-      coachMessages.forEach((message: any) => {
-        // Only count messages from athletes (not from coach) that are unread
-        if (!message.read && message.coachId !== user.id) {
-          unreadCounts[message.athleteId] = (unreadCounts[message.athleteId] || 0) + 1;
-        }
-      });
-      setUnreadMessages(unreadCounts);
-    } catch (error) {
-      console.error('Error loading messages:', error);
-    }
-  };
 
   const handleSendFeedback = async (sessionId: string, athleteId: string) => {
     const session = sessions.find(s => s.sessionId === sessionId);
     const athleteName = session?.athleteName || 'Unknown';
+    
+    // Set the session to be tagged
+    setTaggedSessionId(sessionId);
     
     // Open chat with the athlete
     setSelectedAthlete({ id: athleteId, name: athleteName });
@@ -280,11 +253,13 @@ const CoachDashboard: React.FC = () => {
           onClose={() => {
             setShowChat(false);
             setSelectedAthlete(null);
+            setTaggedSessionId('');
           }}
           athleteId={selectedAthlete.id}
           isCoach={true}
           coachId={user?.id}
           athleteName={selectedAthlete.name}
+          taggedSessionId={taggedSessionId}
         />
       )}
 
@@ -379,15 +354,7 @@ const CoachDashboard: React.FC = () => {
                   onClick={() => handleAthleteClick(athlete)}
                 >
                   <div className="athlete-info">
-                    <div className="athlete-name-container">
-                      <h3 className="athlete-name">{athlete.name}</h3>
-                      {unreadMessages[athlete.id] > 0 && (
-                        <div className="unread-indicator">
-                          <span className="unread-dot"></span>
-                          <span className="unread-count">{unreadMessages[athlete.id]}</span>
-                        </div>
-                      )}
-                    </div>
+                    <h3 className="athlete-name">{athlete.name}</h3>
                     <div className="athlete-stats">
                       <div className="stat-item">
                         <span className="stat-label">Total Sessions:</span>
@@ -506,7 +473,7 @@ const CoachDashboard: React.FC = () => {
                               className="btn-feedback btn-sm"
                               onClick={() => handleSendFeedback(session.sessionId, session.athleteId)}
                             >
-                              Message
+                              Feedback
                             </button>
                           </div>
                         </td>

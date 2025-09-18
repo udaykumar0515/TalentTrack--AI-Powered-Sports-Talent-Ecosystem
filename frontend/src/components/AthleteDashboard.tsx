@@ -6,7 +6,7 @@ import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
-import { saveSession, getAthleteMessages, CoachMessage, getSessions } from '../api/apiClient';
+import { saveSession, getAthleteMessages, getSessions } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -16,7 +16,6 @@ const AthleteDashboard: React.FC = () => {
   const [currentSession, setCurrentSession] = useState<any>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [sessions, setSessions] = useState<any[]>([]);
-  const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [showChat, setShowChat] = useState(false);
   const [selectedSessionForAnalysis, setSelectedSessionForAnalysis] = useState<any>(null);
   const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false);
@@ -162,8 +161,8 @@ const AthleteDashboard: React.FC = () => {
     if (!user?.id) return;
     
     try {
-      const athleteMessages = await getAthleteMessages(user.id);
-      setMessages(athleteMessages);
+      await getAthleteMessages(user.id);
+      // Messages are handled by ChatSidebar component
     } catch (error) {
       console.error('Error loading messages:', error);
     }
@@ -360,7 +359,7 @@ const AthleteDashboard: React.FC = () => {
             className="messages-btn"
           >
             <span className="message-icon">💬</span>
-            Chat {messages.filter(m => !m.read).length > 0 && <span className="unread-count">({messages.filter(m => !m.read).length})</span>}
+            Chat
           </button>
           <button onClick={logout} className="logout-btn">
             <span className="logout-icon">🚪</span>

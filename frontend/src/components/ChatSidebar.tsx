@@ -9,6 +9,7 @@ interface ChatSidebarProps {
   isCoach?: boolean;
   coachId?: string;
   athleteName?: string;
+  taggedSessionId?: string;
 }
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({ 
@@ -17,7 +18,8 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   athleteId, 
   isCoach = false,
   coachId,
-  athleteName = 'Athlete'
+  athleteName = 'Athlete',
+  taggedSessionId = ''
 }) => {
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -35,6 +37,13 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
       return () => clearInterval(interval);
     }
   }, [isOpen, athleteId]);
+
+  // Auto-select tagged session when provided
+  useEffect(() => {
+    if (taggedSessionId && sessions.length > 0) {
+      setSelectedSessionId(taggedSessionId);
+    }
+  }, [taggedSessionId, sessions]);
 
   useEffect(() => {
     scrollToBottom();

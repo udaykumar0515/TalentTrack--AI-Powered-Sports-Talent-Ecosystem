@@ -1235,12 +1235,6 @@ button:disabled {
   color: var(--primary-text);
 }
 
-.sessions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
 
 .session-card {
   background: white;
