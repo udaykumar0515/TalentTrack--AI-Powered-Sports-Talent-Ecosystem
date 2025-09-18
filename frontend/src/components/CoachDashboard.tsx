@@ -62,6 +62,7 @@ const CoachDashboard: React.FC = () => {
           athleteMap.set(session.athleteId, {
             id: session.athleteId,
             name: athleteName,
+            username: athleteName, // Add username field for consistency
             sessions: [],
             totalSessions: 0,
             lastSession: null,

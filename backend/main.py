@@ -734,6 +734,12 @@ async def analyze_video(
             if key not in parsed:
                 logger.warning(f"Missing key '{key}' in parsed result, using default")
 
+        # Get coach information from athlete data
+        athletes = read_json_file("athletes.json")
+        athlete_data = next((athlete for athlete in athletes if athlete["id"] == athleteId), None)
+        coach_id = athlete_data.get("coachId") if athlete_data else None
+        coach_name = athlete_data.get("coachName") if athlete_data else None
+
         # Construct session data for frontend & storage
         session_data = {
             "exercise": exercise,  # Use original exercise name for frontend
@@ -743,8 +749,8 @@ async def analyze_video(
             "timestamp": datetime.now().isoformat() + "Z",
             "athleteId": athleteId,
             "athleteName": parsed.get("userName", athleteName),
-            "coachId": None,
-            "coachName": None,
+            "coachId": coach_id,
+            "coachName": coach_name,
             "sessionId": str(uuid.uuid4())[:8]
         }
 

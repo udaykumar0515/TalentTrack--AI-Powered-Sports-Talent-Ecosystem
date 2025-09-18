@@ -1,11 +1,26 @@
 [
-
   {
-    "id": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
-    "email": "udaykumar@gmail.com",
-    "password": "123456",
-    "username": "udaykumar",
+    "id": "coach_1",
+    "email": "coach_mike@example.com",
+    "password": "000000",
+    "username": "coach_mike", 
     "role": "coach",
-    "created_at": "2025-09-14T17:08:26.440766"
+    "created_at": "2025-01-19T09:00:00Z"
+  },
+  {
+    "id": "coach_2",
+    "email": "coach_sarah@example.com",
+    "password": "000000",
+    "username": "coach_sarah",
+    "role": "coach",
+    "created_at": "2025-01-19T09:05:00Z"
+  },
+  {
+    "id": "coach_3",
+    "email": "coach_david@example.com",
+    "password": "000000",
+    "username": "coach_david",
+    "role": "coach",
+    "created_at": "2025-01-19T09:10:00Z"
   }
 ]
