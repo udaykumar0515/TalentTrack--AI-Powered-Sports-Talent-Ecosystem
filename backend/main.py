@@ -313,6 +313,55 @@ async def post_session(session: Dict[str, Any]):
         logger.error(f"Failed to persist session: {e}")
         raise HTTPException(status_code=500, detail="Failed to save session")
 
+@app.post("/api/feedback")
+async def submit_feedback(feedback_data: dict):
+    """Submit user feedback"""
+    try:
+        # Create feedback directory if it doesn't exist
+        feedback_dir = "data/feedback"
+        os.makedirs(feedback_dir, exist_ok=True)
+        
+        # Generate feedback ID
+        feedback_id = str(uuid.uuid4())[:8]
+        
+        # Prepare feedback record
+        feedback_record = {
+            "id": feedback_id,
+            "userId": feedback_data.get("userId"),
+            "userEmail": feedback_data.get("userEmail"),
+            "username": feedback_data.get("username"),
+            "feedback": feedback_data.get("feedback"),
+            "timestamp": feedback_data.get("timestamp"),
+            "status": "new"
+        }
+        
+        # Load existing feedback
+        feedback_file = f"{feedback_dir}/feedback.json"
+        if os.path.exists(feedback_file):
+            with open(feedback_file, "r", encoding="utf-8") as f:
+                content = f.read().strip()
+                if content:
+                    feedbacks = json.loads(content)
+                else:
+                    feedbacks = []
+        else:
+            feedbacks = []
+        
+        # Add new feedback
+        feedbacks.append(feedback_record)
+        
+        # Save feedback
+        with open(feedback_file, "w", encoding="utf-8") as f:
+            json.dump(feedbacks, f, indent=2, ensure_ascii=False)
+        
+        logger.info(f"Feedback submitted by {feedback_data.get('username')} ({feedback_data.get('userEmail')})")
+        
+        return {"message": "Feedback submitted successfully", "feedbackId": feedback_id}
+        
+    except Exception as e:
+        logger.error(f"Error submitting feedback: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit feedback")
+
 @app.delete("/api/sessions/{session_id}")
 async def delete_session(session_id: str):
     """Delete a session by ID"""
