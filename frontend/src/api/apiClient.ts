@@ -228,3 +228,48 @@ export async function uploadVideo(videoFile: File, sessionData: any): Promise<an
 
   return response.json();
 }
+
+// Benchmarking API functions
+export const getLeaderboard = async (exercise: string, coachId?: string) => {
+  const url = coachId 
+    ? `${API_BASE_URL}/benchmarks/leaderboard/${exercise}?coach_id=${coachId}`
+    : `${API_BASE_URL}/benchmarks/leaderboard/${exercise}`;
+    
+  const response = await fetch(url);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch leaderboard');
+  }
+  
+  return response.json();
+};
+
+export const getExerciseStandards = async (exercise: string) => {
+  const response = await fetch(`${API_BASE_URL}/benchmarks/standards/${exercise}`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch exercise standards');
+  }
+  
+  return response.json();
+};
+
+export const getAthletePredictiveAnalytics = async (athleteId: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/predictive-analytics/athlete/${athleteId}`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch athlete predictive analytics');
+  }
+  
+  return response.json();
+};
+
+export const getCoachPredictiveAnalytics = async (coachId: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/predictive-analytics/coach/${coachId}`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch coach predictive analytics');
+  }
+  
+  return response.json();
+};

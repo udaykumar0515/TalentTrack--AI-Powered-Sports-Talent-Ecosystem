@@ -1,0 +1,131 @@
+{
+  "exercise_standards": {
+    "squat": {
+      "beginner": {
+        "reps_range": [1, 10],
+        "form_score_min": 60,
+        "duration_range": [20, 40],
+        "description": "Learning proper form and basic movement"
+      },
+      "intermediate": {
+        "reps_range": [11, 20],
+        "form_score_min": 75,
+        "duration_range": [30, 60],
+        "description": "Consistent form with moderate intensity"
+      },
+      "advanced": {
+        "reps_range": [21, 30],
+        "form_score_min": 85,
+        "duration_range": [45, 90],
+        "description": "Excellent form with high intensity"
+      },
+      "elite": {
+        "reps_range": [31, 50],
+        "form_score_min": 90,
+        "duration_range": [60, 120],
+        "description": "Perfect form with maximum intensity"
+      }
+    },
+    "pushup": {
+      "beginner": {
+        "reps_range": [1, 5],
+        "form_score_min": 60,
+        "duration_range": [15, 30],
+        "description": "Learning proper form and basic movement"
+      },
+      "intermediate": {
+        "reps_range": [6, 15],
+        "form_score_min": 75,
+        "duration_range": [25, 45],
+        "description": "Consistent form with moderate intensity"
+      },
+      "advanced": {
+        "reps_range": [16, 25],
+        "form_score_min": 85,
+        "duration_range": [35, 60],
+        "description": "Excellent form with high intensity"
+      },
+      "elite": {
+        "reps_range": [26, 40],
+        "form_score_min": 90,
+        "duration_range": [45, 90],
+        "description": "Perfect form with maximum intensity"
+      }
+    },
+    "jumping_jacks": {
+      "beginner": {
+        "reps_range": [1, 15],
+        "form_score_min": 60,
+        "duration_range": [10, 20],
+        "description": "Learning proper form and basic movement"
+      },
+      "intermediate": {
+        "reps_range": [16, 30],
+        "form_score_min": 75,
+        "duration_range": [15, 30],
+        "description": "Consistent form with moderate intensity"
+      },
+      "advanced": {
+        "reps_range": [31, 50],
+        "form_score_min": 85,
+        "duration_range": [25, 45],
+        "description": "Excellent form with high intensity"
+      },
+      "elite": {
+        "reps_range": [51, 80],
+        "form_score_min": 90,
+        "duration_range": [35, 60],
+        "description": "Perfect form with maximum intensity"
+      }
+    }
+  },
+  "age_group_standards": {
+    "13-17": {
+      "squat": { "reps_multiplier": 1.2, "form_bonus": 5 },
+      "pushup": { "reps_multiplier": 1.1, "form_bonus": 3 },
+      "jumping_jacks": { "reps_multiplier": 1.3, "form_bonus": 5 }
+    },
+    "18-25": {
+      "squat": { "reps_multiplier": 1.0, "form_bonus": 0 },
+      "pushup": { "reps_multiplier": 1.0, "form_bonus": 0 },
+      "jumping_jacks": { "reps_multiplier": 1.0, "form_bonus": 0 }
+    },
+    "26-35": {
+      "squat": { "reps_multiplier": 0.95, "form_bonus": 0 },
+      "pushup": { "reps_multiplier": 0.9, "form_bonus": 0 },
+      "jumping_jacks": { "reps_multiplier": 0.95, "form_bonus": 0 }
+    },
+    "36-45": {
+      "squat": { "reps_multiplier": 0.9, "form_bonus": 0 },
+      "pushup": { "reps_multiplier": 0.85, "form_bonus": 0 },
+      "jumping_jacks": { "reps_multiplier": 0.9, "form_bonus": 0 }
+    },
+    "46+": {
+      "squat": { "reps_multiplier": 0.8, "form_bonus": 0 },
+      "pushup": { "reps_multiplier": 0.75, "form_bonus": 0 },
+      "jumping_jacks": { "reps_multiplier": 0.8, "form_bonus": 0 }
+    }
+  },
+  "global_leaderboard": {
+    "squat": [],
+    "pushup": [],
+    "jumping_jacks": []
+  },
+  "coach_leaderboard": {
+    "coach_1": {
+      "squat": [],
+      "pushup": [],
+      "jumping_jacks": []
+    },
+    "coach_2": {
+      "squat": [],
+      "pushup": [],
+      "jumping_jacks": []
+    },
+    "coach_3": {
+      "squat": [],
+      "pushup": [],
+      "jumping_jacks": []
+    }
+  }
+}
