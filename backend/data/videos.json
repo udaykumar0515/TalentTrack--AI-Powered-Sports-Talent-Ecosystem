@@ -34,5 +34,17 @@
     "coachId": null,
     "coachName": null,
     "syncStatus": "synced"
+  },
+  {
+    "videoId": "33283e17-c52c-4e14-9cd6-937e9d3dce83",
+    "sessionId": "fdae5634",
+    "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+    "athleteName": "Udaykumar_H",
+    "exercise": "squat",
+    "videoPath": "videos\\athletes\\a4eeee47-f800-4930-9753-95e55ceebfdd\\fdae5634_squat_20250918_213039.mp4",
+    "uploadedAt": "2025-09-18T21:30:39.704804",
+    "coachId": null,
+    "coachName": null,
+    "syncStatus": "synced"
   }
 ]

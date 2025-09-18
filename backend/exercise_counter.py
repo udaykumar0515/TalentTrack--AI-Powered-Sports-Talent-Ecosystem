@@ -636,6 +636,10 @@ def main():
     coach_id = args.coach_id if args.coach_id else None
     coach_name = args.coach_name if args.coach_name else None
 
+    # Performance optimization settings
+    FRAME_SKIP = 2  # Process every 2rd frame (2x faster)
+    TARGET_WIDTH = 720  # Resize to 720p width (2x faster)
+
     # Decide capture source
     non_interactive = False
     if args.video_file:
@@ -659,9 +663,22 @@ def main():
         logger.error("ERROR: Can't read from video source.")
         cap.release()
         sys.exit(2)
-    img_h, img_w = frame.shape[:2]
+    
+    # Get original dimensions
+    orig_h, orig_w = frame.shape[:2]
+    
+    # Calculate new dimensions maintaining aspect ratio
+    if orig_w > TARGET_WIDTH:
+        scale_factor = TARGET_WIDTH / orig_w
+        new_w = TARGET_WIDTH
+        new_h = int(orig_h * scale_factor)
+    else:
+        new_w, new_h = orig_w, orig_h
+    
+    logger.info(f"Original resolution: {orig_w}x{orig_h}, Optimized resolution: {new_w}x{new_h}")
+    logger.info(f"Frame skip: every {FRAME_SKIP} frames (processing {100/FRAME_SKIP:.1f}% of frames)")
 
-    detector = ExerciseDetector(exercise, img_w, img_h)
+    detector = ExerciseDetector(exercise, new_w, new_h)
     pose = mp_pose.Pose(static_image_mode=False,
                         model_complexity=1,
                         enable_segmentation=False,
@@ -671,6 +688,7 @@ def main():
     last_frame_time = time.time()
     fps = 0.0
     session_start_time = time.time()
+    frame_counter = 0  # Track frame number for skipping
     
     # Get video properties for accurate duration calculation
     video_fps = cap.get(cv2.CAP_PROP_FPS)
@@ -683,6 +701,21 @@ def main():
             if not ret:
                 # end of video or camera lost
                 break
+
+            frame_counter += 1
+            
+            # Skip frames for performance (process every FRAME_SKIP frames)
+            if frame_counter % FRAME_SKIP != 0:
+                continue
+
+            # Resize frame for performance
+            if orig_w > TARGET_WIDTH:
+                frame = cv2.resize(frame, (new_w, new_h))
+            
+            # Update detector dimensions if they changed
+            if detector.img_w != new_w or detector.img_h != new_h:
+                detector.img_w = new_w
+                detector.img_h = new_h
 
             image_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             results = pose.process(image_rgb)
@@ -723,15 +756,15 @@ def main():
                 else:
                     cv2.putText(frame, "Form: --", (10, 106), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (180,180,180), 1)
                 if not coverage_ok and missing_msg:
-                    cv2.rectangle(frame, (0, img_h-60), (img_w, img_h), (0,0,128), thickness=-1)
-                    msg = missing_msg if len(missing_msg) <= (img_w // 8) else missing_msg[:img_w // 8] + "..."
-                    cv2.putText(frame, "WARNING: " + msg, (10, img_h-30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,200,200), 1)
+                    cv2.rectangle(frame, (0, new_h-60), (new_w, new_h), (0,0,128), thickness=-1)
+                    msg = missing_msg if len(missing_msg) <= (new_w // 8) else missing_msg[:new_w // 8] + "..."
+                    cv2.putText(frame, "WARNING: " + msg, (10, new_h-30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,200,200), 1)
 
-                # fps display
+                # fps display (adjusted for frame skipping)
                 now = time.time()
                 fps = 0.9 * fps + 0.1 * (1.0 / (now - last_frame_time)) if now != last_frame_time else fps
                 last_frame_time = now
-                cv2.putText(frame, f"FPS: {fps:.1f}", (img_w - 120, 18), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1)
+                cv2.putText(frame, f"FPS: {fps:.1f} (processed)", (new_w - 150, 18), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1)
                 cv2.imshow("Exercise Counter (session)", frame)
 
                 key = cv2.waitKey(1) & 0xFF
@@ -761,11 +794,19 @@ def main():
         pose.close()
 
         session_end_time = time.time()
+        analysis_time = session_end_time - session_start_time
+        
         # Use actual video duration if available, otherwise fall back to analysis time
         if video_duration > 0:
             duration = video_duration
         else:
-            duration = session_end_time - session_start_time
+            duration = analysis_time
+        
+        # Log performance metrics
+        processed_frames = frame_counter // FRAME_SKIP
+        total_frames = frame_count if frame_count > 0 else frame_counter
+        logger.info(f"Performance: Processed {processed_frames}/{total_frames} frames ({100*processed_frames/total_frames:.1f}%) in {analysis_time:.2f}s")
+        logger.info(f"Speed improvement: ~{FRAME_SKIP}x from frame skipping + ~{orig_w/TARGET_WIDTH:.1f}x from resolution reduction")
 
         if exercise == "jumping_jacks" and hasattr(detector, "jj_count"):
             total_reps = int(getattr(detector, "jj_count", detector.counter.count))

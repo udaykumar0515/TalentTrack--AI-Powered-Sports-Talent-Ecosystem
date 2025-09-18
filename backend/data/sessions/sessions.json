@@ -354,6 +354,20 @@
         "sessionId": "cd8343c3",
         "videoUrl": "/api/videos/cd8343c3",
         "thumbnailUrl": "/api/videos/cd8343c3"
+      },
+      {
+        "exercise": "squat",
+        "reps": 3,
+        "formScore": 100,
+        "durationSec": 12.238,
+        "timestamp": "2025-09-18T21:30:39.616146Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "fdae5634",
+        "videoUrl": "/api/videos/fdae5634",
+        "thumbnailUrl": "/api/videos/fdae5634"
       }
     ]
   }
