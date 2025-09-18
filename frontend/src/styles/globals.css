@@ -399,9 +399,10 @@ button:disabled {
 }
 
 .session-metrics {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
 }
 
 .injury-flags {
@@ -1341,8 +1342,10 @@ button:disabled {
 }
 
 .session-metrics {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
   margin-bottom: 12px;
   padding: 8px 0;
   border-top: 1px solid #e5e7eb;
@@ -2055,8 +2058,10 @@ button:disabled {
 }
 
 .session-metrics {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
   margin-bottom: 12px;
   padding: 8px 0;
   border-top: 1px solid #e5e7eb;
@@ -2200,9 +2205,10 @@ button:disabled {
 
 .session-metrics {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .metric-item {
@@ -2522,10 +2528,10 @@ button:disabled {
 }
 
 .session-metrics {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
 }
 
 .session-reps {
