@@ -34,11 +34,11 @@ const CoachDashboard: React.FC = () => {
       
       // fetch sessions for this coach from backend
       const coachSessions = await getSessions(undefined, user.id);
-      // Add test video URL to all sessions for testing
+      // Use actual video URLs from sessions, no fallback to test video
       const sessionsWithVideo = (coachSessions || []).map((session: any) => ({
         ...session,
-        videoUrl: '/test-video.mp4',
-        thumbnailUrl: '/test-video.mp4'
+        videoUrl: session.videoUrl || null,
+        thumbnailUrl: session.thumbnailUrl || null
       }));
       setSessions(sessionsWithVideo);
       
@@ -89,8 +89,8 @@ const CoachDashboard: React.FC = () => {
           durationSec: 45,
           reps: 15,
           formScore: 85,
-          videoUrl: '/test-video.mp4',
-          thumbnailUrl: '/test-video.mp4'
+          videoUrl: null, // No video for demo
+          thumbnailUrl: null
         },
         {
           sessionId: 'test-session-2',
@@ -103,8 +103,8 @@ const CoachDashboard: React.FC = () => {
           durationSec: 30,
           reps: 25,
           formScore: 72,
-          videoUrl: '/test-video.mp4',
-          thumbnailUrl: '/test-video.mp4'
+          videoUrl: null, // No video for demo
+          thumbnailUrl: null
         },
         {
           sessionId: 'test-session-3',
@@ -117,8 +117,8 @@ const CoachDashboard: React.FC = () => {
           durationSec: 60,
           reps: 20,
           formScore: 68,
-          videoUrl: '/test-video.mp4',
-          thumbnailUrl: '/test-video.mp4'
+          videoUrl: null, // No video for demo
+          thumbnailUrl: null
         },
         {
           sessionId: 'test-session-4',
@@ -131,8 +131,8 @@ const CoachDashboard: React.FC = () => {
           durationSec: 50,
           reps: 12,
           formScore: 78,
-          videoUrl: '/test-video.mp4',
-          thumbnailUrl: '/test-video.mp4'
+          videoUrl: null, // No video for demo
+          thumbnailUrl: null
         }
       ];
       setSessions(testSessions);
@@ -279,8 +279,10 @@ const CoachDashboard: React.FC = () => {
                 </video>
               ) : (
                 <div className="no-video">
-                  <span className="play-icon-large">▶️</span>
-                  <p>Video not available</p>
+                  <div className="exercise-text-display">
+                    <h2>{selectedSession.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}</h2>
+                    <p>No video recording available for this session</p>
+                  </div>
                 </div>
               )}
             </div>

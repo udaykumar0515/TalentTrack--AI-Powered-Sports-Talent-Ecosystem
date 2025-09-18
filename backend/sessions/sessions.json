@@ -398,6 +398,58 @@
         "sessionId": "d91046bd",
         "videoUrl": "blob:http://localhost:5173/50ca7058-e772-4b75-b1e1-38eedb86c46f",
         "thumbnailUrl": "blob:http://localhost:5173/50ca7058-e772-4b75-b1e1-38eedb86c46f"
+      },
+      {
+        "exercise": "squat",
+        "reps": 0,
+        "formScore": 0,
+        "durationSec": 6.752,
+        "timestamp": "2025-09-18T14:04:32.343407Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "5f0bd791"
+      },
+      {
+        "exercise": "squat",
+        "reps": 0,
+        "formScore": 0,
+        "durationSec": 6.752,
+        "timestamp": "2025-09-18T14:04:32.343407Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "5f0bd791",
+        "videoUrl": "blob:http://localhost:5173/f1a968d8-1160-4643-9fc7-83c6f00df747",
+        "thumbnailUrl": "blob:http://localhost:5173/f1a968d8-1160-4643-9fc7-83c6f00df747"
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 100,
+        "durationSec": 8.0,
+        "timestamp": "2025-09-18T14:09:19.439723Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "6f2c3e6c"
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 100,
+        "durationSec": 8,
+        "timestamp": "2025-09-18T14:09:19.439723Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "6f2c3e6c",
+        "videoUrl": "blob:http://localhost:5173/74f490f9-2cc9-4f7a-9948-39a4cb6eee4a",
+        "thumbnailUrl": "blob:http://localhost:5173/74f490f9-2cc9-4f7a-9948-39a4cb6eee4a"
       }
     ]
   }

@@ -96,6 +96,31 @@ const SessionView: React.FC<SessionViewProps> = ({
           )}
         </div>
 
+        {/* Video Player Section */}
+        <div className="session-video-section">
+          <h3>Session Recording</h3>
+          <div className="video-container">
+            {session.videoUrl ? (
+              <video
+                src={session.videoUrl}
+                controls
+                className="session-video"
+                poster={session.thumbnailUrl}
+                preload="metadata"
+              >
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <div className="no-video">
+                <div className="exercise-text-display">
+                  <h2>{session.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}</h2>
+                  <p>No video recording available for this session</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="session-metrics">
           <div className="metric-card green">
             <h3>Repetitions</h3>
