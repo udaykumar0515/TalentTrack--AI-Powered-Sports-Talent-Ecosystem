@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { analyzeVideoEnhanced } from '../api/apiClient';
+import { analyzeVideoEnhanced, uploadVideo } from '../api/apiClient';
 import { useAuth } from '../contexts/AuthContext';
 
 interface VideoRecorderProps {
@@ -147,14 +147,35 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
       
       const session = await analyzeVideoEnhanced(videoFile, exercise, athleteId, athleteName, metadata);
       
-      // Add the video URL to the session
-      const sessionWithVideo = {
-        ...session,
-        videoUrl: previewUrl, // Use the blob URL for the recorded video
-        thumbnailUrl: previewUrl
-      };
-      
-      onVideoAnalyzed(sessionWithVideo);
+      // Upload video to backend storage
+      try {
+        const uploadResult = await uploadVideo(videoFile, {
+          sessionId: session.sessionId,
+          athleteId: athleteId,
+          athleteName: athleteName,
+          exercise: exercise,
+          coachId: null,
+          coachName: null
+        });
+        
+        // Add the stored video URL to the session
+        const sessionWithVideo = {
+          ...session,
+          videoUrl: uploadResult.videoUrl, // Use the backend video URL
+          thumbnailUrl: uploadResult.videoUrl
+        };
+        
+        onVideoAnalyzed(sessionWithVideo);
+      } catch (uploadError) {
+        console.error('Video upload failed:', uploadError);
+        // Fallback to blob URL if upload fails
+        const sessionWithVideo = {
+          ...session,
+          videoUrl: previewUrl,
+          thumbnailUrl: previewUrl
+        };
+        onVideoAnalyzed(sessionWithVideo);
+      }
     } catch (error) {
       console.error('Analysis failed:', error);
       alert('Video analysis failed. Please try again.');

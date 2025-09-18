@@ -450,6 +450,32 @@
         "sessionId": "6f2c3e6c",
         "videoUrl": "blob:http://localhost:5173/74f490f9-2cc9-4f7a-9948-39a4cb6eee4a",
         "thumbnailUrl": "blob:http://localhost:5173/74f490f9-2cc9-4f7a-9948-39a4cb6eee4a"
+      },
+      {
+        "exercise": "squat",
+        "reps": 0,
+        "formScore": 0,
+        "durationSec": 2.511,
+        "timestamp": "2025-09-18T15:08:15.647794Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "4511bb7c"
+      },
+      {
+        "exercise": "squat",
+        "reps": 0,
+        "formScore": 0,
+        "durationSec": 2.511,
+        "timestamp": "2025-09-18T15:08:15.647794Z",
+        "athleteId": "a4eeee47-f800-4930-9753-95e55ceebfdd",
+        "athleteName": "Udaykumar_H",
+        "coachId": "2371b048-629f-4aa5-b26e-5871d1c4cc97",
+        "coachName": "udaykumar",
+        "sessionId": "4511bb7c",
+        "videoUrl": "blob:http://localhost:5173/c46a6b3a-5cbd-40e2-8fc2-8fd2c7d6d80d",
+        "thumbnailUrl": "blob:http://localhost:5173/c46a6b3a-5cbd-40e2-8fc2-8fd2c7d6d80d"
       }
     ]
   }

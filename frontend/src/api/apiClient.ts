@@ -284,3 +284,23 @@ export async function getExerciseBenchmarks(exercise: string): Promise<any> {
   
   return response.json();
 }
+
+// Upload video file to backend storage
+export async function uploadVideo(videoFile: File, sessionData: any): Promise<any> {
+  const formData = new FormData();
+  formData.append('file', videoFile);
+  formData.append('session_data', JSON.stringify(sessionData));
+
+  const response = await fetch(`${API_BASE_URL}/upload-video`, {
+    method: 'POST',
+    body: formData
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('uploadVideo error response:', text);
+    throw new Error('Failed to upload video');
+  }
+
+  return response.json();
+}

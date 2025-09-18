@@ -869,10 +869,16 @@ async def upload_video(
         # Parse session data
         session_info = json.loads(session_data)
         session_id = session_info.get("sessionId", str(uuid.uuid4())[:8])
+        athlete_id = session_info.get("athleteId")
         
-        # Create video filename
-        video_filename = f"{session_id}_{session_info['exercise']}.mp4"
-        video_path = os.path.join("videos", video_filename)
+        # Create video filename with timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        video_filename = f"{session_id}_{session_info['exercise']}_{timestamp}.mp4"
+        
+        # Store in athlete-specific directory
+        athlete_video_dir = os.path.join("videos", "athletes", athlete_id)
+        os.makedirs(athlete_video_dir, exist_ok=True)
+        video_path = os.path.join(athlete_video_dir, video_filename)
         
         # Save video file
         with open(video_path, "wb") as buffer:
@@ -897,8 +903,13 @@ async def upload_video(
         videos.append(video_metadata.dict())
         write_json_file("videos.json", videos)
         
-        logger.info(f"Video uploaded: {video_filename}")
-        return {"status": "success", "videoId": video_metadata.videoId, "videoPath": video_path}
+        logger.info(f"Video uploaded: {video_filename} to {video_path}")
+        return {
+            "status": "success", 
+            "videoId": video_metadata.videoId, 
+            "videoPath": video_path,
+            "videoUrl": f"/api/videos/{session_id}"
+        }
         
     except Exception as e:
         logger.error(f"Video upload error: {e}")
