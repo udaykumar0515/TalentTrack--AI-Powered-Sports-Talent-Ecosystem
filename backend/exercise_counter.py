@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 mp_pose = mp.solutions.pose
 LM = mp_pose.PoseLandmark
-DATA_FILE = "sessions/sessions.json"
+DATA_FILE = "data/sessions/sessions.json"
 
 # Create sessions directory if it doesn't exist
 os.makedirs(os.path.dirname(DATA_FILE) or ".", exist_ok=True)

@@ -121,7 +121,7 @@ EXERCISE_MAPPING = {
 
 def init_data_directories():
     """Ensure all required data directories exist"""
-    directories = ["data", "data/sessions", "sessions", "videos", "videos/athletes", "videos/coaches"]
+    directories = ["data", "data/sessions", "videos", "videos/athletes", "videos/coaches"]
     for directory in directories:
         os.makedirs(directory, exist_ok=True)
     
@@ -130,7 +130,6 @@ def init_data_directories():
         "data/athletes.json": [],
         "data/coaches.json": [],
         "data/sessions/sessions.json": {},
-        "sessions/sessions.json": {},
         "data/videos.json": []
     }
     
@@ -223,14 +222,6 @@ def save_session_result(session_data: Dict[str, Any]) -> bool:
         # Save back to file
         with open(sessions_file, "w", encoding="utf-8") as f:
             json.dump(sessions, f, indent=2, ensure_ascii=False)
-        
-        # Also save to the sessions directory used by exercise_counter.py
-        counter_sessions_file = "sessions/sessions.json"
-        try:
-            with open(counter_sessions_file, "w", encoding="utf-8") as f:
-                json.dump(sessions, f, indent=2, ensure_ascii=False)
-        except Exception as e:
-            logger.warning(f"Failed to update counter sessions file: {e}")
         
         logger.info(f"Session saved for user {user_id}")
         return True
