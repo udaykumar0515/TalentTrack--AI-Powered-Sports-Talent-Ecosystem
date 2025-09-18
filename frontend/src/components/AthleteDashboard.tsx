@@ -155,8 +155,9 @@ const AthleteDashboard: React.FC = () => {
       // Optionally show a UI toast to the user
     }
     
-    // Reset analysis state
+    // Reset analysis state and clear video preview
     setIsAnalyzing(false);
+    setCurrentVideoUrl(null);
   };
 
   const handleDetailedAnalysis = (session: any) => {
@@ -206,6 +207,7 @@ const AthleteDashboard: React.FC = () => {
   const handleStartRecording = () => {
     // This will be handled by VideoRecorder component
     console.log('Starting actual recording...');
+    setCurrentVideoUrl(null); // Clear any existing video preview
   };
 
   const handleStopRecording = () => {
@@ -220,7 +222,7 @@ const AthleteDashboard: React.FC = () => {
   };
 
   const handleStartUploading = () => {
-    setCurrentVideoUrl(null);
+    setCurrentVideoUrl(null); // Clear any existing video preview
   };
 
   const handleVideoReady = (videoUrl: string) => {
@@ -482,7 +484,7 @@ const AthleteDashboard: React.FC = () => {
               <p>No sessions recorded yet. Start your first workout!</p>
             </div>
           ) : (
-            sessions.slice().reverse().map((session, index) => (
+            sessions.map((session, index) => (
               <div key={index} className={`metric-card ${getStatusClass(session.formScore)}`}>
                 <div className="session-card-header">
                   <h3>{session.exercise?.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Exercise'}</h3>
