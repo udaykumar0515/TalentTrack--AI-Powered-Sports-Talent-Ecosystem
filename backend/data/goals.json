@@ -1,0 +1,25 @@
+{
+  "athlete_1": [
+    {
+      "id": "goal_athlete_1_1_1758253116",
+      "user_id": "athlete_1",
+      "title": "Complete 100 Squats",
+      "description": "Work towards completing 100 squats in a single session",
+      "type": "reps",
+      "target_value": 100,
+      "current_value": 0,
+      "unit": "reps",
+      "priority": "high",
+      "status": "active",
+      "start_date": "2025-09-19T09:08:36.413560",
+      "target_date": "2025-12-31",
+      "created_at": "2025-09-19T09:08:36.413560",
+      "updated_at": "2025-09-19T09:08:36.413560",
+      "progress_percentage": 0.0,
+      "milestones": [],
+      "tags": [],
+      "is_public": false,
+      "motivation_notes": "Building strength and endurance"
+    }
+  ]
+}

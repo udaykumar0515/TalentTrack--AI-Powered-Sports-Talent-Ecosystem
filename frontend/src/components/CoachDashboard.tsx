@@ -187,6 +187,7 @@ const CoachDashboard: React.FC = () => {
   const loadPredictiveAnalytics = async () => {
     if (!user?.id) return;
     
+    console.log('Starting to load predictive analytics for coach:', user.id);
     setLoadingAnalytics(true);
     try {
       console.log('Loading coach predictive analytics for user:', user.id);
@@ -195,14 +196,18 @@ const CoachDashboard: React.FC = () => {
       setPredictiveAnalytics(analytics);
     } catch (error) {
       console.error('Error loading predictive analytics:', error);
+      // Set a fallback to show the section even if API fails
+      setPredictiveAnalytics({ error: 'Failed to load analytics' });
     } finally {
       setLoadingAnalytics(false);
+      console.log('Finished loading predictive analytics');
     }
   };
 
   const loadInjuryAlerts = async () => {
     if (!user?.id) return;
     
+    console.log('Starting to load injury alerts for coach:', user.id);
     setLoadingAlerts(true);
     try {
       console.log('Loading injury alerts for coach:', user.id);
@@ -211,8 +216,11 @@ const CoachDashboard: React.FC = () => {
       setInjuryAlerts(alerts);
     } catch (error) {
       console.error('Error loading injury alerts:', error);
+      // Set a fallback to show the section even if API fails
+      setInjuryAlerts({ error: 'Failed to load alerts' });
     } finally {
       setLoadingAlerts(false);
+      console.log('Finished loading injury alerts');
     }
   };
 
@@ -415,182 +423,192 @@ const CoachDashboard: React.FC = () => {
         </div>
       )}
 
-      {!showAthleteSessions ? (
-        <section className="athletes-section">
-          {/* Predictive Analytics Section */}
-          {predictiveAnalytics && !predictiveAnalytics.error && (
-            <div className="predictive-analytics-section">
-              <h2>Team Performance Insights</h2>
-              <div className="coach-analytics-grid">
-                {/* High Risk Athletes */}
-                <div className="analytics-card high-risk-athletes">
-                  <h3>⚠️ High Risk Athletes</h3>
-                  <div className="risk-count">
-                    {predictiveAnalytics.high_risk_athletes?.length || 0} athletes
-                  </div>
-                  {predictiveAnalytics.high_risk_athletes?.length > 0 && (
-                    <ul className="athlete-list">
-                      {predictiveAnalytics.high_risk_athletes.slice(0, 3).map((athleteId: string) => {
-                        const athlete = athletes.find(a => a.id === athleteId);
-                        return (
-                          <li key={athleteId}>
-                            {athlete?.name || 'Unknown Athlete'}
-                          </li>
-                        );
-                      })}
-                      {predictiveAnalytics.high_risk_athletes.length > 3 && (
-                        <li>+{predictiveAnalytics.high_risk_athletes.length - 3} more</li>
-                      )}
-                    </ul>
+      {/* Predictive Analytics Section */}
+      <div className="predictive-analytics-section">
+        <h2>Team Performance Insights</h2>
+        {loadingAnalytics ? (
+          <div className="loading-analytics">
+            <p>Loading team performance insights...</p>
+          </div>
+        ) : predictiveAnalytics && !predictiveAnalytics.error ? (
+          <div className="coach-analytics-grid">
+            {/* High Risk Athletes */}
+            <div className="analytics-card high-risk-athletes">
+              <h3>⚠️ High Risk Athletes</h3>
+              <div className="risk-count">
+                {predictiveAnalytics.high_risk_athletes?.length || 0} athletes
+              </div>
+              {predictiveAnalytics.high_risk_athletes?.length > 0 && (
+                <ul className="athlete-list">
+                  {predictiveAnalytics.high_risk_athletes.slice(0, 3).map((athleteId: string) => {
+                    const athlete = athletes.find(a => a.id === athleteId);
+                    return (
+                      <li key={athleteId}>
+                        {athlete?.name || 'Unknown Athlete'}
+                      </li>
+                    );
+                  })}
+                  {predictiveAnalytics.high_risk_athletes.length > 3 && (
+                    <li>+{predictiveAnalytics.high_risk_athletes.length - 3} more</li>
                   )}
-                </div>
-
-                {/* High Potential Athletes */}
-                <div className="analytics-card high-potential-athletes">
-                  <h3>⭐ High Potential Athletes</h3>
-                  <div className="potential-count">
-                    {predictiveAnalytics.high_potential_athletes?.length || 0} athletes
-                  </div>
-                  {predictiveAnalytics.high_potential_athletes?.length > 0 && (
-                    <ul className="athlete-list">
-                      {predictiveAnalytics.high_potential_athletes.slice(0, 3).map((athleteId: string) => {
-                        const athlete = athletes.find(a => a.id === athleteId);
-                        return (
-                          <li key={athleteId}>
-                            {athlete?.name || 'Unknown Athlete'}
-                          </li>
-                        );
-                      })}
-                      {predictiveAnalytics.high_potential_athletes.length > 3 && (
-                        <li>+{predictiveAnalytics.high_potential_athletes.length - 3} more</li>
-                      )}
-                    </ul>
-                  )}
-                </div>
-
-                {/* Team Overview */}
-                <div className="analytics-card team-overview">
-                  <h3>📊 Team Overview</h3>
-                  <div className="team-stats">
-                    <div className="stat">
-                      <span className="stat-label">Total Athletes:</span>
-                      <span className="stat-value">{predictiveAnalytics.total_athletes || 0}</span>
-                    </div>
-                    <div className="stat">
-                      <span className="stat-label">Total Sessions:</span>
-                      <span className="stat-value">{predictiveAnalytics.total_sessions || 0}</span>
-                    </div>
-                    <div className="stat">
-                      <span className="stat-label">Avg Sessions/Athlete:</span>
-                      <span className="stat-value">
-                        {predictiveAnalytics.total_athletes > 0 
-                          ? Math.round((predictiveAnalytics.total_sessions || 0) / predictiveAnalytics.total_athletes)
-                          : 0
-                        }
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Injury Alerts Section */}
-          {loadingAlerts && (
-            <div className="injury-alerts-section">
-              <h2>Injury Alerts</h2>
-              <div className="loading-alerts">
-                <p>Loading injury alerts...</p>
-              </div>
-            </div>
-          )}
-          {injuryAlerts && !injuryAlerts.error && (
-            <div className="injury-alerts-section">
-              <div className="alerts-header">
-                <h2>🚨 Injury Alerts</h2>
-                <div className="alerts-summary">
-                  <span className={`alert-count high ${injuryAlerts.high_priority > 0 ? 'active' : ''}`}>
-                    {injuryAlerts.high_priority} High Priority
-                  </span>
-                  <span className={`alert-count medium ${injuryAlerts.medium_priority > 0 ? 'active' : ''}`}>
-                    {injuryAlerts.medium_priority} Medium Priority
-                  </span>
-                  <span className={`alert-count low ${injuryAlerts.low_priority > 0 ? 'active' : ''}`}>
-                    {injuryAlerts.low_priority} Low Priority
-                  </span>
-                </div>
-              </div>
-              
-              {injuryAlerts.alerts && injuryAlerts.alerts.length > 0 ? (
-                <div className="alerts-list">
-                  {injuryAlerts.alerts.map((alert: any) => (
-                    <div key={alert.id} className={`alert-card ${alert.severity}`}>
-                      <div className="alert-header">
-                        <div className="alert-info">
-                          <h3 className="athlete-name">{alert.athlete_name}</h3>
-                          <span className={`severity-badge ${alert.severity}`}>
-                            {alert.severity.toUpperCase()}
-                          </span>
-                        </div>
-                        <div className="alert-actions">
-                          {!alert.acknowledged && (
-                            <button 
-                              className="btn-acknowledge"
-                              onClick={() => handleAcknowledgeAlert(alert.id)}
-                            >
-                              Acknowledge
-                            </button>
-                          )}
-                          <button 
-                            className="btn-resolve"
-                            onClick={() => handleResolveAlert(alert.id)}
-                          >
-                            Resolve
-                          </button>
-                        </div>
-                      </div>
-                      
-                      <div className="alert-details">
-                        <div className="risk-factors">
-                          <h4>Risk Factors:</h4>
-                          <ul>
-                            {alert.risk_factors.map((factor: string, index: number) => (
-                              <li key={index}>{factor.replace('_', ' ').toUpperCase()}</li>
-                            ))}
-                          </ul>
-                        </div>
-                        
-                        <div className="recommendations">
-                          <h4>Recommendations:</h4>
-                          <ul>
-                            {alert.recommendations.slice(0, 3).map((rec: string, index: number) => (
-                              <li key={index}>{rec}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                      
-                      <div className="alert-footer">
-                        <span className="alert-time">
-                          {new Date(alert.created_at).toLocaleString()}
-                        </span>
-                        {alert.acknowledged && (
-                          <span className="acknowledged-badge">
-                            ✓ Acknowledged
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="no-alerts">
-                  <p>🎉 No injury alerts at this time. All athletes are performing safely!</p>
-                </div>
+                </ul>
               )}
             </div>
-          )}
 
+            {/* High Potential Athletes */}
+            <div className="analytics-card high-potential-athletes">
+              <h3>⭐ High Potential Athletes</h3>
+              <div className="potential-count">
+                {predictiveAnalytics.high_potential_athletes?.length || 0} athletes
+              </div>
+              {predictiveAnalytics.high_potential_athletes?.length > 0 && (
+                <ul className="athlete-list">
+                  {predictiveAnalytics.high_potential_athletes.slice(0, 3).map((athleteId: string) => {
+                    const athlete = athletes.find(a => a.id === athleteId);
+                    return (
+                      <li key={athleteId}>
+                        {athlete?.name || 'Unknown Athlete'}
+                      </li>
+                    );
+                  })}
+                  {predictiveAnalytics.high_potential_athletes.length > 3 && (
+                    <li>+{predictiveAnalytics.high_potential_athletes.length - 3} more</li>
+                  )}
+                </ul>
+              )}
+            </div>
+
+            {/* Team Overview */}
+            <div className="analytics-card team-overview">
+              <h3>📊 Team Overview</h3>
+              <div className="team-stats">
+                <div className="stat">
+                  <span className="stat-label">Total Athletes:</span>
+                  <span className="stat-value">{predictiveAnalytics.total_athletes || 0}</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-label">Total Sessions:</span>
+                  <span className="stat-value">{predictiveAnalytics.total_sessions || 0}</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-label">Avg Sessions/Athlete:</span>
+                  <span className="stat-value">
+                    {predictiveAnalytics.total_athletes > 0 
+                      ? Math.round((predictiveAnalytics.total_sessions || 0) / predictiveAnalytics.total_athletes)
+                      : 0
+                    }
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="no-analytics">
+            <p>No team performance insights available yet. Athletes need to complete more sessions to see analytics!</p>
+          </div>
+        )}
+      </div>
+
+      {/* Injury Alerts Section */}
+      <div className="injury-alerts-section">
+        <h2>🚨 Injury Alerts</h2>
+        {loadingAlerts ? (
+          <div className="loading-alerts">
+            <p>Loading injury alerts...</p>
+          </div>
+        ) : injuryAlerts && !injuryAlerts.error ? (
+          <>
+            <div className="alerts-header">
+              <div className="alerts-summary">
+                <span className={`alert-count high ${injuryAlerts.high_priority > 0 ? 'active' : ''}`}>
+                  {injuryAlerts.high_priority} High Priority
+                </span>
+                <span className={`alert-count medium ${injuryAlerts.medium_priority > 0 ? 'active' : ''}`}>
+                  {injuryAlerts.medium_priority} Medium Priority
+                </span>
+                <span className={`alert-count low ${injuryAlerts.low_priority > 0 ? 'active' : ''}`}>
+                  {injuryAlerts.low_priority} Low Priority
+                </span>
+              </div>
+            </div>
+            
+            {injuryAlerts.alerts && injuryAlerts.alerts.length > 0 ? (
+              <div className="alerts-list">
+                {injuryAlerts.alerts.map((alert: any) => (
+                  <div key={alert.id} className={`alert-card ${alert.severity}`}>
+                    <div className="alert-header">
+                      <div className="alert-info">
+                        <h3 className="athlete-name">{alert.athlete_name}</h3>
+                        <span className={`severity-badge ${alert.severity}`}>
+                          {alert.severity.toUpperCase()}
+                        </span>
+                      </div>
+                      <div className="alert-actions">
+                        {!alert.acknowledged && (
+                          <button 
+                            className="btn-acknowledge"
+                            onClick={() => handleAcknowledgeAlert(alert.id)}
+                          >
+                            Acknowledge
+                          </button>
+                        )}
+                        <button 
+                          className="btn-resolve"
+                          onClick={() => handleResolveAlert(alert.id)}
+                        >
+                          Resolve
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="alert-details">
+                      <div className="risk-factors">
+                        <h4>Risk Factors:</h4>
+                        <ul>
+                          {alert.risk_factors.map((factor: string, index: number) => (
+                            <li key={index}>{factor.replace('_', ' ').toUpperCase()}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      
+                      <div className="recommendations">
+                        <h4>Recommendations:</h4>
+                        <ul>
+                          {alert.recommendations.slice(0, 3).map((rec: string, index: number) => (
+                            <li key={index}>{rec}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                    
+                    <div className="alert-footer">
+                      <span className="alert-time">
+                        {new Date(alert.created_at).toLocaleString()}
+                      </span>
+                      {alert.acknowledged && (
+                        <span className="acknowledged-badge">
+                          ✓ Acknowledged
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="no-alerts">
+                <p>🎉 No injury alerts at this time. All athletes are performing safely!</p>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="no-alerts">
+            <p>🎉 No injury alerts at this time. All athletes are performing safely!</p>
+          </div>
+        )}
+      </div>
+
+      {!showAthleteSessions ? (
+        <section className="athletes-section">
           <h2>Your Athletes</h2>
           {athletes.length === 0 ? (
             <div className="no-sessions">

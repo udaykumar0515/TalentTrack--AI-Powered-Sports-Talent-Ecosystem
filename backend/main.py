@@ -18,6 +18,14 @@ from benchmarking_utils import benchmarking_engine
 from predictive_analytics import predictive_analytics
 from training_plans import training_plan_generator
 from injury_alerts import injury_alert_system
+from gamification_engine import GamificationEngine
+from goal_setting_engine import GoalSettingEngine
+
+# Initialize gamification engine
+gamification_engine = GamificationEngine()
+
+# Initialize goal setting engine
+goal_setting_engine = GoalSettingEngine()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -964,6 +972,9 @@ async def analyze_video(
         # Generate injury risk analysis
         injury_analysis = injury_alert_system.analyze_athlete_injury_risk(athleteId)
         
+        # Generate gamification data
+        gamification_data = gamification_engine.update_user_progress(athleteId, temp_session_data)
+        
         session_data = {
             "exercise": exercise,  # Use original exercise name for frontend
             "reps": int(parsed.get("reps", 0)),
@@ -987,7 +998,8 @@ async def analyze_video(
             "benchmarking": benchmarking_data,
             "predictiveAnalytics": predictive_data,
             "trainingPlan": training_plan_data,
-            "injuryAnalysis": injury_analysis
+            "injuryAnalysis": injury_analysis,
+            "gamification": gamification_data
         }
 
         # Save session result
@@ -1090,6 +1102,129 @@ async def get_video(session_id: str):
     except Exception as e:
         logger.error(f"Error retrieving video: {e}")
         raise HTTPException(status_code=500, detail="Failed to retrieve video")
+
+# Gamification endpoints
+@app.get("/api/gamification/user/{user_id}")
+async def get_user_gamification_stats(user_id: str):
+    """Get user's gamification statistics"""
+    try:
+        stats = gamification_engine.get_user_stats(user_id)
+        return stats
+    except Exception as e:
+        logger.error(f"Error getting user gamification stats: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/gamification/leaderboard")
+async def get_leaderboard(category: str = "total_points", limit: int = 10):
+    """Get leaderboard for a specific category"""
+    try:
+        leaderboard = gamification_engine.get_leaderboard(category, limit)
+        return {"leaderboard": leaderboard, "category": category}
+    except Exception as e:
+        logger.error(f"Error getting leaderboard: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/gamification/achievements")
+async def get_all_achievements():
+    """Get all available achievements"""
+    try:
+        achievements = gamification_engine.load_achievements()
+        return {"achievements": achievements}
+    except Exception as e:
+        logger.error(f"Error getting achievements: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/gamification/badges")
+async def get_all_badges():
+    """Get all available badges"""
+    try:
+        badges = gamification_engine.load_badges()
+        return {"badges": badges}
+    except Exception as e:
+        logger.error(f"Error getting badges: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Goal Setting API endpoints
+@app.post("/api/goals")
+async def create_goal(goal_data: dict):
+    """Create a new goal for a user"""
+    try:
+        user_id = goal_data.get("user_id")
+        if not user_id:
+            raise HTTPException(status_code=400, detail="user_id is required")
+        
+        goal = goal_setting_engine.create_goal(user_id, goal_data)
+        if not goal:
+            raise HTTPException(status_code=500, detail="Failed to create goal")
+        
+        return goal
+    except Exception as e:
+        logger.error(f"Error creating goal: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create goal")
+
+@app.get("/api/goals/{user_id}")
+async def get_user_goals(user_id: str, status: Optional[str] = None):
+    """Get all goals for a user"""
+    try:
+        goals = goal_setting_engine.get_user_goals(user_id, status)
+        return {"goals": goals}
+    except Exception as e:
+        logger.error(f"Error getting user goals: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get user goals")
+
+@app.put("/api/goals/{user_id}/{goal_id}")
+async def update_goal(user_id: str, goal_id: str, updates: dict):
+    """Update a specific goal"""
+    try:
+        success = goal_setting_engine.update_goal(user_id, goal_id, updates)
+        if not success:
+            raise HTTPException(status_code=404, detail="Goal not found")
+        
+        return {"success": True, "message": "Goal updated successfully"}
+    except Exception as e:
+        logger.error(f"Error updating goal: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update goal")
+
+@app.delete("/api/goals/{user_id}/{goal_id}")
+async def delete_goal(user_id: str, goal_id: str):
+    """Delete a specific goal"""
+    try:
+        success = goal_setting_engine.delete_goal(user_id, goal_id)
+        if not success:
+            raise HTTPException(status_code=404, detail="Goal not found")
+        
+        return {"success": True, "message": "Goal deleted successfully"}
+    except Exception as e:
+        logger.error(f"Error deleting goal: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete goal")
+
+@app.get("/api/goals/{user_id}/analytics")
+async def get_goal_analytics(user_id: str):
+    """Get goal analytics for a user"""
+    try:
+        analytics = goal_setting_engine.get_goal_analytics(user_id)
+        return analytics
+    except Exception as e:
+        logger.error(f"Error getting goal analytics: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get goal analytics")
+
+@app.get("/api/goals/{user_id}/recommendations")
+async def get_goal_recommendations(user_id: str):
+    """Get goal recommendations for a user based on their session history"""
+    try:
+        # Get user's session history
+        sessions = read_json_file("sessions/sessions.json")
+        user_sessions = []
+        
+        for athlete_id, athlete_data in sessions.items():
+            if athlete_id == user_id and "sessions" in athlete_data:
+                user_sessions.extend(athlete_data["sessions"])
+        
+        recommendations = goal_setting_engine.get_goal_recommendations(user_id, user_sessions)
+        return {"recommendations": recommendations}
+    except Exception as e:
+        logger.error(f"Error getting goal recommendations: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get goal recommendations")
 
 
 if __name__ == "__main__":

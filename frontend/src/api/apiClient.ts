@@ -397,3 +397,138 @@ export const runBulkInjuryAnalysis = async () => {
   
   return response.json();
 };
+
+// Gamification API functions
+export const getUserGamificationStats = async (userId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/gamification/user/${userId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get user gamification stats');
+  }
+  return response.json();
+};
+
+export const getGamificationLeaderboard = async (category: string = 'total_points', limit: number = 10): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/gamification/leaderboard?category=${category}&limit=${limit}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get gamification leaderboard');
+  }
+  return response.json();
+};
+
+export const getAllAchievements = async (): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/gamification/achievements`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get achievements');
+  }
+  return response.json();
+};
+
+export const getAllBadges = async (): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/gamification/badges`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get badges');
+  }
+  return response.json();
+};
+
+// Goal Setting API functions
+export const createGoal = async (goalData: any): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/goals`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(goalData),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to create goal');
+  }
+  return response.json();
+};
+
+export const getUserGoals = async (userId: string, status?: string): Promise<any> => {
+  const url = status ? `${API_BASE_URL}/api/goals/${userId}?status=${status}` : `${API_BASE_URL}/api/goals/${userId}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get user goals');
+  }
+  return response.json();
+};
+
+export const updateGoal = async (userId: string, goalId: string, updates: any): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/goals/${userId}/${goalId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updates),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to update goal');
+  }
+  return response.json();
+};
+
+export const deleteGoal = async (userId: string, goalId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/goals/${userId}/${goalId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to delete goal');
+  }
+  return response.json();
+};
+
+export const getGoalAnalytics = async (userId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/goals/${userId}/analytics`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get goal analytics');
+  }
+  return response.json();
+};
+
+export const getGoalRecommendations = async (userId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/goals/${userId}/recommendations`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get goal recommendations');
+  }
+  return response.json();
+};

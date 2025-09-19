@@ -6,7 +6,7 @@ import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
-import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthletePredictiveAnalytics, getAthleteTrainingPlan, generateAthleteTrainingPlan } from '../api/apiClient';
+import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthletePredictiveAnalytics, getAthleteTrainingPlan, generateAthleteTrainingPlan, getUserGamificationStats, getGamificationLeaderboard, createGoal, getUserGoals, updateGoal, deleteGoal, getGoalAnalytics, getGoalRecommendations } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -29,6 +29,26 @@ const AthleteDashboard: React.FC = () => {
   const [loadingAnalytics, setLoadingAnalytics] = useState(false);
   const [trainingPlan, setTrainingPlan] = useState<any>(null);
   const [loadingTrainingPlan, setLoadingTrainingPlan] = useState(false);
+  const [gamificationStats, setGamificationStats] = useState<any>(null);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const [loadingGamification, setLoadingGamification] = useState(false);
+
+  // Goal Setting state
+  const [goals, setGoals] = useState<any[]>([]);
+  const [goalAnalytics, setGoalAnalytics] = useState<any>(null);
+  const [goalRecommendations, setGoalRecommendations] = useState<any[]>([]);
+  const [loadingGoals, setLoadingGoals] = useState(false);
+  const [showCreateGoal, setShowCreateGoal] = useState(false);
+  const [newGoal, setNewGoal] = useState({
+    title: '',
+    description: '',
+    type: 'reps',
+    target_value: 0,
+    unit: '',
+    priority: 'medium',
+    target_date: '',
+    motivation_notes: ''
+  });
 
   const exercises = [
     { value: 'squat', label: 'Squat' },
@@ -39,10 +59,17 @@ const AthleteDashboard: React.FC = () => {
   // Load sessions and messages on component mount
   useEffect(() => {
     const loadData = async () => {
+      console.log('User object in useEffect:', user);
+      console.log('User ID:', user?.id);
       await loadSessions();
       await loadMessages();
       await loadPredictiveAnalytics();
       await loadTrainingPlan();
+      await loadGamificationStats();
+      await loadLeaderboard();
+      await loadGoals();
+      await loadGoalAnalytics();
+      await loadGoalRecommendations();
     loadSelectedCoach();
     };
     loadData();
@@ -237,6 +264,119 @@ const AthleteDashboard: React.FC = () => {
       console.error('Error generating training plan:', error);
     } finally {
       setLoadingTrainingPlan(false);
+    }
+  };
+
+  const loadGamificationStats = async () => {
+    if (!user?.id) return;
+    
+    console.log('Loading gamification stats for user:', user.id);
+    setLoadingGamification(true);
+    try {
+      const stats = await getUserGamificationStats(user.id);
+      console.log('Gamification stats received:', stats);
+      setGamificationStats(stats);
+    } catch (error) {
+      console.error('Error loading gamification stats:', error);
+    } finally {
+      setLoadingGamification(false);
+    }
+  };
+
+  const loadLeaderboard = async () => {
+    try {
+      console.log('Loading leaderboard...');
+      const leaderboardData = await getGamificationLeaderboard('total_points', 10);
+      console.log('Leaderboard data received:', leaderboardData);
+      setLeaderboard(leaderboardData.leaderboard || []);
+    } catch (error) {
+      console.error('Error loading leaderboard:', error);
+    }
+  };
+
+  // Goal Setting functions
+  const loadGoals = async () => {
+    if (!user?.id) return;
+    
+    setLoadingGoals(true);
+    try {
+      const goalsData = await getUserGoals(user.id);
+      setGoals(goalsData.goals || []);
+    } catch (error) {
+      console.error('Error loading goals:', error);
+    } finally {
+      setLoadingGoals(false);
+    }
+  };
+
+  const loadGoalAnalytics = async () => {
+    if (!user?.id) return;
+    
+    try {
+      const analytics = await getGoalAnalytics(user.id);
+      setGoalAnalytics(analytics);
+    } catch (error) {
+      console.error('Error loading goal analytics:', error);
+    }
+  };
+
+  const loadGoalRecommendations = async () => {
+    if (!user?.id) return;
+    
+    try {
+      const recommendations = await getGoalRecommendations(user.id);
+      setGoalRecommendations(recommendations.recommendations || []);
+    } catch (error) {
+      console.error('Error loading goal recommendations:', error);
+    }
+  };
+
+  const handleCreateGoal = async () => {
+    if (!user?.id || !newGoal.title || !newGoal.target_value) return;
+    
+    try {
+      const goalData = {
+        ...newGoal,
+        user_id: user.id
+      };
+      
+      const createdGoal = await createGoal(goalData);
+      setGoals([...goals, createdGoal]);
+      setNewGoal({
+        title: '',
+        description: '',
+        type: 'reps',
+        target_value: 0,
+        unit: '',
+        priority: 'medium',
+        target_date: '',
+        motivation_notes: ''
+      });
+      setShowCreateGoal(false);
+    } catch (error) {
+      console.error('Error creating goal:', error);
+    }
+  };
+
+  const handleUpdateGoal = async (goalId: string, updates: any) => {
+    if (!user?.id) return;
+    
+    try {
+      await updateGoal(user.id, goalId, updates);
+      await loadGoals();
+    } catch (error) {
+      console.error('Error updating goal:', error);
+    }
+  };
+
+  const handleDeleteGoal = async (goalId: string) => {
+    if (!user?.id) return;
+    
+    try {
+      await deleteGoal(user.id, goalId);
+      setGoals(goals.filter(goal => goal.id !== goalId));
+    } catch (error) {
+      console.error('Error deleting goal:', error);
     }
   };
 
@@ -905,6 +1045,359 @@ const AthleteDashboard: React.FC = () => {
               >
                 {loadingTrainingPlan ? 'Generating...' : 'Generate Training Plan'}
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Gamification Section */}
+        <div className="gamification-section">
+          <h2>🏆 Your Progress & Achievements</h2>
+          {loadingGamification ? (
+            <div className="loading-gamification">
+              <p>Loading your progress...</p>
+            </div>
+          ) : gamificationStats ? (
+            <div className="gamification-content">
+              {/* Stats Overview */}
+              <div className="stats-overview">
+                <div className="stat-card">
+                  <div className="stat-icon">⭐</div>
+                  <div className="stat-info">
+                    <div className="stat-value">{gamificationStats.total_points || 0}</div>
+                    <div className="stat-label">Total Points</div>
+                  </div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-icon">🎯</div>
+                  <div className="stat-info">
+                    <div className="stat-value">Level {gamificationStats.level || 1}</div>
+                    <div className="stat-label">Current Level</div>
+                  </div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-icon">🔥</div>
+                  <div className="stat-info">
+                    <div className="stat-value">{gamificationStats.current_streak || 0}</div>
+                    <div className="stat-label">Current Streak</div>
+                  </div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-icon">📊</div>
+                  <div className="stat-info">
+                    <div className="stat-value">{gamificationStats.sessions_completed || 0}</div>
+                    <div className="stat-label">Sessions Completed</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Achievements */}
+              {gamificationStats.achievements && gamificationStats.achievements.length > 0 && (
+                <div className="achievements-section">
+                  <h3>🏅 Your Achievements</h3>
+                  <div className="achievements-grid">
+                    {gamificationStats.achievements.map((achievement: any, index: number) => (
+                      <div key={index} className="achievement-card">
+                        <div className="achievement-icon">{achievement.icon}</div>
+                        <div className="achievement-info">
+                          <div className="achievement-name">{achievement.name}</div>
+                          <div className="achievement-description">{achievement.description}</div>
+                          <div className="achievement-points">+{achievement.points} points</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Badges */}
+              {gamificationStats.badges && gamificationStats.badges.length > 0 && (
+                <div className="badges-section">
+                  <h3>🏆 Your Badges</h3>
+                  <div className="badges-grid">
+                    {gamificationStats.badges.map((badge: any, index: number) => (
+                      <div key={index} className="badge-card">
+                        <div className="badge-icon">{badge.icon}</div>
+                        <div className="badge-info">
+                          <div className="badge-name">{badge.name}</div>
+                          <div className="badge-description">{badge.description}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Leaderboard */}
+              {leaderboard.length > 0 && (
+                <div className="leaderboard-section">
+                  <h3>🏆 Global Leaderboard</h3>
+                  <div className="leaderboard-list">
+                    {leaderboard.slice(0, 5).map((user: any, index: number) => (
+                      <div key={index} className={`leaderboard-item ${user.user_id === user?.id ? 'current-user' : ''}`}>
+                        <div className="rank">#{user.rank}</div>
+                        <div className="user-info">
+                          <div className="username">{user.user_id}</div>
+                          <div className="user-stats">
+                            {user.total_points} points • Level {user.level}
+                          </div>
+                        </div>
+                        <div className="user-badges">
+                          {user.badges.slice(0, 3).map((badge: string, badgeIndex: number) => (
+                            <span key={badgeIndex} className="badge-mini">{badge}</span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="no-gamification">
+              <p>Complete your first session to start earning points and achievements!</p>
+            </div>
+          )}
+        </div>
+
+        {/* Goal Setting Section */}
+        <div className="goal-setting-section">
+          <div className="goal-setting-header">
+            <h2>🎯 Your Goals & Progress</h2>
+            <button 
+              className="btn-primary"
+              onClick={() => setShowCreateGoal(true)}
+            >
+              + Create New Goal
+            </button>
+          </div>
+
+          {loadingGoals ? (
+            <div className="loading-goals">
+              <p>Loading your goals...</p>
+            </div>
+          ) : goals.length > 0 ? (
+            <div className="goals-content">
+              {/* Goal Analytics */}
+              {goalAnalytics && (
+                <div className="goal-analytics">
+                  <div className="analytics-grid">
+                    <div className="analytics-card">
+                      <div className="analytics-value">{goalAnalytics.total_goals || 0}</div>
+                      <div className="analytics-label">Total Goals</div>
+                    </div>
+                    <div className="analytics-card">
+                      <div className="analytics-value">{goalAnalytics.active_goals || 0}</div>
+                      <div className="analytics-label">Active Goals</div>
+                    </div>
+                    <div className="analytics-card">
+                      <div className="analytics-value">{goalAnalytics.completed_goals || 0}</div>
+                      <div className="analytics-label">Completed</div>
+                    </div>
+                    <div className="analytics-card">
+                      <div className="analytics-value">{goalAnalytics.completion_rate || 0}%</div>
+                      <div className="analytics-label">Success Rate</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Goals List */}
+              <div className="goals-list">
+                {goals.map((goal) => (
+                  <div key={goal.id} className={`goal-card ${goal.status}`}>
+                    <div className="goal-header">
+                      <div className="goal-title">{goal.title}</div>
+                      <div className="goal-actions">
+                        <button 
+                          className="btn-small"
+                          onClick={() => handleUpdateGoal(goal.id, { status: goal.status === 'active' ? 'paused' : 'active' })}
+                        >
+                          {goal.status === 'active' ? 'Pause' : 'Resume'}
+                        </button>
+                        <button 
+                          className="btn-small btn-danger"
+                          onClick={() => handleDeleteGoal(goal.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                    <div className="goal-description">{goal.description}</div>
+                    <div className="goal-progress">
+                      <div className="progress-bar">
+                        <div 
+                          className="progress-fill" 
+                          style={{ width: `${goal.progress_percentage || 0}%` }}
+                        ></div>
+                      </div>
+                      <div className="progress-text">
+                        {goal.current_value || 0} / {goal.target_value} {goal.unit} ({goal.progress_percentage || 0}%)
+                      </div>
+                    </div>
+                    <div className="goal-meta">
+                      <span className={`priority-badge ${goal.priority}`}>{goal.priority}</span>
+                      <span className="goal-type">{goal.type.replace('_', ' ')}</span>
+                      {goal.target_date && (
+                        <span className="goal-deadline">Due: {new Date(goal.target_date).toLocaleDateString()}</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Goal Recommendations */}
+              {goalRecommendations.length > 0 && (
+                <div className="goal-recommendations">
+                  <h3>💡 Recommended Goals</h3>
+                  <div className="recommendations-list">
+                    {goalRecommendations.map((rec, index) => (
+                      <div key={index} className="recommendation-card">
+                        <div className="recommendation-title">{rec.title}</div>
+                        <div className="recommendation-description">{rec.description}</div>
+                        <div className="recommendation-reason">{rec.reason}</div>
+                        <button 
+                          className="btn-small"
+                          onClick={() => {
+                            setNewGoal({
+                              title: rec.title,
+                              description: rec.description,
+                              type: rec.type,
+                              target_value: rec.target_value,
+                              unit: rec.unit,
+                              priority: rec.priority,
+                              target_date: '',
+                              motivation_notes: rec.reason
+                            });
+                            setShowCreateGoal(true);
+                          }}
+                        >
+                          Create This Goal
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="no-goals">
+              <p>No goals set yet. Create your first goal to start tracking your progress!</p>
+            </div>
+          )}
+        </div>
+
+        {/* Create Goal Modal */}
+        {showCreateGoal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h3>Create New Goal</h3>
+                <button 
+                  className="btn-close"
+                  onClick={() => setShowCreateGoal(false)}
+                >
+                  ×
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label>Goal Title</label>
+                  <input
+                    type="text"
+                    value={newGoal.title}
+                    onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
+                    placeholder="e.g., Complete 100 squats"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Description</label>
+                  <textarea
+                    value={newGoal.description}
+                    onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
+                    placeholder="Describe your goal..."
+                    rows={3}
+                  />
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Goal Type</label>
+                    <select
+                      value={newGoal.type}
+                      onChange={(e) => setNewGoal({...newGoal, type: e.target.value})}
+                    >
+                      <option value="reps">Reps</option>
+                      <option value="form_score">Form Score</option>
+                      <option value="duration">Duration</option>
+                      <option value="sessions_completed">Sessions Completed</option>
+                      <option value="streak">Streak</option>
+                      <option value="endurance">Endurance</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Target Value</label>
+                    <input
+                      type="number"
+                      value={newGoal.target_value}
+                      onChange={(e) => setNewGoal({...newGoal, target_value: parseInt(e.target.value) || 0})}
+                      placeholder="100"
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Unit</label>
+                    <input
+                      type="text"
+                      value={newGoal.unit}
+                      onChange={(e) => setNewGoal({...newGoal, unit: e.target.value})}
+                      placeholder="reps, seconds, etc."
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Priority</label>
+                    <select
+                      value={newGoal.priority}
+                      onChange={(e) => setNewGoal({...newGoal, priority: e.target.value})}
+                    >
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                      <option value="urgent">Urgent</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>Target Date (Optional)</label>
+                  <input
+                    type="date"
+                    value={newGoal.target_date}
+                    onChange={(e) => setNewGoal({...newGoal, target_date: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Motivation Notes</label>
+                  <textarea
+                    value={newGoal.motivation_notes}
+                    onChange={(e) => setNewGoal({...newGoal, motivation_notes: e.target.value})}
+                    placeholder="Why is this goal important to you?"
+                    rows={2}
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button 
+                  className="btn-secondary"
+                  onClick={() => setShowCreateGoal(false)}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="btn-primary"
+                  onClick={handleCreateGoal}
+                >
+                  Create Goal
+                </button>
+              </div>
             </div>
           </div>
         )}

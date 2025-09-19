@@ -401,6 +401,25 @@
             "Consider deload week or active recovery"
           ],
           "total_sessions_analyzed": 7
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 20,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "first_session",
+              "name": "First Steps",
+              "description": "Complete your first exercise session",
+              "points": 50,
+              "icon": "\ud83c\udfaf",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
         }
       },
       {
@@ -803,6 +822,25 @@
             "Consider deload week or active recovery"
           ],
           "total_sessions_analyzed": 7
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 40,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 2,
+          "longest_streak": 2,
+          "sessions_completed": 2
         }
       },
       {
@@ -1196,6 +1234,23 @@
             "Consider deload week or active recovery"
           ],
           "total_sessions_analyzed": 7
+        },
+        "gamification": {
+          "session_points": 15,
+          "total_points": 55,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 3,
+          "longest_streak": 3,
+          "sessions_completed": 3
         }
       },
       {
@@ -1597,6 +1652,23 @@
             "Consider deload week or active recovery"
           ],
           "total_sessions_analyzed": 7
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 75,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 4,
+          "longest_streak": 4,
+          "sessions_completed": 4
         }
       },
       {
@@ -1998,6 +2070,32 @@
             "Consider deload week or active recovery"
           ],
           "total_sessions_analyzed": 7
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 95,
+          "level": 2,
+          "new_achievements": [
+            {
+              "id": "consistent_training",
+              "name": "Consistent Training",
+              "description": "Complete 5 exercise sessions",
+              "points": 100,
+              "icon": "\ud83d\udcaa",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 5,
+          "longest_streak": 5,
+          "sessions_completed": 5
         }
       },
       {
@@ -2391,6 +2489,23 @@
             "Consider deload week or active recovery"
           ],
           "total_sessions_analyzed": 7
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 115,
+          "level": 3,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 6,
+          "longest_streak": 6,
+          "sessions_completed": 6
         }
       },
       {
@@ -2850,9 +2965,54 @@
             "Consider deload week or active recovery"
           ],
           "total_sessions_analyzed": 7
+        },
+        "gamification": {
+          "session_points": 15,
+          "total_points": 130,
+          "level": 3,
+          "new_achievements": [
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 7,
+          "longest_streak": 7,
+          "sessions_completed": 7
         }
       }
-    ]
+    ],
+    "gamification": {
+      "session_points": 20,
+      "total_points": 70,
+      "level": 1,
+      "new_achievements": [
+        {
+          "id": "first_session",
+          "name": "First Steps",
+          "description": "Complete your first exercise session",
+          "points": 50,
+          "icon": "\ud83c\udfaf",
+          "category": "milestone"
+        }
+      ],
+      "new_badges": [],
+      "current_streak": 1,
+      "longest_streak": 1,
+      "sessions_completed": 1
+    }
   },
   "athlete_2": {
     "sessions": [
@@ -3244,6 +3404,25 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 20,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "first_session",
+              "name": "First Steps",
+              "description": "Complete your first exercise session",
+              "points": 50,
+              "icon": "\ud83c\udfaf",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
         }
       },
       {
@@ -3623,6 +3802,16 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 40,
+          "level": 1,
+          "new_achievements": [],
+          "new_badges": [],
+          "current_streak": 2,
+          "longest_streak": 2,
+          "sessions_completed": 2
         }
       },
       {
@@ -4013,6 +4202,23 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 60,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 3,
+          "longest_streak": 3,
+          "sessions_completed": 3
         }
       },
       {
@@ -4400,6 +4606,32 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 80,
+          "level": 2,
+          "new_achievements": [
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 4,
+          "longest_streak": 4,
+          "sessions_completed": 4
         }
       },
       {
@@ -4777,6 +5009,32 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 100,
+          "level": 3,
+          "new_achievements": [
+            {
+              "id": "consistent_training",
+              "name": "Consistent Training",
+              "description": "Complete 5 exercise sessions",
+              "points": 100,
+              "icon": "\ud83d\udcaa",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 5,
+          "longest_streak": 5,
+          "sessions_completed": 5
         }
       },
       {
@@ -5164,9 +5422,36 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 120,
+          "level": 3,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 6,
+          "longest_streak": 6,
+          "sessions_completed": 6
         }
       }
-    ]
+    ],
+    "gamification": {
+      "session_points": 20,
+      "total_points": 90,
+      "level": 1,
+      "new_achievements": [],
+      "new_badges": [],
+      "current_streak": 2,
+      "longest_streak": 2,
+      "sessions_completed": 2
+    }
   },
   "athlete_3": {
     "sessions": [
@@ -5563,6 +5848,33 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 20,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "first_session",
+              "name": "First Steps",
+              "description": "Complete your first exercise session",
+              "points": 50,
+              "icon": "\ud83c\udfaf",
+              "category": "milestone"
+            },
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
         }
       },
       {
@@ -5960,6 +6272,16 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 40,
+          "level": 1,
+          "new_achievements": [],
+          "new_badges": [],
+          "current_streak": 2,
+          "longest_streak": 2,
+          "sessions_completed": 2
         }
       },
       {
@@ -6344,6 +6666,23 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 60,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 3,
+          "longest_streak": 3,
+          "sessions_completed": 3
         }
       },
       {
@@ -6739,6 +7078,32 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 80,
+          "level": 2,
+          "new_achievements": [
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 4,
+          "longest_streak": 4,
+          "sessions_completed": 4
         }
       },
       {
@@ -7136,6 +7501,32 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 100,
+          "level": 3,
+          "new_achievements": [
+            {
+              "id": "consistent_training",
+              "name": "Consistent Training",
+              "description": "Complete 5 exercise sessions",
+              "points": 100,
+              "icon": "\ud83d\udcaa",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 5,
+          "longest_streak": 5,
+          "sessions_completed": 5
         }
       },
       {
@@ -7522,9 +7913,43 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 120,
+          "level": 3,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 6,
+          "longest_streak": 6,
+          "sessions_completed": 6
         }
       }
-    ]
+    ],
+    "gamification": {
+      "session_points": 20,
+      "total_points": 110,
+      "level": 1,
+      "new_achievements": [],
+      "new_badges": [
+        {
+          "name": "Bronze Badge",
+          "description": "Earn 100 points",
+          "icon": "\ud83e\udd49",
+          "points_required": 100
+        }
+      ],
+      "current_streak": 3,
+      "longest_streak": 3,
+      "sessions_completed": 3
+    }
   },
   "athlete_4": {
     "sessions": [
@@ -7901,6 +8326,25 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 20,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "first_session",
+              "name": "First Steps",
+              "description": "Complete your first exercise session",
+              "points": 50,
+              "icon": "\ud83c\udfaf",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
         }
       },
       {
@@ -8266,6 +8710,25 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 40,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 2,
+          "longest_streak": 2,
+          "sessions_completed": 2
         }
       },
       {
@@ -8639,6 +9102,23 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 60,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 3,
+          "longest_streak": 3,
+          "sessions_completed": 3
         }
       },
       {
@@ -9013,6 +9493,23 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 80,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 4,
+          "longest_streak": 4,
+          "sessions_completed": 4
         }
       },
       {
@@ -9376,6 +9873,32 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 100,
+          "level": 3,
+          "new_achievements": [
+            {
+              "id": "consistent_training",
+              "name": "Consistent Training",
+              "description": "Complete 5 exercise sessions",
+              "points": 100,
+              "icon": "\ud83d\udcaa",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 5,
+          "longest_streak": 5,
+          "sessions_completed": 5
         }
       },
       {
@@ -9750,9 +10273,52 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 120,
+          "level": 3,
+          "new_achievements": [
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 6,
+          "longest_streak": 6,
+          "sessions_completed": 6
         }
       }
-    ]
+    ],
+    "gamification": {
+      "session_points": 20,
+      "total_points": 130,
+      "level": 1,
+      "new_achievements": [],
+      "new_badges": [
+        {
+          "name": "Bronze Badge",
+          "description": "Earn 100 points",
+          "icon": "\ud83e\udd49",
+          "points_required": 100
+        }
+      ],
+      "current_streak": 4,
+      "longest_streak": 4,
+      "sessions_completed": 4
+    }
   },
   "athlete_5": {
     "sessions": [
@@ -10121,6 +10687,25 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 20,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "first_session",
+              "name": "First Steps",
+              "description": "Complete your first exercise session",
+              "points": 50,
+              "icon": "\ud83c\udfaf",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
         }
       },
       {
@@ -10497,6 +11082,25 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 40,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 2,
+          "longest_streak": 2,
+          "sessions_completed": 2
         }
       },
       {
@@ -10873,6 +11477,23 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 60,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 3,
+          "longest_streak": 3,
+          "sessions_completed": 3
         }
       },
       {
@@ -11240,6 +11861,32 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 80,
+          "level": 2,
+          "new_achievements": [
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 4,
+          "longest_streak": 4,
+          "sessions_completed": 4
         }
       },
       {
@@ -11616,6 +12263,32 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 100,
+          "level": 3,
+          "new_achievements": [
+            {
+              "id": "consistent_training",
+              "name": "Consistent Training",
+              "description": "Complete 5 exercise sessions",
+              "points": 100,
+              "icon": "\ud83d\udcaa",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 5,
+          "longest_streak": 5,
+          "sessions_completed": 5
         }
       },
       {
@@ -11992,9 +12665,43 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 120,
+          "level": 3,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 6,
+          "longest_streak": 6,
+          "sessions_completed": 6
         }
       }
-    ]
+    ],
+    "gamification": {
+      "session_points": 20,
+      "total_points": 150,
+      "level": 1,
+      "new_achievements": [],
+      "new_badges": [
+        {
+          "name": "Bronze Badge",
+          "description": "Earn 100 points",
+          "icon": "\ud83e\udd49",
+          "points_required": 100
+        }
+      ],
+      "current_streak": 5,
+      "longest_streak": 5,
+      "sessions_completed": 5
+    }
   },
   "athlete_6": {
     "sessions": [
@@ -12390,6 +13097,25 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 20,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "first_session",
+              "name": "First Steps",
+              "description": "Complete your first exercise session",
+              "points": 50,
+              "icon": "\ud83c\udfaf",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
         }
       },
       {
@@ -12773,6 +13499,16 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 40,
+          "level": 1,
+          "new_achievements": [],
+          "new_badges": [],
+          "current_streak": 2,
+          "longest_streak": 2,
+          "sessions_completed": 2
         }
       },
       {
@@ -13164,6 +13900,23 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 60,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 3,
+          "longest_streak": 3,
+          "sessions_completed": 3
         }
       },
       {
@@ -13556,6 +14309,23 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 80,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 4,
+          "longest_streak": 4,
+          "sessions_completed": 4
         }
       },
       {
@@ -13939,6 +14709,32 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 100,
+          "level": 3,
+          "new_achievements": [
+            {
+              "id": "consistent_training",
+              "name": "Consistent Training",
+              "description": "Complete 5 exercise sessions",
+              "points": 100,
+              "icon": "\ud83d\udcaa",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 5,
+          "longest_streak": 5,
+          "sessions_completed": 5
         }
       },
       {
@@ -14330,9 +15126,52 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 120,
+          "level": 3,
+          "new_achievements": [
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 6,
+          "longest_streak": 6,
+          "sessions_completed": 6
         }
       }
-    ]
+    ],
+    "gamification": {
+      "session_points": 20,
+      "total_points": 170,
+      "level": 1,
+      "new_achievements": [],
+      "new_badges": [
+        {
+          "name": "Bronze Badge",
+          "description": "Earn 100 points",
+          "icon": "\ud83e\udd49",
+          "points_required": 100
+        }
+      ],
+      "current_streak": 6,
+      "longest_streak": 6,
+      "sessions_completed": 6
+    }
   },
   "athlete_7": {
     "sessions": [
@@ -14729,6 +15568,25 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 20,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "first_session",
+              "name": "First Steps",
+              "description": "Complete your first exercise session",
+              "points": 50,
+              "icon": "\ud83c\udfaf",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
         }
       },
       {
@@ -15123,6 +15981,25 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 40,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 2,
+          "longest_streak": 2,
+          "sessions_completed": 2
         }
       },
       {
@@ -15511,6 +16388,23 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 60,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 3,
+          "longest_streak": 3,
+          "sessions_completed": 3
         }
       },
       {
@@ -15906,6 +16800,23 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 80,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 4,
+          "longest_streak": 4,
+          "sessions_completed": 4
         }
       },
       {
@@ -16302,6 +17213,32 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 100,
+          "level": 3,
+          "new_achievements": [
+            {
+              "id": "consistent_training",
+              "name": "Consistent Training",
+              "description": "Complete 5 exercise sessions",
+              "points": 100,
+              "icon": "\ud83d\udcaa",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 5,
+          "longest_streak": 5,
+          "sessions_completed": 5
         }
       },
       {
@@ -16688,9 +17625,43 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 120,
+          "level": 3,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 6,
+          "longest_streak": 6,
+          "sessions_completed": 6
         }
       }
-    ]
+    ],
+    "gamification": {
+      "session_points": 20,
+      "total_points": 190,
+      "level": 1,
+      "new_achievements": [],
+      "new_badges": [
+        {
+          "name": "Bronze Badge",
+          "description": "Earn 100 points",
+          "icon": "\ud83e\udd49",
+          "points_required": 100
+        }
+      ],
+      "current_streak": 7,
+      "longest_streak": 7,
+      "sessions_completed": 7
+    }
   },
   "athlete_8": {
     "sessions": [
@@ -17064,6 +18035,25 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 20,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "first_session",
+              "name": "First Steps",
+              "description": "Complete your first exercise session",
+              "points": 50,
+              "icon": "\ud83c\udfaf",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
         }
       },
       {
@@ -17444,6 +18434,16 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 40,
+          "level": 1,
+          "new_achievements": [],
+          "new_badges": [],
+          "current_streak": 2,
+          "longest_streak": 2,
+          "sessions_completed": 2
         }
       },
       {
@@ -17824,6 +18824,23 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 60,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 3,
+          "longest_streak": 3,
+          "sessions_completed": 3
         }
       },
       {
@@ -18198,6 +19215,23 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 80,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 4,
+          "longest_streak": 4,
+          "sessions_completed": 4
         }
       },
       {
@@ -18580,6 +19614,32 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 100,
+          "level": 3,
+          "new_achievements": [
+            {
+              "id": "consistent_training",
+              "name": "Consistent Training",
+              "description": "Complete 5 exercise sessions",
+              "points": 100,
+              "icon": "\ud83d\udcaa",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 5,
+          "longest_streak": 5,
+          "sessions_completed": 5
         }
       },
       {
@@ -18963,9 +20023,43 @@
             "Consider rest day or lighter training load"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 120,
+          "level": 3,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 6,
+          "longest_streak": 6,
+          "sessions_completed": 6
         }
       }
-    ]
+    ],
+    "gamification": {
+      "session_points": 20,
+      "total_points": 210,
+      "level": 1,
+      "new_achievements": [],
+      "new_badges": [
+        {
+          "name": "Bronze Badge",
+          "description": "Earn 100 points",
+          "icon": "\ud83e\udd49",
+          "points_required": 100
+        }
+      ],
+      "current_streak": 8,
+      "longest_streak": 8,
+      "sessions_completed": 8
+    }
   },
   "athlete_9": {
     "sessions": [
@@ -19358,6 +20452,25 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 20,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "first_session",
+              "name": "First Steps",
+              "description": "Complete your first exercise session",
+              "points": 50,
+              "icon": "\ud83c\udfaf",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
         }
       },
       {
@@ -19739,6 +20852,16 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 40,
+          "level": 1,
+          "new_achievements": [],
+          "new_badges": [],
+          "current_streak": 2,
+          "longest_streak": 2,
+          "sessions_completed": 2
         }
       },
       {
@@ -20128,6 +21251,32 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 60,
+          "level": 2,
+          "new_achievements": [
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 3,
+          "longest_streak": 3,
+          "sessions_completed": 3
         }
       },
       {
@@ -20517,6 +21666,23 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 80,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 4,
+          "longest_streak": 4,
+          "sessions_completed": 4
         }
       },
       {
@@ -20898,6 +22064,32 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 100,
+          "level": 3,
+          "new_achievements": [
+            {
+              "id": "consistent_training",
+              "name": "Consistent Training",
+              "description": "Complete 5 exercise sessions",
+              "points": 100,
+              "icon": "\ud83d\udcaa",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 5,
+          "longest_streak": 5,
+          "sessions_completed": 5
         }
       },
       {
@@ -21287,9 +22479,43 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 120,
+          "level": 3,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 6,
+          "longest_streak": 6,
+          "sessions_completed": 6
         }
       }
-    ]
+    ],
+    "gamification": {
+      "session_points": 20,
+      "total_points": 230,
+      "level": 1,
+      "new_achievements": [],
+      "new_badges": [
+        {
+          "name": "Bronze Badge",
+          "description": "Earn 100 points",
+          "icon": "\ud83e\udd49",
+          "points_required": 100
+        }
+      ],
+      "current_streak": 9,
+      "longest_streak": 9,
+      "sessions_completed": 9
+    }
   },
   "athlete_10": {
     "sessions": [
@@ -21664,6 +22890,33 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 20,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "first_session",
+              "name": "First Steps",
+              "description": "Complete your first exercise session",
+              "points": 50,
+              "icon": "\ud83c\udfaf",
+              "category": "milestone"
+            },
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
         }
       },
       {
@@ -22038,6 +23291,25 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 40,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [],
+          "current_streak": 2,
+          "longest_streak": 2,
+          "sessions_completed": 2
         }
       },
       {
@@ -22403,6 +23675,23 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 60,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 3,
+          "longest_streak": 3,
+          "sessions_completed": 3
         }
       },
       {
@@ -22776,6 +24065,23 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 80,
+          "level": 2,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 4,
+          "longest_streak": 4,
+          "sessions_completed": 4
         }
       },
       {
@@ -23150,6 +24456,40 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 100,
+          "level": 3,
+          "new_achievements": [
+            {
+              "id": "consistent_training",
+              "name": "Consistent Training",
+              "description": "Complete 5 exercise sessions",
+              "points": 100,
+              "icon": "\ud83d\udcaa",
+              "category": "milestone"
+            },
+            {
+              "id": "form_master",
+              "name": "Form Master",
+              "description": "Achieve a form score above 90",
+              "points": 75,
+              "icon": "\ud83c\udfc6",
+              "category": "performance"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 5,
+          "longest_streak": 5,
+          "sessions_completed": 5
         }
       },
       {
@@ -23513,8 +24853,42 @@
             "Maintain regular monitoring"
           ],
           "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 20,
+          "total_points": 120,
+          "level": 3,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Complete 3 sessions",
+              "icon": "\ud83e\udd49",
+              "category": "milestone"
+            }
+          ],
+          "current_streak": 6,
+          "longest_streak": 6,
+          "sessions_completed": 6
         }
       }
-    ]
+    ],
+    "gamification": {
+      "session_points": 20,
+      "total_points": 250,
+      "level": 1,
+      "new_achievements": [],
+      "new_badges": [
+        {
+          "name": "Bronze Badge",
+          "description": "Earn 100 points",
+          "icon": "\ud83e\udd49",
+          "points_required": 100
+        }
+      ],
+      "current_streak": 10,
+      "longest_streak": 10,
+      "sessions_completed": 10
+    }
   }
 }
