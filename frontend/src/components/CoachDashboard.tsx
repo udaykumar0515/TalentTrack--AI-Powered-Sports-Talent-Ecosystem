@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { getSessions, getAthletes, getCoachPredictiveAnalytics, getCoachInjuryAlerts, acknowledgeInjuryAlert, resolveInjuryAlert } from '../api/apiClient';
+import { getSessions, getAthletes, getCoachPredictiveAnalytics, getCoachInjuryAlerts, acknowledgeInjuryAlert, resolveInjuryAlert, getCoachPlans, getPlanAnalytics, getPlanRecommendations, createLongTermPlan, updateLongTermPlan, deleteLongTermPlan, getPlanTemplates } from '../api/apiClient';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
 
@@ -21,10 +21,32 @@ const CoachDashboard: React.FC = () => {
   const [injuryAlerts, setInjuryAlerts] = useState<any>(null);
   const [loadingAlerts, setLoadingAlerts] = useState(false);
 
+  // Long-term Plans state
+  const [longTermPlans, setLongTermPlans] = useState<any[]>([]);
+  const [planAnalytics, setPlanAnalytics] = useState<any>(null);
+  const [planRecommendations, setPlanRecommendations] = useState<any[]>([]);
+  const [loadingPlans, setLoadingPlans] = useState(false);
+  const [showCreatePlan, setShowCreatePlan] = useState(false);
+  const [selectedAthleteForPlan, setSelectedAthleteForPlan] = useState<string | null>(null);
+  const [newPlan, setNewPlan] = useState({
+    title: '',
+    description: '',
+    phase: 'foundation',
+    priority: 'medium',
+    duration_weeks: 12,
+    start_date: '',
+    end_date: '',
+    objectives: [],
+    milestones: [],
+    notes: ''
+  });
+
   useEffect(() => {
     loadDashboardData();
     loadPredictiveAnalytics();
     loadInjuryAlerts();
+    loadLongTermPlans();
+    loadPlanAnalytics();
     // reload when user changes (login/logout)
   }, [user?.id]);
 
@@ -221,6 +243,97 @@ const CoachDashboard: React.FC = () => {
     } finally {
       setLoadingAlerts(false);
       console.log('Finished loading injury alerts');
+    }
+  };
+
+  // Long-term Plans functions
+  const loadLongTermPlans = async () => {
+    if (!user?.id) return;
+    
+    setLoadingPlans(true);
+    try {
+      const plansData = await getCoachPlans(user.id);
+      setLongTermPlans(plansData.plans || []);
+    } catch (error) {
+      console.error('Error loading long-term plans:', error);
+    } finally {
+      setLoadingPlans(false);
+    }
+  };
+
+  const loadPlanAnalytics = async () => {
+    if (!user?.id) return;
+    
+    try {
+      const analytics = await getPlanAnalytics(user.id);
+      setPlanAnalytics(analytics);
+    } catch (error) {
+      console.error('Error loading plan analytics:', error);
+    }
+  };
+
+  const loadPlanRecommendations = async (athleteId: string) => {
+    if (!user?.id) return;
+    
+    try {
+      const recommendations = await getPlanRecommendations(user.id, athleteId);
+      setPlanRecommendations(recommendations.recommendations || []);
+    } catch (error) {
+      console.error('Error loading plan recommendations:', error);
+    }
+  };
+
+  const handleCreatePlan = async () => {
+    if (!user?.id || !selectedAthleteForPlan || !newPlan.title) return;
+    
+    try {
+      const planData = {
+        ...newPlan,
+        coach_id: user.id,
+        athlete_id: selectedAthleteForPlan,
+        athlete_name: athletes.find(a => a.id === selectedAthleteForPlan)?.name || 'Unknown'
+      };
+      
+      const createdPlan = await createLongTermPlan(planData);
+      setLongTermPlans([...longTermPlans, createdPlan]);
+      setNewPlan({
+        title: '',
+        description: '',
+        phase: 'foundation',
+        priority: 'medium',
+        duration_weeks: 12,
+        start_date: '',
+        end_date: '',
+        objectives: [],
+        milestones: [],
+        notes: ''
+      });
+      setShowCreatePlan(false);
+      setSelectedAthleteForPlan(null);
+    } catch (error) {
+      console.error('Error creating long-term plan:', error);
+    }
+  };
+
+  const handleUpdatePlan = async (planId: string, updates: any) => {
+    if (!user?.id) return;
+    
+    try {
+      await updateLongTermPlan(user.id, planId, updates);
+      await loadLongTermPlans();
+    } catch (error) {
+      console.error('Error updating plan:', error);
+    }
+  };
+
+  const handleDeletePlan = async (planId: string) => {
+    if (!user?.id) return;
+    
+    try {
+      await deleteLongTermPlan(user.id, planId);
+      setLongTermPlans(longTermPlans.filter(plan => plan.id !== planId));
+    } catch (error) {
+      console.error('Error deleting plan:', error);
     }
   };
 
@@ -606,6 +719,232 @@ const CoachDashboard: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Long-term Plans Section */}
+      <div className="longterm-plans-section">
+        <div className="plans-header">
+          <h2>📋 Long-term Development Plans</h2>
+          <button 
+            className="btn-primary"
+            onClick={() => setShowCreatePlan(true)}
+          >
+            + Create New Plan
+          </button>
+        </div>
+
+        {loadingPlans ? (
+          <div className="loading-plans">
+            <p>Loading your long-term plans...</p>
+          </div>
+        ) : longTermPlans.length > 0 ? (
+          <div className="plans-content">
+            {/* Plan Analytics */}
+            {planAnalytics && (
+              <div className="plan-analytics">
+                <div className="analytics-grid">
+                  <div className="analytics-card">
+                    <div className="analytics-value">{planAnalytics.total_plans || 0}</div>
+                    <div className="analytics-label">Total Plans</div>
+                  </div>
+                  <div className="analytics-card">
+                    <div className="analytics-value">{planAnalytics.active_plans || 0}</div>
+                    <div className="analytics-label">Active Plans</div>
+                  </div>
+                  <div className="analytics-card">
+                    <div className="analytics-value">{planAnalytics.completed_plans || 0}</div>
+                    <div className="analytics-label">Completed</div>
+                  </div>
+                  <div className="analytics-card">
+                    <div className="analytics-value">{planAnalytics.average_progress || 0}%</div>
+                    <div className="analytics-label">Avg Progress</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Plans List */}
+            <div className="plans-list">
+              {longTermPlans.map((plan) => (
+                <div key={plan.id} className={`plan-card ${plan.status}`}>
+                  <div className="plan-header">
+                    <div className="plan-title">{plan.title}</div>
+                    <div className="plan-actions">
+                      <button 
+                        className="btn-small"
+                        onClick={() => handleUpdatePlan(plan.id, { status: plan.status === 'active' ? 'paused' : 'active' })}
+                      >
+                        {plan.status === 'active' ? 'Pause' : 'Resume'}
+                      </button>
+                      <button 
+                        className="btn-small btn-danger"
+                        onClick={() => handleDeletePlan(plan.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                  <div className="plan-description">{plan.description}</div>
+                  <div className="plan-details">
+                    <div className="plan-athlete">
+                      <strong>Athlete:</strong> {plan.athlete_name}
+                    </div>
+                    <div className="plan-phase">
+                      <strong>Phase:</strong> {plan.phase.replace('_', ' ').toUpperCase()}
+                    </div>
+                    <div className="plan-duration">
+                      <strong>Duration:</strong> {plan.duration_weeks} weeks
+                    </div>
+                  </div>
+                  <div className="plan-progress">
+                    <div className="progress-bar">
+                      <div 
+                        className="progress-fill" 
+                        style={{ width: `${plan.progress_tracking?.overall_progress || 0}%` }}
+                      ></div>
+                    </div>
+                    <div className="progress-text">
+                      {plan.progress_tracking?.overall_progress || 0}% Complete
+                    </div>
+                  </div>
+                  <div className="plan-meta">
+                    <span className={`priority-badge ${plan.priority}`}>{plan.priority}</span>
+                    <span className="plan-status">{plan.status}</span>
+                    {plan.start_date && (
+                      <span className="plan-date">Started: {new Date(plan.start_date).toLocaleDateString()}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="no-plans">
+            <p>No long-term plans created yet. Create your first development plan for an athlete!</p>
+          </div>
+        )}
+      </div>
+
+      {/* Create Plan Modal */}
+      {showCreatePlan && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Create Long-term Plan</h3>
+              <button 
+                className="btn-close"
+                onClick={() => setShowCreatePlan(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label>Select Athlete</label>
+                <select
+                  value={selectedAthleteForPlan || ''}
+                  onChange={(e) => setSelectedAthleteForPlan(e.target.value)}
+                >
+                  <option value="">Choose an athlete...</option>
+                  {athletes.map(athlete => (
+                    <option key={athlete.id} value={athlete.id}>
+                      {athlete.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Plan Title</label>
+                <input
+                  type="text"
+                  value={newPlan.title}
+                  onChange={(e) => setNewPlan({...newPlan, title: e.target.value})}
+                  placeholder="e.g., Advanced Strength Development Program"
+                />
+              </div>
+              <div className="form-group">
+                <label>Description</label>
+                <textarea
+                  value={newPlan.description}
+                  onChange={(e) => setNewPlan({...newPlan, description: e.target.value})}
+                  placeholder="Describe the development plan..."
+                  rows={3}
+                />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Development Phase</label>
+                  <select
+                    value={newPlan.phase}
+                    onChange={(e) => setNewPlan({...newPlan, phase: e.target.value})}
+                  >
+                    <option value="foundation">Foundation</option>
+                    <option value="development">Development</option>
+                    <option value="advancement">Advancement</option>
+                    <option value="mastery">Mastery</option>
+                    <option value="specialization">Specialization</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Priority</label>
+                  <select
+                    value={newPlan.priority}
+                    onChange={(e) => setNewPlan({...newPlan, priority: e.target.value})}
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                  </select>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Duration (weeks)</label>
+                  <input
+                    type="number"
+                    value={newPlan.duration_weeks}
+                    onChange={(e) => setNewPlan({...newPlan, duration_weeks: parseInt(e.target.value) || 12})}
+                    min="1"
+                    max="52"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Start Date</label>
+                  <input
+                    type="date"
+                    value={newPlan.start_date}
+                    onChange={(e) => setNewPlan({...newPlan, start_date: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Notes</label>
+                <textarea
+                  value={newPlan.notes}
+                  onChange={(e) => setNewPlan({...newPlan, notes: e.target.value})}
+                  placeholder="Additional notes or instructions..."
+                  rows={2}
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button 
+                className="btn-secondary"
+                onClick={() => setShowCreatePlan(false)}
+              >
+                Cancel
+              </button>
+              <button 
+                className="btn-primary"
+                onClick={handleCreatePlan}
+                disabled={!selectedAthleteForPlan || !newPlan.title}
+              >
+                Create Plan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {!showAthleteSessions ? (
         <section className="athletes-section">

@@ -532,3 +532,125 @@ export const getGoalRecommendations = async (userId: string): Promise<any> => {
   }
   return response.json();
 };
+
+// Long-term Plans API functions
+export const createLongTermPlan = async (planData: any): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/longterm-plans`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(planData),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to create long-term plan');
+  }
+  return response.json();
+};
+
+export const getCoachPlans = async (coachId: string, status?: string): Promise<any> => {
+  const url = status ? `${API_BASE_URL}/api/longterm-plans/coach/${coachId}?status=${status}` : `${API_BASE_URL}/api/longterm-plans/coach/${coachId}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get coach plans');
+  }
+  return response.json();
+};
+
+export const getAthletePlans = async (athleteId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/athlete/${athleteId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get athlete plans');
+  }
+  return response.json();
+};
+
+export const updateLongTermPlan = async (coachId: string, planId: string, updates: any): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/${coachId}/${planId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updates),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to update long-term plan');
+  }
+  return response.json();
+};
+
+export const deleteLongTermPlan = async (coachId: string, planId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/${coachId}/${planId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to delete long-term plan');
+  }
+  return response.json();
+};
+
+export const getPlanAnalytics = async (coachId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/${coachId}/analytics`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get plan analytics');
+  }
+  return response.json();
+};
+
+export const getPlanRecommendations = async (coachId: string, athleteId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/${coachId}/recommendations/${athleteId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get plan recommendations');
+  }
+  return response.json();
+};
+
+export const createPlanTemplate = async (templateData: any): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/templates`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(templateData),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to create plan template');
+  }
+  return response.json();
+};
+
+export const getPlanTemplates = async (coachId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/templates/${coachId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get plan templates');
+  }
+  return response.json();
+};

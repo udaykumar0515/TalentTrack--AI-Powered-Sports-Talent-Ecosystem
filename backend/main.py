@@ -20,12 +20,16 @@ from training_plans import training_plan_generator
 from injury_alerts import injury_alert_system
 from gamification_engine import GamificationEngine
 from goal_setting_engine import GoalSettingEngine
+from longterm_plans_engine import LongTermPlansEngine
 
 # Initialize gamification engine
 gamification_engine = GamificationEngine()
 
 # Initialize goal setting engine
 goal_setting_engine = GoalSettingEngine()
+
+# Initialize long-term plans engine
+longterm_plans_engine = LongTermPlansEngine()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -1225,6 +1229,125 @@ async def get_goal_recommendations(user_id: str):
     except Exception as e:
         logger.error(f"Error getting goal recommendations: {e}")
         raise HTTPException(status_code=500, detail="Failed to get goal recommendations")
+
+# Long-term Plans API endpoints
+@app.post("/api/longterm-plans")
+async def create_longterm_plan(plan_data: dict):
+    """Create a new long-term plan for an athlete"""
+    try:
+        coach_id = plan_data.get("coach_id")
+        if not coach_id:
+            raise HTTPException(status_code=400, detail="coach_id is required")
+        
+        plan = longterm_plans_engine.create_plan(coach_id, plan_data)
+        if not plan:
+            raise HTTPException(status_code=500, detail="Failed to create long-term plan")
+        
+        return plan
+    except Exception as e:
+        logger.error(f"Error creating long-term plan: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create long-term plan")
+
+@app.get("/api/longterm-plans/coach/{coach_id}")
+async def get_coach_plans(coach_id: str, status: Optional[str] = None):
+    """Get all long-term plans for a coach"""
+    try:
+        plans = longterm_plans_engine.get_coach_plans(coach_id, status)
+        return {"plans": plans}
+    except Exception as e:
+        logger.error(f"Error getting coach plans: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get coach plans")
+
+@app.get("/api/longterm-plans/athlete/{athlete_id}")
+async def get_athlete_plans(athlete_id: str):
+    """Get all long-term plans for an athlete"""
+    try:
+        plans = longterm_plans_engine.get_athlete_plans(athlete_id)
+        return {"plans": plans}
+    except Exception as e:
+        logger.error(f"Error getting athlete plans: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get athlete plans")
+
+@app.put("/api/longterm-plans/{coach_id}/{plan_id}")
+async def update_longterm_plan(coach_id: str, plan_id: str, updates: dict):
+    """Update a specific long-term plan"""
+    try:
+        success = longterm_plans_engine.update_plan(coach_id, plan_id, updates)
+        if not success:
+            raise HTTPException(status_code=404, detail="Plan not found")
+        
+        return {"success": True, "message": "Plan updated successfully"}
+    except Exception as e:
+        logger.error(f"Error updating plan: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update plan")
+
+@app.delete("/api/longterm-plans/{coach_id}/{plan_id}")
+async def delete_longterm_plan(coach_id: str, plan_id: str):
+    """Delete a specific long-term plan"""
+    try:
+        success = longterm_plans_engine.delete_plan(coach_id, plan_id)
+        if not success:
+            raise HTTPException(status_code=404, detail="Plan not found")
+        
+        return {"success": True, "message": "Plan deleted successfully"}
+    except Exception as e:
+        logger.error(f"Error deleting plan: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete plan")
+
+@app.get("/api/longterm-plans/{coach_id}/analytics")
+async def get_plan_analytics(coach_id: str):
+    """Get analytics for coach's long-term plans"""
+    try:
+        analytics = longterm_plans_engine.get_plan_analytics(coach_id)
+        return analytics
+    except Exception as e:
+        logger.error(f"Error getting plan analytics: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get plan analytics")
+
+@app.get("/api/longterm-plans/{coach_id}/recommendations/{athlete_id}")
+async def get_plan_recommendations(coach_id: str, athlete_id: str):
+    """Get plan recommendations for an athlete based on their session history"""
+    try:
+        # Get athlete's session history
+        sessions = read_json_file("sessions/sessions.json")
+        athlete_sessions = []
+        
+        for aid, athlete_data in sessions.items():
+            if aid == athlete_id and "sessions" in athlete_data:
+                athlete_sessions.extend(athlete_data["sessions"])
+        
+        recommendations = longterm_plans_engine.generate_plan_recommendations(coach_id, athlete_id, athlete_sessions)
+        return {"recommendations": recommendations}
+    except Exception as e:
+        logger.error(f"Error getting plan recommendations: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get plan recommendations")
+
+@app.post("/api/longterm-plans/templates")
+async def create_plan_template(template_data: dict):
+    """Create a reusable plan template"""
+    try:
+        coach_id = template_data.get("coach_id")
+        if not coach_id:
+            raise HTTPException(status_code=400, detail="coach_id is required")
+        
+        template = longterm_plans_engine.create_plan_template(coach_id, template_data)
+        if not template:
+            raise HTTPException(status_code=500, detail="Failed to create plan template")
+        
+        return template
+    except Exception as e:
+        logger.error(f"Error creating plan template: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create plan template")
+
+@app.get("/api/longterm-plans/templates/{coach_id}")
+async def get_plan_templates(coach_id: str):
+    """Get all plan templates for a coach"""
+    try:
+        templates = longterm_plans_engine.get_plan_templates(coach_id)
+        return {"templates": templates}
+    except Exception as e:
+        logger.error(f"Error getting plan templates: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get plan templates")
 
 
 if __name__ == "__main__":
