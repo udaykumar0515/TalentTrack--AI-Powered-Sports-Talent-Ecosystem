@@ -412,7 +412,7 @@
               "name": "First Steps",
               "description": "Complete your first exercise session",
               "points": 50,
-              "icon": "\ud83c\udfaf",
+              "icon": "🎯",
               "category": "milestone"
             }
           ],
@@ -833,7 +833,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -1244,7 +1244,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -1662,7 +1662,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -2081,7 +2081,7 @@
               "name": "Consistent Training",
               "description": "Complete 5 exercise sessions",
               "points": 100,
-              "icon": "\ud83d\udcaa",
+              "icon": "💪",
               "category": "milestone"
             }
           ],
@@ -2089,7 +2089,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -2499,498 +2499,13 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
           "current_streak": 6,
           "longest_streak": 6,
           "sessions_completed": 6
-        }
-      },
-      {
-        "exercise": "squat",
-        "reps": 2,
-        "formScore": 100,
-        "durationSec": 8.633,
-        "timestamp": "2025-09-19T00:05:02.320509Z",
-        "athleteId": "athlete_1",
-        "athleteName": "uday",
-        "coachId": "udaykuamr",
-        "sessionId": "705c0a9c",
-        "cheatDetection": {
-          "cheatDetected": true,
-          "cheatPercentage": 66.7,
-          "totalFlags": 4,
-          "confidence": 80,
-          "riskLevel": "high",
-          "flags": {
-            "too_fast_reps": true,
-            "inconsistent_form": true,
-            "minimal_movement": true,
-            "suspicious_timing": false,
-            "form_deterioration": true,
-            "repetitive_pattern": false
-          },
-          "suspiciousPatterns": [
-            "Inconsistent form detected (variance: 30.87)",
-            "Inconsistent form detected (variance: 36.47)",
-            "Inconsistent form detected (variance: 40.72)",
-            "Inconsistent form detected (variance: 43.17)",
-            "Inconsistent form detected (variance: 40.60)",
-            "Inconsistent form detected (variance: 33.90)",
-            "Inconsistent form detected (variance: 36.71)",
-            "Inconsistent form detected (variance: 58.35)",
-            "Inconsistent form detected (variance: 84.65)",
-            "Inconsistent form detected (variance: 111.61)",
-            "Inconsistent form detected (variance: 120.92)",
-            "Inconsistent form detected (variance: 110.33)",
-            "Inconsistent form detected (variance: 89.76)",
-            "Inconsistent form detected (variance: 65.85)",
-            "Inconsistent form detected (variance: 43.20)",
-            "Form deterioration detected (first: 65.0, second: 44.0)",
-            "Form deterioration detected (first: 65.0, second: 42.0)",
-            "Form deterioration detected (first: 64.8, second: 40.2)",
-            "Form deterioration detected (first: 64.4, second: 38.6)",
-            "Form deterioration detected (first: 63.8, second: 37.2)",
-            "Form deterioration detected (first: 62.9, second: 36.0)",
-            "Form deterioration detected (first: 61.8, second: 35.0)",
-            "Form deterioration detected (first: 60.3, second: 34.3)",
-            "Form deterioration detected (first: 58.6, second: 34.0)",
-            "Form deterioration detected (first: 56.5, second: 34.0)",
-            "Form deterioration detected (first: 54.4, second: 34.1)",
-            "Inconsistent form detected (variance: 43.81)",
-            "Inconsistent form detected (variance: 60.70)",
-            "Inconsistent form detected (variance: 75.07)",
-            "Inconsistent form detected (variance: 82.79)",
-            "Inconsistent form detected (variance: 79.94)",
-            "Inconsistent form detected (variance: 75.01)",
-            "Inconsistent form detected (variance: 70.86)",
-            "Inconsistent form detected (variance: 66.56)",
-            "Inconsistent form detected (variance: 61.09)",
-            "Inconsistent form detected (variance: 53.48)",
-            "Inconsistent form detected (variance: 43.84)",
-            "Inconsistent form detected (variance: 33.23)",
-            "Inconsistent form detected (variance: 47.53)",
-            "Inconsistent form detected (variance: 72.22)",
-            "Inconsistent form detected (variance: 103.50)",
-            "Inconsistent form detected (variance: 126.97)",
-            "Inconsistent form detected (variance: 130.83)",
-            "Inconsistent form detected (variance: 112.83)",
-            "Inconsistent form detected (variance: 88.43)",
-            "Inconsistent form detected (variance: 61.40)",
-            "Inconsistent form detected (variance: 37.40)",
-            "Form deterioration detected (first: 64.8, second: 44.8)",
-            "Form deterioration detected (first: 64.9, second: 42.7)",
-            "Form deterioration detected (first: 65.0, second: 40.7)",
-            "Rep 2: Too fast (0.09s)",
-            "Form deterioration detected (first: 64.8, second: 38.9)",
-            "Rep 2: Too fast (0.18s)",
-            "Form deterioration detected (first: 64.3, second: 37.2)",
-            "Rep 2: Too fast (0.30s)",
-            "Form deterioration detected (first: 63.6, second: 35.8)",
-            "Rep 2: Too fast (0.41s)",
-            "Form deterioration detected (first: 62.6, second: 34.5)",
-            "Rep 2: Too fast (0.50s)",
-            "Form deterioration detected (first: 61.3, second: 33.4)",
-            "Rep 2: Too fast (0.59s)",
-            "Form deterioration detected (first: 59.7, second: 32.7)",
-            "Rep 2: Too fast (0.69s)",
-            "Form deterioration detected (first: 57.7, second: 32.4)",
-            "Rep 2: Too fast (0.78s)",
-            "Form deterioration detected (first: 55.5, second: 32.3)",
-            "Form deterioration detected (first: 53.4, second: 32.3)",
-            "Minimal hip movement detected (range: 0.000)"
-          ]
-        },
-        "benchmarking": {
-          "performance_level": {
-            "level": "beginner",
-            "score": 0,
-            "description": "Learning proper form and basic movement",
-            "adjusted_reps": 2,
-            "adjusted_form_score": 100,
-            "standards_met": {
-              "reps": true,
-              "form": true,
-              "duration": false
-            }
-          },
-          "peer_comparison": {
-            "percentile": 0,
-            "rank": 13,
-            "total_athletes": 20,
-            "performance_score": 62.666666666666664,
-            "average_score": 80.6
-          },
-          "global_rank": 13,
-          "coach_rank": 4,
-          "total_global_athletes": 20,
-          "total_coach_athletes": 8,
-          "improvement_suggestions": [
-            "Focus on proper form before increasing intensity",
-            "Practice consistently to build muscle memory",
-            "Focus on consistent practice to improve ranking"
-          ]
-        },
-        "videoUrl": "blob:http://localhost:5173/ccf9a64b-ee10-45ff-bd47-f2cf6d581161",
-        "thumbnailUrl": "blob:http://localhost:5173/ccf9a64b-ee10-45ff-bd47-f2cf6d581161",
-        "predictiveAnalytics": {
-          "athlete_id": "athlete_1",
-          "total_sessions": 7,
-          "injury_risk": {
-            "risk_level": "low",
-            "risk_score": 20,
-            "factors": [
-              "Potential overtraining"
-            ]
-          },
-          "improvement_potential": {
-            "potential": "medium",
-            "score": 50,
-            "suggestions": [
-              "Form is improving - maintain current training",
-              "Consistent performance - ready for advanced training"
-            ]
-          },
-          "future_performance": {
-            "predictions": {
-              "form_score": {
-                "current": 100,
-                "predicted": 100,
-                "trend": "improving",
-                "confidence": 26.64199814986128
-              },
-              "reps": {
-                "current": 2,
-                "predicted": 0,
-                "trend": "declining",
-                "confidence": 64.57547169811322
-              },
-              "duration": {
-                "current": 8.633,
-                "predicted": 0,
-                "trend": "declining",
-                "confidence": 54.25805600058564
-              }
-            },
-            "overall_confidence": 48.49184194952005,
-            "days_ahead": 30
-          },
-          "performance_trends": {
-            "form": {
-              "slope": 1.7142857142857142,
-              "r_squared": 0.2664199814986128,
-              "trend": "improving",
-              "confidence": 26.64199814986128
-            },
-            "reps": {
-              "slope": -3.9642857142857144,
-              "r_squared": 0.6457547169811322,
-              "trend": "declining",
-              "confidence": 64.57547169811322
-            }
-          },
-          "last_updated": "2025-09-19T00:30:16.130512Z"
-        },
-        "trainingPlan": {
-          "athlete_id": "athlete_1",
-          "generated_at": "2025-09-19T00:43:56.012230Z",
-          "valid_until": "2025-10-19T00:43:56.012230Z",
-          "analysis": {
-            "gaps": [
-              "Rep count declining - may need rest or form focus",
-              "High form violation rate - focus on technique"
-            ],
-            "strengths": [
-              "Excellent form consistency",
-              "Good exercise variety"
-            ],
-            "focus_areas": [
-              "endurance",
-              "technique"
-            ],
-            "avg_form": 87.85714285714286,
-            "reps_trend": -3.964285714285716,
-            "exercise_variety": 3,
-            "cheat_rate": 0.42857142857142855
-          },
-          "recommendations": [
-            {
-              "exercise": "squat",
-              "type": "endurance",
-              "sets": 2,
-              "reps": "15-20",
-              "intensity": "light",
-              "focus": "Build stamina and consistency",
-              "instructions": [
-                "Maintain steady pace",
-                "Focus on breathing rhythm",
-                "Take short breaks between sets",
-                "Gradually increase reps"
-              ],
-              "priority": "medium"
-            },
-            {
-              "exercise": "squat",
-              "type": "technique",
-              "sets": 2,
-              "reps": "5-8",
-              "intensity": "light",
-              "focus": "Perfect movement pattern",
-              "instructions": [
-                "Use mirror for feedback",
-                "Record yourself for analysis",
-                "Focus on one cue at a time",
-                "Ask coach for form check"
-              ],
-              "priority": "high"
-            }
-          ],
-          "weekly_schedule": [
-            {
-              "day": "Monday",
-              "exercise": "squat",
-              "type": "endurance",
-              "sets": 2,
-              "reps": "15-20",
-              "intensity": "light",
-              "focus": "Build stamina and consistency",
-              "instructions": [
-                "Maintain steady pace",
-                "Focus on breathing rhythm",
-                "Take short breaks between sets",
-                "Gradually increase reps"
-              ],
-              "priority": "medium",
-              "estimated_duration": "15-20 minutes"
-            },
-            {
-              "day": "Wednesday",
-              "exercise": "squat",
-              "type": "technique",
-              "sets": 2,
-              "reps": "5-8",
-              "intensity": "light",
-              "focus": "Perfect movement pattern",
-              "instructions": [
-                "Use mirror for feedback",
-                "Record yourself for analysis",
-                "Focus on one cue at a time",
-                "Ask coach for form check"
-              ],
-              "priority": "high",
-              "estimated_duration": "15-20 minutes"
-            },
-            {
-              "day": "Friday",
-              "exercise": "squat",
-              "type": "endurance",
-              "sets": 2,
-              "reps": "15-20",
-              "intensity": "light",
-              "focus": "Build stamina and consistency",
-              "instructions": [
-                "Maintain steady pace",
-                "Focus on breathing rhythm",
-                "Take short breaks between sets",
-                "Gradually increase reps"
-              ],
-              "priority": "medium",
-              "estimated_duration": "15-20 minutes"
-            }
-          ],
-          "progression_plan": {
-            "weeks": [
-              {
-                "week": 1,
-                "form_target": 90.6,
-                "reps_target": 18,
-                "focus": "Foundation building and form mastery",
-                "key_metrics": [
-                  "Form score",
-                  "Consistency",
-                  "Range of motion"
-                ],
-                "success_criteria": [
-                  "Achieve form score of 90.6 or higher",
-                  "Complete 18 reps with good form",
-                  "Complete all scheduled sessions",
-                  "No form violations in final session"
-                ]
-              },
-              {
-                "week": 2,
-                "form_target": 92.6,
-                "reps_target": 20,
-                "focus": "Consistency and endurance",
-                "key_metrics": [
-                  "Rep count",
-                  "Endurance",
-                  "Breathing"
-                ],
-                "success_criteria": [
-                  "Achieve form score of 92.6 or higher",
-                  "Complete 20 reps with good form",
-                  "Complete all scheduled sessions",
-                  "No form violations in final session"
-                ]
-              },
-              {
-                "week": 3,
-                "form_target": 94.6,
-                "reps_target": 21,
-                "focus": "Progressive overload and strength",
-                "key_metrics": [
-                  "Strength",
-                  "Speed",
-                  "Control"
-                ],
-                "success_criteria": [
-                  "Achieve form score of 94.6 or higher",
-                  "Complete 21 reps with good form",
-                  "Complete all scheduled sessions",
-                  "No form violations in final session"
-                ]
-              },
-              {
-                "week": 4,
-                "form_target": 96.6,
-                "reps_target": 23,
-                "focus": "Peak performance and refinement",
-                "key_metrics": [
-                  "Peak performance",
-                  "Efficiency",
-                  "Technique"
-                ],
-                "success_criteria": [
-                  "Achieve form score of 96.6 or higher",
-                  "Complete 23 reps with good form",
-                  "Complete all scheduled sessions",
-                  "No form violations in final session"
-                ]
-              }
-            ],
-            "goals": [
-              "Improve form score from 89 to 96.6",
-              "Increase reps from 17 to 23",
-              "Maintain consistent training schedule",
-              "Reduce form violations by 50%"
-            ]
-          },
-          "analytics_insights": {
-            "injury_risk": {
-              "risk_level": "low",
-              "risk_score": 20,
-              "factors": [
-                "Potential overtraining"
-              ]
-            },
-            "improvement_potential": {
-              "potential": "medium",
-              "score": 50,
-              "suggestions": [
-                "Form is improving - maintain current training",
-                "Consistent performance - ready for advanced training"
-              ]
-            },
-            "performance_trends": {
-              "form": {
-                "slope": 1.7142857142857142,
-                "r_squared": 0.2664199814986128,
-                "trend": "improving",
-                "confidence": 26.64199814986128
-              },
-              "reps": {
-                "slope": -3.9642857142857144,
-                "r_squared": 0.6457547169811322,
-                "trend": "declining",
-                "confidence": 64.57547169811322
-              }
-            }
-          },
-          "coaching_notes": [
-            "Excellent form consistency - ready for advanced progressions",
-            "Rep count declining - consider rest days or form focus",
-            "High form violation rate - prioritize technique over intensity"
-          ],
-          "next_review_date": "2025-09-26T00:43:56.012230Z"
-        },
-        "injuryAnalysis": {
-          "athlete_id": "athlete_1",
-          "analyzed_at": "2025-09-19T01:06:42.580720Z",
-          "overall_risk": true,
-          "overall_severity": "medium",
-          "analyses": {
-            "form_deterioration": {
-              "risk": false,
-              "severity": "low",
-              "details": "Form trend stable"
-            },
-            "cheat_patterns": {
-              "risk": true,
-              "severity": "medium",
-              "details": "High cheat rate: 42.9% of recent sessions",
-              "cheat_rate": 0.42857142857142855,
-              "cheat_types": {
-                "too_fast_reps": 3,
-                "inconsistent_form": 1,
-                "minimal_movement": 1,
-                "form_deterioration": 1
-              },
-              "technique_breakdown": false
-            },
-            "overtraining": {
-              "risk": false,
-              "severity": "low",
-              "details": "Training frequency normal"
-            },
-            "fatigue_indicators": {
-              "risk": true,
-              "severity": "medium",
-              "details": "Performance declining for 3 consecutive sessions",
-              "reps_trend": -3.964285714285716,
-              "consecutive_declining": 3
-            },
-            "predictive_risk": {
-              "risk": false,
-              "severity": "low",
-              "details": "Injury risk within normal range"
-            }
-          },
-          "recommendations": [
-            "Address technique breakdown - may indicate compensation",
-            "Consider rest day or lighter training load",
-            "Monitor for signs of overtraining",
-            "Consider deload week or active recovery"
-          ],
-          "total_sessions_analyzed": 7
-        },
-        "gamification": {
-          "session_points": 15,
-          "total_points": 130,
-          "level": 3,
-          "new_achievements": [
-            {
-              "id": "form_master",
-              "name": "Form Master",
-              "description": "Achieve a form score above 90",
-              "points": 75,
-              "icon": "\ud83c\udfc6",
-              "category": "performance"
-            }
-          ],
-          "new_badges": [
-            {
-              "name": "Bronze Badge",
-              "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
-              "category": "milestone"
-            }
-          ],
-          "current_streak": 7,
-          "longest_streak": 7,
-          "sessions_completed": 7
         }
       }
     ],
@@ -3004,7 +2519,7 @@
           "name": "First Steps",
           "description": "Complete your first exercise session",
           "points": 50,
-          "icon": "\ud83c\udfaf",
+          "icon": "🎯",
           "category": "milestone"
         }
       ],
@@ -3415,7 +2930,7 @@
               "name": "First Steps",
               "description": "Complete your first exercise session",
               "points": 50,
-              "icon": "\ud83c\udfaf",
+              "icon": "🎯",
               "category": "milestone"
             }
           ],
@@ -4212,7 +3727,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -4617,7 +4132,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -4625,7 +4140,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -5020,7 +4535,7 @@
               "name": "Consistent Training",
               "description": "Complete 5 exercise sessions",
               "points": 100,
-              "icon": "\ud83d\udcaa",
+              "icon": "💪",
               "category": "milestone"
             }
           ],
@@ -5028,7 +4543,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -5432,7 +4947,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -5859,7 +5374,7 @@
               "name": "First Steps",
               "description": "Complete your first exercise session",
               "points": 50,
-              "icon": "\ud83c\udfaf",
+              "icon": "🎯",
               "category": "milestone"
             },
             {
@@ -5867,7 +5382,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -6676,7 +6191,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -7089,7 +6604,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -7097,7 +6612,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -7512,7 +7027,7 @@
               "name": "Consistent Training",
               "description": "Complete 5 exercise sessions",
               "points": 100,
-              "icon": "\ud83d\udcaa",
+              "icon": "💪",
               "category": "milestone"
             }
           ],
@@ -7520,7 +7035,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -7923,7 +7438,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -7942,7 +7457,7 @@
         {
           "name": "Bronze Badge",
           "description": "Earn 100 points",
-          "icon": "\ud83e\udd49",
+          "icon": "🥉",
           "points_required": 100
         }
       ],
@@ -8337,7 +7852,7 @@
               "name": "First Steps",
               "description": "Complete your first exercise session",
               "points": 50,
-              "icon": "\ud83c\udfaf",
+              "icon": "🎯",
               "category": "milestone"
             }
           ],
@@ -8721,7 +8236,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -9112,7 +8627,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -9503,7 +9018,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -9884,7 +9399,7 @@
               "name": "Consistent Training",
               "description": "Complete 5 exercise sessions",
               "points": 100,
-              "icon": "\ud83d\udcaa",
+              "icon": "💪",
               "category": "milestone"
             }
           ],
@@ -9892,7 +9407,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -10284,7 +9799,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -10292,7 +9807,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -10311,7 +9826,7 @@
         {
           "name": "Bronze Badge",
           "description": "Earn 100 points",
-          "icon": "\ud83e\udd49",
+          "icon": "🥉",
           "points_required": 100
         }
       ],
@@ -10698,7 +10213,7 @@
               "name": "First Steps",
               "description": "Complete your first exercise session",
               "points": 50,
-              "icon": "\ud83c\udfaf",
+              "icon": "🎯",
               "category": "milestone"
             }
           ],
@@ -11093,7 +10608,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -11487,7 +11002,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -11872,7 +11387,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -11880,7 +11395,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -12274,7 +11789,7 @@
               "name": "Consistent Training",
               "description": "Complete 5 exercise sessions",
               "points": 100,
-              "icon": "\ud83d\udcaa",
+              "icon": "💪",
               "category": "milestone"
             }
           ],
@@ -12282,7 +11797,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -12675,7 +12190,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -12694,7 +12209,7 @@
         {
           "name": "Bronze Badge",
           "description": "Earn 100 points",
-          "icon": "\ud83e\udd49",
+          "icon": "🥉",
           "points_required": 100
         }
       ],
@@ -13108,7 +12623,7 @@
               "name": "First Steps",
               "description": "Complete your first exercise session",
               "points": 50,
-              "icon": "\ud83c\udfaf",
+              "icon": "🎯",
               "category": "milestone"
             }
           ],
@@ -13910,7 +13425,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -14319,7 +13834,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -14720,7 +14235,7 @@
               "name": "Consistent Training",
               "description": "Complete 5 exercise sessions",
               "points": 100,
-              "icon": "\ud83d\udcaa",
+              "icon": "💪",
               "category": "milestone"
             }
           ],
@@ -14728,7 +14243,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -15137,7 +14652,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -15145,7 +14660,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -15164,7 +14679,7 @@
         {
           "name": "Bronze Badge",
           "description": "Earn 100 points",
-          "icon": "\ud83e\udd49",
+          "icon": "🥉",
           "points_required": 100
         }
       ],
@@ -15579,7 +15094,7 @@
               "name": "First Steps",
               "description": "Complete your first exercise session",
               "points": 50,
-              "icon": "\ud83c\udfaf",
+              "icon": "🎯",
               "category": "milestone"
             }
           ],
@@ -15992,7 +15507,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -16398,7 +15913,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -16810,7 +16325,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -17224,7 +16739,7 @@
               "name": "Consistent Training",
               "description": "Complete 5 exercise sessions",
               "points": 100,
-              "icon": "\ud83d\udcaa",
+              "icon": "💪",
               "category": "milestone"
             }
           ],
@@ -17232,7 +16747,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -17635,7 +17150,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -17654,7 +17169,7 @@
         {
           "name": "Bronze Badge",
           "description": "Earn 100 points",
-          "icon": "\ud83e\udd49",
+          "icon": "🥉",
           "points_required": 100
         }
       ],
@@ -18046,7 +17561,7 @@
               "name": "First Steps",
               "description": "Complete your first exercise session",
               "points": 50,
-              "icon": "\ud83c\udfaf",
+              "icon": "🎯",
               "category": "milestone"
             }
           ],
@@ -18834,7 +18349,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -19225,7 +18740,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -19625,7 +19140,7 @@
               "name": "Consistent Training",
               "description": "Complete 5 exercise sessions",
               "points": 100,
-              "icon": "\ud83d\udcaa",
+              "icon": "💪",
               "category": "milestone"
             }
           ],
@@ -19633,7 +19148,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -20033,7 +19548,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -20052,7 +19567,7 @@
         {
           "name": "Bronze Badge",
           "description": "Earn 100 points",
-          "icon": "\ud83e\udd49",
+          "icon": "🥉",
           "points_required": 100
         }
       ],
@@ -20463,7 +19978,7 @@
               "name": "First Steps",
               "description": "Complete your first exercise session",
               "points": 50,
-              "icon": "\ud83c\udfaf",
+              "icon": "🎯",
               "category": "milestone"
             }
           ],
@@ -21262,7 +20777,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -21270,7 +20785,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -21676,7 +21191,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -22075,7 +21590,7 @@
               "name": "Consistent Training",
               "description": "Complete 5 exercise sessions",
               "points": 100,
-              "icon": "\ud83d\udcaa",
+              "icon": "💪",
               "category": "milestone"
             }
           ],
@@ -22083,7 +21598,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -22489,7 +22004,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -22508,7 +22023,7 @@
         {
           "name": "Bronze Badge",
           "description": "Earn 100 points",
-          "icon": "\ud83e\udd49",
+          "icon": "🥉",
           "points_required": 100
         }
       ],
@@ -22901,7 +22416,7 @@
               "name": "First Steps",
               "description": "Complete your first exercise session",
               "points": 50,
-              "icon": "\ud83c\udfaf",
+              "icon": "🎯",
               "category": "milestone"
             },
             {
@@ -22909,7 +22424,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -23302,7 +22817,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -23685,7 +23200,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -24075,7 +23590,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -24467,7 +23982,7 @@
               "name": "Consistent Training",
               "description": "Complete 5 exercise sessions",
               "points": 100,
-              "icon": "\ud83d\udcaa",
+              "icon": "💪",
               "category": "milestone"
             },
             {
@@ -24475,7 +23990,7 @@
               "name": "Form Master",
               "description": "Achieve a form score above 90",
               "points": 75,
-              "icon": "\ud83c\udfc6",
+              "icon": "🏆",
               "category": "performance"
             }
           ],
@@ -24483,7 +23998,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -24863,7 +24378,7 @@
             {
               "name": "Bronze Badge",
               "description": "Complete 3 sessions",
-              "icon": "\ud83e\udd49",
+              "icon": "🥉",
               "category": "milestone"
             }
           ],
@@ -24882,7 +24397,7 @@
         {
           "name": "Bronze Badge",
           "description": "Earn 100 points",
-          "icon": "\ud83e\udd49",
+          "icon": "🥉",
           "points_required": 100
         }
       ],

@@ -255,7 +255,7 @@ export const getExerciseStandards = async (exercise: string) => {
 };
 
 export const getAthletePredictiveAnalytics = async (athleteId: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/predictive-analytics/athlete/${athleteId}`);
+  const response = await fetch(`${API_BASE_URL}/predictive-analytics/athlete/${athleteId}`);
   
   if (!response.ok) {
     throw new Error('Failed to fetch athlete predictive analytics');
@@ -265,7 +265,7 @@ export const getAthletePredictiveAnalytics = async (athleteId: string) => {
 };
 
 export const getCoachPredictiveAnalytics = async (coachId: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/predictive-analytics/coach/${coachId}`);
+  const response = await fetch(`${API_BASE_URL}/predictive-analytics/coach/${coachId}`);
   
   if (!response.ok) {
     throw new Error('Failed to fetch coach predictive analytics');
@@ -275,7 +275,7 @@ export const getCoachPredictiveAnalytics = async (coachId: string) => {
 };
 
 export const getAthleteTrainingPlan = async (athleteId: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/training-plans/athlete/${athleteId}`);
+  const response = await fetch(`${API_BASE_URL}/training-plans/athlete/${athleteId}`);
   
   if (!response.ok) {
     throw new Error('Failed to fetch athlete training plan');
@@ -285,7 +285,7 @@ export const getAthleteTrainingPlan = async (athleteId: string) => {
 };
 
 export const generateAthleteTrainingPlan = async (athleteId: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/training-plans/athlete/${athleteId}/generate`, {
+  const response = await fetch(`${API_BASE_URL}/training-plans/athlete/${athleteId}/generate`, {
     method: 'POST'
   });
   
@@ -297,7 +297,7 @@ export const generateAthleteTrainingPlan = async (athleteId: string) => {
 };
 
 export const updateAthleteTrainingPlan = async (athleteId: string, updates: any) => {
-  const response = await fetch(`${API_BASE_URL}/api/training-plans/athlete/${athleteId}`, {
+  const response = await fetch(`${API_BASE_URL}/training-plans/athlete/${athleteId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -313,7 +313,7 @@ export const updateAthleteTrainingPlan = async (athleteId: string, updates: any)
 };
 
 export const getCoachTrainingPlans = async (coachId: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/training-plans/coach/${coachId}`);
+  const response = await fetch(`${API_BASE_URL}/training-plans/coach/${coachId}`);
   
   if (!response.ok) {
     throw new Error('Failed to fetch coach training plans');
@@ -323,7 +323,7 @@ export const getCoachTrainingPlans = async (coachId: string) => {
 };
 
 export const getAthleteInjuryAnalysis = async (athleteId: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/injury-alerts/athlete/${athleteId}`);
+  const response = await fetch(`${API_BASE_URL}/injury-alerts/athlete/${athleteId}`);
   
   if (!response.ok) {
     throw new Error('Failed to fetch athlete injury analysis');
@@ -333,7 +333,7 @@ export const getAthleteInjuryAnalysis = async (athleteId: string) => {
 };
 
 export const getCoachInjuryAlerts = async (coachId: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/injury-alerts/coach/${coachId}`);
+  const response = await fetch(`${API_BASE_URL}/injury-alerts/coach/${coachId}`);
   
   if (!response.ok) {
     throw new Error('Failed to fetch coach injury alerts');
@@ -343,7 +343,7 @@ export const getCoachInjuryAlerts = async (coachId: string) => {
 };
 
 export const analyzeAthleteInjuryRisk = async (athleteId: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/injury-alerts/athlete/${athleteId}/analyze`, {
+  const response = await fetch(`${API_BASE_URL}/injury-alerts/athlete/${athleteId}/analyze`, {
     method: 'POST'
   });
   
@@ -355,7 +355,7 @@ export const analyzeAthleteInjuryRisk = async (athleteId: string) => {
 };
 
 export const acknowledgeInjuryAlert = async (alertId: string, coachId: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/injury-alerts/${alertId}/acknowledge`, {
+  const response = await fetch(`${API_BASE_URL}/injury-alerts/${alertId}/acknowledge`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -371,7 +371,7 @@ export const acknowledgeInjuryAlert = async (alertId: string, coachId: string) =
 };
 
 export const resolveInjuryAlert = async (alertId: string, coachId: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/injury-alerts/${alertId}/resolve`, {
+  const response = await fetch(`${API_BASE_URL}/injury-alerts/${alertId}/resolve`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -387,7 +387,7 @@ export const resolveInjuryAlert = async (alertId: string, coachId: string) => {
 };
 
 export const runBulkInjuryAnalysis = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/injury-alerts/bulk-analysis`, {
+  const response = await fetch(`${API_BASE_URL}/injury-alerts/bulk-analysis`, {
     method: 'POST'
   });
   
@@ -400,7 +400,7 @@ export const runBulkInjuryAnalysis = async () => {
 
 // Gamification API functions
 export const getUserGamificationStats = async (userId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/gamification/user/${userId}`, {
+  const response = await fetch(`${API_BASE_URL}/gamification/user/${userId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -413,7 +413,7 @@ export const getUserGamificationStats = async (userId: string): Promise<any> => 
 };
 
 export const getGamificationLeaderboard = async (category: string = 'total_points', limit: number = 10): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/gamification/leaderboard?category=${category}&limit=${limit}`, {
+  const response = await fetch(`${API_BASE_URL}/gamification/leaderboard?category=${category}&limit=${limit}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -426,7 +426,7 @@ export const getGamificationLeaderboard = async (category: string = 'total_point
 };
 
 export const getAllAchievements = async (): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/gamification/achievements`, {
+  const response = await fetch(`${API_BASE_URL}/gamification/achievements`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -439,7 +439,7 @@ export const getAllAchievements = async (): Promise<any> => {
 };
 
 export const getAllBadges = async (): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/gamification/badges`, {
+  const response = await fetch(`${API_BASE_URL}/gamification/badges`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -453,7 +453,7 @@ export const getAllBadges = async (): Promise<any> => {
 
 // Goal Setting API functions
 export const createGoal = async (goalData: any): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/goals`, {
+  const response = await fetch(`${API_BASE_URL}/goals`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -467,7 +467,7 @@ export const createGoal = async (goalData: any): Promise<any> => {
 };
 
 export const getUserGoals = async (userId: string, status?: string): Promise<any> => {
-  const url = status ? `${API_BASE_URL}/api/goals/${userId}?status=${status}` : `${API_BASE_URL}/api/goals/${userId}`;
+  const url = status ? `${API_BASE_URL}/goals/${userId}?status=${status}` : `${API_BASE_URL}/goals/${userId}`;
   const response = await fetch(url, {
     method: 'GET',
     headers: {
@@ -481,7 +481,7 @@ export const getUserGoals = async (userId: string, status?: string): Promise<any
 };
 
 export const updateGoal = async (userId: string, goalId: string, updates: any): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/goals/${userId}/${goalId}`, {
+  const response = await fetch(`${API_BASE_URL}/goals/${userId}/${goalId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -495,7 +495,7 @@ export const updateGoal = async (userId: string, goalId: string, updates: any): 
 };
 
 export const deleteGoal = async (userId: string, goalId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/goals/${userId}/${goalId}`, {
+  const response = await fetch(`${API_BASE_URL}/goals/${userId}/${goalId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -508,7 +508,7 @@ export const deleteGoal = async (userId: string, goalId: string): Promise<any> =
 };
 
 export const getGoalAnalytics = async (userId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/goals/${userId}/analytics`, {
+  const response = await fetch(`${API_BASE_URL}/goals/${userId}/analytics`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -521,7 +521,7 @@ export const getGoalAnalytics = async (userId: string): Promise<any> => {
 };
 
 export const getGoalRecommendations = async (userId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/goals/${userId}/recommendations`, {
+  const response = await fetch(`${API_BASE_URL}/goals/${userId}/recommendations`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -535,7 +535,7 @@ export const getGoalRecommendations = async (userId: string): Promise<any> => {
 
 // Long-term Plans API functions
 export const createLongTermPlan = async (planData: any): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/longterm-plans`, {
+  const response = await fetch(`${API_BASE_URL}/longterm-plans`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -549,7 +549,7 @@ export const createLongTermPlan = async (planData: any): Promise<any> => {
 };
 
 export const getCoachPlans = async (coachId: string, status?: string): Promise<any> => {
-  const url = status ? `${API_BASE_URL}/api/longterm-plans/coach/${coachId}?status=${status}` : `${API_BASE_URL}/api/longterm-plans/coach/${coachId}`;
+  const url = status ? `${API_BASE_URL}/longterm-plans/coach/${coachId}?status=${status}` : `${API_BASE_URL}/longterm-plans/coach/${coachId}`;
   const response = await fetch(url, {
     method: 'GET',
     headers: {
@@ -563,7 +563,7 @@ export const getCoachPlans = async (coachId: string, status?: string): Promise<a
 };
 
 export const getAthletePlans = async (athleteId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/athlete/${athleteId}`, {
+  const response = await fetch(`${API_BASE_URL}/longterm-plans/athlete/${athleteId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -576,7 +576,7 @@ export const getAthletePlans = async (athleteId: string): Promise<any> => {
 };
 
 export const updateLongTermPlan = async (coachId: string, planId: string, updates: any): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/${coachId}/${planId}`, {
+  const response = await fetch(`${API_BASE_URL}/longterm-plans/${coachId}/${planId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -590,7 +590,7 @@ export const updateLongTermPlan = async (coachId: string, planId: string, update
 };
 
 export const deleteLongTermPlan = async (coachId: string, planId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/${coachId}/${planId}`, {
+  const response = await fetch(`${API_BASE_URL}/longterm-plans/${coachId}/${planId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -603,7 +603,7 @@ export const deleteLongTermPlan = async (coachId: string, planId: string): Promi
 };
 
 export const getPlanAnalytics = async (coachId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/${coachId}/analytics`, {
+  const response = await fetch(`${API_BASE_URL}/longterm-plans/${coachId}/analytics`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -616,7 +616,7 @@ export const getPlanAnalytics = async (coachId: string): Promise<any> => {
 };
 
 export const getPlanRecommendations = async (coachId: string, athleteId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/${coachId}/recommendations/${athleteId}`, {
+  const response = await fetch(`${API_BASE_URL}/longterm-plans/${coachId}/recommendations/${athleteId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -629,7 +629,7 @@ export const getPlanRecommendations = async (coachId: string, athleteId: string)
 };
 
 export const createPlanTemplate = async (templateData: any): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/templates`, {
+  const response = await fetch(`${API_BASE_URL}/longterm-plans/templates`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -643,7 +643,7 @@ export const createPlanTemplate = async (templateData: any): Promise<any> => {
 };
 
 export const getPlanTemplates = async (coachId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/longterm-plans/templates/${coachId}`, {
+  const response = await fetch(`${API_BASE_URL}/longterm-plans/templates/${coachId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -651,6 +651,88 @@ export const getPlanTemplates = async (coachId: string): Promise<any> => {
   });
   if (!response.ok) {
     throw new Error('Failed to get plan templates');
+  }
+  return response.json();
+};
+
+// Offline Video API functions
+export const storeOfflineVideo = async (videoData: any): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/offline-videos`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(videoData),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to store offline video');
+  }
+  return response.json();
+};
+
+export const getUserOfflineVideos = async (userId: string, status?: string): Promise<any> => {
+  const url = status ? `${API_BASE_URL}/offline-videos/${userId}?status=${status}` : `${API_BASE_URL}/offline-videos/${userId}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get offline videos');
+  }
+  return response.json();
+};
+
+export const analyzeOfflineVideo = async (userId: string, videoId: string, analysisRequest: any): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/offline-videos/${userId}/${videoId}/analyze`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(analysisRequest),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to analyze offline video');
+  }
+  return response.json();
+};
+
+export const deleteOfflineVideo = async (userId: string, videoId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/offline-videos/${userId}/${videoId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to delete offline video');
+  }
+  return response.json();
+};
+
+export const getOfflineVideoStats = async (userId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/offline-videos/${userId}/stats`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get offline video stats');
+  }
+  return response.json();
+};
+
+export const getPendingAnalysisVideos = async (): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/offline-videos/pending`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get pending analysis videos');
   }
   return response.json();
 };

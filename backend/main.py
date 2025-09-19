@@ -21,6 +21,7 @@ from injury_alerts import injury_alert_system
 from gamification_engine import GamificationEngine
 from goal_setting_engine import GoalSettingEngine
 from longterm_plans_engine import LongTermPlansEngine
+from offline_video_manager import OfflineVideoManager
 
 # Initialize gamification engine
 gamification_engine = GamificationEngine()
@@ -30,6 +31,9 @@ goal_setting_engine = GoalSettingEngine()
 
 # Initialize long-term plans engine
 longterm_plans_engine = LongTermPlansEngine()
+
+# Initialize offline video manager
+offline_video_manager = OfflineVideoManager()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -1348,6 +1352,106 @@ async def get_plan_templates(coach_id: str):
     except Exception as e:
         logger.error(f"Error getting plan templates: {e}")
         raise HTTPException(status_code=500, detail="Failed to get plan templates")
+
+# Offline Video API endpoints
+@app.post("/api/offline-videos")
+async def store_offline_video(video_data: dict):
+    """Store a video recorded offline"""
+    try:
+        user_id = video_data.get("user_id")
+        if not user_id:
+            raise HTTPException(status_code=400, detail="user_id is required")
+        
+        offline_video = offline_video_manager.store_offline_video(user_id, video_data)
+        if not offline_video:
+            raise HTTPException(status_code=500, detail="Failed to store offline video")
+        
+        return offline_video
+    except Exception as e:
+        logger.error(f"Error storing offline video: {e}")
+        raise HTTPException(status_code=500, detail="Failed to store offline video")
+
+@app.get("/api/offline-videos/{user_id}")
+async def get_user_offline_videos(user_id: str, status: Optional[str] = None):
+    """Get all offline videos for a user"""
+    try:
+        videos = offline_video_manager.get_user_offline_videos(user_id, status)
+        return {"videos": videos}
+    except Exception as e:
+        logger.error(f"Error getting user offline videos: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get offline videos")
+
+@app.put("/api/offline-videos/{user_id}/{video_id}/analyze")
+async def analyze_offline_video(user_id: str, video_id: str, analysis_request: dict):
+    """Trigger analysis for an offline video"""
+    try:
+        # Get the offline video
+        user_videos = offline_video_manager.get_user_offline_videos(user_id)
+        video = next((v for v in user_videos if v["id"] == video_id), None)
+        
+        if not video:
+            raise HTTPException(status_code=404, detail="Offline video not found")
+        
+        if video["status"] != "pending_analysis":
+            raise HTTPException(status_code=400, detail="Video is not pending analysis")
+        
+        # Update status to analyzing
+        offline_video_manager.update_video_status(user_id, video_id, "analyzing")
+        
+        # Here you would typically queue the video for analysis
+        # For now, we'll simulate the analysis process
+        # In a real implementation, this would trigger the exercise_counter.py script
+        
+        return {"message": "Video queued for analysis", "video_id": video_id}
+    except Exception as e:
+        logger.error(f"Error analyzing offline video: {e}")
+        raise HTTPException(status_code=500, detail="Failed to analyze offline video")
+
+@app.delete("/api/offline-videos/{user_id}/{video_id}")
+async def delete_offline_video(user_id: str, video_id: str):
+    """Delete an offline video"""
+    try:
+        success = offline_video_manager.delete_offline_video(user_id, video_id)
+        if not success:
+            raise HTTPException(status_code=404, detail="Offline video not found")
+        
+        return {"success": True, "message": "Offline video deleted successfully"}
+    except Exception as e:
+        logger.error(f"Error deleting offline video: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete offline video")
+
+@app.get("/api/offline-videos/{user_id}/stats")
+async def get_offline_video_stats(user_id: str):
+    """Get statistics for user's offline videos"""
+    try:
+        stats = offline_video_manager.get_offline_video_stats(user_id)
+        return stats
+    except Exception as e:
+        logger.error(f"Error getting offline video stats: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get offline video stats")
+
+@app.get("/api/offline-videos/pending")
+async def get_pending_analysis_videos():
+    """Get all videos pending analysis (admin endpoint)"""
+    try:
+        videos = offline_video_manager.get_pending_analysis_videos()
+        return {"videos": videos}
+    except Exception as e:
+        logger.error(f"Error getting pending analysis videos: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get pending analysis videos")
+
+@app.post("/api/offline-videos/{video_id}/process")
+async def process_offline_video(video_id: str, analysis_result: dict):
+    """Process an offline video with analysis results"""
+    try:
+        success = offline_video_manager.process_offline_video(video_id, analysis_result)
+        if not success:
+            raise HTTPException(status_code=404, detail="Offline video not found")
+        
+        return {"success": True, "message": "Offline video processed successfully"}
+    except Exception as e:
+        logger.error(f"Error processing offline video: {e}")
+        raise HTTPException(status_code=500, detail="Failed to process offline video")
 
 
 if __name__ == "__main__":

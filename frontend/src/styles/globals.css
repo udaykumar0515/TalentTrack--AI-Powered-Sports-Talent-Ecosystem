@@ -4423,3 +4423,396 @@ button:disabled {
   padding: 40px;
   color: rgba(255, 255, 255, 0.8);
 }
+
+/* Offline Functionality Styles */
+.offline-functionality-section {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 32px rgba(30, 64, 175, 0.3);
+  color: white;
+}
+
+.offline-functionality-section h2 {
+  color: white;
+  margin-bottom: 24px;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.offline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.offline-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.offline-controls .btn-secondary.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.offline-status {
+  margin-bottom: 24px;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.offline-status.offline {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.offline-status.online {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.offline-indicator,
+.online-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.offline-icon,
+.online-icon {
+  font-size: 1.2rem;
+}
+
+.offline-stats {
+  margin-bottom: 24px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.offline-stats .stat-card {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.offline-stats .stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: white;
+}
+
+.offline-stats .stat-label {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  color: white;
+}
+
+.offline-recorder-section,
+.offline-queue-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.offline-recorder-section h3,
+.offline-queue-section h3 {
+  color: white;
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+}
+
+/* Offline Video Recorder Styles */
+.offline-video-recorder {
+  color: white;
+}
+
+.offline-video-recorder .offline-status {
+  margin-bottom: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.offline-video-recorder .video-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.offline-video-recorder .video-preview,
+.offline-video-recorder .recorded-video {
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  object-fit: cover;
+}
+
+.offline-video-recorder .recording-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.offline-video-recorder .record-btn,
+.offline-video-recorder .stop-btn {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.offline-video-recorder .record-btn {
+  background: #10b981;
+  color: white;
+}
+
+.offline-video-recorder .record-btn:hover {
+  background: #059669;
+}
+
+.offline-video-recorder .stop-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.offline-video-recorder .stop-btn:hover {
+  background: #dc2626;
+}
+
+.offline-video-recorder .video-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.offline-video-recorder .upload-progress {
+  text-align: center;
+  width: 100%;
+}
+
+.offline-video-recorder .progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.offline-video-recorder .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #059669);
+  transition: width 0.3s ease;
+}
+
+.offline-video-recorder .offline-info {
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.offline-video-recorder .offline-info h4 {
+  color: white;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.offline-video-recorder .offline-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.offline-video-recorder .offline-info li {
+  padding: 4px 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+/* Offline Video Queue Styles */
+.offline-video-queue {
+  color: white;
+}
+
+.offline-video-queue .queue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.offline-video-queue .queue-header h3 {
+  color: white;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.offline-video-queue .btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+.offline-video-queue .queue-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.offline-video-queue .stat-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.offline-video-queue .stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.offline-video-queue .stat-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.offline-video-queue .no-videos {
+  text-align: center;
+  padding: 40px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.offline-video-queue .videos-list {
+  display: grid;
+  gap: 16px;
+}
+
+.offline-video-queue .video-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.offline-video-queue .video-info {
+  flex: 1;
+}
+
+.offline-video-queue .video-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.offline-video-queue .video-header h4 {
+  color: white;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.offline-video-queue .video-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.offline-video-queue .detail-item {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.offline-video-queue .detail-item strong {
+  color: white;
+}
+
+.offline-video-queue .video-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 120px;
+}
+
+.offline-video-queue .status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.offline-video-queue .status-badge.pending {
+  background: rgba(245, 158, 11, 0.3);
+  color: #fcd34d;
+}
+
+.offline-video-queue .status-badge.analyzing {
+  background: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+
+.offline-video-queue .status-badge.analyzed {
+  background: rgba(16, 185, 129, 0.3);
+  color: #6ee7b7;
+}
+
+.offline-video-queue .status-badge.failed {
+  background: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.offline-video-queue .queue-info {
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.offline-video-queue .queue-info h4 {
+  color: white;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.offline-video-queue .queue-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.offline-video-queue .queue-info li {
+  padding: 4px 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+}

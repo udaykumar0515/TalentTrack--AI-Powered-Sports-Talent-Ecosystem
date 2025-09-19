@@ -6,7 +6,9 @@ import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
-import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthletePredictiveAnalytics, getAthleteTrainingPlan, generateAthleteTrainingPlan, getUserGamificationStats, getGamificationLeaderboard, createGoal, getUserGoals, updateGoal, deleteGoal, getGoalAnalytics, getGoalRecommendations } from '../api/apiClient';
+import OfflineVideoRecorder from './OfflineVideoRecorder';
+import OfflineVideoQueue from './OfflineVideoQueue';
+import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthletePredictiveAnalytics, getAthleteTrainingPlan, generateAthleteTrainingPlan, getUserGamificationStats, getGamificationLeaderboard, createGoal, getUserGoals, updateGoal, deleteGoal, getGoalAnalytics, getGoalRecommendations, getUserOfflineVideos, getOfflineVideoStats } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -50,6 +52,12 @@ const AthleteDashboard: React.FC = () => {
     motivation_notes: ''
   });
 
+  // Offline functionality state
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [offlineStats, setOfflineStats] = useState<any>(null);
+  const [showOfflineMode, setShowOfflineMode] = useState(false);
+  const [showOfflineQueue, setShowOfflineQueue] = useState(false);
+
   const exercises = [
     { value: 'squat', label: 'Squat' },
     { value: 'jumping_jack', label: 'Jumping Jack' },
@@ -70,6 +78,8 @@ const AthleteDashboard: React.FC = () => {
       await loadGoals();
       await loadGoalAnalytics();
       await loadGoalRecommendations();
+      await loadOfflineVideos();
+      await loadOfflineStats();
     loadSelectedCoach();
     };
     loadData();
@@ -379,6 +389,65 @@ const AthleteDashboard: React.FC = () => {
       console.error('Error deleting goal:', error);
     }
   };
+
+  // Offline functionality
+  const loadOfflineVideos = async () => {
+    if (!user?.id) return;
+    
+    try {
+      await getUserOfflineVideos(user.id);
+      // Videos are loaded by the OfflineVideoQueue component
+    } catch (error) {
+      console.error('Error loading offline videos:', error);
+    }
+  };
+
+  const loadOfflineStats = async () => {
+    if (!user?.id) return;
+    
+    try {
+      const stats = await getOfflineVideoStats(user.id);
+      setOfflineStats(stats);
+    } catch (error) {
+      console.error('Error loading offline stats:', error);
+    }
+  };
+
+  const handleOfflineVideoRecorded = () => {
+    // Reload offline videos and stats
+    loadOfflineVideos();
+    loadOfflineStats();
+  };
+
+  const handleOfflineVideoAnalyzed = () => {
+    // Reload sessions and offline data
+    loadSessions();
+    loadOfflineVideos();
+    loadOfflineStats();
+  };
+
+  // Online/Offline detection
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOffline(false);
+      // When coming back online, reload data
+      loadSessions();
+      loadOfflineVideos();
+      loadOfflineStats();
+    };
+    
+    const handleOffline = () => {
+      setIsOffline(true);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
 
 
@@ -1401,6 +1470,88 @@ const AthleteDashboard: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Offline Functionality Section */}
+        <div className="offline-functionality-section">
+          <div className="offline-header">
+            <h2>📱 Offline Mode</h2>
+            <div className="offline-controls">
+              <button 
+                className={`btn-secondary ${showOfflineMode ? 'active' : ''}`}
+                onClick={() => setShowOfflineMode(!showOfflineMode)}
+              >
+                {showOfflineMode ? 'Hide' : 'Show'} Offline Recorder
+              </button>
+              <button 
+                className={`btn-secondary ${showOfflineQueue ? 'active' : ''}`}
+                onClick={() => setShowOfflineQueue(!showOfflineQueue)}
+              >
+                {showOfflineQueue ? 'Hide' : 'Show'} Video Queue
+              </button>
+            </div>
+          </div>
+
+          {/* Offline Status Indicator */}
+          <div className={`offline-status ${isOffline ? 'offline' : 'online'}`}>
+            {isOffline ? (
+              <div className="offline-indicator">
+                <span className="offline-icon">📡</span>
+                <span>You're offline - Videos will be stored locally and analyzed when you reconnect</span>
+              </div>
+            ) : (
+              <div className="online-indicator">
+                <span className="online-icon">🌐</span>
+                <span>You're online - Videos will be analyzed immediately</span>
+              </div>
+            )}
+          </div>
+
+          {/* Offline Stats */}
+          {offlineStats && (
+            <div className="offline-stats">
+              <div className="stats-grid">
+                <div className="stat-card">
+                  <div className="stat-value">{offlineStats.total_videos || 0}</div>
+                  <div className="stat-label">Total Offline Videos</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-value">{offlineStats.pending_videos || 0}</div>
+                  <div className="stat-label">Pending Analysis</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-value">{offlineStats.analyzed_videos || 0}</div>
+                  <div className="stat-label">Analyzed</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-value">{offlineStats.total_size_mb || 0} MB</div>
+                  <div className="stat-label">Total Size</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Offline Video Recorder */}
+          {showOfflineMode && (
+            <div className="offline-recorder-section">
+              <h3>Record Offline Video</h3>
+              <OfflineVideoRecorder
+                onVideoRecorded={handleOfflineVideoRecorded}
+                exerciseType={selectedExercise}
+                userId={user?.id || ''}
+              />
+            </div>
+          )}
+
+          {/* Offline Video Queue */}
+          {showOfflineQueue && (
+            <div className="offline-queue-section">
+              <OfflineVideoQueue
+                userId={user?.id || ''}
+                onVideoAnalyzed={handleOfflineVideoAnalyzed}
+              />
+            </div>
+          )}
+        </div>
 
         <h2>Your Recent Activity</h2>
         <div id="metrics-container">
