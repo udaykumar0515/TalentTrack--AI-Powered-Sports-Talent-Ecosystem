@@ -1118,11 +1118,11 @@ const AthleteDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Always show training plan section if not loading */}
+        {/* Training Plan Section - Detailed Style */}
         {!loadingTrainingPlan && (
           <div className="training-plan-section">
             <h2>Your Training Plan</h2>
-            {trainingPlan && !trainingPlan.error ? (
+            {(trainingPlan && !trainingPlan.error) || (sessions.length > 0 && sessions[0].trainingPlan) ? (
               <div className="training-plan-content">
                 <div className="training-plan-header">
                   <button 
@@ -1133,11 +1133,129 @@ const AthleteDashboard: React.FC = () => {
                     {loadingTrainingPlan ? 'Generating...' : 'Generate New Plan'}
                   </button>
                 </div>
-                <div className="plan-preview">
-                  <p>Your personalized training plan is ready!</p>
-                  <p>Focus areas: Form improvement, Strength building</p>
-                  <p>Weekly schedule: 4 sessions per week</p>
-                </div>
+                
+                {(() => {
+                  const planData = trainingPlan || (sessions.length > 0 ? sessions[0].trainingPlan : null);
+                  if (!planData) return null;
+                  
+                  return (
+                    <>
+                      {/* Performance Analysis */}
+                      {planData.analysis && (
+                        <div className="analysis-summary">
+                          <h3>Performance Analysis</h3>
+                          <div className="analysis-grid">
+                            {planData.analysis.gaps && planData.analysis.gaps.length > 0 && (
+                              <div className="analysis-card gaps">
+                                <h4>Areas to Improve</h4>
+                                <ul>
+                                  {planData.analysis.gaps.map((gap: string, index: number) => (
+                                    <li key={index}>{gap}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            {planData.analysis.strengths && planData.analysis.strengths.length > 0 && (
+                              <div className="analysis-card strengths">
+                                <h4>Your Strengths</h4>
+                                <ul>
+                                  {planData.analysis.strengths.map((strength: string, index: number) => (
+                                    <li key={index}>{strength}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Weekly Schedule */}
+                      {planData.weekly_schedule && planData.weekly_schedule.length > 0 && (
+                        <div className="weekly-schedule">
+                          <h3>This Week's Schedule</h3>
+                          <div className="schedule-grid">
+                            {planData.weekly_schedule.map((day: any, index: number) => (
+                              <div key={index} className="schedule-card">
+                                <div className="day-header">
+                                  <h4>{day.day}</h4>
+                                  <span className={`priority-badge ${day.priority}`}>{day.priority}</span>
+                                </div>
+                                <div className="exercise-info">
+                                  <div className="exercise-name">{day.exercise}</div>
+                                  <div className="exercise-details">
+                                    {day.sets} sets × {day.reps} reps
+                                  </div>
+                                  <div className="exercise-focus">{day.focus}</div>
+                                </div>
+                                <div className="exercise-instructions">
+                                  <h5>Instructions:</h5>
+                                  <ul>
+                                    {day.instructions && day.instructions.map((instruction: string, idx: number) => (
+                                      <li key={idx}>{instruction}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                                <div className="exercise-duration">
+                                  Duration: {day.estimated_duration}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Progression Plan */}
+                      {planData.progression_plan && planData.progression_plan.weeks && (
+                        <div className="progression-plan">
+                          <h3>4-Week Progression Plan</h3>
+                          <div className="progression-grid">
+                            {planData.progression_plan.weeks.map((week: any, index: number) => (
+                              <div key={index} className="progression-card">
+                                <div className="week-header">
+                                  <h4>Week {week.week}</h4>
+                                  <div className="week-focus">{week.focus}</div>
+                                </div>
+                                <div className="week-targets">
+                                  <div className="target">
+                                    <span className="target-label">Form Target:</span>
+                                    <span className="target-value">{week.form_target}%</span>
+                                  </div>
+                                  <div className="target">
+                                    <span className="target-label">Reps Target:</span>
+                                    <span className="target-value">{week.reps_target}</span>
+                                  </div>
+                                </div>
+                                <div className="week-metrics">
+                                  <h5>Key Metrics:</h5>
+                                  <ul>
+                                    {week.key_metrics && week.key_metrics.map((metric: string, idx: number) => (
+                                      <li key={idx}>{metric}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Coaching Notes */}
+                      {planData.coaching_notes && planData.coaching_notes.length > 0 && (
+                        <div className="coaching-notes">
+                          <h3>Coaching Notes</h3>
+                          <div className="notes-list">
+                            {planData.coaching_notes.map((note: string, index: number) => (
+                              <div key={index} className="note-item">
+                                <span className="note-icon">💡</span>
+                                <span className="note-text">{note}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             ) : (
               <div className="no-training-plan">
