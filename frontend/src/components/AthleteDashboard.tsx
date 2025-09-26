@@ -402,37 +402,12 @@ const AthleteDashboard: React.FC = () => {
     const olderAvgReps = olderSessions.reduce((sum, session) => sum + (session.reps || 0), 0) / olderSessions.length;
     const repsTrend = recentAvgReps - olderAvgReps;
 
-    // Calculate injury risk based on form consistency and fatigue patterns
+    // Calculate form consistency for trends
     const formScores = validSessions.map(s => s.formScore || 0);
     const formVariance = Math.sqrt(formScores.reduce((sum, score) => sum + Math.pow(score - avgFormScore, 2), 0) / formScores.length);
-    const injuryRisk = formVariance > 15 ? 'high' : formVariance > 10 ? 'medium' : 'low';
-    const injuryScore = Math.min(100, Math.max(0, (formVariance - 5) * 5));
-
-    // Calculate improvement potential
-    const improvementPotential = avgFormScore < 70 ? 'high' : avgFormScore < 85 ? 'medium' : 'low';
-    const improvementScore = avgFormScore < 70 ? 85 - avgFormScore : avgFormScore < 85 ? 95 - avgFormScore : 0;
 
     // Generate insights based on actual data
     const insights = {
-      injury_risk: {
-        risk_level: injuryRisk,
-        risk_score: Math.round(injuryScore),
-        factors: [
-          formVariance > 15 ? 'Inconsistent form across sessions' : null,
-          avgFormScore < 70 ? 'Low average form score' : null,
-          validSessions.length < 3 ? 'Limited session data for analysis' : null
-        ].filter(Boolean)
-      },
-      improvement_potential: {
-        potential: improvementPotential,
-        score: Math.round(improvementScore),
-        suggestions: [
-          avgFormScore < 70 ? 'Focus on form fundamentals and technique' : null,
-          repsTrend < 0 ? 'Consider reducing intensity to maintain form' : null,
-          formTrend < 0 ? 'Review recent training load and recovery' : null,
-          avgReps < 10 ? 'Gradually increase repetition volume' : null
-        ].filter(Boolean)
-      },
       performance_trends: {
         form_trend: formTrend,
         reps_trend: repsTrend,
@@ -963,41 +938,6 @@ const AthleteDashboard: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Injury Risk */}
-                  <div className={`analytics-card ${realInsights.injury_risk.risk_level}-risk`}>
-                    <h3>Injury Risk Assessment</h3>
-                    <div className="risk-level">
-                      <span className={`risk-badge ${realInsights.injury_risk.risk_level}`}>
-                        {realInsights.injury_risk.risk_level.toUpperCase()}
-                      </span>
-                      <span className="risk-score">{realInsights.injury_risk.risk_score}%</span>
-                    </div>
-                    {realInsights.injury_risk.factors.length > 0 && (
-                      <ul className="risk-factors">
-                        {realInsights.injury_risk.factors.map((factor: string | null, index: number) => (
-                          <li key={index}>{factor}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-
-                  {/* Improvement Potential */}
-                  <div className={`analytics-card ${realInsights.improvement_potential.potential}-potential`}>
-                    <h3>Improvement Potential</h3>
-                    <div className="potential-level">
-                      <span className={`potential-badge ${realInsights.improvement_potential.potential}`}>
-                        {realInsights.improvement_potential.potential.toUpperCase()}
-                      </span>
-                      <span className="potential-score">{realInsights.improvement_potential.score}%</span>
-                    </div>
-                    {realInsights.improvement_potential.suggestions.length > 0 && (
-                      <ul className="improvement-suggestions">
-                        {realInsights.improvement_potential.suggestions.map((suggestion: string | null, index: number) => (
-                          <li key={index}>{suggestion}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
                 </div>
               </div>
             );
