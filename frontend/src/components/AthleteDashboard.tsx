@@ -889,6 +889,13 @@ const AthleteDashboard: React.FC = () => {
           {/* Section Navigation Buttons */}
           <div className="section-nav-buttons">
             <button 
+              onClick={() => toggleSection('performance-insights')}
+              className={`section-nav-btn ${activeSection === 'performance-insights' ? 'active' : ''}`}
+              title="Performance Insights"
+            >
+              📊 Performance Insights
+            </button>
+            <button 
               onClick={() => toggleSection('training-plan')}
               className={`section-nav-btn ${activeSection === 'training-plan' ? 'active' : ''}`}
               title="Training Plan"
@@ -1107,91 +1114,93 @@ const AthleteDashboard: React.FC = () => {
 
       <section className="activity-feed">
         {/* Performance Insights Section */}
-        {(() => {
-          const realInsights = calculatePerformanceInsights();
-          if (realInsights) {
-            return (
-          <div className="predictive-analytics-section">
-            <h2>Performance Insights</h2>
-                <div className="analytics-grid">
-                  {/* Current Performance Stats */}
-                  <div className="analytics-card current-stats">
-                    <h3>Current Performance</h3>
-                    <div className="stats-grid-2x2">
-                      <div className="stat-item">
-                        <div className="stat-label">Avg Form Score</div>
-                        <div className="stat-value">{realInsights.current_stats.avg_form_score}%</div>
-            </div>
-                      <div className="stat-item">
-                        <div className="stat-label">Avg Reps</div>
-                        <div className="stat-value">{realInsights.current_stats.avg_reps}</div>
-          </div>
-                      <div className="stat-item">
-                        <div className="stat-label">Best Form Score</div>
-                        <div className="stat-value">{realInsights.current_stats.best_form_score}%</div>
+        <div className="collapsible-section">
+          {activeSection === 'performance-insights' && (
+            <div className="section-content">
+              {(() => {
+                const realInsights = calculatePerformanceInsights();
+                if (realInsights) {
+                  return (
+                    <div className="predictive-analytics-section">
+                      <div className="analytics-grid">
+                        {/* Current Performance Stats */}
+                        <div className="analytics-card current-stats">
+                          <h3>Current Performance</h3>
+                          <div className="stats-grid-2x2">
+                            <div className="stat-item">
+                              <div className="stat-label">Avg Form Score</div>
+                              <div className="stat-value">{realInsights.current_stats.avg_form_score}%</div>
+                            </div>
+                            <div className="stat-item">
+                              <div className="stat-label">Avg Reps</div>
+                              <div className="stat-value">{realInsights.current_stats.avg_reps}</div>
+                            </div>
+                            <div className="stat-item">
+                              <div className="stat-label">Best Form Score</div>
+                              <div className="stat-value">{realInsights.current_stats.best_form_score}%</div>
+                            </div>
+                            <div className="stat-item">
+                              <div className="stat-label">Total Sessions</div>
+                              <div className="stat-value">{realInsights.current_stats.total_sessions}</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Performance Trends */}
+                        <div className="analytics-card trends">
+                          <h3>Performance Trends</h3>
+                          <div className="trends-grid-2x2">
+                            <div className="trend-item">
+                              <div className="trend-label">Form Trend</div>
+                              <div className={`trend-value ${realInsights.performance_trends.form_trend > 0 ? 'trend-up' : realInsights.performance_trends.form_trend < 0 ? 'trend-down' : 'trend-neutral'}`}>
+                                <span className="trend-arrow">
+                                  {realInsights.performance_trends.form_trend > 0 ? '↗' : realInsights.performance_trends.form_trend < 0 ? '↘' : '→'}
+                                </span>
+                                <span className="trend-number">
+                                  {Math.abs(realInsights.performance_trends.form_trend).toFixed(1)}%
+                                </span>
+                              </div>
+                            </div>
+                            <div className="trend-item">
+                              <div className="trend-label">Reps Trend</div>
+                              <div className={`trend-value ${realInsights.performance_trends.reps_trend > 0 ? 'trend-up' : realInsights.performance_trends.reps_trend < 0 ? 'trend-down' : 'trend-neutral'}`}>
+                                <span className="trend-arrow">
+                                  {realInsights.performance_trends.reps_trend > 0 ? '↗' : realInsights.performance_trends.reps_trend < 0 ? '↘' : '→'}
+                                </span>
+                                <span className="trend-number">
+                                  {Math.abs(realInsights.performance_trends.reps_trend).toFixed(1)}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="trend-item">
+                              <div className="trend-label">Consistency</div>
+                              <div className="trend-value trend-neutral">
+                                <span className="trend-number">{realInsights.performance_trends.consistency}%</span>
+                              </div>
+                            </div>
+                            <div className="trend-item">
+                              <div className="trend-label">Overall Progress</div>
+                              <div className={`trend-value ${realInsights.performance_trends.overall_progress === 'improving' ? 'trend-up' : realInsights.performance_trends.overall_progress === 'declining' ? 'trend-down' : 'trend-neutral'}`}>
+                                <span className="trend-text">{realInsights.performance_trends.overall_progress}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="stat-item">
-                        <div className="stat-label">Total Sessions</div>
-                        <div className="stat-value">{realInsights.current_stats.total_sessions}</div>
-                      </div>
+                    </div>
+                  );
+                }
+                return (
+                  <div className="predictive-analytics-section">
+                    <div className="no-analytics">
+                      <p>No performance insights available yet. Complete more sessions with form scores and reps to see your analytics!</p>
                     </div>
                   </div>
-
-                  {/* Performance Trends */}
-                  <div className="analytics-card trends">
-                    <h3>Performance Trends</h3>
-                    <div className="trends-grid-2x2">
-                      <div className="trend-item">
-                        <div className="trend-label">Form Trend</div>
-                        <div className={`trend-value ${realInsights.performance_trends.form_trend > 0 ? 'trend-up' : realInsights.performance_trends.form_trend < 0 ? 'trend-down' : 'trend-neutral'}`}>
-                          <span className="trend-arrow">
-                            {realInsights.performance_trends.form_trend > 0 ? '↗' : realInsights.performance_trends.form_trend < 0 ? '↘' : '→'}
-                        </span>
-                          <span className="trend-number">
-                            {Math.abs(realInsights.performance_trends.form_trend).toFixed(1)}%
-                          </span>
-                      </div>
-                    </div>
-                      <div className="trend-item">
-                        <div className="trend-label">Reps Trend</div>
-                        <div className={`trend-value ${realInsights.performance_trends.reps_trend > 0 ? 'trend-up' : realInsights.performance_trends.reps_trend < 0 ? 'trend-down' : 'trend-neutral'}`}>
-                          <span className="trend-arrow">
-                            {realInsights.performance_trends.reps_trend > 0 ? '↗' : realInsights.performance_trends.reps_trend < 0 ? '↘' : '→'}
-                        </span>
-                          <span className="trend-number">
-                            {Math.abs(realInsights.performance_trends.reps_trend).toFixed(1)}
-                          </span>
-                      </div>
-                    </div>
-                      <div className="trend-item">
-                        <div className="trend-label">Consistency</div>
-                        <div className="trend-value trend-neutral">
-                          <span className="trend-number">{realInsights.performance_trends.consistency}%</span>
-                            </div>
-                            </div>
-                      <div className="trend-item">
-                        <div className="trend-label">Overall Progress</div>
-                        <div className={`trend-value ${realInsights.performance_trends.overall_progress === 'improving' ? 'trend-up' : realInsights.performance_trends.overall_progress === 'declining' ? 'trend-down' : 'trend-neutral'}`}>
-                          <span className="trend-text">{realInsights.performance_trends.overall_progress}</span>
-                        </div>
-                        </div>
-                      </div>
+                );
+              })()}
             </div>
-
-          </div>
-              </div>
-            );
-          }
-          return null;
-        })()}
-        {!calculatePerformanceInsights() && (
-          <div className="predictive-analytics-section">
-            <h2>Performance Insights</h2>
-            <div className="no-analytics">
-              <p>No performance insights available yet. Complete more sessions with form scores and reps to see your analytics!</p>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Training Plan Section */}
         <div className="collapsible-section">
@@ -1752,7 +1761,6 @@ const AthleteDashboard: React.FC = () => {
             </div>
           </div>
         )}
-
 
         <h2>Your Recent Activity</h2>
         <div id="metrics-container">
