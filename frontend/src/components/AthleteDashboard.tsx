@@ -8,7 +8,7 @@ import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
 import OfflineVideoRecorder from './OfflineVideoRecorder';
 import OfflineVideoQueue from './OfflineVideoQueue';
-import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthletePredictiveAnalytics, getAthleteTrainingPlan, generateAthleteTrainingPlan, getUserGamificationStats, getGamificationLeaderboard, createGoal, getUserGoals, updateGoal, deleteGoal, getGoalAnalytics, getGoalRecommendations, getUserOfflineVideos, getOfflineVideoStats } from '../api/apiClient';
+import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthleteTrainingPlan, generateAthleteTrainingPlan, getUserGamificationStats, getGamificationLeaderboard, createGoal, getUserGoals, updateGoal, deleteGoal, getGoalAnalytics, getGoalRecommendations, getUserOfflineVideos, getOfflineVideoStats } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -27,8 +27,6 @@ const AthleteDashboard: React.FC = () => {
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
   const [selectedSessionMenu, setSelectedSessionMenu] = useState<string | null>(null);
-  const [predictiveAnalytics, setPredictiveAnalytics] = useState<any>(null);
-  const [loadingAnalytics, setLoadingAnalytics] = useState(false);
   const [trainingPlan, setTrainingPlan] = useState<any>(null);
   const [loadingTrainingPlan, setLoadingTrainingPlan] = useState(false);
   const [gamificationStats, setGamificationStats] = useState<any>(null);
@@ -79,7 +77,6 @@ const AthleteDashboard: React.FC = () => {
       console.log('User ID:', user?.id);
       await loadSessions();
       await loadMessages();
-      await loadPredictiveAnalytics();
       await loadTrainingPlan();
       await loadGamificationStats();
       await loadLeaderboard();
@@ -235,23 +232,6 @@ const AthleteDashboard: React.FC = () => {
     }
   };
 
-  const loadPredictiveAnalytics = async () => {
-    if (!user?.id) return;
-    
-    setLoadingAnalytics(true);
-    try {
-      console.log('Loading predictive analytics for user:', user.id);
-      console.log('User object:', user);
-      const analytics = await getAthletePredictiveAnalytics(user.id);
-      console.log('Predictive analytics loaded:', analytics);
-      setPredictiveAnalytics(analytics);
-    } catch (error) {
-      console.error('Error loading predictive analytics:', error);
-      console.error('Error details:', error);
-    } finally {
-      setLoadingAnalytics(false);
-    }
-  };
 
   const loadTrainingPlan = async () => {
     if (!user?.id) return;
@@ -396,6 +376,80 @@ const AthleteDashboard: React.FC = () => {
     } catch (error) {
       console.error('Error deleting goal:', error);
     }
+  };
+
+  // Calculate real performance insights from session data
+  const calculatePerformanceInsights = () => {
+    if (sessions.length === 0) return null;
+
+    const validSessions = sessions.filter(session => session.formScore && session.reps);
+    if (validSessions.length === 0) return null;
+
+    // Calculate averages and trends
+    const avgFormScore = validSessions.reduce((sum, session) => sum + (session.formScore || 0), 0) / validSessions.length;
+    const avgReps = validSessions.reduce((sum, session) => sum + (session.reps || 0), 0) / validSessions.length;
+    const avgDuration = validSessions.reduce((sum, session) => sum + (session.durationSec || 0), 0) / validSessions.length;
+
+    // Calculate trends (comparing recent vs older sessions)
+    const recentSessions = validSessions.slice(0, Math.min(3, validSessions.length));
+    const olderSessions = validSessions.slice(-Math.min(3, validSessions.length));
+    
+    const recentAvgForm = recentSessions.reduce((sum, session) => sum + (session.formScore || 0), 0) / recentSessions.length;
+    const olderAvgForm = olderSessions.reduce((sum, session) => sum + (session.formScore || 0), 0) / olderSessions.length;
+    const formTrend = recentAvgForm - olderAvgForm;
+
+    const recentAvgReps = recentSessions.reduce((sum, session) => sum + (session.reps || 0), 0) / recentSessions.length;
+    const olderAvgReps = olderSessions.reduce((sum, session) => sum + (session.reps || 0), 0) / olderSessions.length;
+    const repsTrend = recentAvgReps - olderAvgReps;
+
+    // Calculate injury risk based on form consistency and fatigue patterns
+    const formScores = validSessions.map(s => s.formScore || 0);
+    const formVariance = Math.sqrt(formScores.reduce((sum, score) => sum + Math.pow(score - avgFormScore, 2), 0) / formScores.length);
+    const injuryRisk = formVariance > 15 ? 'high' : formVariance > 10 ? 'medium' : 'low';
+    const injuryScore = Math.min(100, Math.max(0, (formVariance - 5) * 5));
+
+    // Calculate improvement potential
+    const improvementPotential = avgFormScore < 70 ? 'high' : avgFormScore < 85 ? 'medium' : 'low';
+    const improvementScore = avgFormScore < 70 ? 85 - avgFormScore : avgFormScore < 85 ? 95 - avgFormScore : 0;
+
+    // Generate insights based on actual data
+    const insights = {
+      injury_risk: {
+        risk_level: injuryRisk,
+        risk_score: Math.round(injuryScore),
+        factors: [
+          formVariance > 15 ? 'Inconsistent form across sessions' : null,
+          avgFormScore < 70 ? 'Low average form score' : null,
+          validSessions.length < 3 ? 'Limited session data for analysis' : null
+        ].filter(Boolean)
+      },
+      improvement_potential: {
+        potential: improvementPotential,
+        score: Math.round(improvementScore),
+        suggestions: [
+          avgFormScore < 70 ? 'Focus on form fundamentals and technique' : null,
+          repsTrend < 0 ? 'Consider reducing intensity to maintain form' : null,
+          formTrend < 0 ? 'Review recent training load and recovery' : null,
+          avgReps < 10 ? 'Gradually increase repetition volume' : null
+        ].filter(Boolean)
+      },
+      performance_trends: {
+        form_trend: formTrend,
+        reps_trend: repsTrend,
+        consistency: Math.round(100 - formVariance),
+        overall_progress: formTrend > 0 && repsTrend >= 0 ? 'improving' : formTrend < -5 ? 'declining' : 'stable'
+      },
+      current_stats: {
+        avg_form_score: Math.round(avgFormScore),
+        avg_reps: Math.round(avgReps),
+        avg_duration: Math.round(avgDuration),
+        total_sessions: validSessions.length,
+        best_form_score: Math.max(...formScores),
+        best_reps: Math.max(...validSessions.map(s => s.reps || 0))
+      }
+    };
+
+    return insights;
   };
 
   // Offline functionality
@@ -610,26 +664,6 @@ const AthleteDashboard: React.FC = () => {
     return 'Poor';
   };
 
-  const getRiskClass = (risk: string) => {
-    switch (risk?.toLowerCase()) {
-      case 'low': return 'low';
-      case 'medium': return 'medium';
-      case 'high': return 'high';
-      default: return 'low';
-    }
-  };
-
-  const getCheatDetectionClass = (cheatDetection: any) => {
-    if (!cheatDetection) return 'clean';
-    if (cheatDetection.cheatDetected) {
-      switch (cheatDetection.riskLevel?.toLowerCase()) {
-        case 'high': return 'high-risk';
-        case 'medium': return 'medium-risk';
-        default: return 'low-risk';
-      }
-    }
-    return 'clean';
-  };
 
   const getPerformanceLevelClass = (level: string) => {
     switch (level?.toLowerCase()) {
@@ -867,99 +901,114 @@ const AthleteDashboard: React.FC = () => {
       )}
 
       <section className="activity-feed">
-        {/* Predictive Analytics Section */}
-        {loadingAnalytics && (
-          <div className="predictive-analytics-section">
-            <h2>Performance Insights</h2>
-            <div className="loading-analytics">
-              <p>Loading performance insights...</p>
-            </div>
-          </div>
-        )}
-        {(predictiveAnalytics && !predictiveAnalytics.error) || (sessions.length > 0 && sessions[0].predictiveAnalytics) && (
-          <div className="predictive-analytics-section">
-            <h2>Performance Insights</h2>
-            <div className="analytics-grid">
-              {(() => {
-                const analyticsData = predictiveAnalytics || (sessions.length > 0 ? sessions[0].predictiveAnalytics : null);
-                if (!analyticsData) return null;
-                
-                return (
-                  <>
-                    {/* Injury Risk */}
-                    <div className={`analytics-card ${analyticsData.injury_risk?.risk_level || 'low'}-risk`}>
-                      <h3>Injury Risk</h3>
-                      <div className="risk-level">
-                        <span className={`risk-badge ${analyticsData.injury_risk?.risk_level || 'low'}`}>
-                          {analyticsData.injury_risk?.risk_level?.toUpperCase() || 'LOW'}
-                        </span>
-                        <span className="risk-score">{analyticsData.injury_risk?.risk_score || 0}%</span>
+        {/* Performance Insights Section */}
+        {(() => {
+          const realInsights = calculatePerformanceInsights();
+          if (realInsights) {
+            return (
+              <div className="predictive-analytics-section">
+                <h2>Performance Insights</h2>
+                <div className="analytics-grid">
+                  {/* Current Performance Stats */}
+                  <div className="analytics-card current-stats">
+                    <h3>Current Performance</h3>
+                    <div className="stats-grid">
+                      <div className="stat-item">
+                        <span className="stat-label">Avg Form Score</span>
+                        <span className="stat-value">{realInsights.current_stats.avg_form_score}%</span>
                       </div>
-                      {analyticsData.injury_risk?.factors?.length > 0 && (
-                        <ul className="risk-factors">
-                          {analyticsData.injury_risk.factors.map((factor: string, index: number) => (
-                            <li key={index}>{factor}</li>
-                          ))}
-                        </ul>
-                      )}
+                      <div className="stat-item">
+                        <span className="stat-label">Avg Reps</span>
+                        <span className="stat-value">{realInsights.current_stats.avg_reps}</span>
+                      </div>
+                      <div className="stat-item">
+                        <span className="stat-label">Best Form Score</span>
+                        <span className="stat-value">{realInsights.current_stats.best_form_score}%</span>
+                      </div>
+                      <div className="stat-item">
+                        <span className="stat-label">Total Sessions</span>
+                        <span className="stat-value">{realInsights.current_stats.total_sessions}</span>
+                      </div>
                     </div>
+                  </div>
 
-                    {/* Improvement Potential */}
-                    <div className={`analytics-card ${analyticsData.improvement_potential?.potential || 'unknown'}-potential`}>
-                      <h3>Improvement Potential</h3>
-                      <div className="potential-level">
-                        <span className={`potential-badge ${analyticsData.improvement_potential?.potential || 'unknown'}`}>
-                          {analyticsData.improvement_potential?.potential?.toUpperCase() || 'UNKNOWN'}
+                  {/* Performance Trends */}
+                  <div className="analytics-card trends">
+                    <h3>Performance Trends</h3>
+                    <div className="trends-content">
+                      <div className="trend-item">
+                        <span className="trend-label">Form Trend:</span>
+                        <span className={`trend-value ${realInsights.performance_trends.form_trend > 0 ? 'positive' : realInsights.performance_trends.form_trend < 0 ? 'negative' : 'neutral'}`}>
+                          {realInsights.performance_trends.form_trend > 0 ? '↗' : realInsights.performance_trends.form_trend < 0 ? '↘' : '→'} 
+                          {Math.abs(realInsights.performance_trends.form_trend).toFixed(1)}%
                         </span>
-                        <span className="potential-score">{analyticsData.improvement_potential?.score || 0}%</span>
                       </div>
-                      {analyticsData.improvement_potential?.suggestions?.length > 0 && (
-                        <ul className="improvement-suggestions">
-                          {analyticsData.improvement_potential.suggestions.slice(0, 2).map((suggestion: string, index: number) => (
-                            <li key={index}>{suggestion}</li>
-                          ))}
-                        </ul>
-                      )}
+                      <div className="trend-item">
+                        <span className="trend-label">Reps Trend:</span>
+                        <span className={`trend-value ${realInsights.performance_trends.reps_trend > 0 ? 'positive' : realInsights.performance_trends.reps_trend < 0 ? 'negative' : 'neutral'}`}>
+                          {realInsights.performance_trends.reps_trend > 0 ? '↗' : realInsights.performance_trends.reps_trend < 0 ? '↘' : '→'} 
+                          {Math.abs(realInsights.performance_trends.reps_trend).toFixed(1)}
+                        </span>
+                      </div>
+                      <div className="trend-item">
+                        <span className="trend-label">Consistency:</span>
+                        <span className="trend-value">{realInsights.performance_trends.consistency}%</span>
+                      </div>
+                      <div className="trend-item">
+                        <span className="trend-label">Overall Progress:</span>
+                        <span className={`trend-value ${realInsights.performance_trends.overall_progress}`}>
+                          {realInsights.performance_trends.overall_progress}
+                        </span>
+                      </div>
                     </div>
+                  </div>
 
-                    {/* Future Performance Prediction */}
-                    {analyticsData.future_performance?.predictions && (
-                      <div className="analytics-card future-prediction">
-                        <h3>30-Day Forecast</h3>
-                        <div className="prediction-details">
-                          {analyticsData.future_performance.predictions.form_score && (
-                            <div className="prediction-item">
-                              <span className="metric">Form Score:</span>
-                              <span className="current">{analyticsData.future_performance.predictions.form_score.current}</span>
-                              <span className="arrow">→</span>
-                              <span className="predicted">{Math.round(analyticsData.future_performance.predictions.form_score.predicted)}</span>
-                            </div>
-                          )}
-                          {analyticsData.future_performance.predictions.reps && (
-                            <div className="prediction-item">
-                              <span className="metric">Reps:</span>
-                              <span className="current">{analyticsData.future_performance.predictions.reps.current}</span>
-                              <span className="arrow">→</span>
-                              <span className="predicted">{Math.round(analyticsData.future_performance.predictions.reps.predicted)}</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="confidence">
-                          Confidence: {Math.round(analyticsData.future_performance.overall_confidence || 0)}%
-                        </div>
-                      </div>
+                  {/* Injury Risk */}
+                  <div className={`analytics-card ${realInsights.injury_risk.risk_level}-risk`}>
+                    <h3>Injury Risk Assessment</h3>
+                    <div className="risk-level">
+                      <span className={`risk-badge ${realInsights.injury_risk.risk_level}`}>
+                        {realInsights.injury_risk.risk_level.toUpperCase()}
+                      </span>
+                      <span className="risk-score">{realInsights.injury_risk.risk_score}%</span>
+                    </div>
+                    {realInsights.injury_risk.factors.length > 0 && (
+                      <ul className="risk-factors">
+                        {realInsights.injury_risk.factors.map((factor: string | null, index: number) => (
+                          <li key={index}>{factor}</li>
+                        ))}
+                      </ul>
                     )}
-                  </>
-                );
-              })()}
-            </div>
-          </div>
-        )}
-        {!loadingAnalytics && !predictiveAnalytics && !(sessions.length > 0 && sessions[0].predictiveAnalytics) && (
+                  </div>
+
+                  {/* Improvement Potential */}
+                  <div className={`analytics-card ${realInsights.improvement_potential.potential}-potential`}>
+                    <h3>Improvement Potential</h3>
+                    <div className="potential-level">
+                      <span className={`potential-badge ${realInsights.improvement_potential.potential}`}>
+                        {realInsights.improvement_potential.potential.toUpperCase()}
+                      </span>
+                      <span className="potential-score">{realInsights.improvement_potential.score}%</span>
+                    </div>
+                    {realInsights.improvement_potential.suggestions.length > 0 && (
+                      <ul className="improvement-suggestions">
+                        {realInsights.improvement_potential.suggestions.map((suggestion: string | null, index: number) => (
+                          <li key={index}>{suggestion}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          }
+          return null;
+        })()}
+        {!calculatePerformanceInsights() && (
           <div className="predictive-analytics-section">
             <h2>Performance Insights</h2>
             <div className="no-analytics">
-              <p>No performance insights available yet. Complete more sessions to see your analytics!</p>
+              <p>No performance insights available yet. Complete more sessions with form scores and reps to see your analytics!</p>
             </div>
           </div>
         )}
