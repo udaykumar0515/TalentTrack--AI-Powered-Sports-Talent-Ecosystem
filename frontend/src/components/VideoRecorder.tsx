@@ -11,6 +11,7 @@ interface VideoRecorderProps {
   onStopRecording?: () => void;
   onVideoReady?: (videoUrl: string) => void;
   cameraStream?: MediaStream | null;
+  isOfflineMode?: boolean;
 }
 
 const VideoRecorder: React.FC<VideoRecorderProps> = ({
@@ -21,7 +22,8 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
   onStartRecording,
   onStopRecording,
   onVideoReady,
-  cameraStream
+  cameraStream,
+  isOfflineMode = false
 }) => {
   const { user } = useAuth();
 
@@ -88,6 +90,18 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
 
   const handleAnalyze = async () => {
     if (!recordedVideo) return;
+
+    // If in offline mode, just queue the video without analysis
+    if (isOfflineMode) {
+      const videoData = {
+        exercise: exercise,
+        videoBlob: recordedVideo,
+        timestamp: new Date().toISOString(),
+        type: 'recorded'
+      };
+      onVideoAnalyzed(videoData);
+      return;
+    }
 
     onStartAnalysis();
 
@@ -243,7 +257,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
             disabled={isAnalyzing}
           >
             <span className="analyze-icon">🔍</span>
-            {isAnalyzing ? 'Analyzing...' : 'Analyze'}
+            {isOfflineMode ? 'Upload to Queue' : (isAnalyzing ? 'Analyzing...' : 'Analyze')}
           </button>
           <button onClick={resetRecording} className="retry-btn">
             <span className="retry-icon">🔄</span>

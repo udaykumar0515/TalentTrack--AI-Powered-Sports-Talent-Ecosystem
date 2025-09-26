@@ -467,6 +467,322 @@ button:disabled {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
+/* Session Flow Styles */
+.session-start-section {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.start-session-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+}
+
+.start-session-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.session-icon {
+  font-size: 1.4rem;
+}
+
+.session-options-section {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 2rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.session-header h3 {
+  color: white;
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.cancel-session-btn {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-session-btn:hover {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+.offline-toggle {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.offline-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.offline-switch input[type="checkbox"] {
+  display: none;
+}
+
+.slider {
+  position: relative;
+  width: 60px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.slider::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.offline-switch input:checked + .slider {
+  background: #22c55e;
+}
+
+.offline-switch input:checked + .slider::before {
+  transform: translateX(30px);
+}
+
+.offline-label {
+  color: #333;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+.offline-description {
+  color: #333;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Video Queue Styles */
+.video-queue-btn {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  margin-right: 1rem;
+}
+
+.video-queue-btn:hover {
+  background: rgba(34, 197, 94, 0.3);
+}
+
+.queue-icon {
+  font-size: 1.1rem;
+}
+
+.video-queue-dropdown {
+  position: fixed;
+  top: 80px;
+  right: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 1rem;
+  min-width: 400px;
+  max-width: 500px;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transform: translateX(0);
+}
+
+.queue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.queue-header h3 {
+  color: #333;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.close-queue-btn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.25rem;
+}
+
+.queue-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.queue-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.queue-video-info {
+  flex: 1;
+}
+
+.video-exercise {
+  font-weight: 600;
+  color: #333;
+  text-transform: capitalize;
+}
+
+.video-timestamp {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.video-status {
+  font-size: 0.8rem;
+  color: #22c55e;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.video-details {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 0.25rem;
+}
+
+.analyzing-status {
+  font-size: 0.8rem;
+  color: #f59e0b;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: 4px;
+}
+
+.completed-status {
+  font-size: 0.8rem;
+  color: #22c55e;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  background: rgba(34, 197, 94, 0.1);
+  border-radius: 4px;
+}
+
+.queue-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.analyze-btn {
+  background: #22c55e;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.analyze-btn:hover {
+  background: #16a34a;
+}
+
+.remove-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.remove-btn:hover {
+  background: #dc2626;
+}
+
+.empty-queue {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+/* Responsive design for video queue */
+@media (max-width: 768px) {
+  .video-queue-dropdown {
+    position: fixed;
+    top: 70px;
+    left: 1rem;
+    right: 1rem;
+    min-width: auto;
+    max-width: none;
+    max-height: 60vh;
+  }
+}
+
 .analytics-card {
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(15px);

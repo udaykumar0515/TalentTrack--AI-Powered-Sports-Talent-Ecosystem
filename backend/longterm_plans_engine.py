@@ -429,7 +429,7 @@ class LongTermPlansEngine:
     def load_plans(self) -> Dict[str, List[Dict[str, Any]]]:
         """Load plans from file"""
         try:
-            with open(self.plans_file, 'r') as f:
+            with open(self.plans_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except:
             return {}

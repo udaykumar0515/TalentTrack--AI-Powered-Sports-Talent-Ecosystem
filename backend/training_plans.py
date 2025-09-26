@@ -22,7 +22,7 @@ class TrainingPlanGenerator:
     def _load_sessions(self) -> List[Dict]:
         """Load all sessions data"""
         try:
-            with open(self.sessions_file, 'r') as f:
+            with open(self.sessions_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 # Flatten the nested structure
                 all_sessions = []
@@ -37,7 +37,7 @@ class TrainingPlanGenerator:
     def _load_athletes(self) -> List[Dict]:
         """Load athletes data"""
         try:
-            with open(self.athletes_file, 'r') as f:
+            with open(self.athletes_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except FileNotFoundError:
             return []
@@ -45,14 +45,14 @@ class TrainingPlanGenerator:
     def _load_training_plans(self) -> Dict:
         """Load existing training plans"""
         try:
-            with open(self.training_plans_file, 'r') as f:
+            with open(self.training_plans_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except FileNotFoundError:
             return {}
     
     def _save_training_plans(self, plans: Dict):
         """Save training plans to file"""
-        with open(self.training_plans_file, 'w') as f:
+        with open(self.training_plans_file, 'w', encoding='utf-8') as f:
             json.dump(plans, f, indent=2)
     
     def _analyze_performance_gaps(self, athlete_sessions: List[Dict]) -> Dict[str, Any]:

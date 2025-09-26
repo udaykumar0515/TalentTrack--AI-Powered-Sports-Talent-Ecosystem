@@ -184,18 +184,18 @@ class GamificationEngine:
     
     def load_achievements(self) -> Dict[str, Any]:
         """Load achievements from file"""
-        with open(self.achievements_file, 'r') as f:
+        with open(self.achievements_file, 'r', encoding='utf-8') as f:
             return json.load(f)
     
     def load_badges(self) -> Dict[str, Any]:
         """Load badges from file"""
-        with open(self.badges_file, 'r') as f:
+        with open(self.badges_file, 'r', encoding='utf-8') as f:
             return json.load(f)
     
     def load_user_points(self, user_id: str) -> Dict[str, Any]:
         """Load user's points and achievements"""
         try:
-            with open(self.points_file, 'r') as f:
+            with open(self.points_file, 'r', encoding='utf-8') as f:
                 all_points = json.load(f)
                 return all_points.get(user_id, {
                     "total_points": 0,
@@ -222,7 +222,7 @@ class GamificationEngine:
     def save_user_points(self, user_id: str, user_data: Dict[str, Any]):
         """Save user's points and achievements"""
         try:
-            with open(self.points_file, 'r') as f:
+            with open(self.points_file, 'r', encoding='utf-8') as f:
                 all_points = json.load(f)
         except:
             all_points = {}
@@ -423,7 +423,7 @@ class GamificationEngine:
     def get_leaderboard(self, category: str = "total_points", limit: int = 10) -> List[Dict[str, Any]]:
         """Get leaderboard for a specific category"""
         try:
-            with open(self.points_file, 'r') as f:
+            with open(self.points_file, 'r', encoding='utf-8') as f:
                 all_points = json.load(f)
         except:
             return []

@@ -24,15 +24,33 @@ class OfflineVideoManager:
     def store_offline_video(self, user_id: str, video_data: Dict[str, Any]) -> Dict[str, Any]:
         """Store a video recorded offline with metadata"""
         try:
+            import base64
+            import os
+            
             offline_videos = self.load_offline_videos()
             
             video_id = f"offline_{user_id}_{len(offline_videos.get(user_id, [])) + 1}_{int(datetime.now().timestamp())}"
             
+            # Create directory for user's offline videos
+            user_video_dir = f"videos/athletes/{user_id}/offline"
+            os.makedirs(user_video_dir, exist_ok=True)
+            
+            # Save video as actual file
+            video_blob = video_data.get("video_blob", "")
+            video_filename = f"{video_id}.mp4"
+            video_path = os.path.join(user_video_dir, video_filename)
+            
+            if video_blob.startswith("data:video/"):
+                video_blob = video_blob.split(",")[1]
+            
+            with open(video_path, "wb") as f:
+                f.write(base64.b64decode(video_blob))
+            
             offline_video = {
                 "id": video_id,
                 "user_id": user_id,
-                "video_blob": video_data.get("video_blob", ""),
-                "video_name": video_data.get("video_name", f"offline_session_{datetime.now().strftime('%Y%m%d_%H%M%S')}.webm"),
+                "video_path": video_path,  # Store file path instead of blob
+                "video_name": video_data.get("video_name", f"offline_session_{datetime.now().strftime('%Y%m%d_%H%M%S')}.mp4"),
                 "exercise_type": video_data.get("exercise_type", "unknown"),
                 "recorded_at": video_data.get("recorded_at", datetime.now().isoformat()),
                 "file_size": video_data.get("file_size", 0),
@@ -206,7 +224,7 @@ class OfflineVideoManager:
     def load_offline_videos(self) -> Dict[str, List[Dict[str, Any]]]:
         """Load offline videos from file"""
         try:
-            with open(self.offline_videos_file, 'r') as f:
+            with open(self.offline_videos_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except:
             return {}

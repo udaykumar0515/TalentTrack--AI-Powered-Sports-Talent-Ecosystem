@@ -1398,11 +1398,99 @@ async def analyze_offline_video(user_id: str, video_id: str, analysis_request: d
         # Update status to analyzing
         offline_video_manager.update_video_status(user_id, video_id, "analyzing")
         
-        # Here you would typically queue the video for analysis
-        # For now, we'll simulate the analysis process
-        # In a real implementation, this would trigger the exercise_counter.py script
-        
-        return {"message": "Video queued for analysis", "video_id": video_id}
+        # Use the same analysis function as main analysis
+        try:
+            import subprocess
+            import json
+            import os
+            import tempfile
+            import shutil
+            
+            # Get the video file path
+            video_path = video["video_path"]
+            exercise_type = analysis_request.get("exercise_type", "squat")
+            
+            if not os.path.exists(video_path):
+                raise Exception(f"Video file not found: {video_path}")
+            
+            # Create a temporary file for the analysis (same as main analysis)
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp_file:
+                temp_file_path = temp_file.name
+                # Copy the video file to temp location
+                shutil.copy2(video_path, temp_file_path)
+            
+            try:
+                # Validate exercise name (same as main analysis)
+                exercise_internal = validate_exercise_name(exercise_type)
+                
+                # Run the same analysis command as main analysis
+                cmd = [
+                    PYTHON_EXECUTABLE, "exercise_counter.py",
+                    "--user-id", user_id,
+                    "--user-name", "Offline User",
+                    "--exercise", exercise_internal,
+                    "--video-file", temp_file_path
+                ]
+                
+                logger.info(f"Running offline analysis command: {' '.join(cmd)}")
+                
+                result = subprocess.run(cmd, capture_output=True, text=True, cwd=".", encoding='utf-8', errors='replace')
+                
+                if result.returncode == 0:
+                    # Parse the analysis results (same format as main analysis)
+                    analysis_data = json.loads(result.stdout)
+                    
+                    # Move video from offline folder to main athlete folder
+                    main_video_dir = f"videos/athletes/{user_id}"
+                    os.makedirs(main_video_dir, exist_ok=True)
+                    
+                    # New video path in main athlete folder
+                    new_video_path = os.path.join(main_video_dir, f"{video_id}.mp4")
+                    
+                    # Move the video file
+                    shutil.move(video_path, new_video_path)
+                    
+                    # Update video status to completed with analysis data
+                    offline_video_manager.update_video_status(user_id, video_id, "completed", analysis_data)
+                    
+                    # Create a session from the analysis (same as main analysis)
+                    import uuid
+                    session_data = {
+                        "sessionId": str(uuid.uuid4())[:8],  # Generate unique session ID
+                        "athleteId": user_id,
+                        "athleteName": "Offline User",
+                        "exercise": exercise_type,
+                        "reps": analysis_data.get("reps", 0),
+                        "formScore": analysis_data.get("formScore", 0.0),
+                        "timestamp": video["recorded_at"],
+                        "videoPath": new_video_path,
+                        "analysisData": analysis_data,
+                        "sessionType": "offline_analysis",
+                        "durationSec": analysis_data.get("durationSec", 0),
+                        "cheatDetection": analysis_data.get("cheatDetection", {})
+                    }
+                    
+                    # Use the same save function as main analysis
+                    save_session_result(session_data)
+                    
+                    # Remove the video from offline queue after successful analysis
+                    offline_video_manager.delete_offline_video(user_id, video_id)
+                    
+                    return {"message": "Video analyzed successfully", "video_id": video_id, "analysis": analysis_data}
+                else:
+                    # Analysis failed
+                    offline_video_manager.update_video_status(user_id, video_id, "failed")
+                    return {"message": "Video analysis failed", "error": result.stderr}
+                    
+            finally:
+                # Clean up temporary file
+                if os.path.exists(temp_file_path):
+                    os.unlink(temp_file_path)
+                
+        except Exception as analysis_error:
+            logger.error(f"Error during video analysis: {analysis_error}")
+            offline_video_manager.update_video_status(user_id, video_id, "failed")
+            return {"message": "Video analysis failed", "error": str(analysis_error)}
     except Exception as e:
         logger.error(f"Error analyzing offline video: {e}")
         raise HTTPException(status_code=500, detail="Failed to analyze offline video")

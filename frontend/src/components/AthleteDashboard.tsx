@@ -8,7 +8,7 @@ import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
 import OfflineVideoRecorder from './OfflineVideoRecorder';
 import OfflineVideoQueue from './OfflineVideoQueue';
-import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthleteTrainingPlan, generateAthleteTrainingPlan, getUserGamificationStats, getGamificationLeaderboard, createGoal, getUserGoals, updateGoal, deleteGoal, getGoalAnalytics, getGoalRecommendations, getUserOfflineVideos, getOfflineVideoStats } from '../api/apiClient';
+import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthleteTrainingPlan, generateAthleteTrainingPlan, getUserGamificationStats, getGamificationLeaderboard, createGoal, getUserGoals, updateGoal, deleteGoal, getGoalAnalytics, getGoalRecommendations } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -52,12 +52,18 @@ const AthleteDashboard: React.FC = () => {
 
   // Offline functionality state
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
-  const [offlineStats, setOfflineStats] = useState<any>(null);
   const [showOfflineMode, setShowOfflineMode] = useState(false);
   const [showOfflineQueue, setShowOfflineQueue] = useState(false);
 
   // Collapsible sections state
   const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  // Session flow state
+  const [showSessionOptions, setShowSessionOptions] = useState(false);
+  const [isOfflineMode, setIsOfflineMode] = useState(false);
+  const [videoQueue, setVideoQueue] = useState<any[]>([]);
+  const [showVideoQueue, setShowVideoQueue] = useState(false);
+  const [videoResetKey, setVideoResetKey] = useState(0);
 
   const exercises = [
     { value: 'squat', label: 'Squat' },
@@ -68,6 +74,139 @@ const AthleteDashboard: React.FC = () => {
   // Helper function to toggle collapsible sections
   const toggleSection = (sectionName: string) => {
     setActiveSection(activeSection === sectionName ? null : sectionName);
+  };
+
+  // Session flow functions
+  const handleStartSession = () => {
+    setShowSessionOptions(true);
+  };
+
+  const handleCancelSession = () => {
+    setShowSessionOptions(false);
+    setIsOfflineMode(false);
+  };
+
+  const handleOfflineToggle = () => {
+    setIsOfflineMode(!isOfflineMode);
+  };
+
+  const handleVideoQueued = async (videoData: any) => {
+    try {
+      if (!user?.id) return;
+
+      // Convert video blob to base64 for storage
+      let videoBlob = '';
+      if (videoData.videoBlob) {
+        videoBlob = await blobToBase64(videoData.videoBlob);
+      } else if (videoData.videoFile) {
+        videoBlob = await fileToBase64(videoData.videoFile);
+      }
+
+      const offlineVideoData = {
+        user_id: user.id,
+        video_blob: videoBlob,
+        video_name: videoData.videoFile?.name || `offline_${videoData.exercise}_${Date.now()}.webm`,
+        exercise_type: videoData.exercise,
+        recorded_at: videoData.timestamp,
+        file_size: videoData.videoFile?.size || videoData.videoBlob?.size || 0,
+        duration: 0, // Will be calculated during analysis
+        notes: `Offline ${videoData.type} session`,
+        location: 'web_app',
+        device_info: {
+          user_agent: navigator.userAgent,
+          platform: navigator.platform
+        }
+      };
+
+      // Store in backend
+      const response = await fetch('/api/offline-videos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(offlineVideoData)
+      });
+
+      if (response.ok) {
+        const storedVideo = await response.json();
+        // Reload the video queue from backend
+        await loadVideoQueue();
+        console.log('Video stored offline successfully:', storedVideo);
+        
+        // Reset video components after successful upload
+        setVideoResetKey(prev => prev + 1);
+      } else {
+        console.error('Failed to store offline video');
+      }
+    } catch (error) {
+      console.error('Error storing offline video:', error);
+    }
+  };
+
+  // Helper functions to convert files to base64
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const loadVideoQueue = async () => {
+    try {
+      if (!user?.id) return;
+      
+      const response = await fetch(`/api/offline-videos/${user.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setVideoQueue(data.videos || []);
+      }
+    } catch (error) {
+      console.error('Error loading video queue:', error);
+    }
+  };
+
+  const handleAnalyzeQueuedVideo = async (queuedVideo: any) => {
+    try {
+      if (!user?.id) return;
+
+      // For offline videos, we need to call the backend analysis API directly
+      // since the video is now stored as a file, not a blob
+      const response = await fetch(`/api/offline-videos/${user.id}/${queuedVideo.id}/analyze`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          exercise_type: queuedVideo.exercise_type,
+          coach_id: selectedCoach !== 'none' ? selectedCoach : null
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Video analysis result:', result);
+        
+        // Reload video queue and sessions
+        await loadVideoQueue();
+        await loadSessions();
+        console.log('Queued video analyzed and moved to sessions');
+      } else {
+        console.error('Failed to analyze video:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error analyzing queued video:', error);
+    }
   };
 
   // Load sessions and messages on component mount
@@ -83,8 +222,7 @@ const AthleteDashboard: React.FC = () => {
       await loadGoals();
       await loadGoalAnalytics();
       await loadGoalRecommendations();
-      await loadOfflineVideos();
-      await loadOfflineStats();
+      await loadVideoQueue();
     loadSelectedCoach();
     };
     loadData();
@@ -157,13 +295,16 @@ const AthleteDashboard: React.FC = () => {
       if (selectedSessionMenu && !(event.target as Element).closest('.session-menu')) {
         setSelectedSessionMenu(null);
       }
+      if (showVideoQueue && !(event.target as Element).closest('.video-queue-dropdown') && !(event.target as Element).closest('.video-queue-btn')) {
+        setShowVideoQueue(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [selectedSessionMenu]);
+  }, [selectedSessionMenu, showVideoQueue]);
 
   const loadSessions = async () => {
     try {
@@ -427,40 +568,17 @@ const AthleteDashboard: React.FC = () => {
     return insights;
   };
 
-  // Offline functionality
-  const loadOfflineVideos = async () => {
-    if (!user?.id) return;
-    
-    try {
-      await getUserOfflineVideos(user.id);
-      // Videos are loaded by the OfflineVideoQueue component
-    } catch (error) {
-      console.error('Error loading offline videos:', error);
-    }
-  };
-
-  const loadOfflineStats = async () => {
-    if (!user?.id) return;
-    
-    try {
-      const stats = await getOfflineVideoStats(user.id);
-      setOfflineStats(stats);
-    } catch (error) {
-      console.error('Error loading offline stats:', error);
-    }
-  };
+  // Offline functionality - handled by loadVideoQueue()
 
   const handleOfflineVideoRecorded = () => {
-    // Reload offline videos and stats
-    loadOfflineVideos();
-    loadOfflineStats();
+    // Reload video queue
+    loadVideoQueue();
   };
 
   const handleOfflineVideoAnalyzed = () => {
-    // Reload sessions and offline data
+    // Reload sessions and video queue
     loadSessions();
-    loadOfflineVideos();
-    loadOfflineStats();
+    loadVideoQueue();
   };
 
   // Online/Offline detection
@@ -469,8 +587,7 @@ const AthleteDashboard: React.FC = () => {
       setIsOffline(false);
       // When coming back online, reload data
       loadSessions();
-      loadOfflineVideos();
-      loadOfflineStats();
+      loadVideoQueue();
     };
     
     const handleOffline = () => {
@@ -702,6 +819,14 @@ const AthleteDashboard: React.FC = () => {
             </select>
           </div>
           <button 
+            onClick={() => setShowVideoQueue(!showVideoQueue)} 
+            className="video-queue-btn"
+            title={`Video Queue (${videoQueue.length})`}
+          >
+            <span className="queue-icon">📹</span>
+            Queue ({videoQueue.length})
+          </button>
+          <button 
             onClick={() => setShowChat(!showChat)} 
             className="messages-btn"
           >
@@ -715,7 +840,100 @@ const AthleteDashboard: React.FC = () => {
         </div>
       </header>
 
-      <div className="exercise-controls">
+      {/* Video Queue Dropdown */}
+      {showVideoQueue && (
+        <div className="video-queue-dropdown">
+          <div className="queue-header">
+            <h3>Video Queue ({videoQueue.length})</h3>
+            <button 
+              onClick={() => setShowVideoQueue(false)}
+              className="close-queue-btn"
+            >
+              ✕
+            </button>
+          </div>
+          {videoQueue.length > 0 ? (
+            <div className="queue-list">
+              {videoQueue.map((video) => (
+                <div key={video.id} className="queue-item">
+                  <div className="queue-video-info">
+                    <div className="video-exercise">{video.exercise_type || 'Unknown Exercise'}</div>
+                    <div className="video-timestamp">
+                      {new Date(video.recorded_at || video.created_at).toLocaleString()}
+                    </div>
+                    <div className="video-status">{video.status}</div>
+                    <div className="video-details">
+                      {video.file_size && `${Math.round(video.file_size / 1024 / 1024 * 100) / 100} MB`}
+                      {video.duration && ` • ${Math.round(video.duration)}s`}
+                    </div>
+                  </div>
+                  <div className="queue-actions">
+                    {video.status === 'pending_analysis' && (
+                      <button 
+                        onClick={() => handleAnalyzeQueuedVideo(video)}
+                        className="analyze-btn"
+                      >
+                        Analyze
+                      </button>
+                    )}
+                    {video.status === 'analyzing' && (
+                      <span className="analyzing-status">Analyzing...</span>
+                    )}
+                    {video.status === 'completed' && (
+                      <span className="completed-status">Completed</span>
+                    )}
+                    <button 
+                      onClick={async () => {
+                        try {
+                          const response = await fetch(`/api/offline-videos/${user?.id}/${video.id}`, {
+                            method: 'DELETE'
+                          });
+                          if (response.ok) {
+                            await loadVideoQueue();
+                          }
+                        } catch (error) {
+                          console.error('Error deleting video:', error);
+                        }
+                      }}
+                      className="remove-btn"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-queue">
+              <p>No videos in queue</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Session Controls */}
+      {!showSessionOptions ? (
+        <div className="session-start-section">
+          <button 
+            onClick={handleStartSession}
+            className="start-session-btn"
+          >
+            <span className="session-icon">🏋️</span>
+            Start Session
+          </button>
+        </div>
+      ) : (
+        <div className="session-options-section">
+          <div className="session-header">
+            <h3>Session Options</h3>
+            <button 
+              onClick={handleCancelSession}
+              className="cancel-session-btn"
+            >
+              ✕ Cancel
+            </button>
+          </div>
+          
         <div className="exercise-select">
           <label htmlFor="exercise-dropdown">Select Exercise:</label>
           <select 
@@ -730,28 +948,51 @@ const AthleteDashboard: React.FC = () => {
             ))}
           </select>
         </div>
+
+          <div className="offline-toggle">
+            <label className="offline-switch">
+              <input 
+                type="checkbox" 
+                checked={isOfflineMode}
+                onChange={handleOfflineToggle}
+              />
+              <span className="slider"></span>
+              <span className="offline-label">Offline Mode</span>
+            </label>
+            <p className="offline-description">
+              {isOfflineMode 
+                ? 'Videos will be saved to queue for later analysis' 
+                : 'Videos will be analyzed immediately'
+              }
+            </p>
+          </div>
         
-        <div className="video-buttons">
-          <VideoRecorder 
-            exercise={selectedExercise}
-            onVideoAnalyzed={handleVideoAnalyzed}
-            onStartAnalysis={handleStartAnalysis}
-            isAnalyzing={isAnalyzing}
-            onStartRecording={cameraActive ? handleStartRecording : handleOpenCamera}
-            onStopRecording={handleStopRecording}
-            onVideoReady={handleVideoReady}
-            cameraStream={cameraStream}
-          />
-          <VideoUploader 
-            exercise={selectedExercise}
-            onVideoAnalyzed={handleVideoAnalyzed}
-            onStartAnalysis={handleStartAnalysis}
-            isAnalyzing={isAnalyzing}
-            onStartUploading={handleStartUploading}
-            onVideoReady={handleVideoReady}
-          />
-        </div>
+          <div className="video-buttons">
+            <VideoRecorder 
+              key={`recorder-${videoResetKey}`}
+              exercise={selectedExercise}
+              onVideoAnalyzed={isOfflineMode ? handleVideoQueued : handleVideoAnalyzed}
+              onStartAnalysis={isOfflineMode ? () => {} : handleStartAnalysis}
+              isAnalyzing={isOfflineMode ? false : isAnalyzing}
+              onStartRecording={cameraActive ? handleStartRecording : handleOpenCamera}
+              onStopRecording={handleStopRecording}
+              onVideoReady={handleVideoReady}
+              cameraStream={cameraStream}
+              isOfflineMode={isOfflineMode}
+            />
+            <VideoUploader 
+              key={`uploader-${videoResetKey}`}
+              exercise={selectedExercise}
+              onVideoAnalyzed={isOfflineMode ? handleVideoQueued : handleVideoAnalyzed}
+              onStartAnalysis={isOfflineMode ? () => {} : handleStartAnalysis}
+              isAnalyzing={isOfflineMode ? false : isAnalyzing}
+              onStartUploading={handleStartUploading}
+              onVideoReady={handleVideoReady}
+              isOfflineMode={isOfflineMode}
+            />
+          </div>
       </div>
+      )}
 
 
       {/* Camera Preview Column */}
@@ -881,8 +1122,8 @@ const AthleteDashboard: React.FC = () => {
           const realInsights = calculatePerformanceInsights();
           if (realInsights) {
             return (
-              <div className="predictive-analytics-section">
-                <h2>Performance Insights</h2>
+          <div className="predictive-analytics-section">
+            <h2>Performance Insights</h2>
                 <div className="analytics-grid">
                   {/* Current Performance Stats */}
                   <div className="analytics-card current-stats">
@@ -891,11 +1132,11 @@ const AthleteDashboard: React.FC = () => {
                       <div className="stat-item">
                         <div className="stat-label">Avg Form Score</div>
                         <div className="stat-value">{realInsights.current_stats.avg_form_score}%</div>
-                      </div>
+            </div>
                       <div className="stat-item">
                         <div className="stat-label">Avg Reps</div>
                         <div className="stat-value">{realInsights.current_stats.avg_reps}</div>
-                      </div>
+          </div>
                       <div className="stat-item">
                         <div className="stat-label">Best Form Score</div>
                         <div className="stat-value">{realInsights.current_stats.best_form_score}%</div>
@@ -916,39 +1157,39 @@ const AthleteDashboard: React.FC = () => {
                         <div className={`trend-value ${realInsights.performance_trends.form_trend > 0 ? 'trend-up' : realInsights.performance_trends.form_trend < 0 ? 'trend-down' : 'trend-neutral'}`}>
                           <span className="trend-arrow">
                             {realInsights.performance_trends.form_trend > 0 ? '↗' : realInsights.performance_trends.form_trend < 0 ? '↘' : '→'}
-                          </span>
+                        </span>
                           <span className="trend-number">
                             {Math.abs(realInsights.performance_trends.form_trend).toFixed(1)}%
                           </span>
-                        </div>
                       </div>
+                    </div>
                       <div className="trend-item">
                         <div className="trend-label">Reps Trend</div>
                         <div className={`trend-value ${realInsights.performance_trends.reps_trend > 0 ? 'trend-up' : realInsights.performance_trends.reps_trend < 0 ? 'trend-down' : 'trend-neutral'}`}>
                           <span className="trend-arrow">
                             {realInsights.performance_trends.reps_trend > 0 ? '↗' : realInsights.performance_trends.reps_trend < 0 ? '↘' : '→'}
-                          </span>
+                        </span>
                           <span className="trend-number">
                             {Math.abs(realInsights.performance_trends.reps_trend).toFixed(1)}
                           </span>
-                        </div>
                       </div>
+                    </div>
                       <div className="trend-item">
                         <div className="trend-label">Consistency</div>
                         <div className="trend-value trend-neutral">
                           <span className="trend-number">{realInsights.performance_trends.consistency}%</span>
-                        </div>
-                      </div>
+                            </div>
+                            </div>
                       <div className="trend-item">
                         <div className="trend-label">Overall Progress</div>
                         <div className={`trend-value ${realInsights.performance_trends.overall_progress === 'improving' ? 'trend-up' : realInsights.performance_trends.overall_progress === 'declining' ? 'trend-down' : 'trend-neutral'}`}>
                           <span className="trend-text">{realInsights.performance_trends.overall_progress}</span>
                         </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+            </div>
 
-                </div>
+          </div>
               </div>
             );
           }
@@ -974,22 +1215,22 @@ const AthleteDashboard: React.FC = () => {
           
           {activeSection === 'training-plan' && (
             <div className="section-content">
-              {loadingTrainingPlan && (
-                <div className="loading-training-plan">
-                  <p>Loading your personalized training plan...</p>
-                </div>
-              )}
+        {loadingTrainingPlan && (
+            <div className="loading-training-plan">
+              <p>Loading your personalized training plan...</p>
+          </div>
+        )}
               {(trainingPlan && !trainingPlan.error) || (sessions.length > 0 && sessions[0].trainingPlan) ? (
                 <div className="training-plan-content">
-                  <div className="training-plan-header">
-                    <button 
-                      className="btn-secondary generate-plan-btn"
-                      onClick={generateNewTrainingPlan}
-                      disabled={loadingTrainingPlan}
-                    >
-                      {loadingTrainingPlan ? 'Generating...' : 'Generate New Plan'}
-                    </button>
-                  </div>
+            <div className="training-plan-header">
+              <button 
+                className="btn-secondary generate-plan-btn"
+                onClick={generateNewTrainingPlan}
+                disabled={loadingTrainingPlan}
+              >
+                {loadingTrainingPlan ? 'Generating...' : 'Generate New Plan'}
+              </button>
+            </div>
             
             {(() => {
               const planData = trainingPlan || (sessions.length > 0 ? sessions[0].trainingPlan : null);
@@ -1113,22 +1354,22 @@ const AthleteDashboard: React.FC = () => {
                 </>
               );
             })()}
-                </div>
+          </div>
               ) : (
-                <div className="no-training-plan">
-                  <p>No training plan available yet. Generate your personalized plan!</p>
-                  <button 
-                    className="btn-primary generate-plan-btn"
-                    onClick={generateNewTrainingPlan}
-                    disabled={loadingTrainingPlan}
-                  >
-                    {loadingTrainingPlan ? 'Generating...' : 'Generate Training Plan'}
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+            <div className="no-training-plan">
+              <p>No training plan available yet. Generate your personalized plan!</p>
+              <button 
+                className="btn-primary generate-plan-btn"
+                onClick={generateNewTrainingPlan}
+                disabled={loadingTrainingPlan}
+              >
+                {loadingTrainingPlan ? 'Generating...' : 'Generate Training Plan'}
+              </button>
+          </div>
+        )}
+                              </div>
+                            )}
+                              </div>
 
         {/* Gamification Section - Collapsible */}
         <div className="collapsible-section">
@@ -1137,7 +1378,7 @@ const AthleteDashboard: React.FC = () => {
             <span className={`toggle-icon ${activeSection === 'gamification' ? 'open' : 'closed'}`}>
               {activeSection === 'gamification' ? '▼' : '▶'}
             </span>
-          </div>
+                                </div>
           
           {activeSection === 'gamification' && (
             <div className="section-content">
@@ -1298,13 +1539,13 @@ const AthleteDashboard: React.FC = () => {
           {activeSection === 'goals' && (
             <div className="section-content">
               <div className="goal-setting-header">
-                <button 
-                  className="btn-primary"
-                  onClick={() => setShowCreateGoal(true)}
-                >
-                  + Create New Goal
-                </button>
-              </div>
+            <button 
+              className="btn-primary"
+              onClick={() => setShowCreateGoal(true)}
+            >
+              + Create New Goal
+            </button>
+          </div>
 
           {loadingGoals ? (
             <div className="loading-goals">
@@ -1552,20 +1793,20 @@ const AthleteDashboard: React.FC = () => {
           
           {activeSection === 'offline' && (
             <div className="section-content">
-              <div className="offline-controls">
-                <button 
-                  className={`btn-secondary ${showOfflineMode ? 'active' : ''}`}
-                  onClick={() => setShowOfflineMode(!showOfflineMode)}
-                >
-                  {showOfflineMode ? 'Hide' : 'Show'} Offline Recorder
-                </button>
-                <button 
-                  className={`btn-secondary ${showOfflineQueue ? 'active' : ''}`}
-                  onClick={() => setShowOfflineQueue(!showOfflineQueue)}
-                >
-                  {showOfflineQueue ? 'Hide' : 'Show'} Video Queue
-                </button>
-              </div>
+            <div className="offline-controls">
+              <button 
+                className={`btn-secondary ${showOfflineMode ? 'active' : ''}`}
+                onClick={() => setShowOfflineMode(!showOfflineMode)}
+              >
+                {showOfflineMode ? 'Hide' : 'Show'} Offline Recorder
+              </button>
+              <button 
+                className={`btn-secondary ${showOfflineQueue ? 'active' : ''}`}
+                onClick={() => setShowOfflineQueue(!showOfflineQueue)}
+              >
+                {showOfflineQueue ? 'Hide' : 'Show'} Video Queue
+              </button>
+          </div>
 
           {/* Offline Status Indicator */}
           <div className={`offline-status ${isOffline ? 'offline' : 'online'}`}>
@@ -1582,29 +1823,6 @@ const AthleteDashboard: React.FC = () => {
             )}
           </div>
 
-          {/* Offline Stats */}
-          {offlineStats && (
-            <div className="offline-stats">
-              <div className="stats-grid">
-                <div className="stat-card">
-                  <div className="stat-value">{offlineStats.total_videos || 0}</div>
-                  <div className="stat-label">Total Offline Videos</div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-value">{offlineStats.pending_videos || 0}</div>
-                  <div className="stat-label">Pending Analysis</div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-value">{offlineStats.analyzed_videos || 0}</div>
-                  <div className="stat-label">Analyzed</div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-value">{offlineStats.total_size_mb || 0} MB</div>
-                  <div className="stat-label">Total Size</div>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Offline Video Recorder */}
           {showOfflineMode && (

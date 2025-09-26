@@ -332,7 +332,7 @@ class GoalSettingEngine:
     def load_goals(self) -> Dict[str, List[Dict[str, Any]]]:
         """Load goals from file"""
         try:
-            with open(self.goals_file, 'r') as f:
+            with open(self.goals_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except:
             return {}

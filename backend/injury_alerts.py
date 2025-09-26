@@ -33,7 +33,7 @@ class InjuryAlertSystem:
     def _load_sessions(self) -> List[Dict]:
         """Load all sessions data"""
         try:
-            with open(self.sessions_file, 'r') as f:
+            with open(self.sessions_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 # Flatten the nested structure
                 all_sessions = []
@@ -48,7 +48,7 @@ class InjuryAlertSystem:
     def _load_athletes(self) -> List[Dict]:
         """Load athletes data"""
         try:
-            with open(self.athletes_file, 'r') as f:
+            with open(self.athletes_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except FileNotFoundError:
             return []
@@ -56,7 +56,7 @@ class InjuryAlertSystem:
     def _load_coaches(self) -> List[Dict]:
         """Load coaches data"""
         try:
-            with open(self.coaches_file, 'r') as f:
+            with open(self.coaches_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except FileNotFoundError:
             return []
@@ -64,7 +64,7 @@ class InjuryAlertSystem:
     def _load_alerts(self) -> Dict:
         """Load existing alerts"""
         try:
-            with open(self.alerts_file, 'r') as f:
+            with open(self.alerts_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except FileNotFoundError:
             return {}

@@ -9,6 +9,7 @@ interface VideoUploaderProps {
   isAnalyzing: boolean;
   onStartUploading?: () => void;
   onVideoReady?: (videoUrl: string) => void;
+  isOfflineMode?: boolean;
 }
 
 const VideoUploader: React.FC<VideoUploaderProps> = ({
@@ -17,7 +18,8 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
   onStartAnalysis,
   isAnalyzing,
   onStartUploading,
-  onVideoReady
+  onVideoReady,
+  isOfflineMode = false
 }) => {
   const { user } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -51,6 +53,18 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
 
   const handleAnalyze = async () => {
     if (!selectedFile) return;
+
+    // If in offline mode, just queue the video without analysis
+    if (isOfflineMode) {
+      const videoData = {
+        exercise: exercise,
+        videoFile: selectedFile,
+        timestamp: new Date().toISOString(),
+        type: 'uploaded'
+      };
+      onVideoAnalyzed(videoData);
+      return;
+    }
 
     onStartAnalysis();
 
@@ -191,7 +205,7 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
               disabled={isAnalyzing}
             >
               <span className="analyze-icon">🔍</span>
-              {isAnalyzing ? 'Analyzing...' : 'Analyze'}
+              {isOfflineMode ? 'Upload to Queue' : (isAnalyzing ? 'Analyzing...' : 'Analyze')}
             </button>
             <button onClick={resetUpload} className="retry-btn">
               <span className="retry-icon">🔄</span>
