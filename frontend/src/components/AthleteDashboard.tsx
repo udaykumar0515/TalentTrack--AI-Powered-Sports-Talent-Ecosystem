@@ -49,7 +49,6 @@ const AthleteDashboard: React.FC = () => {
   });
 
   // Offline functionality state
-
   // Collapsible sections state
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
@@ -367,7 +366,6 @@ const AthleteDashboard: React.FC = () => {
       console.error('Error loading messages:', error);
     }
   };
-
 
   const loadTrainingPlan = async () => {
     if (!user?.id) return;
@@ -705,7 +703,6 @@ const AthleteDashboard: React.FC = () => {
     setCurrentVideoUrl(videoUrl);
   };
 
-
   // Helper functions for formatting and status
   const getStatusClass = (formScore: number) => {
     if (formScore >= 85) return 'green';
@@ -719,7 +716,6 @@ const AthleteDashboard: React.FC = () => {
     if (formScore >= 50) return 'Fair';
     return 'Poor';
   };
-
 
   const getPerformanceLevelClass = (level: string) => {
     switch (level?.toLowerCase()) {
@@ -990,7 +986,6 @@ const AthleteDashboard: React.FC = () => {
       </div>
       )}
 
-
       {/* Camera Preview Column */}
       {cameraActive && (
         <div className="camera-preview-section">
@@ -1032,7 +1027,6 @@ const AthleteDashboard: React.FC = () => {
           <p>Analyzing your video...</p>
         </div>
       )}
-
 
       <ChatSidebar
         isOpen={showChat}
@@ -1114,7 +1108,7 @@ const AthleteDashboard: React.FC = () => {
 
       <section className="activity-feed">
         {/* Performance Insights Section */}
-        <div className="collapsible-section">
+        <div className={`collapsible-section ${activeSection === 'performance-insights' ? 'active' : ''}`}>
           {activeSection === 'performance-insights' && (
             <div className="section-content">
               {(() => {
@@ -1201,10 +1195,8 @@ const AthleteDashboard: React.FC = () => {
             </div>
           )}
         </div>
-
         {/* Training Plan Section */}
-        <div className="collapsible-section">
-          
+        <div className={`collapsible-section ${activeSection === 'training-plan' ? 'active' : ''}`}>
           {activeSection === 'training-plan' && (
             <div className="section-content">
         {loadingTrainingPlan && (
@@ -1362,10 +1354,8 @@ const AthleteDashboard: React.FC = () => {
                               </div>
                             )}
                               </div>
-
         {/* Gamification Section */}
-        <div className="collapsible-section">
-          
+        <div className={`collapsible-section ${activeSection === 'gamification' ? 'active' : ''}`}>
           {activeSection === 'gamification' && (
             <div className="section-content">
           {loadingGamification ? (
@@ -1512,10 +1502,8 @@ const AthleteDashboard: React.FC = () => {
             </div>
           )}
         </div>
-
         {/* Goal Setting Section */}
-        <div className="collapsible-section">
-          
+        <div className={`collapsible-section ${activeSection === 'goals' ? 'active' : ''}`}>
           {activeSection === 'goals' && (
             <div className="section-content">
           <div className="goal-setting-header">
@@ -1761,7 +1749,6 @@ const AthleteDashboard: React.FC = () => {
             </div>
           </div>
         )}
-
         <h2>Your Recent Activity</h2>
         <div id="metrics-container">
           {sessions.length === 0 ? (

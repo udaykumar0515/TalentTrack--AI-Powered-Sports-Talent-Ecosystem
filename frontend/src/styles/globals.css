@@ -5408,12 +5408,19 @@ button:disabled {
 
 /* Collapsible Sections Styles */
 .collapsible-section {
-  margin-bottom: 2rem;
+  margin-bottom: 0;
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   overflow: hidden;
   border: 1px solid #e5e7eb;
+  min-height: 0;
+  display: none;
+}
+
+.collapsible-section.active {
+  display: block;
+  margin-bottom: 2rem;
 }
 
 .section-header {
