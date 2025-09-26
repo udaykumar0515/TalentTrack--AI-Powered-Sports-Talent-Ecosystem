@@ -4945,3 +4945,170 @@ button:disabled {
 .goal-meta .goal-deadline {
   flex-shrink: 0;
 }
+
+/* Collapsible Sections Styles */
+.collapsible-section {
+  margin-bottom: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.section-header:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+}
+
+.toggle-icon {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+  color: white;
+  font-weight: bold;
+}
+
+.toggle-icon.open {
+  transform: rotate(0deg);
+}
+
+.toggle-icon.closed {
+  transform: rotate(-90deg);
+}
+
+.section-content {
+  padding: 24px;
+  background: white;
+  color: #374151;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Override section-specific backgrounds for collapsible sections */
+.collapsible-section .section-content {
+  background: white;
+  color: #374151;
+}
+
+.collapsible-section .section-content h3 {
+  color: #1f2937;
+}
+
+.collapsible-section .section-content p {
+  color: #6b7280;
+}
+
+/* Training Plan Section - Collapsible */
+.collapsible-section .training-plan-content {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  padding: 24px;
+  color: white;
+  margin-top: 16px;
+}
+
+.collapsible-section .training-plan-content h3 {
+  color: white;
+}
+
+.collapsible-section .training-plan-content p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Gamification Section - Collapsible */
+.collapsible-section .gamification-content {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 24px;
+  color: white;
+  margin-top: 16px;
+}
+
+.collapsible-section .gamification-content h3 {
+  color: white;
+}
+
+.collapsible-section .gamification-content p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Goals Section - Collapsible */
+.collapsible-section .goals-content {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border-radius: 12px;
+  padding: 24px;
+  color: white;
+  margin-top: 16px;
+}
+
+.collapsible-section .goals-content h3 {
+  color: white;
+}
+
+.collapsible-section .goals-content p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Offline Section - Collapsible */
+.collapsible-section .offline-content {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  border-radius: 12px;
+  padding: 24px;
+  color: white;
+  margin-top: 16px;
+}
+
+.collapsible-section .offline-content h3 {
+  color: white;
+}
+
+.collapsible-section .offline-content p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Responsive Design for Collapsible Sections */
+@media (max-width: 768px) {
+  .section-header {
+    padding: 16px 20px;
+  }
+  
+  .section-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .section-content {
+    padding: 20px;
+  }
+  
+  .toggle-icon {
+    font-size: 1rem;
+  }
+}

@@ -58,11 +58,19 @@ const AthleteDashboard: React.FC = () => {
   const [showOfflineMode, setShowOfflineMode] = useState(false);
   const [showOfflineQueue, setShowOfflineQueue] = useState(false);
 
+  // Collapsible sections state
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
   const exercises = [
     { value: 'squat', label: 'Squat' },
     { value: 'jumping_jack', label: 'Jumping Jack' },
     { value: 'pushup', label: 'Push-up' }
   ];
+
+  // Helper function to toggle collapsible sections
+  const toggleSection = (sectionName: string) => {
+    setActiveSection(activeSection === sectionName ? null : sectionName);
+  };
 
   // Load sessions and messages on component mount
   useEffect(() => {
@@ -956,27 +964,33 @@ const AthleteDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Training Plan Section */}
-        {loadingTrainingPlan && (
-          <div className="training-plan-section">
-            <h2>Your Training Plan</h2>
-            <div className="loading-training-plan">
-              <p>Loading your personalized training plan...</p>
-            </div>
+        {/* Training Plan Section - Collapsible */}
+        <div className="collapsible-section">
+          <div className="section-header" onClick={() => toggleSection('training-plan')}>
+            <h2>📋 Training Plan</h2>
+            <span className={`toggle-icon ${activeSection === 'training-plan' ? 'open' : 'closed'}`}>
+              {activeSection === 'training-plan' ? '▼' : '▶'}
+            </span>
           </div>
-        )}
-        {(trainingPlan && !trainingPlan.error) || (sessions.length > 0 && sessions[0].trainingPlan) && (
-          <div className="training-plan-section">
-            <div className="training-plan-header">
-              <h2>Your Training Plan</h2>
-              <button 
-                className="btn-secondary generate-plan-btn"
-                onClick={generateNewTrainingPlan}
-                disabled={loadingTrainingPlan}
-              >
-                {loadingTrainingPlan ? 'Generating...' : 'Generate New Plan'}
-              </button>
-            </div>
+          
+          {activeSection === 'training-plan' && (
+            <div className="section-content">
+              {loadingTrainingPlan && (
+                <div className="loading-training-plan">
+                  <p>Loading your personalized training plan...</p>
+                </div>
+              )}
+              {(trainingPlan && !trainingPlan.error) || (sessions.length > 0 && sessions[0].trainingPlan) ? (
+                <div className="training-plan-content">
+                  <div className="training-plan-header">
+                    <button 
+                      className="btn-secondary generate-plan-btn"
+                      onClick={generateNewTrainingPlan}
+                      disabled={loadingTrainingPlan}
+                    >
+                      {loadingTrainingPlan ? 'Generating...' : 'Generate New Plan'}
+                    </button>
+                  </div>
             
             {(() => {
               const planData = trainingPlan || (sessions.length > 0 ? sessions[0].trainingPlan : null);
@@ -1100,181 +1114,34 @@ const AthleteDashboard: React.FC = () => {
                 </>
               );
             })()}
-          </div>
-        )}
-        {!loadingTrainingPlan && !trainingPlan && !(sessions.length > 0 && sessions[0].trainingPlan) && (
-          <div className="training-plan-section">
-            <h2>Your Training Plan</h2>
-            <div className="no-training-plan">
-              <p>No training plan available yet. Generate your personalized plan!</p>
-              <button 
-                className="btn-primary generate-plan-btn"
-                onClick={generateNewTrainingPlan}
-                disabled={loadingTrainingPlan}
-              >
-                {loadingTrainingPlan ? 'Generating...' : 'Generate Training Plan'}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Training Plan Section - Detailed Style */}
-        {!loadingTrainingPlan && (
-          <div className="training-plan-section">
-            <h2>Your Training Plan</h2>
-            {(trainingPlan && !trainingPlan.error) || (sessions.length > 0 && sessions[0].trainingPlan) ? (
-              <div className="training-plan-content">
-                <div className="training-plan-header">
+                </div>
+              ) : (
+                <div className="no-training-plan">
+                  <p>No training plan available yet. Generate your personalized plan!</p>
                   <button 
-                    className="btn-secondary generate-plan-btn"
+                    className="btn-primary generate-plan-btn"
                     onClick={generateNewTrainingPlan}
                     disabled={loadingTrainingPlan}
                   >
-                    {loadingTrainingPlan ? 'Generating...' : 'Generate New Plan'}
+                    {loadingTrainingPlan ? 'Generating...' : 'Generate Training Plan'}
                   </button>
                 </div>
-                
-                {(() => {
-                  const planData = trainingPlan || (sessions.length > 0 ? sessions[0].trainingPlan : null);
-                  if (!planData) return null;
-                  
-                  return (
-                    <>
-                      {/* Performance Analysis */}
-                      {planData.analysis && (
-                        <div className="analysis-summary">
-                          <h3>Performance Analysis</h3>
-                          <div className="analysis-grid">
-                            {planData.analysis.gaps && planData.analysis.gaps.length > 0 && (
-                              <div className="analysis-card gaps">
-                                <h4>Areas to Improve</h4>
-                                <ul>
-                                  {planData.analysis.gaps.map((gap: string, index: number) => (
-                                    <li key={index}>{gap}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                            {planData.analysis.strengths && planData.analysis.strengths.length > 0 && (
-                              <div className="analysis-card strengths">
-                                <h4>Your Strengths</h4>
-                                <ul>
-                                  {planData.analysis.strengths.map((strength: string, index: number) => (
-                                    <li key={index}>{strength}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
+              )}
+            </div>
+          )}
+        </div>
 
-                      {/* Weekly Schedule */}
-                      {planData.weekly_schedule && planData.weekly_schedule.length > 0 && (
-                        <div className="weekly-schedule">
-                          <h3>This Week's Schedule</h3>
-                          <div className="schedule-grid">
-                            {planData.weekly_schedule.map((day: any, index: number) => (
-                              <div key={index} className="schedule-card">
-                                <div className="day-header">
-                                  <h4>{day.day}</h4>
-                                  <span className={`priority-badge ${day.priority}`}>{day.priority}</span>
-                                </div>
-                                <div className="exercise-info">
-                                  <div className="exercise-name">{day.exercise}</div>
-                                  <div className="exercise-details">
-                                    {day.sets} sets × {day.reps} reps
-                                  </div>
-                                  <div className="exercise-focus">{day.focus}</div>
-                                </div>
-                                <div className="exercise-instructions">
-                                  <h5>Instructions:</h5>
-                                  <ul>
-                                    {day.instructions && day.instructions.map((instruction: string, idx: number) => (
-                                      <li key={idx}>{instruction}</li>
-                                    ))}
-                                  </ul>
-                                </div>
-                                <div className="exercise-duration">
-                                  Duration: {day.estimated_duration}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Progression Plan */}
-                      {planData.progression_plan && planData.progression_plan.weeks && (
-                        <div className="progression-plan">
-                          <h3>4-Week Progression Plan</h3>
-                          <div className="progression-grid">
-                            {planData.progression_plan.weeks.map((week: any, index: number) => (
-                              <div key={index} className="progression-card">
-                                <div className="week-header">
-                                  <h4>Week {week.week}</h4>
-                                  <div className="week-focus">{week.focus}</div>
-                                </div>
-                                <div className="week-targets">
-                                  <div className="target">
-                                    <span className="target-label">Form Target:</span>
-                                    <span className="target-value">{week.form_target}%</span>
-                                  </div>
-                                  <div className="target">
-                                    <span className="target-label">Reps Target:</span>
-                                    <span className="target-value">{week.reps_target}</span>
-                                  </div>
-                                </div>
-                                <div className="week-metrics">
-                                  <h5>Key Metrics:</h5>
-                                  <ul>
-                                    {week.key_metrics && week.key_metrics.map((metric: string, idx: number) => (
-                                      <li key={idx}>{metric}</li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Coaching Notes */}
-                      {planData.coaching_notes && planData.coaching_notes.length > 0 && (
-                        <div className="coaching-notes">
-                          <h3>Coaching Notes</h3>
-                          <div className="notes-list">
-                            {planData.coaching_notes.map((note: string, index: number) => (
-                              <div key={index} className="note-item">
-                                <span className="note-icon">💡</span>
-                                <span className="note-text">{note}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  );
-                })()}
-              </div>
-            ) : (
-              <div className="no-training-plan">
-                <p>No training plan available yet. Generate your personalized plan!</p>
-                <button 
-                  className="btn-primary generate-plan-btn"
-                  onClick={generateNewTrainingPlan}
-                  disabled={loadingTrainingPlan}
-                >
-                  {loadingTrainingPlan ? 'Generating...' : 'Generate Training Plan'}
-                </button>
-              </div>
-            )}
+        {/* Gamification Section - Collapsible */}
+        <div className="collapsible-section">
+          <div className="section-header" onClick={() => toggleSection('gamification')}>
+            <h2>🏆 Your Progress & Achievements</h2>
+            <span className={`toggle-icon ${activeSection === 'gamification' ? 'open' : 'closed'}`}>
+              {activeSection === 'gamification' ? '▼' : '▶'}
+            </span>
           </div>
-        )}
-
-        {/* Gamification Section */}
-        <div className="gamification-section">
-          <h2>🏆 Your Progress & Achievements</h2>
+          
+          {activeSection === 'gamification' && (
+            <div className="section-content">
           {loadingGamification ? (
             <div className="loading-gamification">
               <p>Loading your progress...</p>
@@ -1416,19 +1283,29 @@ const AthleteDashboard: React.FC = () => {
               <p>Complete your first session to start earning points and achievements!</p>
             </div>
           )}
+            </div>
+          )}
         </div>
 
-        {/* Goal Setting Section */}
-        <div className="goal-setting-section">
-          <div className="goal-setting-header">
+        {/* Goal Setting Section - Collapsible */}
+        <div className="collapsible-section">
+          <div className="section-header" onClick={() => toggleSection('goals')}>
             <h2>🎯 Your Goals & Progress</h2>
-            <button 
-              className="btn-primary"
-              onClick={() => setShowCreateGoal(true)}
-            >
-              + Create New Goal
-            </button>
+            <span className={`toggle-icon ${activeSection === 'goals' ? 'open' : 'closed'}`}>
+              {activeSection === 'goals' ? '▼' : '▶'}
+            </span>
           </div>
+          
+          {activeSection === 'goals' && (
+            <div className="section-content">
+              <div className="goal-setting-header">
+                <button 
+                  className="btn-primary"
+                  onClick={() => setShowCreateGoal(true)}
+                >
+                  + Create New Goal
+                </button>
+              </div>
 
           {loadingGoals ? (
             <div className="loading-goals">
@@ -1543,6 +1420,8 @@ const AthleteDashboard: React.FC = () => {
           ) : (
             <div className="no-goals">
               <p>No goals set yet. Create your first goal to start tracking your progress!</p>
+            </div>
+          )}
             </div>
           )}
         </div>
@@ -1663,25 +1542,31 @@ const AthleteDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Offline Functionality Section */}
-        <div className="offline-functionality-section">
-          <div className="offline-header">
+        {/* Offline Functionality Section - Collapsible */}
+        <div className="collapsible-section">
+          <div className="section-header" onClick={() => toggleSection('offline')}>
             <h2>📱 Offline Mode</h2>
-            <div className="offline-controls">
-              <button 
-                className={`btn-secondary ${showOfflineMode ? 'active' : ''}`}
-                onClick={() => setShowOfflineMode(!showOfflineMode)}
-              >
-                {showOfflineMode ? 'Hide' : 'Show'} Offline Recorder
-              </button>
-              <button 
-                className={`btn-secondary ${showOfflineQueue ? 'active' : ''}`}
-                onClick={() => setShowOfflineQueue(!showOfflineQueue)}
-              >
-                {showOfflineQueue ? 'Hide' : 'Show'} Video Queue
-              </button>
-            </div>
+            <span className={`toggle-icon ${activeSection === 'offline' ? 'open' : 'closed'}`}>
+              {activeSection === 'offline' ? '▼' : '▶'}
+            </span>
           </div>
+          
+          {activeSection === 'offline' && (
+            <div className="section-content">
+              <div className="offline-controls">
+                <button 
+                  className={`btn-secondary ${showOfflineMode ? 'active' : ''}`}
+                  onClick={() => setShowOfflineMode(!showOfflineMode)}
+                >
+                  {showOfflineMode ? 'Hide' : 'Show'} Offline Recorder
+                </button>
+                <button 
+                  className={`btn-secondary ${showOfflineQueue ? 'active' : ''}`}
+                  onClick={() => setShowOfflineQueue(!showOfflineQueue)}
+                >
+                  {showOfflineQueue ? 'Hide' : 'Show'} Video Queue
+                </button>
+              </div>
 
           {/* Offline Status Indicator */}
           <div className={`offline-status ${isOffline ? 'offline' : 'online'}`}>
@@ -1741,6 +1626,8 @@ const AthleteDashboard: React.FC = () => {
                 userId={user?.id || ''}
                 onVideoAnalyzed={handleOfflineVideoAnalyzed}
               />
+            </div>
+          )}
             </div>
           )}
         </div>
