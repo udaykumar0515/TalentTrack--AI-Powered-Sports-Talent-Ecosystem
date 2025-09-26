@@ -4,6 +4,16 @@ backend/myenv/
 backend/__pycache__/
 __pycache__/
 
+# Virtual environments
+myenv/
+venv/
+env/
+.venv/
+.env/
+ENV/
+env.bak/
+venv.bak/
+
 # Environment variables
 .env
 .env.local
@@ -129,3 +139,7 @@ user_api.py
 # Keep only essential videos
 !frontend/public/test-video.mp4
 !Bodyweight Squats.mp4
+
+# Video directories (exclude all video storage)
+videos/
+backend/videos/
