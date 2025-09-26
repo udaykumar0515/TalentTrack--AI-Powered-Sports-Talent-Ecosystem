@@ -200,7 +200,41 @@ button:disabled {
 .header-right {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Section Navigation Buttons */
+.section-nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.section-nav-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.section-nav-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.section-nav-btn.active {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
 }
 
 .logout-btn {
@@ -470,8 +504,12 @@ button:disabled {
 /* Session Flow Styles */
 .session-start-section {
   display: flex;
+  flex-direction: row;
+  align-items: center;
   justify-content: center;
+  gap: 15px;
   margin: 2rem 0;
+  flex-wrap: wrap;
 }
 
 .start-session-btn {
@@ -2374,6 +2412,21 @@ button:disabled {
   .header-right {
     flex-direction: column;
     gap: 10px;
+  }
+  
+  .session-start-section {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .section-nav-buttons {
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .section-nav-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
   }
   
   .logo-section {

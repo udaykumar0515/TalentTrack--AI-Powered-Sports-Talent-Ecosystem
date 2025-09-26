@@ -6,8 +6,6 @@ import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
-import OfflineVideoRecorder from './OfflineVideoRecorder';
-import OfflineVideoQueue from './OfflineVideoQueue';
 import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthleteTrainingPlan, generateAthleteTrainingPlan, getUserGamificationStats, getGamificationLeaderboard, createGoal, getUserGoals, updateGoal, deleteGoal, getGoalAnalytics, getGoalRecommendations } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
@@ -51,9 +49,6 @@ const AthleteDashboard: React.FC = () => {
   });
 
   // Offline functionality state
-  const [isOffline, setIsOffline] = useState(!navigator.onLine);
-  const [showOfflineMode, setShowOfflineMode] = useState(false);
-  const [showOfflineQueue, setShowOfflineQueue] = useState(false);
 
   // Collapsible sections state
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -570,38 +565,7 @@ const AthleteDashboard: React.FC = () => {
 
   // Offline functionality - handled by loadVideoQueue()
 
-  const handleOfflineVideoRecorded = () => {
-    // Reload video queue
-    loadVideoQueue();
-  };
 
-  const handleOfflineVideoAnalyzed = () => {
-    // Reload sessions and video queue
-    loadSessions();
-    loadVideoQueue();
-  };
-
-  // Online/Offline detection
-  useEffect(() => {
-    const handleOnline = () => {
-      setIsOffline(false);
-      // When coming back online, reload data
-      loadSessions();
-      loadVideoQueue();
-    };
-    
-    const handleOffline = () => {
-      setIsOffline(true);
-    };
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
 
 
 
@@ -921,6 +885,31 @@ const AthleteDashboard: React.FC = () => {
             <span className="session-icon">🏋️</span>
             Start Session
           </button>
+          
+          {/* Section Navigation Buttons */}
+          <div className="section-nav-buttons">
+            <button 
+              onClick={() => toggleSection('training-plan')}
+              className={`section-nav-btn ${activeSection === 'training-plan' ? 'active' : ''}`}
+              title="Training Plan"
+            >
+              📋 Training Plan
+            </button>
+            <button 
+              onClick={() => toggleSection('gamification')}
+              className={`section-nav-btn ${activeSection === 'gamification' ? 'active' : ''}`}
+              title="Progress & Achievements"
+            >
+              🏆 Progress & Achievements
+            </button>
+            <button 
+              onClick={() => toggleSection('goals')}
+              className={`section-nav-btn ${activeSection === 'goals' ? 'active' : ''}`}
+              title="Goals & Progress"
+            >
+              🎯 Goals & Progress
+            </button>
+          </div>
         </div>
       ) : (
         <div className="session-options-section">
@@ -965,32 +954,32 @@ const AthleteDashboard: React.FC = () => {
                 : 'Videos will be analyzed immediately'
               }
             </p>
-          </div>
+        </div>
         
-          <div className="video-buttons">
-            <VideoRecorder 
+        <div className="video-buttons">
+          <VideoRecorder 
               key={`recorder-${videoResetKey}`}
-              exercise={selectedExercise}
+            exercise={selectedExercise}
               onVideoAnalyzed={isOfflineMode ? handleVideoQueued : handleVideoAnalyzed}
               onStartAnalysis={isOfflineMode ? () => {} : handleStartAnalysis}
               isAnalyzing={isOfflineMode ? false : isAnalyzing}
-              onStartRecording={cameraActive ? handleStartRecording : handleOpenCamera}
-              onStopRecording={handleStopRecording}
-              onVideoReady={handleVideoReady}
-              cameraStream={cameraStream}
+            onStartRecording={cameraActive ? handleStartRecording : handleOpenCamera}
+            onStopRecording={handleStopRecording}
+            onVideoReady={handleVideoReady}
+            cameraStream={cameraStream}
               isOfflineMode={isOfflineMode}
-            />
-            <VideoUploader 
+          />
+          <VideoUploader 
               key={`uploader-${videoResetKey}`}
-              exercise={selectedExercise}
+            exercise={selectedExercise}
               onVideoAnalyzed={isOfflineMode ? handleVideoQueued : handleVideoAnalyzed}
               onStartAnalysis={isOfflineMode ? () => {} : handleStartAnalysis}
               isAnalyzing={isOfflineMode ? false : isAnalyzing}
-              onStartUploading={handleStartUploading}
-              onVideoReady={handleVideoReady}
+            onStartUploading={handleStartUploading}
+            onVideoReady={handleVideoReady}
               isOfflineMode={isOfflineMode}
-            />
-          </div>
+          />
+        </div>
       </div>
       )}
 
@@ -1204,14 +1193,8 @@ const AthleteDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Training Plan Section - Collapsible */}
+        {/* Training Plan Section */}
         <div className="collapsible-section">
-          <div className="section-header" onClick={() => toggleSection('training-plan')}>
-            <h2>📋 Training Plan</h2>
-            <span className={`toggle-icon ${activeSection === 'training-plan' ? 'open' : 'closed'}`}>
-              {activeSection === 'training-plan' ? '▼' : '▶'}
-            </span>
-          </div>
           
           {activeSection === 'training-plan' && (
             <div className="section-content">
@@ -1371,14 +1354,8 @@ const AthleteDashboard: React.FC = () => {
                             )}
                               </div>
 
-        {/* Gamification Section - Collapsible */}
+        {/* Gamification Section */}
         <div className="collapsible-section">
-          <div className="section-header" onClick={() => toggleSection('gamification')}>
-            <h2>🏆 Your Progress & Achievements</h2>
-            <span className={`toggle-icon ${activeSection === 'gamification' ? 'open' : 'closed'}`}>
-              {activeSection === 'gamification' ? '▼' : '▶'}
-            </span>
-                                </div>
           
           {activeSection === 'gamification' && (
             <div className="section-content">
@@ -1527,18 +1504,12 @@ const AthleteDashboard: React.FC = () => {
           )}
         </div>
 
-        {/* Goal Setting Section - Collapsible */}
+        {/* Goal Setting Section */}
         <div className="collapsible-section">
-          <div className="section-header" onClick={() => toggleSection('goals')}>
-            <h2>🎯 Your Goals & Progress</h2>
-            <span className={`toggle-icon ${activeSection === 'goals' ? 'open' : 'closed'}`}>
-              {activeSection === 'goals' ? '▼' : '▶'}
-            </span>
-          </div>
           
           {activeSection === 'goals' && (
             <div className="section-content">
-              <div className="goal-setting-header">
+          <div className="goal-setting-header">
             <button 
               className="btn-primary"
               onClick={() => setShowCreateGoal(true)}
@@ -1782,72 +1753,6 @@ const AthleteDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Offline Functionality Section - Collapsible */}
-        <div className="collapsible-section">
-          <div className="section-header" onClick={() => toggleSection('offline')}>
-            <h2>📱 Offline Mode</h2>
-            <span className={`toggle-icon ${activeSection === 'offline' ? 'open' : 'closed'}`}>
-              {activeSection === 'offline' ? '▼' : '▶'}
-            </span>
-          </div>
-          
-          {activeSection === 'offline' && (
-            <div className="section-content">
-            <div className="offline-controls">
-              <button 
-                className={`btn-secondary ${showOfflineMode ? 'active' : ''}`}
-                onClick={() => setShowOfflineMode(!showOfflineMode)}
-              >
-                {showOfflineMode ? 'Hide' : 'Show'} Offline Recorder
-              </button>
-              <button 
-                className={`btn-secondary ${showOfflineQueue ? 'active' : ''}`}
-                onClick={() => setShowOfflineQueue(!showOfflineQueue)}
-              >
-                {showOfflineQueue ? 'Hide' : 'Show'} Video Queue
-              </button>
-          </div>
-
-          {/* Offline Status Indicator */}
-          <div className={`offline-status ${isOffline ? 'offline' : 'online'}`}>
-            {isOffline ? (
-              <div className="offline-indicator">
-                <span className="offline-icon">📡</span>
-                <span>You're offline - Videos will be stored locally and analyzed when you reconnect</span>
-              </div>
-            ) : (
-              <div className="online-indicator">
-                <span className="online-icon">🌐</span>
-                <span>You're online - Videos will be analyzed immediately</span>
-              </div>
-            )}
-          </div>
-
-
-          {/* Offline Video Recorder */}
-          {showOfflineMode && (
-            <div className="offline-recorder-section">
-              <h3>Record Offline Video</h3>
-              <OfflineVideoRecorder
-                onVideoRecorded={handleOfflineVideoRecorded}
-                exerciseType={selectedExercise}
-                userId={user?.id || ''}
-              />
-            </div>
-          )}
-
-          {/* Offline Video Queue */}
-          {showOfflineQueue && (
-            <div className="offline-queue-section">
-              <OfflineVideoQueue
-                userId={user?.id || ''}
-                onVideoAnalyzed={handleOfflineVideoAnalyzed}
-              />
-            </div>
-          )}
-            </div>
-          )}
-        </div>
 
         <h2>Your Recent Activity</h2>
         <div id="metrics-container">
