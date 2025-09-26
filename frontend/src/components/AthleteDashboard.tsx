@@ -887,22 +887,22 @@ const AthleteDashboard: React.FC = () => {
                   {/* Current Performance Stats */}
                   <div className="analytics-card current-stats">
                     <h3>Current Performance</h3>
-                    <div className="stats-grid">
+                    <div className="stats-grid-2x2">
                       <div className="stat-item">
-                        <span className="stat-label">Avg Form Score</span>
-                        <span className="stat-value">{realInsights.current_stats.avg_form_score}%</span>
+                        <div className="stat-label">Avg Form Score</div>
+                        <div className="stat-value">{realInsights.current_stats.avg_form_score}%</div>
                       </div>
                       <div className="stat-item">
-                        <span className="stat-label">Avg Reps</span>
-                        <span className="stat-value">{realInsights.current_stats.avg_reps}</span>
+                        <div className="stat-label">Avg Reps</div>
+                        <div className="stat-value">{realInsights.current_stats.avg_reps}</div>
                       </div>
                       <div className="stat-item">
-                        <span className="stat-label">Best Form Score</span>
-                        <span className="stat-value">{realInsights.current_stats.best_form_score}%</span>
+                        <div className="stat-label">Best Form Score</div>
+                        <div className="stat-value">{realInsights.current_stats.best_form_score}%</div>
                       </div>
                       <div className="stat-item">
-                        <span className="stat-label">Total Sessions</span>
-                        <span className="stat-value">{realInsights.current_stats.total_sessions}</span>
+                        <div className="stat-label">Total Sessions</div>
+                        <div className="stat-value">{realInsights.current_stats.total_sessions}</div>
                       </div>
                     </div>
                   </div>
@@ -910,30 +910,40 @@ const AthleteDashboard: React.FC = () => {
                   {/* Performance Trends */}
                   <div className="analytics-card trends">
                     <h3>Performance Trends</h3>
-                    <div className="trends-content">
+                    <div className="trends-grid-2x2">
                       <div className="trend-item">
-                        <span className="trend-label">Form Trend:</span>
-                        <span className={`trend-value ${realInsights.performance_trends.form_trend > 0 ? 'positive' : realInsights.performance_trends.form_trend < 0 ? 'negative' : 'neutral'}`}>
-                          {realInsights.performance_trends.form_trend > 0 ? '↗' : realInsights.performance_trends.form_trend < 0 ? '↘' : '→'} 
-                          {Math.abs(realInsights.performance_trends.form_trend).toFixed(1)}%
-                        </span>
+                        <div className="trend-label">Form Trend</div>
+                        <div className={`trend-value ${realInsights.performance_trends.form_trend > 0 ? 'trend-up' : realInsights.performance_trends.form_trend < 0 ? 'trend-down' : 'trend-neutral'}`}>
+                          <span className="trend-arrow">
+                            {realInsights.performance_trends.form_trend > 0 ? '↗' : realInsights.performance_trends.form_trend < 0 ? '↘' : '→'}
+                          </span>
+                          <span className="trend-number">
+                            {Math.abs(realInsights.performance_trends.form_trend).toFixed(1)}%
+                          </span>
+                        </div>
                       </div>
                       <div className="trend-item">
-                        <span className="trend-label">Reps Trend:</span>
-                        <span className={`trend-value ${realInsights.performance_trends.reps_trend > 0 ? 'positive' : realInsights.performance_trends.reps_trend < 0 ? 'negative' : 'neutral'}`}>
-                          {realInsights.performance_trends.reps_trend > 0 ? '↗' : realInsights.performance_trends.reps_trend < 0 ? '↘' : '→'} 
-                          {Math.abs(realInsights.performance_trends.reps_trend).toFixed(1)}
-                        </span>
+                        <div className="trend-label">Reps Trend</div>
+                        <div className={`trend-value ${realInsights.performance_trends.reps_trend > 0 ? 'trend-up' : realInsights.performance_trends.reps_trend < 0 ? 'trend-down' : 'trend-neutral'}`}>
+                          <span className="trend-arrow">
+                            {realInsights.performance_trends.reps_trend > 0 ? '↗' : realInsights.performance_trends.reps_trend < 0 ? '↘' : '→'}
+                          </span>
+                          <span className="trend-number">
+                            {Math.abs(realInsights.performance_trends.reps_trend).toFixed(1)}
+                          </span>
+                        </div>
                       </div>
                       <div className="trend-item">
-                        <span className="trend-label">Consistency:</span>
-                        <span className="trend-value">{realInsights.performance_trends.consistency}%</span>
+                        <div className="trend-label">Consistency</div>
+                        <div className="trend-value trend-neutral">
+                          <span className="trend-number">{realInsights.performance_trends.consistency}%</span>
+                        </div>
                       </div>
                       <div className="trend-item">
-                        <span className="trend-label">Overall Progress:</span>
-                        <span className={`trend-value ${realInsights.performance_trends.overall_progress}`}>
-                          {realInsights.performance_trends.overall_progress}
-                        </span>
+                        <div className="trend-label">Overall Progress</div>
+                        <div className={`trend-value ${realInsights.performance_trends.overall_progress === 'improving' ? 'trend-up' : realInsights.performance_trends.overall_progress === 'declining' ? 'trend-down' : 'trend-neutral'}`}>
+                          <span className="trend-text">{realInsights.performance_trends.overall_progress}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
