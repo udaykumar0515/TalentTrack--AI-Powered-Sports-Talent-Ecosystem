@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Dict, List, Any, Optional
 
 class OfflineVideoManager:
-    def __init__(self, offline_videos_file: str = "data/offline_videos.json"):
+    def __init__(self, offline_videos_file: str = "data/videos/offline_videos.json"):
         self.offline_videos_file = offline_videos_file
         self.ensure_offline_videos_file()
     

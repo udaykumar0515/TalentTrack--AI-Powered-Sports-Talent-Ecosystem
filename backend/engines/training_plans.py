@@ -9,15 +9,15 @@ import numpy as np
 from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional, Tuple
 import os
-from predictive_analytics import predictive_analytics
-from benchmarking_utils import benchmarking_engine
+from .predictive_analytics import predictive_analytics
+from .benchmarking import benchmarking_engine
 
 class TrainingPlanGenerator:
     def __init__(self):
         self.data_dir = "data"
         self.sessions_file = os.path.join(self.data_dir, "sessions", "sessions.json")
-        self.athletes_file = os.path.join(self.data_dir, "athletes.json")
-        self.training_plans_file = os.path.join(self.data_dir, "training_plans.json")
+        self.athletes_file = os.path.join(self.data_dir, "athletes", "athletes.json")
+        self.training_plans_file = os.path.join(self.data_dir, "training_plans", "training_plans.json")
         
     def _load_sessions(self) -> List[Dict]:
         """Load all sessions data"""

@@ -14,7 +14,7 @@ class PredictiveAnalytics:
     def __init__(self):
         self.data_dir = "data"
         self.sessions_file = os.path.join(self.data_dir, "sessions", "sessions.json")
-        self.athletes_file = os.path.join(self.data_dir, "athletes.json")
+        self.athletes_file = os.path.join(self.data_dir, "athletes", "athletes.json")
         
     def _load_sessions(self) -> List[Dict]:
         """Load all sessions data"""

@@ -32,7 +32,7 @@ class GoalPriority(Enum):
     URGENT = "urgent"
 
 class GoalSettingEngine:
-    def __init__(self, goals_file: str = "data/goals.json"):
+    def __init__(self, goals_file: str = "data/goals/goals.json"):
         self.goals_file = goals_file
         self.ensure_goals_file()
     

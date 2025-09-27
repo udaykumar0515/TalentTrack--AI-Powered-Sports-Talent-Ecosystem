@@ -6,15 +6,15 @@ import uuid
 
 class GamificationEngine:
     def __init__(self):
-        self.achievements_file = "data/achievements.json"
-        self.badges_file = "data/badges.json"
-        self.points_file = "data/points.json"
-        self.leaderboards_file = "data/leaderboards.json"
+        self.achievements_file = "data/gamification/achievements.json"
+        self.badges_file = "data/gamification/badges.json"
+        self.points_file = "data/gamification/points.json"
+        self.leaderboards_file = "data/gamification/leaderboards.json"
         self.ensure_files_exist()
     
     def ensure_files_exist(self):
         """Ensure all gamification data files exist"""
-        os.makedirs("data", exist_ok=True)
+        os.makedirs("data/gamification", exist_ok=True)
         
         # Initialize achievements
         if not os.path.exists(self.achievements_file):

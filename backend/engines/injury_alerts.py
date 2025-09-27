@@ -9,16 +9,16 @@ import os
 from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional, Tuple
 import numpy as np
-from predictive_analytics import predictive_analytics
-from benchmarking_utils import benchmarking_engine
+from .predictive_analytics import predictive_analytics
+from .benchmarking import benchmarking_engine
 
 class InjuryAlertSystem:
     def __init__(self):
         self.data_dir = "data"
         self.sessions_file = os.path.join(self.data_dir, "sessions", "sessions.json")
-        self.athletes_file = os.path.join(self.data_dir, "athletes.json")
-        self.coaches_file = os.path.join(self.data_dir, "coaches.json")
-        self.alerts_file = os.path.join(self.data_dir, "injury_alerts.json")
+        self.athletes_file = os.path.join(self.data_dir, "athletes", "athletes.json")
+        self.coaches_file = os.path.join(self.data_dir, "athletes", "coaches.json")
+        self.alerts_file = os.path.join(self.data_dir, "injury_alerts", "injury_alerts.json")
         
         # Injury risk thresholds
         self.thresholds = {

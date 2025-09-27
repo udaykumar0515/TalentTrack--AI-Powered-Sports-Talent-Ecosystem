@@ -14,14 +14,14 @@ import time
 import os
 import logging
 import sys
-from benchmarking_utils import benchmarking_engine
-from predictive_analytics import predictive_analytics
-from training_plans import training_plan_generator
-from injury_alerts import injury_alert_system
-from gamification_engine import GamificationEngine
-from goal_setting_engine import GoalSettingEngine
-from longterm_plans_engine import LongTermPlansEngine
-from offline_video_manager import OfflineVideoManager
+from engines.benchmarking import benchmarking_engine
+from engines.predictive_analytics import predictive_analytics
+from engines.training_plans import training_plan_generator
+from engines.injury_alerts import injury_alert_system
+from engines.gamification import GamificationEngine
+from engines.goal_setting import GoalSettingEngine
+from engines.longterm_plans import LongTermPlansEngine
+from services.offline_video_manager import OfflineVideoManager
 
 # Initialize gamification engine
 gamification_engine = GamificationEngine()
@@ -116,16 +116,16 @@ EXERCISE_MAPPING = {
 
 def init_data_directories():
     """Ensure all required data directories exist"""
-    directories = ["data", "data/sessions", "videos", "videos/athletes", "videos/coaches"]
+    directories = ["data", "data/sessions", "data/athletes", "data/gamification", "data/goals", "data/injury_alerts", "data/videos", "data/system", "videos", "videos/athletes", "videos/coaches"]
     for directory in directories:
         os.makedirs(directory, exist_ok=True)
     
     # Initialize empty JSON files if they don't exist
     files = {
-        "data/athletes.json": [],
-        "data/coaches.json": [],
+        "data/athletes/athletes.json": [],
+        "data/athletes/coaches.json": [],
         "data/sessions/sessions.json": {},
-        "data/videos.json": []
+        "data/videos/videos.json": []
     }
     
     for file_path, default_content in files.items():
@@ -272,7 +272,7 @@ async def health_check():
 async def get_coaches():
     """Get all coaches"""
     try:
-        coaches = read_json_file("coaches.json")
+        coaches = read_json_file("athletes/coaches.json")
         # Return coaches without passwords
         return [{k: v for k, v in coach.items() if k != "password"} for coach in coaches]
     except Exception as e:
@@ -283,7 +283,7 @@ async def get_coaches():
 async def get_athletes():
     """Get all athletes"""
     try:
-        athletes = read_json_file("athletes.json")
+        athletes = read_json_file("athletes/athletes.json")
         # Return athletes without passwords
         return [{k: v for k, v in athlete.items() if k != "password"} for athlete in athletes]
     except Exception as e:
@@ -294,7 +294,7 @@ async def get_athletes():
 async def get_athlete(athlete_id: str):
     """Get a specific athlete by ID"""
     try:
-        athletes = read_json_file("athletes.json")
+        athletes = read_json_file("athletes/athletes.json")
         athlete = next((a for a in athletes if a.get("id") == athlete_id), None)
         if not athlete:
             raise HTTPException(status_code=404, detail="Athlete not found")
@@ -326,7 +326,7 @@ async def list_sessions(athleteId: Optional[str] = None, coachId: Optional[str] 
         return []
 
     # Load video metadata
-    videos = read_json_file("videos.json")
+    videos = read_json_file("videos/videos.json")
     video_map = {v["sessionId"]: v for v in videos}
 
     # Flatten all sessions into a single list
@@ -391,7 +391,7 @@ async def submit_coach_change_request(request: CoachChangeRequest):
             not request.currentCoachId):
             
             # Directly update the athlete's coach
-            athletes_file = "data/athletes.json"
+            athletes_file = "data/athletes/athletes.json"
             if os.path.exists(athletes_file):
                 with open(athletes_file, 'r', encoding='utf-8') as f:
                     athletes = json.load(f)
@@ -402,7 +402,7 @@ async def submit_coach_change_request(request: CoachChangeRequest):
                     if athlete.get("id") == request.athleteId:
                         athlete["coachId"] = request.newCoachId
                         # Get new coach name
-                        coaches_file = "data/coaches.json"
+                        coaches_file = "data/athletes/coaches.json"
                         if os.path.exists(coaches_file):
                             with open(coaches_file, 'r', encoding='utf-8') as f:
                                 coaches = json.load(f)
@@ -496,7 +496,7 @@ async def approve_coach_change_request(request_id: str, coach_id: str):
             raise HTTPException(status_code=400, detail="Request is not pending")
         
         # Update athlete's coach in athletes.json
-        athletes_file = "data/athletes.json"
+        athletes_file = "data/athletes/athletes.json"
         if os.path.exists(athletes_file):
             with open(athletes_file, 'r', encoding='utf-8') as f:
                 athletes = json.load(f)
@@ -507,7 +507,7 @@ async def approve_coach_change_request(request_id: str, coach_id: str):
                 if athlete.get("id") == request_data["athleteId"]:
                     athlete["coachId"] = request_data["newCoachId"]
                     # Get new coach name
-                    coaches_file = "data/coaches.json"
+                    coaches_file = "data/athletes/coaches.json"
                     if os.path.exists(coaches_file):
                         with open(coaches_file, 'r', encoding='utf-8') as f:
                             coaches = json.load(f)
@@ -540,7 +540,7 @@ async def approve_coach_change_request(request_id: str, coach_id: str):
 async def assign_coach(athlete_id: str, coach_id: str):
     """Directly assign a coach to an athlete (for initial assignment)"""
     try:
-        athletes_file = "data/athletes.json"
+        athletes_file = "data/athletes/athletes.json"
         if not os.path.exists(athletes_file):
             raise HTTPException(status_code=404, detail="Athletes data not found")
         
@@ -553,7 +553,7 @@ async def assign_coach(athlete_id: str, coach_id: str):
             if athlete.get("id") == athlete_id:
                 athlete["coachId"] = coach_id
                 # Get coach name
-                coaches_file = "data/coaches.json"
+                coaches_file = "data/athletes/coaches.json"
                 if os.path.exists(coaches_file):
                     with open(coaches_file, 'r', encoding='utf-8') as f:
                         coaches = json.load(f)
@@ -893,8 +893,8 @@ async def login(login_data: UserLogin):
     """Login user"""
     try:
         # Check both athletes and coaches
-        athletes = read_json_file("athletes.json")
-        coaches = read_json_file("coaches.json")
+        athletes = read_json_file("athletes/athletes.json")
+        coaches = read_json_file("athletes/coaches.json")
         all_users = athletes + coaches
         
         # Find user by email
@@ -931,8 +931,8 @@ async def google_login(google_data: GoogleLoginRequest):
     """Login with Google OAuth"""
     try:
         # Check if user already exists
-        athletes = read_json_file("athletes.json")
-        coaches = read_json_file("coaches.json")
+        athletes = read_json_file("athletes/athletes.json")
+        coaches = read_json_file("athletes/coaches.json")
         all_users = athletes + coaches
         
         # Find user by email
@@ -979,7 +979,7 @@ async def get_session_by_id(session_id: str):
             data = json.load(f)
         
         # Load video metadata
-        videos = read_json_file("videos.json")
+        videos = read_json_file("videos/videos.json")
         video_map = {v["sessionId"]: v for v in videos}
         
         # Search through all sessions to find the one with matching sessionId
@@ -1008,7 +1008,7 @@ async def get_session_by_id(session_id: str):
 async def create_coach_message(message: CoachMessage):
     """Create a new coach message"""
     try:
-        messages_file = "data/coach_messages.json"
+        messages_file = "data/system/coach_messages.json"
         
         # Load existing messages
         messages = []
@@ -1036,7 +1036,7 @@ async def create_coach_message(message: CoachMessage):
 async def get_athlete_messages(athlete_id: str):
     """Get all messages for a specific athlete"""
     try:
-        messages_file = "data/coach_messages.json"
+        messages_file = "data/system/coach_messages.json"
         
         if not os.path.exists(messages_file):
             return []
@@ -1060,7 +1060,7 @@ async def get_athlete_messages(athlete_id: str):
 async def get_coach_messages(coach_id: str):
     """Get all messages for a specific coach"""
     try:
-        messages_file = "data/coach_messages.json"
+        messages_file = "data/system/coach_messages.json"
         
         if not os.path.exists(messages_file):
             return []
@@ -1084,7 +1084,7 @@ async def get_coach_messages(coach_id: str):
 async def mark_message_read(message_id: str):
     """Mark a message as read"""
     try:
-        messages_file = "data/coach_messages.json"
+        messages_file = "data/system/coach_messages.json"
         
         if not os.path.exists(messages_file):
             raise HTTPException(status_code=404, detail="Message not found")
@@ -1130,7 +1130,7 @@ async def analyze_video(
         exercise_internal = validate_exercise_name(exercise)
         
         # Check if exercise counter script exists
-        if not os.path.exists("exercise_counter.py"):
+        if not os.path.exists("services/exercise_counter.py"):
             raise HTTPException(status_code=500, detail="Exercise counter script not found")
 
         # Create temporary file with proper extension
@@ -1146,7 +1146,7 @@ async def analyze_video(
 
         # Build command
         cmd = [
-            PYTHON_EXECUTABLE, "exercise_counter.py",
+            PYTHON_EXECUTABLE, "services/exercise_counter.py",
             "--user-id", athleteId,
             "--user-name", athleteName,
             "--exercise", exercise_internal,
@@ -1219,7 +1219,7 @@ async def analyze_video(
                 logger.warning(f"Missing key '{key}' in parsed result, using default")
 
         # Get coach information from athlete data
-        athletes = read_json_file("athletes.json")
+        athletes = read_json_file("athletes/athletes.json")
         athlete_data = next((athlete for athlete in athletes if athlete["id"] == athleteId), None)
         coach_id = athlete_data.get("coachId") if athlete_data else None
         coach_name = athlete_data.get("coachName") if athlete_data else None
@@ -1348,9 +1348,9 @@ async def upload_video(
         
         # Save metadata to JSON file
         videos_file = "videos.json"
-        videos = read_json_file("videos.json") if os.path.exists(f"data/{videos_file}") else []
+        videos = read_json_file("videos/videos.json") if os.path.exists(f"data/videos/{videos_file}") else []
         videos.append(video_metadata.dict())
-        write_json_file("videos.json", videos)
+        write_json_file("videos/videos.json", videos)
         
         logger.info(f"Video uploaded: {video_filename} to {video_path}")
         return {
@@ -1368,7 +1368,7 @@ async def upload_video(
 async def get_video(session_id: str):
     """Get video file by session ID"""
     try:
-        videos = read_json_file("videos.json")
+        videos = read_json_file("videos/videos.json")
         video_meta = next((v for v in videos if v["sessionId"] == session_id), None)
         
         if not video_meta:
@@ -1720,7 +1720,7 @@ async def analyze_offline_video(user_id: str, video_id: str, analysis_request: d
                 
                 # Run the same analysis command as main analysis
                 cmd = [
-                    PYTHON_EXECUTABLE, "exercise_counter.py",
+                    PYTHON_EXECUTABLE, "services/exercise_counter.py",
                     "--user-id", user_id,
                     "--user-name", "Offline User",
                     "--exercise", exercise_internal,

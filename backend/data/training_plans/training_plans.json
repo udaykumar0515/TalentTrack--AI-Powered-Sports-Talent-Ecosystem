@@ -1,8 +1,8 @@
 {
   "athlete_1": {
     "athlete_id": "athlete_1",
-    "generated_at": "2025-09-27T18:11:46.683747Z",
-    "valid_until": "2025-10-27T18:11:46.683747Z",
+    "generated_at": "2025-09-27T19:28:25.589078Z",
+    "valid_until": "2025-10-27T19:28:25.589078Z",
     "analysis": {
       "gaps": [
         "Rep count declining - may need rest or form focus",
@@ -13,14 +13,14 @@
         "endurance",
         "technique"
       ],
-      "avg_form": 82.2,
-      "reps_trend": -0.5030303030303027,
+      "avg_form": 84.2,
+      "reps_trend": -1.3757575757575757,
       "exercise_variety": 2,
-      "cheat_rate": 0.4
+      "cheat_rate": 0.5
     },
     "recommendations": [
       {
-        "exercise": "pushup",
+        "exercise": "squat",
         "type": "endurance",
         "sets": 2,
         "reps": "15-20",
@@ -35,7 +35,7 @@
         "priority": "medium"
       },
       {
-        "exercise": "pushup",
+        "exercise": "squat",
         "type": "technique",
         "sets": 2,
         "reps": "5-8",
@@ -53,7 +53,7 @@
     "weekly_schedule": [
       {
         "day": "Monday",
-        "exercise": "pushup",
+        "exercise": "squat",
         "type": "endurance",
         "sets": 2,
         "reps": "15-20",
@@ -70,7 +70,7 @@
       },
       {
         "day": "Wednesday",
-        "exercise": "pushup",
+        "exercise": "squat",
         "type": "technique",
         "sets": 2,
         "reps": "5-8",
@@ -87,7 +87,7 @@
       },
       {
         "day": "Friday",
-        "exercise": "pushup",
+        "exercise": "squat",
         "type": "endurance",
         "sets": 2,
         "reps": "15-20",
@@ -107,8 +107,8 @@
       "weeks": [
         {
           "week": 1,
-          "form_target": 81.4,
-          "reps_target": 17,
+          "form_target": 84.2,
+          "reps_target": 14,
           "focus": "Foundation building and form mastery",
           "key_metrics": [
             "Form score",
@@ -116,16 +116,16 @@
             "Range of motion"
           ],
           "success_criteria": [
-            "Achieve form score of 81.4 or higher",
-            "Complete 17 reps with good form",
+            "Achieve form score of 84.2 or higher",
+            "Complete 14 reps with good form",
             "Complete all scheduled sessions",
             "No form violations in final session"
           ]
         },
         {
           "week": 2,
-          "form_target": 83.4,
-          "reps_target": 19,
+          "form_target": 86.2,
+          "reps_target": 16,
           "focus": "Consistency and endurance",
           "key_metrics": [
             "Rep count",
@@ -133,16 +133,16 @@
             "Breathing"
           ],
           "success_criteria": [
-            "Achieve form score of 83.4 or higher",
-            "Complete 19 reps with good form",
+            "Achieve form score of 86.2 or higher",
+            "Complete 16 reps with good form",
             "Complete all scheduled sessions",
             "No form violations in final session"
           ]
         },
         {
           "week": 3,
-          "form_target": 85.4,
-          "reps_target": 20,
+          "form_target": 88.2,
+          "reps_target": 17,
           "focus": "Progressive overload and strength",
           "key_metrics": [
             "Strength",
@@ -150,16 +150,16 @@
             "Control"
           ],
           "success_criteria": [
-            "Achieve form score of 85.4 or higher",
-            "Complete 20 reps with good form",
+            "Achieve form score of 88.2 or higher",
+            "Complete 17 reps with good form",
             "Complete all scheduled sessions",
             "No form violations in final session"
           ]
         },
         {
           "week": 4,
-          "form_target": 87.4,
-          "reps_target": 22,
+          "form_target": 90.2,
+          "reps_target": 19,
           "focus": "Peak performance and refinement",
           "key_metrics": [
             "Peak performance",
@@ -167,16 +167,16 @@
             "Technique"
           ],
           "success_criteria": [
-            "Achieve form score of 87.4 or higher",
-            "Complete 22 reps with good form",
+            "Achieve form score of 90.2 or higher",
+            "Complete 19 reps with good form",
             "Complete all scheduled sessions",
             "No form violations in final session"
           ]
         }
       ],
       "goals": [
-        "Improve form score from 79 to 87.4",
-        "Increase reps from 16 to 22",
+        "Improve form score from 82 to 90.2",
+        "Increase reps from 13 to 19",
         "Maintain consistent training schedule",
         "Reduce form violations by 50%"
       ]
@@ -192,24 +192,24 @@
       },
       "improvement_potential": {
         "potential": "medium",
-        "score": 40,
+        "score": 50,
         "suggestions": [
-          "Focus on form correction - high improvement potential",
+          "Form is improving - maintain current training",
           "Consistent performance - ready for advanced training"
         ]
       },
       "performance_trends": {
         "form": {
-          "slope": -1.0787878787878789,
-          "r_squared": 0.3483748955447069,
+          "slope": -0.2545454545454545,
+          "r_squared": 0.009761604356198328,
           "trend": "declining",
-          "confidence": 34.83748955447069
+          "confidence": 0.9761604356198328
         },
         "reps": {
-          "slope": -0.503030303030303,
-          "r_squared": 0.13834166716870488,
+          "slope": -1.3757575757575757,
+          "r_squared": 0.4429744251020846,
           "trend": "declining",
-          "confidence": 13.834166716870488
+          "confidence": 44.29744251020846
         }
       }
     },
@@ -217,7 +217,7 @@
       "Rep count declining - consider rest days or form focus",
       "High form violation rate - prioritize technique over intensity"
     ],
-    "next_review_date": "2025-10-04T18:11:46.683747Z"
+    "next_review_date": "2025-10-04T19:28:25.589078Z"
   },
   "athlete_2": {
     "athlete_id": "athlete_2",
@@ -1971,12 +1971,36 @@
     "description": "A comprehensive 8-week program designed to build strength, improve form, and increase endurance. This plan focuses on progressive overload and proper technique.",
     "status": "active",
     "exercises": [
-      { "exercise": "Squat", "reps": "8-12", "duration": "45" },
-      { "exercise": "Deadlift", "reps": "5-8", "duration": "60" },
-      { "exercise": "Bench Press", "reps": "6-10", "duration": "40" },
-      { "exercise": "Overhead Press", "reps": "8-12", "duration": "35" },
-      { "exercise": "Pull-ups", "reps": "5-10", "duration": "30" },
-      { "exercise": "Plank", "reps": "3", "duration": "60" }
+      {
+        "exercise": "Squat",
+        "reps": "8-12",
+        "duration": "45"
+      },
+      {
+        "exercise": "Deadlift",
+        "reps": "5-8",
+        "duration": "60"
+      },
+      {
+        "exercise": "Bench Press",
+        "reps": "6-10",
+        "duration": "40"
+      },
+      {
+        "exercise": "Overhead Press",
+        "reps": "8-12",
+        "duration": "35"
+      },
+      {
+        "exercise": "Pull-ups",
+        "reps": "5-10",
+        "duration": "30"
+      },
+      {
+        "exercise": "Plank",
+        "reps": "3",
+        "duration": "60"
+      }
     ],
     "duration": "8",
     "frequency": "4",

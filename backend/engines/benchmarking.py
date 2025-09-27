@@ -12,7 +12,7 @@ class BenchmarkingEngine:
     """Handles exercise performance benchmarking and comparison"""
     
     def __init__(self):
-        self.benchmarks_file = "data/benchmarks.json"
+        self.benchmarks_file = "data/system/benchmarks.json"
         self.benchmarks = self._load_benchmarks()
     
     def _load_benchmarks(self) -> Dict[str, Any]:
