@@ -736,3 +736,49 @@ export const getPendingAnalysisVideos = async (): Promise<any> => {
   }
   return response.json();
 };
+
+// Coach management functions
+export const getAthlete = async (athleteId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/athletes/${athleteId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to get athlete');
+  }
+  return response.json();
+};
+
+export const assignCoach = async (athleteId: string, coachId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/assign-coach?athlete_id=${athleteId}&coach_id=${coachId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to assign coach');
+  }
+  return response.json();
+};
+
+export const submitCoachChangeRequest = async (request: {
+  athleteId: string;
+  currentCoachId: string;
+  newCoachId: string;
+  reason: string;
+}): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/coach-change-request`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to submit coach change request');
+  }
+  return response.json();
+};

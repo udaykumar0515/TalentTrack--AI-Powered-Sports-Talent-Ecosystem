@@ -6,7 +6,7 @@ import VideoUploader from './VideoUploader';
 import SessionView from './SessionView';
 import ChatSidebar from './ChatSidebar';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
-import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthleteTrainingPlan, generateAthleteTrainingPlan, getUserGamificationStats, getGamificationLeaderboard, createGoal, getUserGoals, updateGoal, deleteGoal, getGoalAnalytics, getGoalRecommendations } from '../api/apiClient';
+import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthleteTrainingPlan, generateAthleteTrainingPlan, getUserGamificationStats, getGamificationLeaderboard, createGoal, getUserGoals, updateGoal, deleteGoal, getGoalAnalytics, getGoalRecommendations, getAthlete, assignCoach, submitCoachChangeRequest } from '../api/apiClient';
 
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -229,7 +229,7 @@ const AthleteDashboard: React.FC = () => {
       await loadGoalAnalytics();
       await loadGoalRecommendations();
       await loadVideoQueue();
-    loadSelectedCoach();
+      await loadSelectedCoach();
     };
     loadData();
   }, [user?.id]);
@@ -271,13 +271,10 @@ const AthleteDashboard: React.FC = () => {
     if (user?.id) {
       try {
         // First try to get the default coach from athlete data
-        const response = await fetch(`http://localhost:8000/api/athletes/${user.id}`);
-        if (response.ok) {
-          const athleteData = await response.json();
-          if (athleteData.coachId) {
-            setSelectedCoach(athleteData.coachId);
-            return;
-          }
+        const athleteData = await getAthlete(user.id);
+        if (athleteData.coachId) {
+          setSelectedCoach(athleteData.coachId);
+          return;
         }
         
         // Fallback to localStorage if no default coach
@@ -323,23 +320,12 @@ const AthleteDashboard: React.FC = () => {
   // Directly assign coach (for initial assignment)
   const assignCoachDirectly = async (coachId: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/assign-coach?athlete_id=${user?.id}&coach_id=${coachId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-
-      if (response.ok) {
-        setSelectedCoach(coachId);
-        if (user?.id) {
-          localStorage.setItem(`selectedCoach_${user.id}`, coachId);
-        }
-        alert('Coach assigned successfully!');
-      } else {
-        const error = await response.json();
-        alert(`Error: ${error.detail || 'Failed to assign coach'}`);
+      const result = await assignCoach(user?.id || '', coachId);
+      setSelectedCoach(coachId);
+      if (user?.id) {
+        localStorage.setItem(`selectedCoach_${user.id}`, coachId);
       }
+      alert('Coach assigned successfully!');
     } catch (error) {
       console.error('Error assigning coach:', error);
       alert('Failed to assign coach. Please try again.');
@@ -354,37 +340,25 @@ const AthleteDashboard: React.FC = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/coach-change-request', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          athleteId: user?.id,
-          currentCoachId: selectedCoach,
-          newCoachId: newCoachId,
-          reason: changeReason
-        })
+      const result = await submitCoachChangeRequest({
+        athleteId: user?.id || '',
+        currentCoachId: selectedCoach,
+        newCoachId: newCoachId,
+        reason: changeReason
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        if (result.autoApproved) {
-          alert('Coach assigned successfully!');
-          setSelectedCoach(newCoachId);
-          if (user?.id) {
-            localStorage.setItem(`selectedCoach_${user.id}`, newCoachId);
-          }
-        } else {
-          alert('Coach change request submitted successfully! The new coach will review your request.');
+      if (result.autoApproved) {
+        alert('Coach assigned successfully!');
+        setSelectedCoach(newCoachId);
+        if (user?.id) {
+          localStorage.setItem(`selectedCoach_${user.id}`, newCoachId);
         }
-        setShowCoachChangeModal(false);
-        setChangeReason('');
-        setNewCoachId('');
       } else {
-        const error = await response.json();
-        alert(`Error: ${error.detail || 'Failed to submit coach change request'}`);
+        alert('Coach change request submitted successfully! The new coach will review your request.');
       }
+      setShowCoachChangeModal(false);
+      setChangeReason('');
+      setNewCoachId('');
     } catch (error) {
       console.error('Error submitting coach change request:', error);
       alert('Failed to submit coach change request. Please try again.');

@@ -290,6 +290,22 @@ async def get_athletes():
         logger.error(f"Error fetching athletes: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch athletes")
 
+@app.get("/api/athletes/{athlete_id}")
+async def get_athlete(athlete_id: str):
+    """Get a specific athlete by ID"""
+    try:
+        athletes = read_json_file("athletes.json")
+        athlete = next((a for a in athletes if a.get("id") == athlete_id), None)
+        if not athlete:
+            raise HTTPException(status_code=404, detail="Athlete not found")
+        # Return athlete without password
+        return {k: v for k, v in athlete.items() if k != "password"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to get athlete {athlete_id}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get athlete")
+
 
 @app.get("/api/sessions")
 async def list_sessions(athleteId: Optional[str] = None, coachId: Optional[str] = None):
