@@ -972,12 +972,6 @@ const AthleteDashboard: React.FC = () => {
               <span className="slider"></span>
               <span className="offline-label">Offline Mode</span>
             </label>
-            <p className="offline-description">
-              {isOfflineMode 
-                ? 'Videos will be saved to queue for later analysis' 
-                : 'Videos will be analyzed immediately'
-              }
-            </p>
         </div>
         
         <div className="video-buttons">
@@ -1419,42 +1413,42 @@ const AthleteDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* Achievements */}
-              {gamificationStats.achievements && gamificationStats.achievements.length > 0 && (
-                <div className="achievements-section">
+              {/* Achievements and Badge */}
+              <div className="achievements-badge-section">
+                <div className="achievements-side">
                   <h3>🏅 Your Achievements</h3>
-                  <div className="achievements-grid">
-                    {gamificationStats.achievements.map((achievement: any, index: number) => (
-                      <div key={index} className="achievement-card">
-                        <div className="achievement-icon">{achievement.icon}</div>
-                        <div className="achievement-info">
-                          <div className="achievement-name">{achievement.name}</div>
-                          <div className="achievement-description">{achievement.description}</div>
-                          <div className="achievement-points">+{achievement.points} points</div>
+                  <div className="achievements-icons">
+                    {gamificationStats.achievements && gamificationStats.achievements.length > 0 ? (
+                      gamificationStats.achievements.map((achievement: any, index: number) => (
+                        <div key={index} className="achievement-icon-small" title={`${achievement.name}: ${achievement.description} (+${achievement.points} points)`}>
+                          {achievement.icon}
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <p className="no-achievements">No achievements yet</p>
+                    )}
                   </div>
                 </div>
-              )}
-
-              {/* Badges */}
-              {gamificationStats.badges && gamificationStats.badges.length > 0 && (
-                <div className="badges-section">
-                  <h3>🏆 Your Badges</h3>
-                  <div className="badges-grid">
-                    {gamificationStats.badges.map((badge: any, index: number) => (
-                      <div key={index} className="badge-card">
-                        <div className="badge-icon">{badge.icon}</div>
-                        <div className="badge-info">
-                          <div className="badge-name">{badge.name}</div>
-                          <div className="badge-description">{badge.description}</div>
+                
+                <div className="badge-side">
+                  <h3>🏆 Current Badge</h3>
+                  <div className="current-badge-simple">
+                    {gamificationStats.badges && gamificationStats.badges.length > 0 ? (
+                      gamificationStats.badges.map((badge: any, index: number) => (
+                        <div key={index} className="badge-card-simple">
+                          <div className="badge-icon">{badge.icon}</div>
+                          <div className="badge-info">
+                            <div className="badge-name">{badge.name}</div>
+                            <div className="badge-description">{badge.description}</div>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <p className="no-badge">No badge yet</p>
+                    )}
                   </div>
                 </div>
-              )}
+              </div>
 
               {/* Leaderboard */}
               {leaderboard.length > 0 && (

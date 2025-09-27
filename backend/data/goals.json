@@ -1,3 +1,25 @@
 {
-  "athlete_1": []
+  "athlete_1": [
+    {
+      "id": "goal_athlete_1_1_1758951065",
+      "user_id": "athlete_1",
+      "title": "push ups",
+      "description": "",
+      "type": "reps",
+      "target_value": 100,
+      "current_value": 0,
+      "unit": "",
+      "priority": "medium",
+      "status": "active",
+      "start_date": "2025-09-27T11:01:05.021241",
+      "target_date": "2025-10-04",
+      "created_at": "2025-09-27T11:01:05.021241",
+      "updated_at": "2025-09-27T11:01:05.021241",
+      "progress_percentage": 0.0,
+      "milestones": [],
+      "tags": [],
+      "is_public": false,
+      "motivation_notes": ""
+    }
+  ]
 }

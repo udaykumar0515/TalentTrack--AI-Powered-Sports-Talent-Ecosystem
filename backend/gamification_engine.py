@@ -239,49 +239,57 @@ class GamificationEngine:
         # Base points for completing session
         points += 10
         
-        # Form score bonus
-        form_score = session_data.get('form_score', 0)
+        # Form score bonus (more weight on form)
+        form_score = session_data.get('formScore', session_data.get('form_score', 0))
         if form_score >= 95:
-            points += 50
+            points += 60
         elif form_score >= 90:
+            points += 40
+        elif form_score >= 85:
             points += 30
         elif form_score >= 80:
             points += 20
         elif form_score >= 70:
             points += 10
         
-        # Reps bonus
+        # Reps bonus (primary factor)
         reps = session_data.get('reps', 0)
         if reps >= 50:
-            points += 30
+            points += 50
+        elif reps >= 40:
+            points += 40
         elif reps >= 30:
-            points += 20
+            points += 30
         elif reps >= 20:
-            points += 10
+            points += 20
+        elif reps >= 15:
+            points += 15
         elif reps >= 10:
+            points += 10
+        elif reps >= 5:
             points += 5
         
         # Speed bonus (reps per minute)
-        duration = session_data.get('duration', 1)
-        reps_per_minute = (reps * 60) / duration if duration > 0 else 0
-        if reps_per_minute >= 40:
-            points += 25
-        elif reps_per_minute >= 30:
-            points += 15
-        elif reps_per_minute >= 20:
-            points += 10
+        duration = session_data.get('durationSec', session_data.get('duration', 1))
+        if duration > 0:
+            reps_per_minute = (reps * 60) / duration
+            if reps_per_minute >= 40:
+                points += 25
+            elif reps_per_minute >= 30:
+                points += 20
+            elif reps_per_minute >= 20:
+                points += 15
+            elif reps_per_minute >= 15:
+                points += 10
         
         # Risk level bonus (lower risk = more points)
-        risk_level = session_data.get('risk_level', 'medium').lower()
+        risk_level = session_data.get('risk', session_data.get('risk_level', 'medium')).lower()
         if risk_level == 'low':
             points += 15
         elif risk_level == 'medium':
             points += 10
         elif risk_level == 'high':
             points += 5
-        
-        # Consistency bonus (if this is part of a streak)
-        # This will be calculated in the main process
         
         return points
     
@@ -358,10 +366,20 @@ class GamificationEngine:
         badges = self.load_badges()
         new_badges = []
         
+        # Find the highest badge the user can earn
+        highest_badge = None
+        highest_points_required = 0
+        
         for badge_id, badge_data in badges.items():
-            if (badge_id not in user_data["badges"] and 
-                total_points >= badge_data["points_required"]):
-                new_badges.append(badge_data)
+            if total_points >= badge_data["points_required"]:
+                if badge_data["points_required"] > highest_points_required:
+                    highest_badge = badge_data
+                    highest_points_required = badge_data["points_required"]
+        
+        # Check if this is a new highest badge
+        current_badge = user_data.get("current_badge")
+        if highest_badge and (not current_badge or highest_badge["points_required"] > current_badge.get("points_required", 0)):
+            new_badges.append(highest_badge)
         
         return new_badges
     
@@ -491,3 +509,215 @@ class GamificationEngine:
             "badges": user_badges,
             "last_session_date": user_data.get("last_session_date")
         }
+    
+    def recalculate_user_stats_from_sessions(self, user_id: str) -> Dict[str, Any]:
+        """Recalculate user stats from actual session data"""
+        try:
+            # Load sessions data
+            sessions_file = "data/sessions/sessions.json"
+            if not os.path.exists(sessions_file):
+                return self.load_user_points(user_id)
+            
+            with open(sessions_file, 'r', encoding='utf-8') as f:
+                sessions_data = json.load(f)
+            
+            if user_id not in sessions_data or "sessions" not in sessions_data[user_id]:
+                return self.load_user_points(user_id)
+            
+            user_sessions = sessions_data[user_id]["sessions"]
+            if not user_sessions:
+                return self.load_user_points(user_id)
+            
+            # Initialize user data
+            user_data = {
+                "total_points": 0,
+                "achievements": [],
+                "badges": [],
+                "level": 1,
+                "sessions_completed": 0,
+                "current_streak": 0,
+                "longest_streak": 0,
+                "last_session_date": None,
+                "unique_exercises": set(),
+                "early_sessions": 0,
+                "night_sessions": 0,
+                "low_risk_sessions": 0
+            }
+            
+            # Sort sessions by date
+            sorted_sessions = sorted(user_sessions, key=lambda x: x.get('timestamp', x.get('date', '')))
+            
+            # Calculate stats from sessions
+            current_streak = 0
+            longest_streak = 0
+            last_session_date = None
+            
+            for session in sorted_sessions:
+                # Calculate points for this session
+                session_points = self.calculate_session_points(session)
+                user_data["total_points"] += session_points
+                user_data["sessions_completed"] += 1
+                
+                # Track unique exercises
+                exercise = session.get('exercise', 'unknown')
+                user_data["unique_exercises"].add(exercise)
+                
+                # Track time-based sessions
+                session_time_str = session.get('timestamp', session.get('date', ''))
+                if session_time_str:
+                    try:
+                        session_time = datetime.fromisoformat(session_time_str.replace('Z', '+00:00'))
+                        if session_time.hour < 8:
+                            user_data["early_sessions"] += 1
+                        if session_time.hour >= 22:
+                            user_data["night_sessions"] += 1
+                    except:
+                        pass
+                
+                # Track risk level
+                risk = session.get('risk', session.get('risk_level', 'medium')).lower()
+                if risk == 'low':
+                    user_data["low_risk_sessions"] += 1
+                
+                # Calculate streak
+                session_date_str = session.get('timestamp', session.get('date', ''))
+                if session_date_str:
+                    try:
+                        session_date = datetime.fromisoformat(session_date_str.replace('Z', '+00:00')).date()
+                        
+                        if last_session_date is None:
+                            current_streak = 1
+                        else:
+                            days_diff = (session_date - last_session_date).days
+                            if days_diff == 1:
+                                current_streak += 1
+                            elif days_diff == 0:
+                                # Same day, don't change streak
+                                pass
+                            else:
+                                current_streak = 1
+                        
+                        longest_streak = max(longest_streak, current_streak)
+                        last_session_date = session_date
+                        user_data["last_session_date"] = session_time_str
+                    except:
+                        pass
+            
+            # Convert set to list for JSON serialization
+            user_data["unique_exercises"] = list(user_data["unique_exercises"])
+            
+            # Calculate level based on points (every 500 points = 1 level)
+            user_data["level"] = (user_data["total_points"] // 500) + 1
+            
+            # Calculate current streak (check if last session was today or yesterday)
+            if last_session_date:
+                today = datetime.now().date()
+                days_since_last = (today - last_session_date).days
+                if days_since_last > 1:
+                    user_data["current_streak"] = 0
+                else:
+                    user_data["current_streak"] = current_streak
+            
+            user_data["longest_streak"] = longest_streak
+            
+            # Check achievements
+            achievements = self.load_achievements()
+            user_achievements = []
+            
+            # First session
+            if user_data["sessions_completed"] >= 1:
+                user_achievements.append("first_session")
+            
+            # Perfect form (check if any session had 95%+ form)
+            for session in sorted_sessions:
+                form_score = session.get('formScore', session.get('form_score', 0))
+                if form_score >= 95:
+                    user_achievements.append("perfect_form")
+                    break
+            
+            # Speed demon (20+ reps in under 30 seconds)
+            for session in sorted_sessions:
+                reps = session.get('reps', 0)
+                duration = session.get('durationSec', session.get('duration', 1))
+                if reps >= 20 and duration <= 30:
+                    user_achievements.append("speed_demon")
+                    break
+            
+            # Endurance king (50+ reps)
+            for session in sorted_sessions:
+                reps = session.get('reps', 0)
+                if reps >= 50:
+                    user_achievements.append("endurance_king")
+                    break
+            
+            # Early bird (5+ early sessions)
+            if user_data["early_sessions"] >= 5:
+                user_achievements.append("early_bird")
+            
+            # Night owl (5+ night sessions)
+            if user_data["night_sessions"] >= 5:
+                user_achievements.append("night_owl")
+            
+            # Risk-free warrior (10+ low risk sessions)
+            if user_data["low_risk_sessions"] >= 10:
+                user_achievements.append("risk_free")
+            
+            # Variety seeker (5+ different exercises)
+            if len(user_data["unique_exercises"]) >= 5:
+                user_achievements.append("variety_seeker")
+            
+            # Century club (100+ sessions)
+            if user_data["sessions_completed"] >= 100:
+                user_achievements.append("century_club")
+            
+            # Add achievement points
+            for achievement_id in user_achievements:
+                if achievement_id in achievements:
+                    user_data["total_points"] += achievements[achievement_id]["points"]
+            
+            user_data["achievements"] = user_achievements
+            
+            # Check badges - only store the highest badge earned
+            badges = self.load_badges()
+            highest_badge = None
+            highest_points_required = 0
+            
+            for badge_id, badge_data in badges.items():
+                if user_data["total_points"] >= badge_data["points_required"]:
+                    if badge_data["points_required"] > highest_points_required:
+                        highest_badge = badge_data
+                        highest_points_required = badge_data["points_required"]
+            
+            # Store only the highest badge
+            user_data["badges"] = [highest_badge["name"]] if highest_badge else []
+            user_data["current_badge"] = highest_badge if highest_badge else None
+            
+            # Recalculate level after adding achievement points
+            user_data["level"] = (user_data["total_points"] // 500) + 1
+            
+            # Save updated data
+            self.save_user_points(user_id, user_data)
+            
+            return user_data
+            
+        except Exception as e:
+            print(f"Error recalculating stats for {user_id}: {e}")
+            return self.load_user_points(user_id)
+    
+    def recalculate_all_users_stats(self):
+        """Recalculate stats for all users from their session data"""
+        try:
+            # Load sessions data
+            sessions_file = "data/sessions/sessions.json"
+            if not os.path.exists(sessions_file):
+                return
+            
+            with open(sessions_file, 'r', encoding='utf-8') as f:
+                sessions_data = json.load(f)
+            
+            # Recalculate for each user
+            for user_id in sessions_data.keys():
+                self.recalculate_user_stats_from_sessions(user_id)
+                
+        except Exception as e:
+            print(f"Error recalculating all users stats: {e}")

@@ -543,7 +543,8 @@ button:disabled {
   border-radius: 16px;
   padding: 2rem;
   margin: 2rem 0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid #d1d5db;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .session-header {
@@ -554,9 +555,10 @@ button:disabled {
 }
 
 .session-header h3 {
-  color: white;
+  color: #374151;
   margin: 0;
   font-size: 1.4rem;
+  font-weight: 600;
 }
 
 .cancel-session-btn {
@@ -594,9 +596,11 @@ button:disabled {
   position: relative;
   width: 60px;
   height: 30px;
-  background: rgba(255, 255, 255, 0.2);
+  background: #e5e7eb;
+  border: 2px solid #d1d5db;
   border-radius: 15px;
   transition: all 0.3s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .slider::before {
@@ -620,21 +624,24 @@ button:disabled {
 }
 
 .offline-label {
-  color: #333;
+  color: #374151;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .offline-description {
-  color: #333;
+  color: #374151;
   font-size: 0.9rem;
   margin-top: 0.5rem;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.95);
   padding: 0.5rem;
   border-radius: 6px;
   font-weight: 500;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Video Queue Styles */
@@ -2112,13 +2119,15 @@ button:disabled {
 
 .exercise-select select {
   padding: 10px 15px;
-  border: 2px solid #e5e7eb;
+  border: 2px solid #d1d5db;
   border-radius: 8px;
   font-size: 1em;
   background: white;
+  color: #333;
   cursor: pointer;
   transition: border-color 0.3s ease;
   min-width: 200px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .exercise-select select:focus {
@@ -5577,5 +5586,95 @@ button:disabled {
   
   .toggle-icon {
     font-size: 1rem;
+  }
+}
+
+/* Achievements and Badge Section */
+.achievements-badge-section {
+  display: flex;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.achievements-side {
+  flex: 1;
+}
+
+.badge-side {
+  flex: 1;
+}
+
+/* Achievement Icons */
+.achievements-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.achievement-icon-small {
+  font-size: 2rem;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: help;
+  transition: background-color 0.2s ease;
+}
+
+.achievement-icon-small:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Simple Badge */
+.current-badge-simple {
+  margin-top: 10px;
+}
+
+.badge-card-simple {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.badge-icon {
+  font-size: 2.5rem;
+}
+
+.badge-card-simple .badge-info {
+  color: #333;
+}
+
+.badge-card-simple .badge-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.badge-card-simple .badge-description {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.no-achievements,
+.no-badge {
+  color: #666;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+/* Responsive Design for Achievements and Badge */
+@media (max-width: 768px) {
+  .achievements-badge-section {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .achievements-side,
+  .badge-side {
+    flex: none;
   }
 }

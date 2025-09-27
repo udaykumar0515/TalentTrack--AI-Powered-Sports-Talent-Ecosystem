@@ -328,6 +328,12 @@ async def post_session(session: Dict[str, Any]):
 
         # Save it (save_session_result expects same dict format)
         save_session_result(session)
+        
+        # Recalculate gamification stats for the user
+        athlete_id = session.get("athleteId")
+        if athlete_id:
+            gamification_engine.recalculate_user_stats_from_sessions(athlete_id)
+        
         return {"status": "ok", "sessionId": sid}
     except Exception as e:
         logger.error(f"Failed to persist session: {e}")
@@ -545,12 +551,14 @@ async def delete_session(session_id: str):
         
         # Find and remove the session
         session_found = False
+        deleted_user_id = None
         for user_id, user_data in sessions_data.items():
             if "sessions" in user_data:
                 original_count = len(user_data["sessions"])
                 user_data["sessions"] = [s for s in user_data["sessions"] if s.get("sessionId") != session_id]
                 if len(user_data["sessions"]) < original_count:
                     session_found = True
+                    deleted_user_id = user_id
                     break
         
         if not session_found:
@@ -559,6 +567,10 @@ async def delete_session(session_id: str):
         # Save updated sessions
         with open(sessions_file, "w", encoding="utf-8") as f:
             json.dump(sessions_data, f, indent=2, ensure_ascii=False)
+        
+        # Recalculate gamification stats after deleting session
+        if deleted_user_id:
+            gamification_engine.recalculate_user_stats_from_sessions(deleted_user_id)
         
         # Also try to delete associated video file
         try:
@@ -983,6 +995,9 @@ async def analyze_video(
         # Generate gamification data
         gamification_data = gamification_engine.update_user_progress(athleteId, temp_session_data)
         
+        # Recalculate user stats from all sessions to ensure accuracy
+        gamification_engine.recalculate_user_stats_from_sessions(athleteId)
+        
         session_data = {
             "exercise": exercise,  # Use original exercise name for frontend
             "reps": int(parsed.get("reps", 0)),
@@ -1150,6 +1165,26 @@ async def get_all_badges():
         return {"badges": badges}
     except Exception as e:
         logger.error(f"Error getting badges: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/gamification/recalculate-all")
+async def recalculate_all_gamification_stats():
+    """Recalculate all user gamification stats from session data"""
+    try:
+        gamification_engine.recalculate_all_users_stats()
+        return {"status": "success", "message": "All user stats recalculated from session data"}
+    except Exception as e:
+        logger.error(f"Error recalculating all user stats: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/gamification/recalculate/{user_id}")
+async def recalculate_user_gamification_stats(user_id: str):
+    """Recalculate a specific user's gamification stats from session data"""
+    try:
+        user_data = gamification_engine.recalculate_user_stats_from_sessions(user_id)
+        return {"status": "success", "user_data": user_data}
+    except Exception as e:
+        logger.error(f"Error recalculating user stats for {user_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # Goal Setting API endpoints
