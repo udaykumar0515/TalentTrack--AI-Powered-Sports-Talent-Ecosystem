@@ -909,14 +909,17 @@ const CoachDashboard: React.FC = () => {
           )}
         </section>
       ) : (
-        <section className="athlete-sessions-section">
-          <div className="sessions-header">
+        <div className="athlete-sessions-board">
+          <div className="sessions-board-header">
             <button onClick={handleBackToAthletes} className="back-btn">
               ← Back to Athletes
             </button>
-            <h2>{selectedAthlete?.name}'s Sessions</h2>
+            <div className="athlete-header-info">
+              <h1 className="athlete-sessions-title">{selectedAthlete?.name}'s Training Sessions</h1>
+              <p className="athlete-sessions-subtitle">Complete performance overview and session history</p>
+            </div>
             <button 
-              className="btn-primary"
+              className="message-athlete-btn"
               onClick={() => {
                 setShowChat(true);
               }}
@@ -924,6 +927,8 @@ const CoachDashboard: React.FC = () => {
               💬 Message {selectedAthlete?.name}
             </button>
           </div>
+          
+          <div className="sessions-board-content">
           
           {sessions.length === 0 ? (
             <div className="no-sessions">
@@ -1030,7 +1035,8 @@ const CoachDashboard: React.FC = () => {
               </table>
             </div>
           )}
-        </section>
+          </div>
+        </div>
       )}
 
       <DetailedAnalysisModal

@@ -3185,6 +3185,136 @@ button:disabled {
   box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
 }
 
+/* Athlete Sessions Board - Clean Full Screen View */
+.athlete-sessions-board {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f8f9fa;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.sessions-board-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1001;
+}
+
+.athlete-header-info {
+  flex: 1;
+  text-align: center;
+  margin: 0 20px;
+}
+
+.athlete-sessions-title {
+  margin: 0 0 5px 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+}
+
+.athlete-sessions-subtitle {
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.9;
+  color: white;
+}
+
+.message-athlete-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.message-athlete-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.sessions-board-content {
+  padding: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.sessions-board-content .table-scroll {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.sessions-board-content #performance-table {
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.sessions-board-content #performance-table th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px 15px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.sessions-board-content #performance-table td {
+  padding: 18px 15px;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.sessions-board-content .session-row:hover {
+  background: #f8f9ff;
+  transform: none;
+}
+
+/* Responsive Design for Athlete Sessions Board */
+@media (max-width: 768px) {
+  .sessions-board-header {
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+  }
+  
+  .athlete-header-info {
+    margin: 0;
+    order: 2;
+  }
+  
+  .athlete-sessions-title {
+    font-size: 1.5rem;
+  }
+  
+  .sessions-board-content {
+    padding: 20px 15px;
+  }
+  
+  .message-athlete-btn {
+    order: 3;
+    width: 100%;
+    text-align: center;
+  }
+}
+
 /* Coach Dashboard Session Cards */
 .athlete-sessions-section {
   width: 100%;
