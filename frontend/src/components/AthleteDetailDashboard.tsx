@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { getSessions } from '../api/apiClient';
+import { getSessions, createCoachTrainingPlan } from '../api/apiClient';
 import DetailedAnalysisModal from './DetailedAnalysisModal';
 
 interface AthleteDetailDashboardProps {
@@ -19,6 +19,22 @@ const AthleteDetailDashboard: React.FC<AthleteDetailDashboardProps> = ({
   const [selectedSessionForAnalysis, setSelectedSessionForAnalysis] = useState<any>(null);
   const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showCoachPlanModal, setShowCoachPlanModal] = useState(false);
+  const [coachPlanData, setCoachPlanData] = useState({
+    title: '',
+    description: '',
+    exercises: [{ exercise: '', reps: '', duration: '' }],
+    duration: '',
+    frequency: '',
+    goals: ''
+  });
+  const [creatingPlan, setCreatingPlan] = useState(false);
+
+  const availableExercises = [
+    'Squat', 'Deadlift', 'Bench Press', 'Overhead Press', 'Pull-ups', 'Push-ups',
+    'Lunges', 'Plank', 'Burpees', 'Mountain Climbers', 'Jumping Jacks', 'Crunches',
+    'Leg Press', 'Chest Fly', 'Lat Pulldown', 'Shoulder Press', 'Bicep Curls', 'Tricep Dips'
+  ];
 
   useEffect(() => {
     loadAthleteSessions();
@@ -45,12 +61,83 @@ const AthleteDetailDashboard: React.FC<AthleteDetailDashboardProps> = ({
     setShowDetailedAnalysis(true);
   };
 
-  const handleSendFeedback = async (sessionId: string, athleteId: string) => {
-    const session = sessions.find(s => s.sessionId === sessionId);
-    const athleteName = session?.athleteName || 'Unknown';
-    
+  const handleSendFeedback = async () => {
     // Open chat with pre-filled message
     onMessageAthlete();
+  };
+
+  const handleCreateCoachPlan = () => {
+    setShowCoachPlanModal(true);
+  };
+
+  const handleCoachPlanSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user?.id) return;
+
+    setCreatingPlan(true);
+    try {
+      const planData = {
+        ...coachPlanData,
+        coachId: user.id,
+        coachName: user.username || 'Coach',
+        athleteId: selectedAthlete.id,
+        athleteName: selectedAthlete.name,
+        createdBy: 'coach',
+        status: 'active'
+      };
+
+      await createCoachTrainingPlan(selectedAthlete.id, planData);
+      
+      // Reset form
+      setCoachPlanData({
+        title: '',
+        description: '',
+        exercises: [{ exercise: '', reps: '', duration: '' }],
+        duration: '',
+        frequency: '',
+        goals: ''
+      });
+      setShowCoachPlanModal(false);
+      
+      alert('Training plan created and sent to athlete successfully!');
+    } catch (error) {
+      console.error('Failed to create coach training plan:', error);
+      alert('Failed to create training plan. Please try again.');
+    } finally {
+      setCreatingPlan(false);
+    }
+  };
+
+  const handleCoachPlanInputChange = (field: string, value: string) => {
+    setCoachPlanData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleExerciseChange = (index: number, field: string, value: string) => {
+    setCoachPlanData(prev => ({
+      ...prev,
+      exercises: prev.exercises.map((exercise, i) => 
+        i === index ? { ...exercise, [field]: value } : exercise
+      )
+    }));
+  };
+
+  const addExercise = () => {
+    setCoachPlanData(prev => ({
+      ...prev,
+      exercises: [...prev.exercises, { exercise: '', reps: '', duration: '' }]
+    }));
+  };
+
+  const removeExercise = (index: number) => {
+    if (coachPlanData.exercises.length > 1) {
+      setCoachPlanData(prev => ({
+        ...prev,
+        exercises: prev.exercises.filter((_, i) => i !== index)
+      }));
+    }
   };
 
   const getRiskClass = (risk: string) => {
@@ -123,12 +210,20 @@ const AthleteDetailDashboard: React.FC<AthleteDetailDashboardProps> = ({
           <h1 className="athlete-sessions-title">{selectedAthlete.name}'s Training Sessions</h1>
           <p className="athlete-sessions-subtitle">Complete performance overview and session history</p>
         </div>
-        <button 
-          className="message-athlete-btn"
-          onClick={onMessageAthlete}
-        >
-          💬 Message {selectedAthlete.name}
-        </button>
+        <div className="athlete-header-actions">
+          <button 
+            className="coach-plan-btn"
+            onClick={handleCreateCoachPlan}
+          >
+            📋 Plan by Coach
+          </button>
+          <button 
+            className="message-athlete-btn"
+            onClick={onMessageAthlete}
+          >
+            💬 Message {selectedAthlete.name}
+          </button>
+        </div>
       </div>
       
       <div className="sessions-board-content">
@@ -136,99 +231,127 @@ const AthleteDetailDashboard: React.FC<AthleteDetailDashboardProps> = ({
         <div className="athlete-performance-overview">
           <h3>📊 Performance Overview</h3>
           
-          {/* Performance Indicators */}
-          <div className="athlete-performance-indicators">
-            {/* Circular Progress for Form Score */}
-            <div className="progress-circle">
-              <div className="circle-container">
-                <svg className="progress-ring" width="100" height="100">
-                  <circle
-                    className="progress-ring-circle-bg"
-                    stroke="#e5e7eb"
-                    strokeWidth="8"
-                    fill="transparent"
-                    r="42"
-                    cx="50"
-                    cy="50"
-                  />
-                  <circle
-                    className={`progress-ring-circle ${getRiskClass(athleteStats.avgFormScore >= 85 ? 'Low' : athleteStats.avgFormScore >= 70 ? 'Medium' : 'High')}`}
-                    stroke="currentColor"
-                    strokeWidth="8"
-                    fill="transparent"
-                    r="42"
-                    cx="50"
-                    cy="50"
-                    style={{
-                      strokeDasharray: `${2 * Math.PI * 42}`,
-                      strokeDashoffset: `${2 * Math.PI * 42 * (1 - athleteStats.avgFormScore / 100)}`
-                    }}
-                  />
-                </svg>
-                <div className="circle-content">
-                  <span className="circle-value">{athleteStats.avgFormScore}%</span>
-                  <span className="circle-label">Avg Form Score</span>
-                </div>
-              </div>
+          {/* Performance Overview Layout */}
+          <div className="performance-overview-layout">
+            {/* Left Side - Empty for now */}
+            <div className="performance-left">
+              {/* Space for future content */}
             </div>
-            
-            {/* Box-like displays for Duration and Sessions */}
-            <div className="performance-boxes">
-              <div className="performance-box duration-box">
-                <div className="box-icon">⏱️</div>
-                <div className="box-content">
-                  <div className="box-value">{athleteStats.avgDuration}s</div>
-                  <div className="box-label">Avg Duration</div>
-                </div>
-              </div>
-              
-              <div className="performance-box sessions-box">
-                <div className="box-icon">📊</div>
-                <div className="box-content">
-                  <div className="box-value">{athleteStats.totalSessions}</div>
-                  <div className="box-label">Total Sessions</div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Additional Stats */}
-          <div className="athlete-stats-grid">
-            <div className="stat-card">
-              <div className="stat-icon">📅</div>
-              <div className="stat-info">
-                <div className="stat-label">Last Session</div>
-                <div className="stat-value">
-                  {athleteStats.lastSession 
-                    ? new Date(athleteStats.lastSession.timestamp).toLocaleDateString()
-                    : 'No sessions yet'
-                  }
+            {/* Right Side - Performance Grid */}
+            <div className="performance-right">
+              {/* Top Row - 2 Circles */}
+              <div className="performance-circles-row">
+                <div className="progress-circle medium">
+                  <div className="circle-container">
+                    <svg className="progress-ring" width="80" height="80">
+                      <circle
+                        className="progress-ring-circle-bg"
+                        stroke="#e5e7eb"
+                        strokeWidth="6"
+                        fill="transparent"
+                        r="34"
+                        cx="40"
+                        cy="40"
+                      />
+                      <circle
+                        className={`progress-ring-circle ${getRiskClass(athleteStats.avgFormScore >= 85 ? 'Low' : athleteStats.avgFormScore >= 70 ? 'Medium' : 'High')}`}
+                        stroke="currentColor"
+                        strokeWidth="6"
+                        fill="transparent"
+                        r="34"
+                        cx="40"
+                        cy="40"
+                        style={{
+                          strokeDasharray: `${2 * Math.PI * 34}`,
+                          strokeDashoffset: `${2 * Math.PI * 34 * (1 - athleteStats.avgFormScore / 100)}`
+                        }}
+                      />
+                    </svg>
+                    <div className="circle-content">
+                      <span className="circle-value">{athleteStats.avgFormScore}%</span>
+                    </div>
+                  </div>
+                  <div className="circle-text-right">
+                    <div className="circle-label">Avg Form Score</div>
+                  </div>
+                </div>
+                
+                <div className="progress-circle medium">
+                  <div className="circle-container">
+                    <svg className="progress-ring" width="80" height="80">
+                      <circle
+                        className="progress-ring-circle-bg"
+                        stroke="#e5e7eb"
+                        strokeWidth="6"
+                        fill="transparent"
+                        r="34"
+                        cx="40"
+                        cy="40"
+                      />
+                      <circle
+                        className="progress-ring-circle best-score"
+                        stroke="#f59e0b"
+                        strokeWidth="6"
+                        fill="transparent"
+                        r="34"
+                        cx="40"
+                        cy="40"
+                        style={{
+                          strokeDasharray: `${2 * Math.PI * 34}`,
+                          strokeDashoffset: `${2 * Math.PI * 34 * (1 - (sessions.length > 0 ? Math.max(...sessions.map(s => s.formScore || 0)) : 0) / 100)}`
+                        }}
+                      />
+                    </svg>
+                    <div className="circle-content">
+                      <span className="circle-value">
+                        {sessions.length > 0 
+                          ? Math.max(...sessions.map(s => s.formScore || 0)) + '%'
+                          : 'N/A'
+                        }
+                      </span>
+                    </div>
+                  </div>
+                  <div className="circle-text-right">
+                    <div className="circle-label">Best Form Score</div>
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="stat-card">
-              <div className="stat-icon">🎯</div>
-              <div className="stat-info">
-                <div className="stat-label">Best Form Score</div>
-                <div className="stat-value">
-                  {sessions.length > 0 
-                    ? Math.max(...sessions.map(s => s.formScore || 0)) + '%'
-                    : 'N/A'
-                  }
+
+              {/* Bottom Row - 3 Performance Boxes */}
+              <div className="performance-boxes-row">
+                <div className="performance-box duration-box">
+                  <div className="box-icon">⏱️</div>
+                  <div className="box-content">
+                    <div className="box-value">{athleteStats.avgDuration}s</div>
+                    <div className="box-label">Avg Duration</div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            
-            <div className="stat-card">
-              <div className="stat-icon">⏱️</div>
-              <div className="stat-info">
-                <div className="stat-label">Longest Session</div>
-                <div className="stat-value">
-                  {sessions.length > 0 
-                    ? Math.max(...sessions.map(s => s.durationSec || 0)) + 's'
-                    : 'N/A'
-                  }
+                
+                <div className="performance-box longest-session-box">
+                  <div className="box-icon">⏱️</div>
+                  <div className="box-content">
+                    <div className="box-value">
+                      {sessions.length > 0 
+                        ? Math.max(...sessions.map(s => s.durationSec || 0)) + 's'
+                        : 'N/A'
+                      }
+                    </div>
+                    <div className="box-label">Longest Session</div>
+                  </div>
+                </div>
+                
+                <div className="performance-box last-session-box">
+                  <div className="box-icon">📅</div>
+                  <div className="box-content">
+                    <div className="box-value">
+                      {athleteStats.lastSession 
+                        ? new Date(athleteStats.lastSession.timestamp).toLocaleDateString()
+                        : 'Never'
+                      }
+                    </div>
+                    <div className="box-label">Last Session</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -237,7 +360,13 @@ const AthleteDetailDashboard: React.FC<AthleteDetailDashboardProps> = ({
 
         {/* Sessions Table */}
         <div className="sessions-table-section">
-          <h3>📊 Training Sessions</h3>
+          <div className="sessions-table-header">
+            <h3>📊 Training Sessions</h3>
+            <div className="total-sessions-badge">
+              <span className="total-sessions-label">Total Sessions:</span>
+              <span className="total-sessions-value">{athleteStats.totalSessions}</span>
+            </div>
+          </div>
           
           {sessions.length === 0 ? (
             <div className="no-sessions">
@@ -334,7 +463,7 @@ const AthleteDetailDashboard: React.FC<AthleteDetailDashboardProps> = ({
                             </button>
                             <button
                               className="btn-feedback btn-sm"
-                              onClick={() => handleSendFeedback(session.sessionId, session.athleteId)}
+                              onClick={handleSendFeedback}
                             >
                               Feedback
                             </button>
@@ -355,6 +484,169 @@ const AthleteDetailDashboard: React.FC<AthleteDetailDashboardProps> = ({
         onClose={() => setShowDetailedAnalysis(false)}
         session={selectedSessionForAnalysis}
       />
+
+      {/* Coach Plan Modal */}
+      {showCoachPlanModal && (
+        <div className="modal-overlay">
+          <div className="modal-content coach-plan-modal">
+            <div className="modal-header">
+              <h2>Create Training Plan for {selectedAthlete.name}</h2>
+              <button 
+                className="modal-close"
+                onClick={() => setShowCoachPlanModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            
+            <form onSubmit={handleCoachPlanSubmit} className="coach-plan-form">
+              <div className="form-group">
+                <label htmlFor="title">Plan Title</label>
+                <input
+                  type="text"
+                  id="title"
+                  value={coachPlanData.title}
+                  onChange={(e) => handleCoachPlanInputChange('title', e.target.value)}
+                  placeholder="e.g., Strength Building Program"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="description">Description</label>
+                <textarea
+                  id="description"
+                  value={coachPlanData.description}
+                  onChange={(e) => handleCoachPlanInputChange('description', e.target.value)}
+                  placeholder="Describe the training plan objectives and approach..."
+                  rows={3}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Exercises</label>
+                <div className="exercises-container">
+                  {coachPlanData.exercises.map((exercise, index) => (
+                    <div key={index} className="exercise-item">
+                      <div className="exercise-row">
+                        <div className="form-group exercise-select">
+                          <select
+                            value={exercise.exercise}
+                            onChange={(e) => handleExerciseChange(index, 'exercise', e.target.value)}
+                            required
+                          >
+                            <option value="">Select Exercise</option>
+                            {availableExercises.map(ex => (
+                              <option key={ex} value={ex}>{ex}</option>
+                            ))}
+                          </select>
+                        </div>
+                        
+                        <div className="form-group exercise-reps">
+                          <input
+                            type="number"
+                            placeholder="Reps"
+                            value={exercise.reps}
+                            onChange={(e) => handleExerciseChange(index, 'reps', e.target.value)}
+                            min="1"
+                          />
+                        </div>
+                        
+                        <div className="form-group exercise-duration">
+                          <input
+                            type="number"
+                            placeholder="Duration (sec)"
+                            value={exercise.duration}
+                            onChange={(e) => handleExerciseChange(index, 'duration', e.target.value)}
+                            min="1"
+                          />
+                        </div>
+                        
+                        <button
+                          type="button"
+                          className="remove-exercise-btn"
+                          onClick={() => removeExercise(index)}
+                          disabled={coachPlanData.exercises.length === 1}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  <button
+                    type="button"
+                    className="add-exercise-btn"
+                    onClick={addExercise}
+                  >
+                    + Add Exercise
+                  </button>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="duration">Duration (weeks)</label>
+                  <input
+                    type="number"
+                    id="duration"
+                    value={coachPlanData.duration}
+                    onChange={(e) => handleCoachPlanInputChange('duration', e.target.value)}
+                    placeholder="8"
+                    min="1"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="frequency">Frequency (per week)</label>
+                  <input
+                    type="number"
+                    id="frequency"
+                    value={coachPlanData.frequency}
+                    onChange={(e) => handleCoachPlanInputChange('frequency', e.target.value)}
+                    placeholder="3"
+                    min="1"
+                    max="7"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="goals">Goals & Targets</label>
+                <textarea
+                  id="goals"
+                  value={coachPlanData.goals}
+                  onChange={(e) => handleCoachPlanInputChange('goals', e.target.value)}
+                  placeholder="Specific goals and targets for this plan..."
+                  rows={3}
+                  required
+                />
+              </div>
+
+              <div className="modal-actions">
+                <button 
+                  type="button" 
+                  className="btn-secondary"
+                  onClick={() => setShowCoachPlanModal(false)}
+                  disabled={creatingPlan}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="btn-primary"
+                  disabled={creatingPlan}
+                >
+                  {creatingPlan ? 'Creating...' : 'Create & Send Plan'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

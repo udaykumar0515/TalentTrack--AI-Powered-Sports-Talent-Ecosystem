@@ -296,6 +296,22 @@ export const generateAthleteTrainingPlan = async (athleteId: string) => {
   return response.json();
 };
 
+export const createCoachTrainingPlan = async (athleteId: string, planData: any) => {
+  const response = await fetch(`${API_BASE_URL}/training-plans/coach/${athleteId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(planData)
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to create coach training plan');
+  }
+  
+  return response.json();
+};
+
 export const updateAthleteTrainingPlan = async (athleteId: string, updates: any) => {
   const response = await fetch(`${API_BASE_URL}/training-plans/athlete/${athleteId}`, {
     method: 'PUT',
