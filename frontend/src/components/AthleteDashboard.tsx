@@ -29,35 +29,11 @@ const AthleteDashboard: React.FC = () => {
   const [cameraActive, setCameraActive] = useState(false);
   const [selectedSessionMenu, setSelectedSessionMenu] = useState<string | null>(null);
   const [trainingPlan, setTrainingPlan] = useState<any>(null);
+  const [coachPlan, setCoachPlan] = useState<any>(null);
   const [loadingTrainingPlan, setLoadingTrainingPlan] = useState(false);
   const [selectedPlanType, setSelectedPlanType] = useState<'ai' | 'coach'>('ai');
   const [gamificationStats, setGamificationStats] = useState<any>(null);
   
-  // Mock coach plan for testing
-  const mockCoachPlan = {
-    athlete_id: user?.id || 'athlete_1',
-    created_by: 'coach',
-    coach_id: 'coach_1',
-    coach_name: 'Coach Sarah',
-    created_at: new Date().toISOString(),
-    valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-    title: 'Advanced Strength Building Program',
-    description: 'A comprehensive 8-week program designed to build strength, improve form, and increase endurance. This plan focuses on progressive overload and proper technique.',
-    status: 'active',
-    exercises: [
-      { exercise: 'Squat', reps: '8-12', duration: '45' },
-      { exercise: 'Deadlift', reps: '5-8', duration: '60' },
-      { exercise: 'Bench Press', reps: '6-10', duration: '40' },
-      { exercise: 'Overhead Press', reps: '8-12', duration: '35' },
-      { exercise: 'Pull-ups', reps: '5-10', duration: '30' },
-      { exercise: 'Plank', reps: '3', duration: '60' }
-    ],
-    duration: '8',
-    frequency: '4',
-    goals: 'Increase squat strength by 30%, improve deadlift form, build upper body strength, and enhance core stability. Focus on progressive overload and proper recovery.',
-    plan_type: 'coach_created',
-    next_review_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-  };
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [loadingGamification, setLoadingGamification] = useState(false);
 
@@ -250,6 +226,7 @@ const AthleteDashboard: React.FC = () => {
       await loadSessions();
       await loadMessages();
       await loadTrainingPlan();
+      await loadCoachPlan();
       await loadGamificationStats();
       await loadLeaderboard();
       await loadGoals();
@@ -500,6 +477,26 @@ const AthleteDashboard: React.FC = () => {
       console.error('Error loading training plan:', error);
     } finally {
       setLoadingTrainingPlan(false);
+    }
+  };
+
+  const loadCoachPlan = async () => {
+    if (!user?.id) return;
+    
+    try {
+      console.log('Loading coach plan for user:', user.id);
+      const response = await fetch(`/api/training-plans/coach-plan/${user.id}`);
+      if (response.ok) {
+        const plan = await response.json();
+        console.log('Coach plan loaded:', plan);
+        setCoachPlan(plan);
+      } else {
+        console.log('No coach plan found');
+        setCoachPlan(null);
+      }
+    } catch (error) {
+      console.error('Error loading coach plan:', error);
+      setCoachPlan(null);
     }
   };
 
@@ -1347,7 +1344,7 @@ const AthleteDashboard: React.FC = () => {
               <p>Loading your personalized training plan...</p>
           </div>
         )}
-              {((trainingPlan && !trainingPlan.error) || (sessions.length > 0 && sessions[0].trainingPlan) || selectedPlanType === 'coach') ? (
+               {((trainingPlan && !trainingPlan.error) || (coachPlan && !coachPlan.error) || (sessions.length > 0 && sessions[0].trainingPlan)) ? (
                 <div className="training-plan-content">
             <div className="training-plan-header">
               <div className="plan-type-buttons">
@@ -1376,218 +1373,214 @@ const AthleteDashboard: React.FC = () => {
               )}
             </div>
             
-            {(() => {
-              // Get the appropriate plan based on selected type
-              let planData;
-              if (selectedPlanType === 'coach') {
-                planData = mockCoachPlan; // Use mock coach plan for now
-              } else {
-                planData = trainingPlan || (sessions.length > 0 ? sessions[0].trainingPlan : null);
-              }
+             {(() => {
+               // Get the appropriate plan based on selected type
+               let planData;
+               if (selectedPlanType === 'coach') {
+                 // Use coach-created plan
+                 planData = coachPlan && !coachPlan.error ? coachPlan : null;
+               } else {
+                 // Use AI-generated plan
+                 planData = trainingPlan && !trainingPlan.error ? trainingPlan : (sessions.length > 0 ? sessions[0].trainingPlan : null);
+               }
               
               if (!planData) return null;
               
               // Check if this is a coach-created plan
               const isCoachPlan = planData.created_by === 'coach' || planData.plan_type === 'coach_created';
               
-              return (
-                <>
-                  {/* Plan Header with Coach Info */}
-                  {isCoachPlan && (
-                    <div className="coach-plan-header">
-                      <div className="plan-badge coach-plan">
-                        <span className="badge-icon">👨‍🏫</span>
-                        <span className="badge-text">Created by Coach: {planData.coach_name}</span>
-                      </div>
-                      <div className="plan-meta">
-                        <span className="plan-title">{planData.title}</span>
-                        <span className="plan-date">Created: {new Date(planData.created_at).toLocaleDateString()}</span>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Coach Plan Content */}
-                  {isCoachPlan ? (
-                    <div className="coach-plan-content">
-                      {/* Plan Description */}
-                      {planData.description && (
-                        <div className="plan-description">
-                          <h3>Plan Description</h3>
-                          <p>{planData.description}</p>
-                        </div>
-                      )}
-                      
-                      {/* Exercises */}
-                      {planData.exercises && planData.exercises.length > 0 && (
-                        <div className="coach-exercises">
-                          <h3>Exercises</h3>
-                          <div className="exercises-grid">
-                            {planData.exercises.map((exercise: any, index: number) => (
-                              <div key={index} className="exercise-card">
-                                <div className="exercise-header">
-                                  <h4>{exercise.exercise}</h4>
-                                </div>
-                                <div className="exercise-details">
-                                  <div className="detail-item">
-                                    <span className="label">Reps:</span>
-                                    <span className="value">{exercise.reps}</span>
-                                  </div>
-                                  <div className="detail-item">
-                                    <span className="label">Duration:</span>
-                                    <span className="value">{exercise.duration}s</span>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Plan Details */}
-                      <div className="plan-details">
-                        <div className="details-grid">
-                          {planData.duration && (
-                            <div className="detail-item">
-                              <span className="label">Duration:</span>
-                              <span className="value">{planData.duration} weeks</span>
-                            </div>
-                          )}
-                          {planData.frequency && (
-                            <div className="detail-item">
-                              <span className="label">Frequency:</span>
-                              <span className="value">{planData.frequency} times per week</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      
-                      {/* Goals */}
-                      {planData.goals && (
-                        <div className="plan-goals">
-                          <h3>Goals & Targets</h3>
-                          <p>{planData.goals}</p>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <>
-                      {/* Analysis Summary */}
-                      {planData.analysis && (
-                    <div className="analysis-summary">
-                      <h3>Performance Analysis</h3>
-                      <div className="analysis-grid">
-                        {planData.analysis.gaps.length > 0 && (
-                          <div className="analysis-card gaps">
-                            <h4>Areas to Improve</h4>
-                            <ul>
-                              {planData.analysis.gaps.map((gap: string, index: number) => (
-                                <li key={index}>{gap}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        {planData.analysis.strengths.length > 0 && (
-                          <div className="analysis-card strengths">
-                            <h4>Your Strengths</h4>
-                            <ul>
-                              {planData.analysis.strengths.map((strength: string, index: number) => (
-                                <li key={index}>{strength}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
+               return (
+                 <>
+                   {/* Coach Plan Header - Simple Badge */}
+                   {isCoachPlan && (
+                     <div className="coach-plan-badge">
+                       <span className="coach-badge-icon">👨‍🏫</span>
+                       <span className="coach-badge-text">Created by Coach: {planData.coach_name}</span>
+                     </div>
+                   )}
+                   
+                   {/* Coach Plan Content */}
+                   {isCoachPlan ? (
+                     <div className="coach-plan-content">
+                       {/* Plan Description */}
+                       {planData.description && (
+                         <div className="plan-description">
+                           <h3>Plan Description</h3>
+                           <p>{planData.description}</p>
+                         </div>
+                       )}
+                       
+                       {/* Exercises */}
+                       {planData.exercises && planData.exercises.length > 0 && (
+                         <div className="coach-exercises">
+                           <h3>Exercises</h3>
+                           <div className="exercises-grid">
+                             {planData.exercises.map((exercise: any, index: number) => (
+                               <div key={index} className="exercise-card">
+                                 <div className="exercise-header">
+                                   <h4>{exercise.exercise}</h4>
+                                 </div>
+                                 <div className="exercise-details">
+                                   <div className="detail-item">
+                                     <span className="label">Reps:</span>
+                                     <span className="value">{exercise.reps}</span>
+                                   </div>
+                                   <div className="detail-item">
+                                     <span className="label">Duration:</span>
+                                     <span className="value">{exercise.duration}s</span>
+                                   </div>
+                                 </div>
+                               </div>
+                             ))}
+                           </div>
+                         </div>
+                       )}
+                       
+                       {/* Plan Details */}
+                       <div className="plan-details">
+                         <div className="details-grid">
+                           {planData.duration && (
+                             <div className="detail-item">
+                               <span className="label">Duration:</span>
+                               <span className="value">{planData.duration} weeks</span>
+                             </div>
+                           )}
+                           {planData.frequency && (
+                             <div className="detail-item">
+                               <span className="label">Frequency:</span>
+                               <span className="value">{planData.frequency} times per week</span>
+                             </div>
+                           )}
+                         </div>
+                       </div>
+                       
+                       {/* Goals */}
+                       {planData.goals && (
+                         <div className="plan-goals">
+                           <h3>Goals & Targets</h3>
+                           <p>{planData.goals}</p>
+                         </div>
+                       )}
+                     </div>
+                   ) : (
+                     <>
+                       {/* Analysis Summary - Show for AI plans */}
+                       {planData.analysis && (
+                         <div className="analysis-summary">
+                           <h3>Performance Analysis</h3>
+                           <div className="analysis-grid">
+                             {planData.analysis.gaps.length > 0 && (
+                               <div className="analysis-card gaps">
+                                 <h4>Areas to Improve</h4>
+                                 <ul>
+                                   {planData.analysis.gaps.map((gap: string, index: number) => (
+                                     <li key={index}>{gap}</li>
+                                   ))}
+                                 </ul>
+                               </div>
+                             )}
+                             {planData.analysis.strengths.length > 0 && (
+                               <div className="analysis-card strengths">
+                                 <h4>Your Strengths</h4>
+                                 <ul>
+                                   {planData.analysis.strengths.map((strength: string, index: number) => (
+                                     <li key={index}>{strength}</li>
+                                   ))}
+                                 </ul>
+                               </div>
+                             )}
+                           </div>
+                         </div>
+                       )}
 
-                  {/* Weekly Schedule */}
-                  {planData.weekly_schedule && planData.weekly_schedule.length > 0 && (
-                    <div className="weekly-schedule">
-                      <h3>This Week's Schedule</h3>
-                      <div className="schedule-grid">
-                        {planData.weekly_schedule.map((day: any, index: number) => (
-                          <div key={index} className="schedule-card">
-                            <div className="day-header">
-                              <h4>{day.day}</h4>
-                              <span className={`priority-badge ${day.priority}`}>{day.priority}</span>
-                            </div>
-                            <div className="exercise-info">
-                              <div className="exercise-name">{day.exercise}</div>
-                              <div className="exercise-details">
-                                {day.sets} sets × {day.reps} reps
-                              </div>
-                              <div className="exercise-focus">{day.focus}</div>
-                            </div>
-                            <div className="exercise-instructions">
-                              <h5>Instructions:</h5>
-                              <ul>
-                                {day.instructions.map((instruction: string, idx: number) => (
-                                  <li key={idx}>{instruction}</li>
-                                ))}
-                              </ul>
-                            </div>
-                            <div className="exercise-duration">
-                              Duration: {day.estimated_duration}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                       {/* Weekly Schedule */}
+                       {planData.weekly_schedule && planData.weekly_schedule.length > 0 && (
+                         <div className="weekly-schedule">
+                           <h3>This Week's Schedule</h3>
+                           <div className="schedule-grid">
+                             {planData.weekly_schedule.map((day: any, index: number) => (
+                               <div key={index} className="schedule-card">
+                                 <div className="day-header">
+                                   <h4>{day.day}</h4>
+                                   <span className={`priority-badge ${day.priority}`}>{day.priority}</span>
+                                 </div>
+                                 <div className="exercise-info">
+                                   <div className="exercise-name">{day.exercise}</div>
+                                   <div className="exercise-details">
+                                     {day.sets} sets × {day.reps} reps
+                                   </div>
+                                   <div className="exercise-focus">{day.focus}</div>
+                                 </div>
+                                 <div className="exercise-instructions">
+                                   <h5>Instructions:</h5>
+                                   <ul>
+                                     {day.instructions.map((instruction: string, idx: number) => (
+                                       <li key={idx}>{instruction}</li>
+                                     ))}
+                                   </ul>
+                                 </div>
+                                 <div className="exercise-duration">
+                                   Duration: {day.estimated_duration}
+                                 </div>
+                               </div>
+                             ))}
+                           </div>
+                         </div>
+                       )}
 
-                  {/* Progression Plan */}
-                  {planData.progression_plan && (
-                    <div className="progression-plan">
-                      <h3>4-Week Progression Plan</h3>
-                      <div className="progression-grid">
-                        {planData.progression_plan.weeks.map((week: any, index: number) => (
-                          <div key={index} className="progression-card">
-                            <div className="week-header">
-                              <h4>Week {week.week}</h4>
-                              <div className="week-focus">{week.focus}</div>
-                            </div>
-                            <div className="week-targets">
-                              <div className="target">
-                                <span className="target-label">Form Target:</span>
-                                <span className="target-value">{week.form_target}%</span>
-                              </div>
-                              <div className="target">
-                                <span className="target-label">Reps Target:</span>
-                                <span className="target-value">{week.reps_target}</span>
-                              </div>
-                            </div>
-                            <div className="week-metrics">
-                              <h5>Key Metrics:</h5>
-                              <ul>
-                                {week.key_metrics.map((metric: string, idx: number) => (
-                                      <li key={idx}>{metric}</li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                       {/* Progression Plan */}
+                       {planData.progression_plan && (
+                         <div className="progression-plan">
+                           <h3>4-Week Progression Plan</h3>
+                           <div className="progression-grid">
+                             {planData.progression_plan.weeks.map((week: any, index: number) => (
+                               <div key={index} className="progression-card">
+                                 <div className="week-header">
+                                   <h4>Week {week.week}</h4>
+                                   <div className="week-focus">{week.focus}</div>
+                                 </div>
+                                 <div className="week-targets">
+                                   <div className="target">
+                                     <span className="target-label">Form Target:</span>
+                                     <span className="target-value">{week.form_target}%</span>
+                                   </div>
+                                   <div className="target">
+                                     <span className="target-label">Reps Target:</span>
+                                     <span className="target-value">{week.reps_target}</span>
+                                   </div>
+                                 </div>
+                                 <div className="week-metrics">
+                                   <h5>Key Metrics:</h5>
+                                   <ul>
+                                     {week.key_metrics.map((metric: string, idx: number) => (
+                                       <li key={idx}>{metric}</li>
+                                     ))}
+                                   </ul>
+                                 </div>
+                               </div>
+                             ))}
+                           </div>
+                         </div>
+                       )}
 
-                      {/* Coaching Notes */}
-                      {planData.coaching_notes && planData.coaching_notes.length > 0 && (
-                        <div className="coaching-notes">
-                          <h3>Coaching Notes</h3>
-                          <div className="notes-list">
-                            {planData.coaching_notes.map((note: string, index: number) => (
-                              <div key={index} className="note-item">
-                                <span className="note-icon">💡</span>
-                                <span className="note-text">{note}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </>
-              );
+                       {/* Coaching Notes */}
+                       {planData.coaching_notes && planData.coaching_notes.length > 0 && (
+                         <div className="coaching-notes">
+                           <h3>Coaching Notes</h3>
+                           <div className="notes-list">
+                             {planData.coaching_notes.map((note: string, index: number) => (
+                               <div key={index} className="note-item">
+                                 <span className="note-icon">💡</span>
+                                 <span className="note-text">{note}</span>
+                               </div>
+                             ))}
+                           </div>
+                         </div>
+                       )}
+                     </>
+                   )}
+                 </>
+               );
             })()}
               </div>
             ) : (

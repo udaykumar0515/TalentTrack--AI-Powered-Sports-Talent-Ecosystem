@@ -433,9 +433,25 @@ class TrainingPlanGenerator:
         return notes
     
     def get_training_plan(self, athlete_id: str) -> Dict[str, Any]:
-        """Get existing training plan for athlete"""
+        """Get existing training plan for athlete (AI or Coach created)"""
         plans = self._load_training_plans()
-        return plans.get(athlete_id, {"error": "No training plan found"})
+        
+        # First check for AI-generated plan
+        if athlete_id in plans:
+            return plans[athlete_id]
+        
+        # Then check for coach-created plan
+        coach_plan_key = f"{athlete_id}_coach"
+        if coach_plan_key in plans:
+            return plans[coach_plan_key]
+        
+        return {"error": "No training plan found"}
+    
+    def get_coach_training_plan(self, athlete_id: str) -> Dict[str, Any]:
+        """Get coach-created training plan for athlete"""
+        plans = self._load_training_plans()
+        coach_plan_key = f"{athlete_id}_coach"
+        return plans.get(coach_plan_key, {"error": "No coach training plan found"})
     
     def update_training_plan(self, athlete_id: str, updates: Dict[str, Any]) -> Dict[str, Any]:
         """Update existing training plan"""

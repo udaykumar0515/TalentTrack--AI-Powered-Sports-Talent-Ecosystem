@@ -705,6 +705,16 @@ async def get_coach_training_plans(coach_id: str):
         logger.error(f"Error getting coach training plans: {e}")
         raise HTTPException(status_code=500, detail="Failed to get coach training plans")
 
+@app.get("/api/training-plans/coach-plan/{athlete_id}")
+async def get_coach_training_plan(athlete_id: str):
+    """Get coach-created training plan for a specific athlete"""
+    try:
+        plan = training_plan_generator.get_coach_training_plan(athlete_id)
+        return plan
+    except Exception as e:
+        logger.error(f"Error getting coach training plan: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get coach training plan")
+
 @app.post("/api/training-plans/coach/{athlete_id}")
 async def create_coach_training_plan(athlete_id: str, plan_data: dict):
     """Create a training plan for an athlete by their coach"""
