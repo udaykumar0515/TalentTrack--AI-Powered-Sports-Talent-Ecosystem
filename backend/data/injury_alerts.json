@@ -1,24 +1,236 @@
 {
-  "athlete_1": [
+  "athlete_2": [
     {
-      "id": "alert_athlete_1_1758224162",
-      "athlete_id": "athlete_1",
-      "athlete_name": "uday",
+      "id": "alert_athlete_2_5440189",
+      "athlete_id": "athlete_2",
+      "athlete_name": "sarah_fit",
+      "coach_id": "coach_1",
+      "coach_name": "coach_mike",
+      "severity": "high",
+      "risk_factors": [
+        "knee_tendinitis",
+        "form_deterioration"
+      ],
+      "recommendations": [
+        "Address knee tendinitis issues",
+        "Focus on proper form",
+        "Consider modifications",
+        "Monitor for improvement"
+      ],
+      "created_at": "2025-09-23T13:46:25.917678Z",
+      "status": "resolved",
+      "acknowledged": true,
+      "acknowledged_at": "2025-09-23T13:46:25.917756Z"
+    }
+  ],
+  "athlete_4": [
+    {
+      "id": "alert_athlete_4_6068298",
+      "athlete_id": "athlete_4",
+      "athlete_name": "emma_athlete",
       "coach_id": "coach_1",
       "coach_name": "coach_mike",
       "severity": "medium",
       "risk_factors": [
-        "cheat_patterns",
-        "fatigue_indicators"
+        "shoulder_impingement",
+        "form_deterioration"
       ],
       "recommendations": [
-        "Address technique breakdown - may indicate compensation",
-        "Consider rest day or lighter training load",
-        "Monitor for signs of overtraining",
-        "Consider deload week or active recovery"
+        "Address shoulder impingement issues",
+        "Focus on proper form",
+        "Consider modifications",
+        "Monitor for improvement"
       ],
-      "created_at": "2025-09-19T01:06:02.603118Z",
+      "created_at": "2025-09-23T13:46:25.917801Z",
+      "status": "resolved",
+      "acknowledged": false,
+      "acknowledged_at": null
+    }
+  ],
+  "athlete_5": [
+    {
+      "id": "alert_athlete_5_2005173",
+      "athlete_id": "athlete_5",
+      "athlete_name": "david_trainer",
+      "coach_id": "coach_1",
+      "coach_name": "coach_mike",
+      "severity": "low",
+      "risk_factors": [
+        "lower_back_pain",
+        "form_deterioration"
+      ],
+      "recommendations": [
+        "Address lower back pain issues",
+        "Focus on proper form",
+        "Consider modifications",
+        "Monitor for improvement"
+      ],
+      "created_at": "2025-09-19T13:46:25.917828Z",
+      "status": "resolved",
+      "acknowledged": false,
+      "acknowledged_at": null
+    },
+    {
+      "id": "alert_athlete_5_8792046",
+      "athlete_id": "athlete_5",
+      "athlete_name": "david_trainer",
+      "coach_id": "coach_1",
+      "coach_name": "coach_mike",
+      "severity": "low",
+      "risk_factors": [
+        "ankle_sprain",
+        "form_deterioration"
+      ],
+      "recommendations": [
+        "Address ankle sprain issues",
+        "Focus on proper form",
+        "Consider modifications",
+        "Monitor for improvement"
+      ],
+      "created_at": "2025-09-21T13:46:25.917840Z",
       "status": "active",
+      "acknowledged": false,
+      "acknowledged_at": null
+    }
+  ],
+  "athlete_6": [
+    {
+      "id": "alert_athlete_6_6357240",
+      "athlete_id": "athlete_6",
+      "athlete_name": "lisa_fitness",
+      "coach_id": "coach_1",
+      "coach_name": "coach_mike",
+      "severity": "high",
+      "risk_factors": [
+        "wrist_carpal_tunnel",
+        "form_deterioration"
+      ],
+      "recommendations": [
+        "Address wrist carpal tunnel issues",
+        "Focus on proper form",
+        "Consider modifications",
+        "Monitor for improvement"
+      ],
+      "created_at": "2025-09-21T13:46:25.917854Z",
+      "status": "resolved",
+      "acknowledged": true,
+      "acknowledged_at": "2025-09-24T13:46:25.917863Z"
+    }
+  ],
+  "athlete_7": [
+    {
+      "id": "alert_athlete_7_2781470",
+      "athlete_id": "athlete_7",
+      "athlete_name": "alex_warrior",
+      "coach_id": "coach_1",
+      "coach_name": "coach_mike",
+      "severity": "medium",
+      "risk_factors": [
+        "hamstring_strain",
+        "form_deterioration"
+      ],
+      "recommendations": [
+        "Address hamstring strain issues",
+        "Focus on proper form",
+        "Consider modifications",
+        "Monitor for improvement"
+      ],
+      "created_at": "2025-09-23T13:46:25.917876Z",
+      "status": "resolved",
+      "acknowledged": true,
+      "acknowledged_at": "2025-09-24T13:46:25.917883Z"
+    }
+  ],
+  "athlete_8": [
+    {
+      "id": "alert_athlete_8_3363534",
+      "athlete_id": "athlete_8",
+      "athlete_name": "jess_fit",
+      "coach_id": "coach_1",
+      "coach_name": "coach_mike",
+      "severity": "low",
+      "risk_factors": [
+        "hip_flexor_tightness",
+        "form_deterioration"
+      ],
+      "recommendations": [
+        "Address hip flexor tightness issues",
+        "Focus on proper form",
+        "Consider modifications",
+        "Monitor for improvement"
+      ],
+      "created_at": "2025-09-26T13:46:25.917893Z",
+      "status": "resolved",
+      "acknowledged": false,
+      "acknowledged_at": null
+    }
+  ],
+  "athlete_9": [
+    {
+      "id": "alert_athlete_9_8015136",
+      "athlete_id": "athlete_9",
+      "athlete_name": "rob_athlete",
+      "coach_id": "coach_1",
+      "coach_name": "coach_mike",
+      "severity": "low",
+      "risk_factors": [
+        "knee_arthritis",
+        "form_deterioration"
+      ],
+      "recommendations": [
+        "Address knee arthritis issues",
+        "Focus on proper form",
+        "Consider modifications",
+        "Monitor for improvement"
+      ],
+      "created_at": "2025-09-24T13:46:25.917903Z",
+      "status": "resolved",
+      "acknowledged": false,
+      "acknowledged_at": null
+    },
+    {
+      "id": "alert_athlete_9_4184887",
+      "athlete_id": "athlete_9",
+      "athlete_name": "rob_athlete",
+      "coach_id": "coach_1",
+      "coach_name": "coach_mike",
+      "severity": "low",
+      "risk_factors": [
+        "elbow_tendinitis",
+        "form_deterioration"
+      ],
+      "recommendations": [
+        "Address elbow tendinitis issues",
+        "Focus on proper form",
+        "Consider modifications",
+        "Monitor for improvement"
+      ],
+      "created_at": "2025-09-19T13:46:25.917914Z",
+      "status": "resolved",
+      "acknowledged": false,
+      "acknowledged_at": null
+    }
+  ],
+  "athlete_10": [
+    {
+      "id": "alert_athlete_10_9344488",
+      "athlete_id": "athlete_10",
+      "athlete_name": "maria_strong",
+      "coach_id": "coach_1",
+      "coach_name": "coach_mike",
+      "severity": "low",
+      "risk_factors": [
+        "achilles_tendinitis",
+        "form_deterioration"
+      ],
+      "recommendations": [
+        "Address achilles tendinitis issues",
+        "Focus on proper form",
+        "Consider modifications",
+        "Monitor for improvement"
+      ],
+      "created_at": "2025-09-25T13:46:25.917926Z",
+      "status": "resolved",
       "acknowledged": false,
       "acknowledged_at": null
     }

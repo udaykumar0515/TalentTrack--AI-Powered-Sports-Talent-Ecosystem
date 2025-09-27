@@ -1,32 +1,304 @@
 {
   "athlete_1": {
-    "total_points": 670,
+    "total_points": 694,
     "achievements": [
-      "first_session",
-      "perfect_form",
-      "speed_demon"
+      "social_butterfly",
+      "endurance_king",
+      "variety_seeker"
     ],
     "badges": [
       "Silver Badge"
     ],
-    "level": 2,
-    "sessions_completed": 5,
-    "current_streak": 5,
-    "longest_streak": 5,
-    "last_session_date": "2025-09-27T06:48:34.046Z",
+    "level": 4,
+    "sessions_completed": 10,
+    "current_streak": 2,
+    "longest_streak": 14,
+    "last_session_date": "2025-09-26T13:46:25.928418Z",
     "unique_exercises": [
-      "squat",
-      "jumping_jack",
-      "pushup"
+      "pushup",
+      "squat"
     ],
     "early_sessions": 1,
     "night_sessions": 0,
-    "low_risk_sessions": 2,
+    "low_risk_sessions": 10,
     "current_badge": {
       "name": "Silver Badge",
-      "description": "Earn 500 points",
-      "icon": "\ud83e\udd48",
-      "points_required": 500
+      "description": "Earn 694 points",
+      "icon": "🏆",
+      "points_required": 694
+    }
+  },
+  "athlete_2": {
+    "total_points": 425,
+    "achievements": [
+      "risk_free",
+      "speed_demon",
+      "first_session"
+    ],
+    "badges": [
+      "Bronze Badge"
+    ],
+    "level": 3,
+    "sessions_completed": 10,
+    "current_streak": 8,
+    "longest_streak": 6,
+    "last_session_date": "2025-09-26T13:46:25.928622Z",
+    "unique_exercises": [
+      "pushup",
+      "squat",
+      "jumping_jack"
+    ],
+    "early_sessions": 0,
+    "night_sessions": 2,
+    "low_risk_sessions": 4,
+    "current_badge": {
+      "name": "Bronze Badge",
+      "description": "Earn 425 points",
+      "icon": "🏆",
+      "points_required": 425
+    }
+  },
+  "athlete_3": {
+    "total_points": 1032,
+    "achievements": [
+      "risk_free",
+      "night_owl",
+      "variety_seeker",
+      "speed_demon",
+      "endurance_king"
+    ],
+    "badges": [
+      "Gold Badge"
+    ],
+    "level": 6,
+    "sessions_completed": 10,
+    "current_streak": 1,
+    "longest_streak": 6,
+    "last_session_date": "2025-09-26T13:46:25.928664Z",
+    "unique_exercises": [
+      "pushup",
+      "squat",
+      "jumping_jack"
+    ],
+    "early_sessions": 0,
+    "night_sessions": 0,
+    "low_risk_sessions": 8,
+    "current_badge": {
+      "name": "Gold Badge",
+      "description": "Earn 1032 points",
+      "icon": "🏆",
+      "points_required": 1032
+    }
+  },
+  "athlete_4": {
+    "total_points": 347,
+    "achievements": [
+      "first_session",
+      "early_bird",
+      "night_owl"
+    ],
+    "badges": [
+      "Bronze Badge"
+    ],
+    "level": 2,
+    "sessions_completed": 10,
+    "current_streak": 1,
+    "longest_streak": 9,
+    "last_session_date": "2025-09-27T13:46:25.928694Z",
+    "unique_exercises": [
+      "squat",
+      "jumping_jack"
+    ],
+    "early_sessions": 2,
+    "night_sessions": 1,
+    "low_risk_sessions": 9,
+    "current_badge": {
+      "name": "Bronze Badge",
+      "description": "Earn 347 points",
+      "icon": "🏆",
+      "points_required": 347
+    }
+  },
+  "athlete_5": {
+    "total_points": 1074,
+    "achievements": [
+      "social_butterfly",
+      "night_owl",
+      "streak_7",
+      "variety_seeker",
+      "risk_free",
+      "coach_favorite"
+    ],
+    "badges": [
+      "Gold Badge"
+    ],
+    "level": 6,
+    "sessions_completed": 10,
+    "current_streak": 6,
+    "longest_streak": 7,
+    "last_session_date": "2025-09-24T13:46:25.928731Z",
+    "unique_exercises": [
+      "pushup",
+      "squat"
+    ],
+    "early_sessions": 2,
+    "night_sessions": 2,
+    "low_risk_sessions": 4,
+    "current_badge": {
+      "name": "Gold Badge",
+      "description": "Earn 1074 points",
+      "icon": "🏆",
+      "points_required": 1074
+    }
+  },
+  "athlete_6": {
+    "total_points": 525,
+    "achievements": [
+      "variety_seeker",
+      "improvement_master"
+    ],
+    "badges": [
+      "Silver Badge"
+    ],
+    "level": 3,
+    "sessions_completed": 10,
+    "current_streak": 3,
+    "longest_streak": 14,
+    "last_session_date": "2025-09-24T13:46:25.928756Z",
+    "unique_exercises": [
+      "squat",
+      "jumping_jack"
+    ],
+    "early_sessions": 3,
+    "night_sessions": 2,
+    "low_risk_sessions": 7,
+    "current_badge": {
+      "name": "Silver Badge",
+      "description": "Earn 525 points",
+      "icon": "🏆",
+      "points_required": 525
+    }
+  },
+  "athlete_7": {
+    "total_points": 324,
+    "achievements": [
+      "early_bird",
+      "risk_free"
+    ],
+    "badges": [
+      "Bronze Badge"
+    ],
+    "level": 2,
+    "sessions_completed": 10,
+    "current_streak": 3,
+    "longest_streak": 12,
+    "last_session_date": "2025-09-25T13:46:25.928794Z",
+    "unique_exercises": [
+      "pushup",
+      "jumping_jack"
+    ],
+    "early_sessions": 1,
+    "night_sessions": 0,
+    "low_risk_sessions": 6,
+    "current_badge": {
+      "name": "Bronze Badge",
+      "description": "Earn 324 points",
+      "icon": "🏆",
+      "points_required": 324
+    }
+  },
+  "athlete_8": {
+    "total_points": 1199,
+    "achievements": [
+      "speed_demon",
+      "night_owl",
+      "endurance_king",
+      "improvement_master",
+      "coach_favorite"
+    ],
+    "badges": [
+      "Gold Badge"
+    ],
+    "level": 6,
+    "sessions_completed": 10,
+    "current_streak": 5,
+    "longest_streak": 15,
+    "last_session_date": "2025-09-25T13:46:25.928823Z",
+    "unique_exercises": [
+      "pushup",
+      "squat"
+    ],
+    "early_sessions": 1,
+    "night_sessions": 0,
+    "low_risk_sessions": 3,
+    "current_badge": {
+      "name": "Gold Badge",
+      "description": "Earn 1199 points",
+      "icon": "🏆",
+      "points_required": 1199
+    }
+  },
+  "athlete_9": {
+    "total_points": 955,
+    "achievements": [
+      "endurance_king",
+      "streak_7",
+      "early_bird",
+      "social_butterfly",
+      "variety_seeker"
+    ],
+    "badges": [
+      "Silver Badge"
+    ],
+    "level": 5,
+    "sessions_completed": 10,
+    "current_streak": 10,
+    "longest_streak": 8,
+    "last_session_date": "2025-09-26T13:46:25.928853Z",
+    "unique_exercises": [
+      "pushup",
+      "squat",
+      "jumping_jack"
+    ],
+    "early_sessions": 1,
+    "night_sessions": 1,
+    "low_risk_sessions": 4,
+    "current_badge": {
+      "name": "Silver Badge",
+      "description": "Earn 955 points",
+      "icon": "🏆",
+      "points_required": 955
+    }
+  },
+  "athlete_10": {
+    "total_points": 1037,
+    "achievements": [
+      "variety_seeker",
+      "coach_favorite",
+      "improvement_master",
+      "early_bird",
+      "night_owl"
+    ],
+    "badges": [
+      "Gold Badge"
+    ],
+    "level": 6,
+    "sessions_completed": 10,
+    "current_streak": 4,
+    "longest_streak": 15,
+    "last_session_date": "2025-09-27T13:46:25.928883Z",
+    "unique_exercises": [
+      "pushup",
+      "squat"
+    ],
+    "early_sessions": 3,
+    "night_sessions": 2,
+    "low_risk_sessions": 7,
+    "current_badge": {
+      "name": "Gold Badge",
+      "description": "Earn 1037 points",
+      "icon": "🏆",
+      "points_required": 1037
     }
   }
 }
