@@ -6972,7 +6972,7 @@ button:disabled {
   font-size: 14px;
 }
 
-/* Coach Plan Content Styles */
+/* Coach Plan Content Styles - Matching AI Plan Styling */
 .coach-plan-content {
   display: flex;
   flex-direction: column;
@@ -6980,70 +6980,70 @@ button:disabled {
 }
 
 .plan-description {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .plan-description h3 {
-  margin: 0 0 12px 0;
-  font-size: 18px;
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
   font-weight: 600;
+  color: white;
 }
 
 .plan-description p {
   margin: 0;
   line-height: 1.6;
-  opacity: 0.95;
+  opacity: 0.9;
+  font-size: 0.875rem;
 }
 
 .coach-exercises {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
 }
 
 .coach-exercises h3 {
-  margin: 0 0 16px 0;
-  color: #333;
-  font-size: 18px;
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
   font-weight: 600;
+  color: white;
 }
 
 .exercises-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  gap: 1rem;
 }
 
 .exercise-card {
-  background: #f8f9ff;
-  border: 2px solid #e0e7ff;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
   border-radius: 8px;
-  padding: 16px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
 }
 
 .exercise-card:hover {
-  border-color: #667eea;
+  border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
 }
 
 .exercise-header h4 {
-  margin: 0 0 12px 0;
-  color: #333;
-  font-size: 16px;
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
   font-weight: 600;
+  color: white;
 }
 
 .exercise-details {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .detail-item {
@@ -7054,45 +7054,65 @@ button:disabled {
 
 .detail-item .label {
   font-weight: 500;
-  color: #666;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
 }
 
 .detail-item .value {
   font-weight: 600;
-  color: #333;
+  color: white;
+  font-size: 0.875rem;
 }
 
 .plan-details {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.plan-details h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
 }
 
 .details-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+  gap: 1rem;
+}
+
+.plan-details .detail-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .plan-goals {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .plan-goals h3 {
-  margin: 0 0 12px 0;
-  font-size: 18px;
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
   font-weight: 600;
+  color: white;
 }
 
 .plan-goals p {
   margin: 0;
   line-height: 1.6;
-  opacity: 0.95;
+  opacity: 0.9;
+  font-size: 0.875rem;
 }
 
 /* Plan Type Buttons */
@@ -7104,8 +7124,9 @@ button:disabled {
 
 .plan-type-btn {
   padding: 12px 24px;
-  border: 2px solid #e0e0e0;
-  background: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
@@ -7114,11 +7135,12 @@ button:disabled {
   display: flex;
   align-items: center;
   gap: 8px;
+  color: white;
 }
 
 .plan-type-btn:hover {
-  border-color: #667eea;
-  background: #f8f9ff;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
 }
 

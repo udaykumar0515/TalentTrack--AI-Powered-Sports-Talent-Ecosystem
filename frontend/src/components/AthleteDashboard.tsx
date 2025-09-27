@@ -1391,13 +1391,7 @@ const AthleteDashboard: React.FC = () => {
               
                return (
                  <>
-                   {/* Coach Plan Header - Simple Badge */}
-                   {isCoachPlan && (
-                     <div className="coach-plan-badge">
-                       <span className="coach-badge-icon">👨‍🏫</span>
-                       <span className="coach-badge-text">Created by Coach: {planData.coach_name}</span>
-                     </div>
-                   )}
+                   {/* Coach Plan Header - Removed as per user request */}
                    
                    {/* Coach Plan Content */}
                    {isCoachPlan ? (
