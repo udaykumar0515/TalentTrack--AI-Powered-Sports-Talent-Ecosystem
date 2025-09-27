@@ -617,6 +617,11 @@ const AthleteDashboard: React.FC = () => {
     setVideoResetKey(prev => prev + 1);
     setShowSessionOptions(false);
     setIsOfflineMode(false);
+    
+    // Force a small delay to ensure state updates are processed
+    setTimeout(() => {
+      setCurrentVideoUrl(null);
+    }, 100);
   };
 
   const handleDetailedAnalysis = (session: any) => {
@@ -713,6 +718,10 @@ const AthleteDashboard: React.FC = () => {
 
   const handleVideoReady = (videoUrl: string) => {
     setCurrentVideoUrl(videoUrl);
+  };
+
+  const handleVideoCleared = () => {
+    setCurrentVideoUrl(null);
   };
 
   // Helper functions for formatting and status
@@ -981,6 +990,7 @@ const AthleteDashboard: React.FC = () => {
             onStartRecording={cameraActive ? handleStartRecording : handleOpenCamera}
             onStopRecording={handleStopRecording}
             onVideoReady={handleVideoReady}
+            onVideoCleared={handleVideoCleared}
             cameraStream={cameraStream}
               isOfflineMode={isOfflineMode}
           />
@@ -992,6 +1002,7 @@ const AthleteDashboard: React.FC = () => {
               isAnalyzing={isOfflineMode ? false : isAnalyzing}
             onStartUploading={handleStartUploading}
             onVideoReady={handleVideoReady}
+            onVideoCleared={handleVideoCleared}
               isOfflineMode={isOfflineMode}
           />
         </div>
@@ -1018,6 +1029,13 @@ const AthleteDashboard: React.FC = () => {
         </div>
       )}
 
+      {isAnalyzing && (
+        <div className="loading">
+          <div className="spinner"></div>
+          <p>Analyzing your video...</p>
+        </div>
+      )}
+
       {/* Uploaded Video Preview */}
       {currentVideoUrl && (
         <div className="video-preview-section">
@@ -1030,13 +1048,6 @@ const AthleteDashboard: React.FC = () => {
               autoPlay
             />
           </div>
-        </div>
-      )}
-
-      {isAnalyzing && (
-        <div className="loading">
-          <div className="spinner"></div>
-          <p>Analyzing your video...</p>
         </div>
       )}
 

@@ -2507,6 +2507,468 @@
           "longest_streak": 6,
           "sessions_completed": 6
         }
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 100,
+        "durationSec": 8.633,
+        "timestamp": "2025-09-27T10:12:36.407431Z",
+        "athleteId": "athlete_1",
+        "athleteName": "uday",
+        "coachId": "coach_1",
+        "coachName": "coach_mike",
+        "sessionId": "d1755fa1",
+        "cheatDetection": {
+          "cheatDetected": true,
+          "cheatPercentage": 66.7,
+          "totalFlags": 4,
+          "confidence": 80,
+          "riskLevel": "high",
+          "flags": {
+            "too_fast_reps": true,
+            "inconsistent_form": true,
+            "minimal_movement": true,
+            "suspicious_timing": false,
+            "form_deterioration": true,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": [
+            "Inconsistent form detected (variance: 30.87)",
+            "Inconsistent form detected (variance: 36.47)",
+            "Inconsistent form detected (variance: 40.72)",
+            "Inconsistent form detected (variance: 43.17)",
+            "Inconsistent form detected (variance: 40.60)",
+            "Inconsistent form detected (variance: 33.90)",
+            "Inconsistent form detected (variance: 36.71)",
+            "Inconsistent form detected (variance: 58.35)",
+            "Inconsistent form detected (variance: 84.65)",
+            "Inconsistent form detected (variance: 111.61)",
+            "Inconsistent form detected (variance: 120.92)",
+            "Inconsistent form detected (variance: 110.33)",
+            "Inconsistent form detected (variance: 89.76)",
+            "Inconsistent form detected (variance: 65.85)",
+            "Inconsistent form detected (variance: 43.20)",
+            "Form deterioration detected (first: 65.0, second: 44.0)",
+            "Form deterioration detected (first: 65.0, second: 42.0)",
+            "Form deterioration detected (first: 64.8, second: 40.2)",
+            "Form deterioration detected (first: 64.4, second: 38.6)",
+            "Form deterioration detected (first: 63.8, second: 37.2)",
+            "Form deterioration detected (first: 62.9, second: 36.0)",
+            "Form deterioration detected (first: 61.8, second: 35.0)",
+            "Form deterioration detected (first: 60.3, second: 34.3)",
+            "Form deterioration detected (first: 58.6, second: 34.0)",
+            "Form deterioration detected (first: 56.5, second: 34.0)",
+            "Form deterioration detected (first: 54.4, second: 34.1)",
+            "Inconsistent form detected (variance: 43.81)",
+            "Inconsistent form detected (variance: 60.70)",
+            "Inconsistent form detected (variance: 75.07)",
+            "Inconsistent form detected (variance: 82.79)",
+            "Inconsistent form detected (variance: 79.94)",
+            "Inconsistent form detected (variance: 75.01)",
+            "Inconsistent form detected (variance: 70.86)",
+            "Inconsistent form detected (variance: 66.56)",
+            "Inconsistent form detected (variance: 61.09)",
+            "Inconsistent form detected (variance: 53.48)",
+            "Inconsistent form detected (variance: 43.84)",
+            "Inconsistent form detected (variance: 33.23)",
+            "Inconsistent form detected (variance: 47.53)",
+            "Inconsistent form detected (variance: 72.22)",
+            "Inconsistent form detected (variance: 103.50)",
+            "Inconsistent form detected (variance: 126.97)",
+            "Inconsistent form detected (variance: 130.83)",
+            "Inconsistent form detected (variance: 112.83)",
+            "Inconsistent form detected (variance: 88.43)",
+            "Inconsistent form detected (variance: 61.40)",
+            "Inconsistent form detected (variance: 37.40)",
+            "Form deterioration detected (first: 64.8, second: 44.8)",
+            "Form deterioration detected (first: 64.9, second: 42.7)",
+            "Form deterioration detected (first: 65.0, second: 40.7)",
+            "Rep 2: Too fast (0.28s)",
+            "Form deterioration detected (first: 64.8, second: 38.9)",
+            "Rep 2: Too fast (0.52s)",
+            "Form deterioration detected (first: 64.3, second: 37.2)",
+            "Rep 2: Too fast (0.68s)",
+            "Form deterioration detected (first: 63.6, second: 35.8)",
+            "Form deterioration detected (first: 62.6, second: 34.5)",
+            "Form deterioration detected (first: 61.3, second: 33.4)",
+            "Form deterioration detected (first: 59.7, second: 32.7)",
+            "Form deterioration detected (first: 57.7, second: 32.4)",
+            "Form deterioration detected (first: 55.5, second: 32.3)",
+            "Form deterioration detected (first: 53.4, second: 32.3)",
+            "Minimal hip movement detected (range: 0.000)"
+          ]
+        },
+        "benchmarking": {
+          "performance_level": {
+            "level": "beginner",
+            "score": 0,
+            "description": "Learning proper form and basic movement",
+            "adjusted_reps": 2,
+            "adjusted_form_score": 100,
+            "standards_met": {
+              "reps": true,
+              "form": true,
+              "duration": false
+            }
+          },
+          "peer_comparison": {
+            "percentile": 0,
+            "rank": 1,
+            "total_athletes": 2,
+            "performance_score": 62.666666666666664,
+            "average_score": 76.6
+          },
+          "global_rank": 1,
+          "coach_rank": 1,
+          "total_global_athletes": 2,
+          "total_coach_athletes": 2,
+          "improvement_suggestions": [
+            "Focus on proper form before increasing intensity",
+            "Practice consistently to build muscle memory",
+            "Focus on consistent practice to improve ranking"
+          ]
+        },
+        "predictiveAnalytics": {
+          "athlete_id": "athlete_1",
+          "total_sessions": 6,
+          "injury_risk": {
+            "risk_level": "low",
+            "risk_score": 20,
+            "factors": [
+              "Potential overtraining"
+            ]
+          },
+          "improvement_potential": {
+            "potential": "medium",
+            "score": 65,
+            "suggestions": [
+              "Form is improving - maintain current training",
+              "Consistent performance - ready for advanced training",
+              "Excellent form discipline - ready for progression"
+            ]
+          },
+          "future_performance": {
+            "predictions": {
+              "form_score": {
+                "current": 85,
+                "predicted": 94.42857142857143,
+                "trend": "improving",
+                "confidence": 1.263267791891487
+              },
+              "reps": {
+                "current": 15,
+                "predicted": 0,
+                "trend": "declining",
+                "confidence": 43.32788492971561
+              },
+              "duration": {
+                "current": 45.2,
+                "predicted": 0,
+                "trend": "declining",
+                "confidence": 30.856721346025495
+              }
+            },
+            "overall_confidence": 25.149291355877534,
+            "days_ahead": 30
+          },
+          "performance_trends": {
+            "form": {
+              "slope": 0.3142857142857143,
+              "r_squared": 0.01263267791891487,
+              "trend": "improving",
+              "confidence": 1.263267791891487
+            },
+            "reps": {
+              "slope": -2.6857142857142855,
+              "r_squared": 0.4332788492971561,
+              "trend": "declining",
+              "confidence": 43.32788492971561
+            }
+          },
+          "last_updated": "2025-09-27T10:12:36.147046Z"
+        },
+        "trainingPlan": {
+          "athlete_id": "athlete_1",
+          "generated_at": "2025-09-27T10:12:36.162047Z",
+          "valid_until": "2025-10-27T10:12:36.162047Z",
+          "analysis": {
+            "gaps": [
+              "Rep count declining - may need rest or form focus",
+              "High form violation rate - focus on technique"
+            ],
+            "strengths": [
+              "Excellent form consistency",
+              "Good exercise variety"
+            ],
+            "focus_areas": [
+              "endurance",
+              "technique"
+            ],
+            "avg_form": 85.83333333333333,
+            "reps_trend": -2.6857142857142846,
+            "exercise_variety": 3,
+            "cheat_rate": 0.3333333333333333
+          },
+          "recommendations": [
+            {
+              "exercise": "squat",
+              "type": "endurance",
+              "sets": 2,
+              "reps": "15-20",
+              "intensity": "light",
+              "focus": "Build stamina and consistency",
+              "instructions": [
+                "Maintain steady pace",
+                "Focus on breathing rhythm",
+                "Take short breaks between sets",
+                "Gradually increase reps"
+              ],
+              "priority": "medium"
+            },
+            {
+              "exercise": "squat",
+              "type": "technique",
+              "sets": 2,
+              "reps": "5-8",
+              "intensity": "light",
+              "focus": "Perfect movement pattern",
+              "instructions": [
+                "Use mirror for feedback",
+                "Record yourself for analysis",
+                "Focus on one cue at a time",
+                "Ask coach for form check"
+              ],
+              "priority": "high"
+            }
+          ],
+          "weekly_schedule": [
+            {
+              "day": "Monday",
+              "exercise": "squat",
+              "type": "endurance",
+              "sets": 2,
+              "reps": "15-20",
+              "intensity": "light",
+              "focus": "Build stamina and consistency",
+              "instructions": [
+                "Maintain steady pace",
+                "Focus on breathing rhythm",
+                "Take short breaks between sets",
+                "Gradually increase reps"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            },
+            {
+              "day": "Wednesday",
+              "exercise": "squat",
+              "type": "technique",
+              "sets": 2,
+              "reps": "5-8",
+              "intensity": "light",
+              "focus": "Perfect movement pattern",
+              "instructions": [
+                "Use mirror for feedback",
+                "Record yourself for analysis",
+                "Focus on one cue at a time",
+                "Ask coach for form check"
+              ],
+              "priority": "high",
+              "estimated_duration": "15-20 minutes"
+            },
+            {
+              "day": "Friday",
+              "exercise": "squat",
+              "type": "endurance",
+              "sets": 2,
+              "reps": "15-20",
+              "intensity": "light",
+              "focus": "Build stamina and consistency",
+              "instructions": [
+                "Maintain steady pace",
+                "Focus on breathing rhythm",
+                "Take short breaks between sets",
+                "Gradually increase reps"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            }
+          ],
+          "progression_plan": {
+            "weeks": [
+              {
+                "week": 1,
+                "form_target": 88.6,
+                "reps_target": 22,
+                "focus": "Foundation building and form mastery",
+                "key_metrics": [
+                  "Form score",
+                  "Consistency",
+                  "Range of motion"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 88.6 or higher",
+                  "Complete 22 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 2,
+                "form_target": 90.6,
+                "reps_target": 24,
+                "focus": "Consistency and endurance",
+                "key_metrics": [
+                  "Rep count",
+                  "Endurance",
+                  "Breathing"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 90.6 or higher",
+                  "Complete 24 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 3,
+                "form_target": 92.6,
+                "reps_target": 25,
+                "focus": "Progressive overload and strength",
+                "key_metrics": [
+                  "Strength",
+                  "Speed",
+                  "Control"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 92.6 or higher",
+                  "Complete 25 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 4,
+                "form_target": 94.6,
+                "reps_target": 27,
+                "focus": "Peak performance and refinement",
+                "key_metrics": [
+                  "Peak performance",
+                  "Efficiency",
+                  "Technique"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 94.6 or higher",
+                  "Complete 27 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              }
+            ],
+            "goals": [
+              "Improve form score from 87 to 94.6",
+              "Increase reps from 21 to 27",
+              "Maintain consistent training schedule",
+              "Reduce form violations by 50%"
+            ]
+          },
+          "analytics_insights": {
+            "injury_risk": {
+              "risk_level": "low",
+              "risk_score": 20,
+              "factors": [
+                "Potential overtraining"
+              ]
+            },
+            "improvement_potential": {
+              "potential": "medium",
+              "score": 65,
+              "suggestions": [
+                "Form is improving - maintain current training",
+                "Consistent performance - ready for advanced training",
+                "Excellent form discipline - ready for progression"
+              ]
+            },
+            "performance_trends": {
+              "form": {
+                "slope": 0.3142857142857143,
+                "r_squared": 0.01263267791891487,
+                "trend": "improving",
+                "confidence": 1.263267791891487
+              },
+              "reps": {
+                "slope": -2.6857142857142855,
+                "r_squared": 0.4332788492971561,
+                "trend": "declining",
+                "confidence": 43.32788492971561
+              }
+            }
+          },
+          "coaching_notes": [
+            "Excellent form consistency - ready for advanced progressions",
+            "Rep count declining - consider rest days or form focus",
+            "High form violation rate - prioritize technique over intensity"
+          ],
+          "next_review_date": "2025-10-04T10:12:36.162047Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "athlete_1",
+          "analyzed_at": "2025-09-27T10:12:36.336531Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "No fatigue indicators detected"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 6
+        },
+        "gamification": {
+          "session_points": 45,
+          "total_points": 355,
+          "level": 1,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Earn 100 points",
+              "icon": "🥉",
+              "points_required": 100
+            }
+          ],
+          "current_streak": 12,
+          "longest_streak": 12,
+          "sessions_completed": 12
+        },
+        "videoUrl": "blob:http://localhost:5173/dd7fbb48-5c06-42da-8e8e-f8c0f3ee6a8b",
+        "thumbnailUrl": "blob:http://localhost:5173/dd7fbb48-5c06-42da-8e8e-f8c0f3ee6a8b"
       }
     ]
   }

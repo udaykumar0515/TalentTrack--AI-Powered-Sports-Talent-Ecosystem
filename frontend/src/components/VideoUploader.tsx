@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { analyzeVideoEnhanced, uploadVideo } from '../api/apiClient';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -9,6 +9,7 @@ interface VideoUploaderProps {
   isAnalyzing: boolean;
   onStartUploading?: () => void;
   onVideoReady?: (videoUrl: string) => void;
+  onVideoCleared?: () => void;
   isOfflineMode?: boolean;
 }
 
@@ -19,12 +20,18 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
   isAnalyzing,
   onStartUploading,
   onVideoReady,
+  onVideoCleared,
   isOfflineMode = false
 }) => {
   const { user } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // Reset component state when exercise changes
+  useEffect(() => {
+    resetUpload();
+  }, [exercise]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -166,6 +173,10 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
       } catch (e) {}
       setPreviewUrl(null);
     }
+    // Notify parent component that video has been cleared
+    if (onVideoCleared) {
+      onVideoCleared();
+    }
   };
 
   return (
@@ -193,10 +204,6 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
             <span className="file-icon">🎥</span>
             <span className="file-name">{selectedFile.name}</span>
           </div>
-
-          {previewUrl && (
-            <video src={previewUrl} controls className="preview-video-small" />
-          )}
 
           <div className="action-buttons-compact">
             <button

@@ -1,8 +1,8 @@
 {
   "athlete_1": {
     "athlete_id": "athlete_1",
-    "generated_at": "2025-09-27T10:06:44.395293Z",
-    "valid_until": "2025-10-27T10:06:44.395293Z",
+    "generated_at": "2025-09-27T10:12:36.162047Z",
+    "valid_until": "2025-10-27T10:12:36.162047Z",
     "analysis": {
       "gaps": [
         "Rep count declining - may need rest or form focus",
@@ -221,7 +221,7 @@
       "Rep count declining - consider rest days or form focus",
       "High form violation rate - prioritize technique over intensity"
     ],
-    "next_review_date": "2025-10-04T10:06:44.395293Z"
+    "next_review_date": "2025-10-04T10:12:36.162047Z"
   },
   "athlete_2": {
     "athlete_id": "athlete_2",

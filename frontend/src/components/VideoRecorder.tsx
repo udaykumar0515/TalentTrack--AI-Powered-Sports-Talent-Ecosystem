@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { analyzeVideoEnhanced, uploadVideo } from '../api/apiClient';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -10,6 +10,7 @@ interface VideoRecorderProps {
   onStartRecording?: () => void;
   onStopRecording?: () => void;
   onVideoReady?: (videoUrl: string) => void;
+  onVideoCleared?: () => void;
   cameraStream?: MediaStream | null;
   isOfflineMode?: boolean;
 }
@@ -22,6 +23,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
   onStartRecording,
   onStopRecording,
   onVideoReady,
+  onVideoCleared,
   cameraStream,
   isOfflineMode = false
 }) => {
@@ -32,6 +34,11 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // Reset component state when key changes (from parent component)
+  useEffect(() => {
+    resetRecording();
+  }, [exercise]); // Reset when exercise changes
 
   const startRecording = useCallback(() => {
     if (!cameraStream) {
@@ -208,6 +215,10 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
       videoRef.current.style.display = 'none';
       videoRef.current.srcObject = null;
       videoRef.current.src = '';
+    }
+    // Notify parent component that video has been cleared
+    if (onVideoCleared) {
+      onVideoCleared();
     }
   };
 
