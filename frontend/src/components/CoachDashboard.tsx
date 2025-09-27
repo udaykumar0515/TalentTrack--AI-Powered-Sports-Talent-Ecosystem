@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { getSessions, getAthletes, getCoachPredictiveAnalytics } from '../api/apiClient';
+import { getSessions, getAthletes } from '../api/apiClient';
 import ChatSidebar from './ChatSidebar';
 import AthleteDetailDashboard from './AthleteDetailDashboard';
 
@@ -14,12 +14,9 @@ const CoachDashboard: React.FC = () => {
   const [selectedSession, setSelectedSession] = useState<any>(null);
   const [showAthleteSessions, setShowAthleteSessions] = useState(false);
   const [taggedSessionId, setTaggedSessionId] = useState<string>('');
-  const [predictiveAnalytics, setPredictiveAnalytics] = useState<any>(null);
-  const [loadingAnalytics, setLoadingAnalytics] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
-    loadPredictiveAnalytics();
     // reload when user changes (login/logout)
   }, [user?.id]);
 
@@ -97,25 +94,6 @@ const CoachDashboard: React.FC = () => {
     }
   };
 
-  const loadPredictiveAnalytics = async () => {
-    if (!user?.id) return;
-    
-    console.log('Starting to load predictive analytics for coach:', user.id);
-    setLoadingAnalytics(true);
-    try {
-      console.log('Loading coach predictive analytics for user:', user.id);
-      const analytics = await getCoachPredictiveAnalytics(user.id);
-      console.log('Coach predictive analytics loaded:', analytics);
-      setPredictiveAnalytics(analytics);
-    } catch (error) {
-      console.error('Error loading predictive analytics:', error);
-      // Set a fallback to show the section even if API fails
-      setPredictiveAnalytics({ error: 'Failed to load analytics' });
-    } finally {
-      setLoadingAnalytics(false);
-      console.log('Finished loading predictive analytics');
-    }
-  };
 
 
 
@@ -175,7 +153,6 @@ const CoachDashboard: React.FC = () => {
           isOpen={showChat}
           onClose={() => {
             setShowChat(false);
-            setSelectedAthlete(null);
             setTaggedSessionId('');
           }}
           athleteId={selectedAthlete.id}
@@ -255,91 +232,6 @@ const CoachDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* Predictive Analytics Section */}
-      <div className="predictive-analytics-section">
-        <h2>Team Performance Insights</h2>
-        {loadingAnalytics ? (
-          <div className="loading-analytics">
-            <p>Loading team performance insights...</p>
-          </div>
-        ) : predictiveAnalytics && !predictiveAnalytics.error ? (
-          <div className="coach-analytics-grid">
-            {/* High Risk Athletes */}
-            <div className="analytics-card high-risk-athletes">
-              <h3>⚠️ High Risk Athletes</h3>
-              <div className="risk-count">
-                {predictiveAnalytics.high_risk_athletes?.length || 0} athletes
-              </div>
-              {predictiveAnalytics.high_risk_athletes?.length > 0 && (
-                <ul className="athlete-list">
-                  {predictiveAnalytics.high_risk_athletes.slice(0, 3).map((athleteId: string) => {
-                    const athlete = athletes.find(a => a.id === athleteId);
-                    return (
-                      <li key={athleteId}>
-                        {athlete?.name || 'Unknown Athlete'}
-                      </li>
-                    );
-                  })}
-                  {predictiveAnalytics.high_risk_athletes.length > 3 && (
-                    <li>+{predictiveAnalytics.high_risk_athletes.length - 3} more</li>
-                  )}
-                </ul>
-              )}
-            </div>
-
-            {/* High Potential Athletes */}
-            <div className="analytics-card high-potential-athletes">
-              <h3>⭐ High Potential Athletes</h3>
-              <div className="potential-count">
-                {predictiveAnalytics.high_potential_athletes?.length || 0} athletes
-              </div>
-              {predictiveAnalytics.high_potential_athletes?.length > 0 && (
-                <ul className="athlete-list">
-                  {predictiveAnalytics.high_potential_athletes.slice(0, 3).map((athleteId: string) => {
-                    const athlete = athletes.find(a => a.id === athleteId);
-                    return (
-                      <li key={athleteId}>
-                        {athlete?.name || 'Unknown Athlete'}
-                      </li>
-                    );
-                  })}
-                  {predictiveAnalytics.high_potential_athletes.length > 3 && (
-                    <li>+{predictiveAnalytics.high_potential_athletes.length - 3} more</li>
-                  )}
-                </ul>
-              )}
-            </div>
-
-            {/* Team Overview */}
-            <div className="analytics-card team-overview">
-              <h3>📊 Team Overview</h3>
-              <div className="team-stats">
-                <div className="stat">
-                  <span className="stat-label">Total Athletes:</span>
-                  <span className="stat-value">{predictiveAnalytics.total_athletes || 0}</span>
-                </div>
-                <div className="stat">
-                  <span className="stat-label">Total Sessions:</span>
-                  <span className="stat-value">{predictiveAnalytics.total_sessions || 0}</span>
-                </div>
-                <div className="stat">
-                  <span className="stat-label">Avg Sessions/Athlete:</span>
-                  <span className="stat-value">
-                    {predictiveAnalytics.total_athletes > 0 
-                      ? Math.round((predictiveAnalytics.total_sessions || 0) / predictiveAnalytics.total_athletes)
-                      : 0
-                    }
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="no-analytics">
-            <p>No team performance insights available yet. Athletes need to complete more sessions to see analytics!</p>
-          </div>
-        )}
-      </div>
 
 
 
@@ -445,7 +337,15 @@ const CoachDashboard: React.FC = () => {
         <AthleteDetailDashboard
           selectedAthlete={selectedAthlete}
           onBack={handleBackToAthletes}
-          onMessageAthlete={() => setShowChat(true)}
+          onMessageAthlete={() => {
+            console.log('Message button clicked, setting showChat to true');
+            setShowChat(true);
+          }}
+          onMessageAthleteWithSession={(sessionId: string) => {
+            console.log('Feedback button clicked for session:', sessionId);
+            setTaggedSessionId(sessionId);
+            setShowChat(true);
+          }}
         />
       )}
 
