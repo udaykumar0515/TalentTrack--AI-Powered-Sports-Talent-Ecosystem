@@ -143,9 +143,21 @@ class BenchmarkingEngine:
     def _calculate_performance_score(self, reps: int, form_score: int, duration: float) -> float:
         """Calculate overall performance score"""
         # Weighted scoring: 40% reps, 40% form, 20% efficiency (reps per minute)
-        reps_score = min(100, (reps / 30) * 100)  # Normalize to 30 reps max
+        
+        # Normalize reps score based on exercise type (more realistic ranges)
+        # For most exercises, 50+ reps is excellent
+        reps_score = min(100, (reps / 50) * 100)
+        
+        # Form score is already 0-100
         form_score_normalized = form_score
-        efficiency_score = min(100, (reps / max(duration / 60, 0.1)) * 10)  # Reps per minute
+        
+        # Calculate efficiency (reps per minute) with proper normalization
+        if duration > 0:
+            reps_per_minute = (reps * 60) / duration
+            # Normalize efficiency: 30+ reps per minute is excellent
+            efficiency_score = min(100, (reps_per_minute / 30) * 100)
+        else:
+            efficiency_score = 0
         
         return (reps_score * 0.4 + form_score_normalized * 0.4 + efficiency_score * 0.2)
     

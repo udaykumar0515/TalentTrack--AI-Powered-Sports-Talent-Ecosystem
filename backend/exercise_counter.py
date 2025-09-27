@@ -1236,12 +1236,56 @@ def main():
         # Get final cheat detection summary
         final_cheat_analysis = detector.cheat_detector.get_cheat_summary()
         
-        # Calculate risk level based on cheat detection
+        # Calculate risk level based on multiple factors
         risk_level = "low"
-        if final_cheat_analysis['cheat_percentage'] > 50:
+        risk_factors = []
+        
+        # Factor 1: Cheat detection percentage
+        cheat_percentage = final_cheat_analysis['cheat_percentage']
+        if cheat_percentage > 50:
             risk_level = "high"
-        elif final_cheat_analysis['cheat_percentage'] > 25:
-            risk_level = "medium"
+            risk_factors.append("form issues")
+        elif cheat_percentage > 25:
+            if risk_level == "low":
+                risk_level = "medium"
+            risk_factors.append("minor form issues")
+        
+        # Factor 2: Form score
+        if form_score < 70:
+            if risk_level == "low":
+                risk_level = "medium"
+            risk_factors.append("low form score")
+        elif form_score < 50:
+            risk_level = "high"
+            risk_factors.append("very low form score")
+        
+        # Factor 3: Speed (too fast can be risky)
+        if duration > 0:
+            reps_per_minute = (total_reps * 60) / duration
+            if reps_per_minute > 50:  # Very fast
+                if risk_level == "low":
+                    risk_level = "medium"
+                risk_factors.append("very fast pace")
+        
+        # Generate explanation based on risk factors
+        if risk_level == "high":
+            if "very low form score" in risk_factors:
+                risk_explanation = "⚠️ Your form needs immediate attention. Focus on proper technique to avoid injury and get better results."
+            elif "form issues" in risk_factors:
+                risk_explanation = "⚠️ Your form needs attention. Slow down and focus on proper technique to avoid injury."
+            else:
+                risk_explanation = "⚠️ Your form needs attention. Focus on proper technique to avoid injury and get better results."
+        elif risk_level == "medium":
+            if "minor form issues" in risk_factors and "very fast pace" in risk_factors:
+                risk_explanation = "⚡ Good effort! Slow down a bit and focus on smooth movements for better form."
+            elif "minor form issues" in risk_factors:
+                risk_explanation = "⚡ Good effort! Your form is mostly correct with room for improvement."
+            elif "low form score" in risk_factors:
+                risk_explanation = "⚡ Good effort! Focus on maintaining consistent form throughout the exercise."
+            else:
+                risk_explanation = "⚡ Good effort! Your form is mostly correct with room for improvement."
+        else:
+            risk_explanation = "✅ Excellent form! You're performing the exercise safely and effectively."
 
         result = {
             "userId": user_id,
@@ -1256,6 +1300,8 @@ def main():
                 "totalFlags": final_cheat_analysis['total_flags'],
                 "confidence": round(final_cheat_analysis['confidence'], 1),
                 "riskLevel": risk_level,
+                "riskExplanation": risk_explanation,
+                "riskFactors": risk_factors,
                 "flags": final_cheat_analysis['cheat_flags'],
                 "suspiciousPatterns": final_cheat_analysis['suspicious_patterns']
             }

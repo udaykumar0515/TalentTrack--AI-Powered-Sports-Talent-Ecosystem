@@ -1,26 +1,26 @@
 {
   "athlete_1": {
-    "total_points": 775,
+    "total_points": 570,
     "achievements": [
       "first_session",
-      "perfect_form"
+      "speed_demon"
     ],
     "badges": [
       "Silver Badge"
     ],
     "level": 2,
-    "sessions_completed": 7,
-    "current_streak": 1,
-    "longest_streak": 6,
-    "last_session_date": "2025-09-27T10:12:36.407431Z",
+    "sessions_completed": 5,
+    "current_streak": 5,
+    "longest_streak": 5,
+    "last_session_date": "2025-09-27T08:00:00Z",
     "unique_exercises": [
-      "pushup",
       "jumping_jack",
+      "pushup",
       "squat"
     ],
     "early_sessions": 0,
     "night_sessions": 0,
-    "low_risk_sessions": 4,
+    "low_risk_sessions": 3,
     "current_badge": {
       "name": "Silver Badge",
       "description": "Earn 500 points",

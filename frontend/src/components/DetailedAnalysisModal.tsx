@@ -110,86 +110,78 @@ const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({ isOpen, o
             </div>
           </div>
 
-          {/* Cheat Detection Section */}
+          {/* Form & Safety Analysis */}
           {session.cheatDetection && (
-            <div className="bg-orange-50 p-6 rounded-lg border-l-4 border-orange-400">
+            <div className={`p-6 rounded-lg border-l-4 ${
+              session.cheatDetection.riskLevel === 'high' 
+                ? 'bg-red-50 border-red-400' 
+                : session.cheatDetection.riskLevel === 'medium'
+                ? 'bg-yellow-50 border-yellow-400'
+                : 'bg-green-50 border-green-400'
+            }`}>
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-orange-600" />
-                Cheat Detection Analysis
+                <AlertTriangle className={`w-5 h-5 ${
+                  session.cheatDetection.riskLevel === 'high' 
+                    ? 'text-red-600' 
+                    : session.cheatDetection.riskLevel === 'medium'
+                    ? 'text-yellow-600'
+                    : 'text-green-600'
+                }`} />
+                Form & Safety Analysis
               </h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Cheat Detection Status */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Cheat Detected:</span>
-                    <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                      session.cheatDetection.cheatDetected 
-                        ? 'bg-red-100 text-red-800' 
-                        : 'bg-green-100 text-green-800'
-                    }`}>
-                      {session.cheatDetection.cheatDetected ? 'Yes' : 'No'}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Risk Level:</span>
-                    <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getRiskLevelColor(session.cheatDetection.riskLevel)}`}>
-                      {session.cheatDetection.riskLevel?.toUpperCase() || 'LOW'}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Confidence:</span>
-                    <span className="text-lg font-bold text-gray-900">
-                      {session.cheatDetection.confidence?.toFixed(1) || 0}%
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Total Flags:</span>
-                    <span className="text-lg font-bold text-gray-900">
-                      {session.cheatDetection.totalFlags || 0}
-                    </span>
-                  </div>
+              <div className="space-y-4">
+                {/* Risk Level with Explanation */}
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-gray-700">Safety Level:</span>
+                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getRiskLevelColor(session.cheatDetection.riskLevel)}`}>
+                    {session.cheatDetection.riskLevel?.toUpperCase() || 'LOW'}
+                  </span>
+                </div>
+                
+                {/* Simple Explanation */}
+                <div className="bg-white p-4 rounded-lg">
+                  <h4 className="font-medium text-gray-700 mb-2">What this means:</h4>
+                  <p className="text-sm text-gray-600">
+                    {session.cheatDetection.riskExplanation || (
+                      session.cheatDetection.riskLevel === 'high' ? (
+                        "⚠️ Your form needs attention. Focus on proper technique to avoid injury and get better results."
+                      ) : session.cheatDetection.riskLevel === 'medium' ? (
+                        "⚡ Good effort! Your form is mostly correct with room for improvement."
+                      ) : (
+                        "✅ Excellent form! You're performing the exercise safely and effectively."
+                      )
+                    )}
+                  </p>
                 </div>
 
-                {/* Cheat Detection Flags */}
-                <div className="space-y-3">
-                  <h4 className="font-medium text-gray-700 mb-2">Detection Flags:</h4>
-                  <div className="space-y-2">
-                    {session.cheatDetection.flags && Object.entries(session.cheatDetection.flags).map(([flag, detected]) => (
-                      <div key={flag} className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600 capitalize">
-                          {flag.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
-                        </span>
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          detected ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
-                        }`}>
-                          {detected ? 'Detected' : 'Clean'}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+                {/* Actionable Tips */}
+                <div className="bg-white p-4 rounded-lg">
+                  <h4 className="font-medium text-gray-700 mb-2">Tips for improvement:</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    {session.cheatDetection.riskLevel === 'high' ? (
+                      <>
+                        <li>• Slow down your movements for better control</li>
+                        <li>• Focus on full range of motion</li>
+                        <li>• Keep your core engaged throughout the exercise</li>
+                        <li>• Consider reducing reps and focusing on quality</li>
+                      </>
+                    ) : session.cheatDetection.riskLevel === 'medium' ? (
+                      <>
+                        <li>• Maintain consistent speed throughout the exercise</li>
+                        <li>• Focus on smooth, controlled movements</li>
+                        <li>• Keep proper breathing rhythm</li>
+                      </>
+                    ) : (
+                      <>
+                        <li>• Keep up the great work!</li>
+                        <li>• You can try increasing reps or adding variations</li>
+                        <li>• Consider helping others with their form</li>
+                      </>
+                    )}
+                  </ul>
                 </div>
               </div>
-
-              {/* Suspicious Patterns */}
-              {session.cheatDetection.suspiciousPatterns && session.cheatDetection.suspiciousPatterns.length > 0 && (
-                <div className="mt-4">
-                  <h4 className="font-medium text-gray-700 mb-2">Suspicious Patterns Detected:</h4>
-                  <div className="bg-red-50 p-3 rounded-lg">
-                    <ul className="space-y-1">
-                      {session.cheatDetection.suspiciousPatterns.map((pattern: string, index: number) => (
-                        <li key={index} className="text-sm text-red-800 flex items-start gap-2">
-                          <span className="text-red-500 mt-0.5">•</span>
-                          {pattern}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              )}
             </div>
           )}
 
@@ -198,70 +190,49 @@ const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({ isOpen, o
             <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-400">
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <BarChart3 className="w-5 h-5 text-blue-600" />
-                Performance Benchmarking
+                How You're Doing
               </h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
                 {/* Performance Level */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Performance Level:</span>
-                    <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getPerformanceLevelColor(session.benchmarking.performance_level?.level)}`}>
-                      {session.benchmarking.performance_level?.level?.toUpperCase() || 'UNKNOWN'}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Level Score:</span>
-                    <span className="text-lg font-bold text-gray-900">
-                      {session.benchmarking.performance_level?.score || 0}/100
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Global Rank:</span>
-                    <span className="text-lg font-bold text-gray-900">
-                      #{session.benchmarking.global_rank || 'N/A'}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Coach Rank:</span>
-                    <span className="text-lg font-bold text-gray-900">
-                      #{session.benchmarking.coach_rank || 'N/A'}
-                    </span>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-gray-700">Your Level:</span>
+                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getPerformanceLevelColor(session.benchmarking.performance_level?.level)}`}>
+                    {session.benchmarking.performance_level?.level?.toUpperCase() || 'BEGINNER'}
+                  </span>
+                </div>
+                
+                {/* Simple Performance Description */}
+                <div className="bg-white p-4 rounded-lg">
+                  <h4 className="font-medium text-gray-700 mb-2">Performance Summary:</h4>
+                  <p className="text-sm text-gray-600">
+                    {session.benchmarking.performance_level?.level === 'elite' ? (
+                      "🏆 Elite performance! You're in the top tier of athletes. Keep pushing your limits!"
+                    ) : session.benchmarking.performance_level?.level === 'advanced' ? (
+                      "⭐ Advanced level! You're performing above average with strong technique."
+                    ) : session.benchmarking.performance_level?.level === 'intermediate' ? (
+                      "💪 Good progress! You're building solid fundamentals and improving steadily."
+                    ) : (
+                      "🌱 Beginner level! Focus on learning proper form and building consistency."
+                    )}
+                  </p>
                 </div>
 
                 {/* Peer Comparison */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Percentile:</span>
-                    <span className="text-lg font-bold text-gray-900">
-                      {session.benchmarking.peer_comparison?.percentile || 0}%
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Performance Score:</span>
-                    <span className="text-lg font-bold text-gray-900">
-                      {session.benchmarking.peer_comparison?.performance_score || 0}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Average Score:</span>
-                    <span className="text-lg font-bold text-gray-900">
-                      {session.benchmarking.peer_comparison?.average_score || 0}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Total Athletes:</span>
-                    <span className="text-lg font-bold text-gray-900">
-                      {session.benchmarking.total_global_athletes || 0}
-                    </span>
-                  </div>
+                <div className="bg-white p-4 rounded-lg">
+                  <h4 className="font-medium text-gray-700 mb-2">Compared to others:</h4>
+                  <p className="text-sm text-gray-600">
+                    You're performing better than {session.benchmarking.peer_comparison?.percentile || 0}% of athletes doing this exercise.
+                    {session.benchmarking.peer_comparison?.percentile >= 80 ? (
+                      " That's excellent! 🎉"
+                    ) : session.benchmarking.peer_comparison?.percentile >= 60 ? (
+                      " That's great! 👍"
+                    ) : session.benchmarking.peer_comparison?.percentile >= 40 ? (
+                      " Keep working hard! 💪"
+                    ) : (
+                      " There's room to grow! 🌱"
+                    )}
+                  </p>
                 </div>
               </div>
 

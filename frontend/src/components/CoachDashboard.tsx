@@ -114,95 +114,9 @@ const CoachDashboard: React.FC = () => {
       setAthletes(Array.from(athleteMap.values()));
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
-      // Create some test data for demonstration with more realistic names
-      const testSessions = [
-        {
-          sessionId: 'test-session-1',
-          athleteId: 'athlete1',
-          athleteName: 'Alex Johnson',
-          coachId: user?.id,
-          coachName: user?.username,
-          exercise: 'squat',
-          timestamp: new Date().toISOString(),
-          durationSec: 45,
-          reps: 15,
-          formScore: 85,
-          videoUrl: null, // No video for demo
-          thumbnailUrl: null
-        },
-        {
-          sessionId: 'test-session-2',
-          athleteId: 'athlete2',
-          athleteName: 'Sarah Williams',
-          coachId: user?.id,
-          coachName: user?.username,
-          exercise: 'jumping_jack',
-          timestamp: new Date(Date.now() - 86400000).toISOString(),
-          durationSec: 30,
-          reps: 25,
-          formScore: 72,
-          videoUrl: null, // No video for demo
-          thumbnailUrl: null
-        },
-        {
-          sessionId: 'test-session-3',
-          athleteId: 'athlete1',
-          athleteName: 'Alex Johnson',
-          coachId: user?.id,
-          coachName: user?.username,
-          exercise: 'pushup',
-          timestamp: new Date(Date.now() - 172800000).toISOString(),
-          durationSec: 60,
-          reps: 20,
-          formScore: 68,
-          videoUrl: null, // No video for demo
-          thumbnailUrl: null
-        },
-        {
-          sessionId: 'test-session-4',
-          athleteId: 'athlete3',
-          athleteName: 'Mike Chen',
-          coachId: user?.id,
-          coachName: user?.username,
-          exercise: 'squat',
-          timestamp: new Date(Date.now() - 259200000).toISOString(),
-          durationSec: 50,
-          reps: 12,
-          formScore: 78,
-          videoUrl: null, // No video for demo
-          thumbnailUrl: null
-        }
-      ];
-      setSessions(testSessions);
-      
-      // Create athlete summaries
-      const athleteMap = new Map();
-      testSessions.forEach(session => {
-        if (!athleteMap.has(session.athleteId)) {
-          athleteMap.set(session.athleteId, {
-            id: session.athleteId,
-            name: session.athleteName,
-            sessions: [],
-            totalSessions: 0,
-            lastSession: null,
-            avgFormScore: 0
-          });
-        }
-        const athlete = athleteMap.get(session.athleteId);
-        athlete.sessions.push(session);
-        athlete.totalSessions++;
-        if (!athlete.lastSession || new Date(session.timestamp) > new Date(athlete.lastSession.timestamp)) {
-          athlete.lastSession = session;
-        }
-      });
-      
-      // Calculate average form scores
-      athleteMap.forEach(athlete => {
-        const totalScore = athlete.sessions.reduce((sum: number, session: any) => sum + (session.formScore || 0), 0);
-        athlete.avgFormScore = athlete.sessions.length > 0 ? Math.round(totalScore / athlete.sessions.length) : 0;
-      });
-      
-      setAthletes(Array.from(athleteMap.values()));
+      // Set empty data instead of mock data
+      setSessions([]);
+      setAthletes([]);
     }
   };
 

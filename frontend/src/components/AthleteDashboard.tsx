@@ -11,7 +11,7 @@ import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthlete
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const { coaches } = useCoaches();
-  const [selectedCoach, setSelectedCoach] = useState('udaykuamr'); // Default coach for testing
+  const [selectedCoach, setSelectedCoach] = useState('none'); // No default coach
   const [selectedExercise, setSelectedExercise] = useState('squat');
   const [currentSession, setCurrentSession] = useState<any>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -597,6 +597,9 @@ const AthleteDashboard: React.FC = () => {
       
       // Reload sessions from backend to get complete, up-to-date list
       await loadSessions();
+      
+      // Reload goals to show updated progress
+      await loadGoals();
     } catch (err) {
       console.error('Failed to save session to backend:', err);
       
@@ -608,6 +611,9 @@ const AthleteDashboard: React.FC = () => {
       } catch (e) {
         console.error('Could not persist to localStorage', e);
       }
+      
+      // Still try to reload goals even if session save failed
+      await loadGoals();
     }
     
     // Reset analysis state and clear video preview

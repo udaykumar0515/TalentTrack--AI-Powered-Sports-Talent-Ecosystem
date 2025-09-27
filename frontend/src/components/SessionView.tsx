@@ -30,18 +30,8 @@ const SessionView: React.FC<SessionViewProps> = ({
       setSession(sessionData);
     } catch (error) {
       console.error('Failed to load session:', error);
-      // Fallback to sample data if API fails
-      const sampleSession = {
-        sessionId: id,
-        athleteId: "athleteA",
-        exercise: "squat",
-        date: "2025-01-15T10:05:00Z",
-        durationSec: 28,
-        reps: 12,
-        formScore: 82,
-        timestamp: "2025-01-15T10:05:00Z"
-      };
-      setSession(sampleSession);
+      // Set null instead of mock data
+      setSession(null);
     }
   };
 

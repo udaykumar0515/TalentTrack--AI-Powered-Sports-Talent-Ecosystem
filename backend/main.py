@@ -227,6 +227,24 @@ def save_session_result(session_data: Dict[str, Any]) -> bool:
         return False
 
 
+def update_user_goals_progress(user_id: str, session_data: Dict[str, Any]) -> None:
+    """Update progress for all active goals when user completes a session"""
+    try:
+        # Get all active goals for the user
+        goals = goal_setting_engine.get_user_goals(user_id, status="active")
+        
+        # Update progress for each active goal
+        for goal in goals:
+            try:
+                goal_setting_engine.update_goal_progress(user_id, goal["id"], session_data)
+                logger.info(f"Updated goal progress for {user_id}, goal: {goal['title']}")
+            except Exception as e:
+                logger.error(f"Error updating goal {goal['id']} for user {user_id}: {e}")
+                
+    except Exception as e:
+        logger.error(f"Error updating goals progress for user {user_id}: {e}")
+
+
 def validate_exercise_name(exercise: str) -> str:
     """Validate and normalize exercise name"""
     exercise = exercise.lower().strip()
@@ -333,6 +351,8 @@ async def post_session(session: Dict[str, Any]):
         athlete_id = session.get("athleteId")
         if athlete_id:
             gamification_engine.recalculate_user_stats_from_sessions(athlete_id)
+            
+            # Note: Goal progress is updated in the analyze-video endpoint to avoid double counting
         
         return {"status": "ok", "sessionId": sid}
     except Exception as e:
@@ -998,6 +1018,9 @@ async def analyze_video(
         # Recalculate user stats from all sessions to ensure accuracy
         gamification_engine.recalculate_user_stats_from_sessions(athleteId)
         
+        # Update goal progress for all active goals
+        update_user_goals_progress(athleteId, temp_session_data)
+        
         session_data = {
             "exercise": exercise,  # Use original exercise name for frontend
             "reps": int(parsed.get("reps", 0)),
@@ -1507,6 +1530,9 @@ async def analyze_offline_video(user_id: str, video_id: str, analysis_request: d
                     
                     # Use the same save function as main analysis
                     save_session_result(session_data)
+                    
+                    # Update goal progress for all active goals
+                    update_user_goals_progress(user_id, session_data)
                     
                     # Remove the video from offline queue after successful analysis
                     offline_video_manager.delete_offline_video(user_id, video_id)

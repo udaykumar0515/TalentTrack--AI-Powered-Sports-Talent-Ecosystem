@@ -1,25 +1,46 @@
 {
   "athlete_1": [
     {
-      "id": "goal_athlete_1_1_1758951065",
+      "id": "goal_athlete_1_1_1758951948",
       "user_id": "athlete_1",
-      "title": "push ups",
-      "description": "",
+      "title": "Squat Mastery",
+      "description": "Complete 100 squats with good form",
       "type": "reps",
       "target_value": 100,
-      "current_value": 0,
-      "unit": "",
+      "current_value": 33,
+      "unit": "reps",
+      "priority": "high",
+      "status": "active",
+      "start_date": "2025-09-20T10:00:00.000000",
+      "target_date": "2025-10-20",
+      "created_at": "2025-09-20T10:00:00.000000",
+      "updated_at": "2025-09-27T06:16:00.000000",
+      "progress_percentage": 33.0,
+      "milestones": [],
+      "tags": ["strength", "legs"],
+      "is_public": false,
+      "motivation_notes": "Focus on proper form and gradually increase reps"
+    },
+    {
+      "id": "goal_athlete_1_2_1758952143",
+      "user_id": "athlete_1",
+      "title": "Form Improvement",
+      "description": "Achieve 90% form score consistently",
+      "type": "form_score",
+      "target_value": 90,
+      "current_value": 81.6,
+      "unit": "%",
       "priority": "medium",
       "status": "active",
-      "start_date": "2025-09-27T11:01:05.021241",
-      "target_date": "2025-10-04",
-      "created_at": "2025-09-27T11:01:05.021241",
-      "updated_at": "2025-09-27T11:01:05.021241",
-      "progress_percentage": 0.0,
+      "start_date": "2025-09-20T10:00:00.000000",
+      "target_date": "2025-10-15",
+      "created_at": "2025-09-20T10:00:00.000000",
+      "updated_at": "2025-09-27T06:16:00.000000",
+      "progress_percentage": 90.7,
       "milestones": [],
-      "tags": [],
+      "tags": ["technique", "form"],
       "is_public": false,
-      "motivation_notes": ""
+      "motivation_notes": "Great progress! Keep focusing on consistent form"
     }
   ]
 }

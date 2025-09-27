@@ -48,10 +48,10 @@ const OfflineVideoQueue: React.FC<OfflineVideoQueueProps> = ({ userId, onVideoAn
     setAnalyzingVideo(videoId);
     try {
       await analyzeOfflineVideo(userId, videoId, {
-        exercise_type: 'squat', // This would be determined from the video metadata
-        user_name: 'Athlete',
-        coach_id: 'coach_1',
-        coach_name: 'Coach'
+        exercise_type: 'squat', // This should be determined from the video metadata
+        user_name: 'Athlete', // This should be the actual user name
+        coach_id: null, // This should be the actual coach ID
+        coach_name: null // This should be the actual coach name
       });
       
       // Reload videos to update status
