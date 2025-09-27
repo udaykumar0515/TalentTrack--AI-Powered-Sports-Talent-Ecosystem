@@ -3087,6 +3087,22 @@ button:disabled {
   align-items: center;
 }
 
+.athlete-card * {
+  color: #333 !important;
+}
+
+.athlete-card .stat-value.low {
+  color: #10b981 !important;
+}
+
+.athlete-card .stat-value.medium {
+  color: #f59e0b !important;
+}
+
+.athlete-card .stat-value.high {
+  color: #ef4444 !important;
+}
+
 .athlete-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(0,0,0,0.15);
@@ -3098,7 +3114,7 @@ button:disabled {
 
 .athlete-name {
   margin: 0 0 15px 0;
-  color: var(--primary-text);
+  color: #333 !important;
   font-size: 20px;
   font-weight: 600;
 }
@@ -3118,14 +3134,14 @@ button:disabled {
 
 .stat-label {
   font-size: 14px;
-  color: var(--secondary-text);
+  color: #666 !important;
   font-weight: 500;
 }
 
 .stat-value {
   font-size: 14px;
   font-weight: 600;
-  color: var(--primary-text);
+  color: #333 !important;
 }
 
 .athlete-arrow {
