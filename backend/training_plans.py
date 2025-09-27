@@ -469,6 +469,41 @@ class TrainingPlanGenerator:
             "plans_with_training": len(coach_plans),
             "athlete_plans": coach_plans
         }
+    
+    def create_coach_training_plan(self, athlete_id: str, plan_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Create a training plan for an athlete by their coach"""
+        try:
+            # Load existing plans
+            plans = self._load_training_plans()
+            
+            # Create coach-created plan structure
+            coach_plan = {
+                "athlete_id": athlete_id,
+                "created_by": "coach",
+                "coach_id": plan_data.get("coachId"),
+                "coach_name": plan_data.get("coachName", "Coach"),
+                "created_at": datetime.now().isoformat() + "Z",
+                "valid_until": (datetime.now() + timedelta(days=30)).isoformat() + "Z",
+                "title": plan_data.get("title", "Coach Training Plan"),
+                "description": plan_data.get("description", ""),
+                "status": plan_data.get("status", "active"),
+                "exercises": plan_data.get("exercises", []),
+                "duration": plan_data.get("duration", ""),
+                "frequency": plan_data.get("frequency", ""),
+                "goals": plan_data.get("goals", ""),
+                "plan_type": "coach_created",
+                "next_review_date": (datetime.now() + timedelta(days=7)).isoformat() + "Z"
+            }
+            
+            # Store the plan (overwrite any existing plan for this athlete)
+            plans[athlete_id] = coach_plan
+            self._save_training_plans(plans)
+            
+            return coach_plan
+            
+        except Exception as e:
+            print(f"Error creating coach training plan: {e}")
+            raise e
 
 # Create global instance
 training_plan_generator = TrainingPlanGenerator()

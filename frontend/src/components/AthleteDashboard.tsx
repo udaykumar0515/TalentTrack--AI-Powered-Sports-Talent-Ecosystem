@@ -30,7 +30,34 @@ const AthleteDashboard: React.FC = () => {
   const [selectedSessionMenu, setSelectedSessionMenu] = useState<string | null>(null);
   const [trainingPlan, setTrainingPlan] = useState<any>(null);
   const [loadingTrainingPlan, setLoadingTrainingPlan] = useState(false);
+  const [selectedPlanType, setSelectedPlanType] = useState<'ai' | 'coach'>('ai');
   const [gamificationStats, setGamificationStats] = useState<any>(null);
+  
+  // Mock coach plan for testing
+  const mockCoachPlan = {
+    athlete_id: user?.id || 'athlete_1',
+    created_by: 'coach',
+    coach_id: 'coach_1',
+    coach_name: 'Coach Sarah',
+    created_at: new Date().toISOString(),
+    valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    title: 'Advanced Strength Building Program',
+    description: 'A comprehensive 8-week program designed to build strength, improve form, and increase endurance. This plan focuses on progressive overload and proper technique.',
+    status: 'active',
+    exercises: [
+      { exercise: 'Squat', reps: '8-12', duration: '45' },
+      { exercise: 'Deadlift', reps: '5-8', duration: '60' },
+      { exercise: 'Bench Press', reps: '6-10', duration: '40' },
+      { exercise: 'Overhead Press', reps: '8-12', duration: '35' },
+      { exercise: 'Pull-ups', reps: '5-10', duration: '30' },
+      { exercise: 'Plank', reps: '3', duration: '60' }
+    ],
+    duration: '8',
+    frequency: '4',
+    goals: 'Increase squat strength by 30%, improve deadlift form, build upper body strength, and enhance core stability. Focus on progressive overload and proper recovery.',
+    plan_type: 'coach_created',
+    next_review_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+  };
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [loadingGamification, setLoadingGamification] = useState(false);
 
@@ -1320,26 +1347,132 @@ const AthleteDashboard: React.FC = () => {
               <p>Loading your personalized training plan...</p>
           </div>
         )}
-              {(trainingPlan && !trainingPlan.error) || (sessions.length > 0 && sessions[0].trainingPlan) ? (
+              {((trainingPlan && !trainingPlan.error) || (sessions.length > 0 && sessions[0].trainingPlan) || selectedPlanType === 'coach') ? (
                 <div className="training-plan-content">
             <div className="training-plan-header">
-              <button 
-                className="btn-secondary generate-plan-btn"
-                onClick={generateNewTrainingPlan}
-                disabled={loadingTrainingPlan}
-              >
-                {loadingTrainingPlan ? 'Generating...' : 'Generate New Plan'}
-              </button>
+              <div className="plan-type-buttons">
+                <button 
+                  className={`plan-type-btn ${selectedPlanType === 'ai' ? 'active' : ''}`}
+                  onClick={() => setSelectedPlanType('ai')}
+                >
+                  🤖 Your Plan
+                </button>
+                <button 
+                  className={`plan-type-btn ${selectedPlanType === 'coach' ? 'active' : ''}`}
+                  onClick={() => setSelectedPlanType('coach')}
+                >
+                  👨‍🏫 Plan by Coach
+                </button>
+              </div>
+              
+              {selectedPlanType === 'ai' && (
+                <button 
+                  className="btn-secondary generate-plan-btn"
+                  onClick={generateNewTrainingPlan}
+                  disabled={loadingTrainingPlan}
+                >
+                  {loadingTrainingPlan ? 'Generating...' : 'Generate New Plan'}
+                </button>
+              )}
             </div>
             
             {(() => {
-              const planData = trainingPlan || (sessions.length > 0 ? sessions[0].trainingPlan : null);
+              // Get the appropriate plan based on selected type
+              let planData;
+              if (selectedPlanType === 'coach') {
+                planData = mockCoachPlan; // Use mock coach plan for now
+              } else {
+                planData = trainingPlan || (sessions.length > 0 ? sessions[0].trainingPlan : null);
+              }
+              
               if (!planData) return null;
+              
+              // Check if this is a coach-created plan
+              const isCoachPlan = planData.created_by === 'coach' || planData.plan_type === 'coach_created';
               
               return (
                 <>
-                  {/* Analysis Summary */}
-                  {planData.analysis && (
+                  {/* Plan Header with Coach Info */}
+                  {isCoachPlan && (
+                    <div className="coach-plan-header">
+                      <div className="plan-badge coach-plan">
+                        <span className="badge-icon">👨‍🏫</span>
+                        <span className="badge-text">Created by Coach: {planData.coach_name}</span>
+                      </div>
+                      <div className="plan-meta">
+                        <span className="plan-title">{planData.title}</span>
+                        <span className="plan-date">Created: {new Date(planData.created_at).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Coach Plan Content */}
+                  {isCoachPlan ? (
+                    <div className="coach-plan-content">
+                      {/* Plan Description */}
+                      {planData.description && (
+                        <div className="plan-description">
+                          <h3>Plan Description</h3>
+                          <p>{planData.description}</p>
+                        </div>
+                      )}
+                      
+                      {/* Exercises */}
+                      {planData.exercises && planData.exercises.length > 0 && (
+                        <div className="coach-exercises">
+                          <h3>Exercises</h3>
+                          <div className="exercises-grid">
+                            {planData.exercises.map((exercise: any, index: number) => (
+                              <div key={index} className="exercise-card">
+                                <div className="exercise-header">
+                                  <h4>{exercise.exercise}</h4>
+                                </div>
+                                <div className="exercise-details">
+                                  <div className="detail-item">
+                                    <span className="label">Reps:</span>
+                                    <span className="value">{exercise.reps}</span>
+                                  </div>
+                                  <div className="detail-item">
+                                    <span className="label">Duration:</span>
+                                    <span className="value">{exercise.duration}s</span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Plan Details */}
+                      <div className="plan-details">
+                        <div className="details-grid">
+                          {planData.duration && (
+                            <div className="detail-item">
+                              <span className="label">Duration:</span>
+                              <span className="value">{planData.duration} weeks</span>
+                            </div>
+                          )}
+                          {planData.frequency && (
+                            <div className="detail-item">
+                              <span className="label">Frequency:</span>
+                              <span className="value">{planData.frequency} times per week</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Goals */}
+                      {planData.goals && (
+                        <div className="plan-goals">
+                          <h3>Goals & Targets</h3>
+                          <p>{planData.goals}</p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <>
+                      {/* Analysis Summary */}
+                      {planData.analysis && (
                     <div className="analysis-summary">
                       <h3>Performance Analysis</h3>
                       <div className="analysis-grid">
@@ -1452,8 +1585,10 @@ const AthleteDashboard: React.FC = () => {
                         </div>
                       )}
                     </>
-                  );
-                })()}
+                  )}
+                </>
+              );
+            })()}
               </div>
             ) : (
               <div className="no-training-plan">

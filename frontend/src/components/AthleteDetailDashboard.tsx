@@ -7,12 +7,14 @@ interface AthleteDetailDashboardProps {
   selectedAthlete: { id: string; name: string };
   onBack: () => void;
   onMessageAthlete: () => void;
+  onMessageAthleteWithSession: (sessionId: string) => void;
 }
 
 const AthleteDetailDashboard: React.FC<AthleteDetailDashboardProps> = ({
   selectedAthlete,
   onBack,
-  onMessageAthlete
+  onMessageAthlete,
+  onMessageAthleteWithSession
 }) => {
   const { user } = useAuth();
   const [sessions, setSessions] = useState<any[]>([]);
@@ -61,10 +63,6 @@ const AthleteDetailDashboard: React.FC<AthleteDetailDashboardProps> = ({
     setShowDetailedAnalysis(true);
   };
 
-  const handleSendFeedback = async () => {
-    // Open chat with pre-filled message
-    onMessageAthlete();
-  };
 
   const handleCreateCoachPlan = () => {
     setShowCoachPlanModal(true);
@@ -215,7 +213,7 @@ const AthleteDetailDashboard: React.FC<AthleteDetailDashboardProps> = ({
             className="coach-plan-btn"
             onClick={handleCreateCoachPlan}
           >
-            📋 Plan by Coach
+            📋 Create Training Plan
           </button>
           <button 
             className="message-athlete-btn"
@@ -463,7 +461,7 @@ const AthleteDetailDashboard: React.FC<AthleteDetailDashboardProps> = ({
                             </button>
                             <button
                               className="btn-feedback btn-sm"
-                              onClick={handleSendFeedback}
+                              onClick={() => onMessageAthleteWithSession(session.sessionId)}
                             >
                               Feedback
                             </button>
