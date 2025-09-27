@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { loginUser, registerUser, googleLogin as apiGoogleLogin, getAthletes, getCoaches } from '../api/apiClient';
 
 export interface User {
   id: string;
@@ -55,25 +56,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, role: expectedRole }),
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-        return true;
-      } else {
-        const errorData = await response.json();
-        setError(errorData.detail || 'Login failed'); // ✅ changed to .detail
-        return false;
-      }
-    } catch (error) {
+      const userData = await loginUser({ email, password, role: expectedRole });
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      return true;
+    } catch (error: any) {
       console.error('Login error:', error);
-      setError('Login failed. Please try again.');
+      setError(error.message || 'Login failed. Please try again.');
       return false;
     } finally {
       setIsLoading(false);
@@ -86,30 +75,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
     
     try {
-      const response = await fetch(`${API_BASE}/google-login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          name,
-          role,
-          google_id: `google_${Date.now()}` // Mock Google ID for demo
-        }),
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-        return true;
-      } else {
-        const errorData = await response.json();
-        setError(errorData.detail || 'Google login failed');
-        return false;
-      }
-    } catch (error) {
+      const googleToken = `google_${Date.now()}`; // Mock Google token for demo
+      const userData = await apiGoogleLogin(googleToken);
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      return true;
+    } catch (error: any) {
       console.error('Google login error:', error);
-      setError('Google login failed. Please try again.');
+      setError(error.message || 'Google login failed. Please try again.');
       return false;
     } finally {
       setIsLoading(false);
@@ -122,25 +95,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE}/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, username, role }),
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-        return true;
-      } else {
-        const errorData = await response.json();
-        setError(errorData.detail || 'Registration failed'); // ✅ changed to .detail
-        return false;
-      }
-    } catch (error) {
+      const userData = await registerUser({ email, password, username, role });
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      return true;
+    } catch (error: any) {
       console.error('Registration error:', error);
-      setError('Registration failed. Please try again.');
+      setError(error.message || 'Registration failed. Please try again.');
       return false;
     } finally {
       setIsLoading(false);
@@ -156,11 +117,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // 🔹 Fetch all users (for admin/debugging)
   const getAllUsers = async (): Promise<{ athletes: User[], coaches: User[] }> => {
     try {
-      const response = await fetch(`${API_BASE}/users`);
-      if (response.ok) {
-        return await response.json();
-      }
-      return { athletes: [], coaches: [] };
+      const [athletes, coaches] = await Promise.all([
+        getAthletes(),
+        getCoaches()
+      ]);
+      return { athletes, coaches };
     } catch (error) {
       console.error('Error fetching users:', error);
       return { athletes: [], coaches: [] };

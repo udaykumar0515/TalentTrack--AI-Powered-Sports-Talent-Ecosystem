@@ -2,8 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CoachProvider } from './contexts/CoachContext';
 import LandingPage from './components/LandingPage';
-import AthleteDashboard from './components/AthleteDashboard';
-import CoachDashboard from './components/CoachDashboard';
+import AthleteDashboard from './components/ImprovedAthleteDashboard';
+import CoachDashboard from './components/ImprovedCoachDashboard';
 import SessionView from './components/SessionView';
 import ProtectedRoute from './components/ProtectedRoute';
 import FeedbackWidget from './components/FeedbackWidget';

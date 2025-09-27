@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { getCoaches } from '../api/apiClient';
 
 export interface Coach {
   id: string;
@@ -42,17 +43,10 @@ export const CoachProvider: React.FC<CoachProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await fetch(`${API_BASE}/coaches`);
-      
-      if (response.ok) {
-        const coachesData = await response.json();
-        setCoaches(coachesData);
-      } else {
-        setError('Failed to load coaches');
-        console.error('Failed to load coaches');
-      }
-    } catch (error) {
-      setError('Error loading coaches');
+      const coachesData = await getCoaches();
+      setCoaches(coachesData);
+    } catch (error: any) {
+      setError(error.message || 'Error loading coaches');
       console.error('Error loading coaches:', error);
     } finally {
       setIsLoading(false);

@@ -96,21 +96,28 @@ const UnifiedLogin: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Animated background elements */}
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100">
+      {/* Enhanced background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute animate-pulse top-20 left-20 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
-        <div className="absolute animate-pulse delay-100 top-40 right-20 w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
-        <div className="absolute animate-pulse delay-200 bottom-20 left-1/2 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+        <div className="absolute animate-pulse top-20 left-20 w-64 h-64 rounded-full mix-blend-multiply filter blur-xl opacity-60" style={{backgroundColor: 'rgba(74, 144, 226, 0.2)'}}></div>
+        <div className="absolute animate-pulse delay-100 top-40 right-20 w-64 h-64 rounded-full mix-blend-multiply filter blur-xl opacity-60" style={{backgroundColor: 'rgba(0, 168, 150, 0.2)'}}></div>
+        <div className="absolute animate-pulse delay-200 bottom-20 left-1/2 w-64 h-64 rounded-full mix-blend-multiply filter blur-xl opacity-60" style={{backgroundColor: 'rgba(255, 107, 107, 0.2)'}}></div>
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-40" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f3f4f6' fill-opacity='0.3'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+        }}></div>
       </div>
       
-      <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-xl p-6 w-full max-w-md relative transform hover:scale-105 transition-transform duration-300">
+      <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl p-8 w-full max-w-md relative transform hover:scale-105 transition-all duration-300 border border-white/20">
         <div className="flex flex-col items-center mb-6">
           <div className="text-center mb-4">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              🏃‍♂️ TalentTrack
+              💪 Strength & Strategy
             </h1>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 font-medium">
+              THE ATHLETE-ANALYST PRINCIPLE
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
               AI-Powered Sports Talent Ecosystem
             </p>
           </div>

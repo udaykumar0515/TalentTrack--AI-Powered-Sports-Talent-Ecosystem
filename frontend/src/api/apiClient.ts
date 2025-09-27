@@ -798,3 +798,128 @@ export const submitCoachChangeRequest = async (request: {
   }
   return response.json();
 };
+
+// Authentication API functions
+export const registerUser = async (userData: {
+  email: string;
+  password: string;
+  username: string;
+  role: string;
+}): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  });
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Registration failed: ${errorText}`);
+  }
+  return response.json();
+};
+
+export const loginUser = async (credentials: {
+  email: string;
+  password: string;
+  role?: string;
+}): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(credentials),
+  });
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Login failed: ${errorText}`);
+  }
+  return response.json();
+};
+
+export const googleLogin = async (googleToken: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/google-login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ token: googleToken }),
+  });
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Google login failed: ${errorText}`);
+  }
+  return response.json();
+};
+
+// Coach management functions
+export const getCoaches = async (): Promise<any[]> => {
+  const response = await fetch(`${API_BASE_URL}/coaches`);
+  if (!response.ok) {
+    throw new Error('Failed to get coaches');
+  }
+  return response.json();
+};
+
+export const getCoachChangeRequests = async (coachId: string): Promise<any[]> => {
+  const response = await fetch(`${API_BASE_URL}/coach-change-requests/${coachId}`);
+  if (!response.ok) {
+    throw new Error('Failed to get coach change requests');
+  }
+  return response.json();
+};
+
+export const approveCoachChangeRequest = async (requestId: string, coachId: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/coach-change-requests/${requestId}/approve`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ coach_id: coachId }),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to approve coach change request');
+  }
+  return response.json();
+};
+
+// Feedback API functions
+export const submitFeedback = async (feedbackData: {
+  sessionId: string;
+  coachId: string;
+  athleteId: string;
+  feedback: string;
+  type: 'retest' | 'feedback' | 'note';
+}): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/feedback`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(feedbackData),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to submit feedback');
+  }
+  return response.json();
+};
+
+// Video management functions
+export const getVideosBySession = async (sessionId: string): Promise<any[]> => {
+  const response = await fetch(`${API_BASE_URL}/videos/${sessionId}`);
+  if (!response.ok) {
+    throw new Error('Failed to get videos for session');
+  }
+  return response.json();
+};
+
+// Health check
+export const checkHealth = async (): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/health`);
+  if (!response.ok) {
+    throw new Error('Health check failed');
+  }
+  return response.json();
+};
