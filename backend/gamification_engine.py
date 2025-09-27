@@ -446,6 +446,16 @@ class GamificationEngine:
         except:
             return []
         
+        # Load athletes data to map user_id to username
+        athletes_data = {}
+        try:
+            with open("data/athletes.json", 'r', encoding='utf-8') as f:
+                athletes = json.load(f)
+                for athlete in athletes:
+                    athletes_data[athlete["id"]] = athlete["username"]
+        except:
+            pass
+        
         # Sort users by category
         if category == "total_points":
             sorted_users = sorted(all_points.items(), 
@@ -464,9 +474,12 @@ class GamificationEngine:
         
         leaderboard = []
         for rank, (user_id, user_data) in enumerate(sorted_users[:limit], 1):
+            # Get the actual username from athletes data
+            username = athletes_data.get(user_id, user_id)
+            
             leaderboard.append({
                 "rank": rank,
-                "user_id": user_id,
+                "user_id": username,  # Use username instead of user_id
                 "total_points": user_data.get("total_points", 0),
                 "level": user_data.get("level", 1),
                 "sessions_completed": user_data.get("sessions_completed", 0),
