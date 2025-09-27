@@ -21,7 +21,7 @@
     "last_session_date": "2025-09-19T01:29:22.874563"
   },
   "athlete_1": {
-    "total_points": 220,
+    "total_points": 310,
     "achievements": [
       "form_master",
       "consistent_training",
@@ -30,13 +30,15 @@
     "badges": [
       "Bronze Badge",
       "Bronze Badge",
+      "Bronze Badge",
+      "Bronze Badge",
       "Bronze Badge"
     ],
     "level": 1,
-    "sessions_completed": 9,
-    "current_streak": 9,
-    "longest_streak": 9,
-    "last_session_date": "2025-09-26T23:07:56.395424"
+    "sessions_completed": 11,
+    "current_streak": 11,
+    "longest_streak": 11,
+    "last_session_date": "2025-09-27T10:06:44.414437"
   },
   "athlete_2": {
     "total_points": 120,

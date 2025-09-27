@@ -78,10 +78,16 @@ const AthleteDashboard: React.FC = () => {
   const handleCancelSession = () => {
     setShowSessionOptions(false);
     setIsOfflineMode(false);
+    // Clear video preview and reset components
+    setVideoResetKey(prev => prev + 1);
+    setCurrentSession(null);
+    setIsAnalyzing(false);
   };
 
   const handleOfflineToggle = () => {
     setIsOfflineMode(!isOfflineMode);
+    // Clear any existing video preview when switching modes
+    setVideoResetKey(prev => prev + 1);
   };
 
   const handleVideoQueued = async (videoData: any) => {
@@ -129,6 +135,8 @@ const AthleteDashboard: React.FC = () => {
         
         // Reset video components after successful upload
         setVideoResetKey(prev => prev + 1);
+        setShowSessionOptions(false);
+        setIsOfflineMode(false);
       } else {
         console.error('Failed to store offline video');
       }
@@ -605,6 +613,10 @@ const AthleteDashboard: React.FC = () => {
     // Reset analysis state and clear video preview
     setIsAnalyzing(false);
     setCurrentVideoUrl(null);
+    // Clear video preview and reset session options after analysis
+    setVideoResetKey(prev => prev + 1);
+    setShowSessionOptions(false);
+    setIsOfflineMode(false);
   };
 
   const handleDetailedAnalysis = (session: any) => {
@@ -1115,7 +1127,7 @@ const AthleteDashboard: React.FC = () => {
                 const realInsights = calculatePerformanceInsights();
                 if (realInsights) {
                   return (
-                    <div className="predictive-analytics-section">
+          <div className="predictive-analytics-section">
                       <div className="analytics-grid">
                         {/* Current Performance Stats */}
                         <div className="analytics-card current-stats">
@@ -1124,11 +1136,11 @@ const AthleteDashboard: React.FC = () => {
                             <div className="stat-item">
                               <div className="stat-label">Avg Form Score</div>
                               <div className="stat-value">{realInsights.current_stats.avg_form_score}%</div>
-                            </div>
+            </div>
                             <div className="stat-item">
                               <div className="stat-label">Avg Reps</div>
                               <div className="stat-value">{realInsights.current_stats.avg_reps}</div>
-                            </div>
+          </div>
                             <div className="stat-item">
                               <div className="stat-label">Best Form Score</div>
                               <div className="stat-value">{realInsights.current_stats.best_form_score}%</div>
@@ -1149,51 +1161,51 @@ const AthleteDashboard: React.FC = () => {
                               <div className={`trend-value ${realInsights.performance_trends.form_trend > 0 ? 'trend-up' : realInsights.performance_trends.form_trend < 0 ? 'trend-down' : 'trend-neutral'}`}>
                                 <span className="trend-arrow">
                                   {realInsights.performance_trends.form_trend > 0 ? '↗' : realInsights.performance_trends.form_trend < 0 ? '↘' : '→'}
-                                </span>
+                        </span>
                                 <span className="trend-number">
                                   {Math.abs(realInsights.performance_trends.form_trend).toFixed(1)}%
                                 </span>
-                              </div>
-                            </div>
+                      </div>
+                    </div>
                             <div className="trend-item">
                               <div className="trend-label">Reps Trend</div>
                               <div className={`trend-value ${realInsights.performance_trends.reps_trend > 0 ? 'trend-up' : realInsights.performance_trends.reps_trend < 0 ? 'trend-down' : 'trend-neutral'}`}>
                                 <span className="trend-arrow">
                                   {realInsights.performance_trends.reps_trend > 0 ? '↗' : realInsights.performance_trends.reps_trend < 0 ? '↘' : '→'}
-                                </span>
+                        </span>
                                 <span className="trend-number">
                                   {Math.abs(realInsights.performance_trends.reps_trend).toFixed(1)}
                                 </span>
-                              </div>
-                            </div>
+                      </div>
+                    </div>
                             <div className="trend-item">
                               <div className="trend-label">Consistency</div>
                               <div className="trend-value trend-neutral">
                                 <span className="trend-number">{realInsights.performance_trends.consistency}%</span>
-                              </div>
+                            </div>
                             </div>
                             <div className="trend-item">
                               <div className="trend-label">Overall Progress</div>
                               <div className={`trend-value ${realInsights.performance_trends.overall_progress === 'improving' ? 'trend-up' : realInsights.performance_trends.overall_progress === 'declining' ? 'trend-down' : 'trend-neutral'}`}>
                                 <span className="trend-text">{realInsights.performance_trends.overall_progress}</span>
-                              </div>
-                            </div>
-                          </div>
+                        </div>
                         </div>
                       </div>
+            </div>
+          </div>
                     </div>
                   );
                 }
                 return (
-                  <div className="predictive-analytics-section">
-                    <div className="no-analytics">
+          <div className="predictive-analytics-section">
+            <div className="no-analytics">
                       <p>No performance insights available yet. Complete more sessions with form scores and reps to see your analytics!</p>
-                    </div>
+            </div>
                   </div>
                 );
               })()}
-            </div>
-          )}
+          </div>
+        )}
         </div>
         {/* Training Plan Section */}
         <div className={`collapsible-section ${activeSection === 'training-plan' ? 'active' : ''}`}>
@@ -1311,48 +1323,48 @@ const AthleteDashboard: React.FC = () => {
                               <h5>Key Metrics:</h5>
                               <ul>
                                 {week.key_metrics.map((metric: string, idx: number) => (
-                                  <li key={idx}>{metric}</li>
-                                ))}
-                              </ul>
-                            </div>
+                                      <li key={idx}>{metric}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                        </div>
+                      )}
 
-                  {/* Coaching Notes */}
-                  {planData.coaching_notes && planData.coaching_notes.length > 0 && (
-                    <div className="coaching-notes">
-                      <h3>Coaching Notes</h3>
-                      <div className="notes-list">
-                        {planData.coaching_notes.map((note: string, index: number) => (
-                          <div key={index} className="note-item">
-                            <span className="note-icon">💡</span>
-                            <span className="note-text">{note}</span>
+                      {/* Coaching Notes */}
+                      {planData.coaching_notes && planData.coaching_notes.length > 0 && (
+                        <div className="coaching-notes">
+                          <h3>Coaching Notes</h3>
+                          <div className="notes-list">
+                            {planData.coaching_notes.map((note: string, index: number) => (
+                              <div key={index} className="note-item">
+                                <span className="note-icon">💡</span>
+                                <span className="note-text">{note}</span>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </>
-              );
-            })()}
-          </div>
-              ) : (
-            <div className="no-training-plan">
-              <p>No training plan available yet. Generate your personalized plan!</p>
-              <button 
-                className="btn-primary generate-plan-btn"
-                onClick={generateNewTrainingPlan}
-                disabled={loadingTrainingPlan}
-              >
-                {loadingTrainingPlan ? 'Generating...' : 'Generate Training Plan'}
-              </button>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+            ) : (
+              <div className="no-training-plan">
+                <p>No training plan available yet. Generate your personalized plan!</p>
+                <button 
+                  className="btn-primary generate-plan-btn"
+                  onClick={generateNewTrainingPlan}
+                  disabled={loadingTrainingPlan}
+                >
+                  {loadingTrainingPlan ? 'Generating...' : 'Generate Training Plan'}
+                </button>
+              </div>
+            )}
           </div>
         )}
-                              </div>
-                            )}
                               </div>
         {/* Gamification Section */}
         <div className={`collapsible-section ${activeSection === 'gamification' ? 'active' : ''}`}>
@@ -1499,7 +1511,7 @@ const AthleteDashboard: React.FC = () => {
               <p>Complete your first session to start earning points and achievements!</p>
             </div>
           )}
-            </div>
+        </div>
           )}
         </div>
         {/* Goal Setting Section */}

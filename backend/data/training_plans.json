@@ -1,43 +1,27 @@
 {
   "athlete_1": {
     "athlete_id": "athlete_1",
-    "generated_at": "2025-09-26T23:07:56.098176Z",
-    "valid_until": "2025-10-26T23:07:56.098176Z",
+    "generated_at": "2025-09-27T10:06:44.395293Z",
+    "valid_until": "2025-10-27T10:06:44.395293Z",
     "analysis": {
       "gaps": [
-        "Form technique needs improvement",
         "Rep count declining - may need rest or form focus",
         "High form violation rate - focus on technique"
       ],
       "strengths": [
+        "Excellent form consistency",
         "Good exercise variety"
       ],
       "focus_areas": [
-        "form_technique",
         "endurance",
         "technique"
       ],
-      "avg_form": 68.33333333333333,
-      "reps_trend": -4.1499999999999995,
+      "avg_form": 85.83333333333333,
+      "reps_trend": -2.6857142857142846,
       "exercise_variety": 3,
       "cheat_rate": 0.3333333333333333
     },
     "recommendations": [
-      {
-        "exercise": "squat",
-        "type": "form_focus",
-        "sets": 3,
-        "reps": "8-12",
-        "intensity": "moderate",
-        "focus": "Perfect form over speed",
-        "instructions": [
-          "Slow down your movements",
-          "Focus on full range of motion",
-          "Maintain control throughout",
-          "Stop if form breaks down"
-        ],
-        "priority": "high"
-      },
       {
         "exercise": "squat",
         "type": "endurance",
@@ -73,23 +57,6 @@
       {
         "day": "Monday",
         "exercise": "squat",
-        "type": "form_focus",
-        "sets": 3,
-        "reps": "8-12",
-        "intensity": "moderate",
-        "focus": "Perfect form over speed",
-        "instructions": [
-          "Slow down your movements",
-          "Focus on full range of motion",
-          "Maintain control throughout",
-          "Stop if form breaks down"
-        ],
-        "priority": "high",
-        "estimated_duration": "15-20 minutes"
-      },
-      {
-        "day": "Wednesday",
-        "exercise": "squat",
         "type": "endurance",
         "sets": 2,
         "reps": "15-20",
@@ -105,7 +72,7 @@
         "estimated_duration": "15-20 minutes"
       },
       {
-        "day": "Friday",
+        "day": "Wednesday",
         "exercise": "squat",
         "type": "technique",
         "sets": 2,
@@ -120,14 +87,31 @@
         ],
         "priority": "high",
         "estimated_duration": "15-20 minutes"
+      },
+      {
+        "day": "Friday",
+        "exercise": "squat",
+        "type": "endurance",
+        "sets": 2,
+        "reps": "15-20",
+        "intensity": "light",
+        "focus": "Build stamina and consistency",
+        "instructions": [
+          "Maintain steady pace",
+          "Focus on breathing rhythm",
+          "Take short breaks between sets",
+          "Gradually increase reps"
+        ],
+        "priority": "medium",
+        "estimated_duration": "15-20 minutes"
       }
     ],
     "progression_plan": {
       "weeks": [
         {
           "week": 1,
-          "form_target": 57.4,
-          "reps_target": 8,
+          "form_target": 88.6,
+          "reps_target": 22,
           "focus": "Foundation building and form mastery",
           "key_metrics": [
             "Form score",
@@ -135,16 +119,16 @@
             "Range of motion"
           ],
           "success_criteria": [
-            "Achieve form score of 57.4 or higher",
-            "Complete 8 reps with good form",
+            "Achieve form score of 88.6 or higher",
+            "Complete 22 reps with good form",
             "Complete all scheduled sessions",
             "No form violations in final session"
           ]
         },
         {
           "week": 2,
-          "form_target": 59.4,
-          "reps_target": 10,
+          "form_target": 90.6,
+          "reps_target": 24,
           "focus": "Consistency and endurance",
           "key_metrics": [
             "Rep count",
@@ -152,16 +136,16 @@
             "Breathing"
           ],
           "success_criteria": [
-            "Achieve form score of 59.4 or higher",
-            "Complete 10 reps with good form",
+            "Achieve form score of 90.6 or higher",
+            "Complete 24 reps with good form",
             "Complete all scheduled sessions",
             "No form violations in final session"
           ]
         },
         {
           "week": 3,
-          "form_target": 61.4,
-          "reps_target": 11,
+          "form_target": 92.6,
+          "reps_target": 25,
           "focus": "Progressive overload and strength",
           "key_metrics": [
             "Strength",
@@ -169,16 +153,16 @@
             "Control"
           ],
           "success_criteria": [
-            "Achieve form score of 61.4 or higher",
-            "Complete 11 reps with good form",
+            "Achieve form score of 92.6 or higher",
+            "Complete 25 reps with good form",
             "Complete all scheduled sessions",
             "No form violations in final session"
           ]
         },
         {
           "week": 4,
-          "form_target": 63.4,
-          "reps_target": 13,
+          "form_target": 94.6,
+          "reps_target": 27,
           "focus": "Peak performance and refinement",
           "key_metrics": [
             "Peak performance",
@@ -186,16 +170,16 @@
             "Technique"
           ],
           "success_criteria": [
-            "Achieve form score of 63.4 or higher",
-            "Complete 13 reps with good form",
+            "Achieve form score of 94.6 or higher",
+            "Complete 27 reps with good form",
             "Complete all scheduled sessions",
             "No form violations in final session"
           ]
         }
       ],
       "goals": [
-        "Improve form score from 55 to 63.4",
-        "Increase reps from 7 to 13",
+        "Improve form score from 87 to 94.6",
+        "Increase reps from 21 to 27",
         "Maintain consistent training schedule",
         "Reduce form violations by 50%"
       ]
@@ -210,34 +194,34 @@
       },
       "improvement_potential": {
         "potential": "medium",
-        "score": 45,
+        "score": 65,
         "suggestions": [
-          "Focus on form correction - high improvement potential",
-          "Work on consistency - focus on technique",
+          "Form is improving - maintain current training",
+          "Consistent performance - ready for advanced training",
           "Excellent form discipline - ready for progression"
         ]
       },
       "performance_trends": {
         "form": {
-          "slope": -6.116666666666666,
-          "r_squared": 0.18226832304860863,
-          "trend": "declining",
-          "confidence": 18.226832304860864
+          "slope": 0.3142857142857143,
+          "r_squared": 0.01263267791891487,
+          "trend": "improving",
+          "confidence": 1.263267791891487
         },
         "reps": {
-          "slope": -4.15,
-          "r_squared": 0.7819194551874895,
+          "slope": -2.6857142857142855,
+          "r_squared": 0.4332788492971561,
           "trend": "declining",
-          "confidence": 78.19194551874895
+          "confidence": 43.32788492971561
         }
       }
     },
     "coaching_notes": [
-      "Focus on form technique - current average form score is below 70%",
+      "Excellent form consistency - ready for advanced progressions",
       "Rep count declining - consider rest days or form focus",
       "High form violation rate - prioritize technique over intensity"
     ],
-    "next_review_date": "2025-10-03T23:07:56.098176Z"
+    "next_review_date": "2025-10-04T10:06:44.395293Z"
   },
   "athlete_2": {
     "athlete_id": "athlete_2",
