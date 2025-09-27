@@ -11,7 +11,10 @@ import { saveSession, getAthleteMessages, getSessions, deleteSession, getAthlete
 const AthleteDashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const { coaches } = useCoaches();
-  const [selectedCoach, setSelectedCoach] = useState('none'); // No default coach
+  const [selectedCoach, setSelectedCoach] = useState('none'); // Will be set from athlete data
+  const [showCoachChangeModal, setShowCoachChangeModal] = useState(false);
+  const [newCoachId, setNewCoachId] = useState('');
+  const [changeReason, setChangeReason] = useState('');
   const [selectedExercise, setSelectedExercise] = useState('squat');
   const [currentSession, setCurrentSession] = useState<any>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -37,6 +40,7 @@ const AthleteDashboard: React.FC = () => {
   const [goalRecommendations, setGoalRecommendations] = useState<any[]>([]);
   const [loadingGoals, setLoadingGoals] = useState(false);
   const [showCreateGoal, setShowCreateGoal] = useState(false);
+  const [showRecommendedGoals, setShowRecommendedGoals] = useState(false);
   const [newGoal, setNewGoal] = useState({
     title: '',
     description: '',
@@ -263,20 +267,127 @@ const AthleteDashboard: React.FC = () => {
   }, [cameraStream]);
 
   // Load selected coach from localStorage
-  const loadSelectedCoach = () => {
+  const loadSelectedCoach = async () => {
     if (user?.id) {
-      const storedCoach = localStorage.getItem(`selectedCoach_${user.id}`);
-      if (storedCoach) {
-        setSelectedCoach(storedCoach);
+      try {
+        // First try to get the default coach from athlete data
+        const response = await fetch(`http://localhost:8000/api/athletes/${user.id}`);
+        if (response.ok) {
+          const athleteData = await response.json();
+          if (athleteData.coachId) {
+            setSelectedCoach(athleteData.coachId);
+            return;
+          }
+        }
+        
+        // Fallback to localStorage if no default coach
+        const storedCoach = localStorage.getItem(`selectedCoach_${user.id}`);
+        if (storedCoach) {
+          setSelectedCoach(storedCoach);
+        }
+      } catch (error) {
+        console.error('Error loading coach:', error);
+        // Fallback to localStorage
+        const storedCoach = localStorage.getItem(`selectedCoach_${user.id}`);
+        if (storedCoach) {
+          setSelectedCoach(storedCoach);
+        }
       }
     }
   };
 
-  // Save selected coach to localStorage
+  // Handle coach change with request system
   const handleCoachChange = (coachId: string) => {
-    setSelectedCoach(coachId);
-    if (user?.id) {
-      localStorage.setItem(`selectedCoach_${user.id}`, coachId);
+    if (coachId === 'none') {
+      setSelectedCoach('none');
+      if (user?.id) {
+        localStorage.setItem(`selectedCoach_${user.id}`, 'none');
+      }
+      return;
+    }
+
+    // If no coach is currently selected, directly assign the coach
+    if (selectedCoach === 'none' || !selectedCoach) {
+      // Call backend to assign coach directly
+      assignCoachDirectly(coachId);
+      return;
+    }
+
+    // If changing to a different coach, show the change request modal
+    if (coachId !== selectedCoach) {
+      setNewCoachId(coachId);
+      setShowCoachChangeModal(true);
+    }
+  };
+
+  // Directly assign coach (for initial assignment)
+  const assignCoachDirectly = async (coachId: string) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/assign-coach?athlete_id=${user?.id}&coach_id=${coachId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok) {
+        setSelectedCoach(coachId);
+        if (user?.id) {
+          localStorage.setItem(`selectedCoach_${user.id}`, coachId);
+        }
+        alert('Coach assigned successfully!');
+      } else {
+        const error = await response.json();
+        alert(`Error: ${error.detail || 'Failed to assign coach'}`);
+      }
+    } catch (error) {
+      console.error('Error assigning coach:', error);
+      alert('Failed to assign coach. Please try again.');
+    }
+  };
+
+  // Handle coach change request submission
+  const handleCoachChangeRequest = async () => {
+    if (!newCoachId || !changeReason.trim()) {
+      alert('Please provide a reason for changing coaches.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8000/api/coach-change-request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          athleteId: user?.id,
+          currentCoachId: selectedCoach,
+          newCoachId: newCoachId,
+          reason: changeReason
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.autoApproved) {
+          alert('Coach assigned successfully!');
+          setSelectedCoach(newCoachId);
+          if (user?.id) {
+            localStorage.setItem(`selectedCoach_${user.id}`, newCoachId);
+          }
+        } else {
+          alert('Coach change request submitted successfully! The new coach will review your request.');
+        }
+        setShowCoachChangeModal(false);
+        setChangeReason('');
+        setNewCoachId('');
+      } else {
+        const error = await response.json();
+        alert(`Error: ${error.detail || 'Failed to submit coach change request'}`);
+      }
+    } catch (error) {
+      console.error('Error submitting coach change request:', error);
+      alert('Failed to submit coach change request. Please try again.');
     }
   };
 
@@ -791,19 +902,27 @@ const AthleteDashboard: React.FC = () => {
         </div>
         <div className="header-right">
           <div className="coach-select">
+            <label htmlFor="coach-dropdown">Current Coach:</label>
             <select 
               id="coach-dropdown"
               value={selectedCoach}
               onChange={(e) => handleCoachChange(e.target.value)}
               className="coach-dropdown"
             >
-              <option value="none">Select Coach</option>
+              <option value="none">No Coach Selected</option>
               {coaches.map(coach => (
                 <option key={coach.id} value={coach.id}>
                   {coach.username}
                 </option>
               ))}
             </select>
+            {selectedCoach !== 'none' && (
+              <div className="coach-info">
+                <span className="current-coach-label">
+                  Current: {coaches.find(c => c.id === selectedCoach)?.username || 'Unknown Coach'}
+                </span>
+              </div>
+            )}
           </div>
           <button 
             onClick={() => setShowVideoQueue(!showVideoQueue)} 
@@ -1536,7 +1655,47 @@ const AthleteDashboard: React.FC = () => {
             >
               + Create New Goal
             </button>
+            <button 
+              className="btn-secondary"
+              onClick={() => setShowRecommendedGoals(!showRecommendedGoals)}
+            >
+              {showRecommendedGoals ? 'Hide' : 'Show'} Recommended Goals
+            </button>
           </div>
+
+          {/* Recommended Goals Section */}
+          {showRecommendedGoals && goalRecommendations.length > 0 && (
+            <div className="goal-recommendations">
+              <h3>💡 Recommended Goals</h3>
+              <div className="recommendations-list">
+                {goalRecommendations.map((rec, index) => (
+                  <div key={index} className="recommendation-card">
+                    <div className="recommendation-title">{rec.title}</div>
+                    <div className="recommendation-description">{rec.description}</div>
+                    <div className="recommendation-reason">{rec.reason}</div>
+                    <button 
+                      className="btn-small"
+                      onClick={() => {
+                        setNewGoal({
+                          title: rec.title,
+                          description: rec.description,
+                          type: rec.type,
+                          target_value: rec.target_value,
+                          unit: rec.unit,
+                          priority: rec.priority,
+                          target_date: '',
+                          motivation_notes: rec.reason
+                        });
+                        setShowCreateGoal(true);
+                      }}
+                    >
+                      Create This Goal
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {loadingGoals ? (
             <div className="loading-goals">
@@ -1614,39 +1773,6 @@ const AthleteDashboard: React.FC = () => {
                 ))}
               </div>
 
-              {/* Goal Recommendations */}
-              {goalRecommendations.length > 0 && (
-                <div className="goal-recommendations">
-                  <h3>💡 Recommended Goals</h3>
-                  <div className="recommendations-list">
-                    {goalRecommendations.map((rec, index) => (
-                      <div key={index} className="recommendation-card">
-                        <div className="recommendation-title">{rec.title}</div>
-                        <div className="recommendation-description">{rec.description}</div>
-                        <div className="recommendation-reason">{rec.reason}</div>
-                        <button 
-                          className="btn-small"
-                          onClick={() => {
-                            setNewGoal({
-                              title: rec.title,
-                              description: rec.description,
-                              type: rec.type,
-                              target_value: rec.target_value,
-                              unit: rec.unit,
-                              priority: rec.priority,
-                              target_date: '',
-                              motivation_notes: rec.reason
-                            });
-                            setShowCreateGoal(true);
-                          }}
-                        >
-                          Create This Goal
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           ) : (
             <div className="no-goals">
@@ -1876,6 +2002,72 @@ const AthleteDashboard: React.FC = () => {
         onClose={() => setShowDetailedAnalysis(false)}
         session={selectedSessionForAnalysis}
       />
+
+      {/* Coach Change Request Modal */}
+      {showCoachChangeModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Request Coach Change</h3>
+              <button 
+                className="btn-close"
+                onClick={() => {
+                  setShowCoachChangeModal(false);
+                  setChangeReason('');
+                  setNewCoachId('');
+                }}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label>New Coach</label>
+                <select
+                  value={newCoachId}
+                  onChange={(e) => setNewCoachId(e.target.value)}
+                  className="form-select"
+                >
+                  <option value="">Select New Coach</option>
+                  {coaches.filter(c => c.id !== selectedCoach).map(coach => (
+                    <option key={coach.id} value={coach.id}>
+                      {coach.username}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Reason for Change</label>
+                <textarea
+                  value={changeReason}
+                  onChange={(e) => setChangeReason(e.target.value)}
+                  placeholder="Please explain why you want to change coaches..."
+                  rows={4}
+                  className="form-textarea"
+                />
+              </div>
+              <div className="modal-actions">
+                <button 
+                  className="btn-secondary"
+                  onClick={() => {
+                    setShowCoachChangeModal(false);
+                    setChangeReason('');
+                    setNewCoachId('');
+                  }}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="btn-primary"
+                  onClick={handleCoachChangeRequest}
+                >
+                  Submit Request
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

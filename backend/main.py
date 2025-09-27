@@ -49,6 +49,12 @@ class UserCreate(BaseModel):
     username: str
     role: str
 
+class CoachChangeRequest(BaseModel):
+    athleteId: str
+    currentCoachId: str
+    newCoachId: str
+    reason: str
+
 class UserLogin(BaseModel):
     email: str
     password: str
@@ -359,6 +365,201 @@ async def post_session(session: Dict[str, Any]):
         logger.error(f"Failed to persist session: {e}")
         raise HTTPException(status_code=500, detail="Failed to save session")
 
+@app.post("/api/coach-change-request")
+async def submit_coach_change_request(request: CoachChangeRequest):
+    """Submit a coach change request from an athlete"""
+    try:
+        # For automatic approval (when no current coach or for specific athletes like uday)
+        if (request.currentCoachId == 'none' or 
+            request.athleteId == 'athlete_1' or  # Auto-approve for uday
+            not request.currentCoachId):
+            
+            # Directly update the athlete's coach
+            athletes_file = "data/athletes.json"
+            if os.path.exists(athletes_file):
+                with open(athletes_file, 'r', encoding='utf-8') as f:
+                    athletes = json.load(f)
+                
+                # Find and update the athlete
+                athlete_updated = False
+                for athlete in athletes:
+                    if athlete.get("id") == request.athleteId:
+                        athlete["coachId"] = request.newCoachId
+                        # Get new coach name
+                        coaches_file = "data/coaches.json"
+                        if os.path.exists(coaches_file):
+                            with open(coaches_file, 'r', encoding='utf-8') as f:
+                                coaches = json.load(f)
+                            new_coach = next((c for c in coaches if c.get("id") == request.newCoachId), None)
+                            if new_coach:
+                                athlete["coachName"] = new_coach.get("username", "Unknown Coach")
+                        athlete_updated = True
+                        break
+                
+                if athlete_updated:
+                    with open(athletes_file, 'w', encoding='utf-8') as f:
+                        json.dump(athletes, f, indent=2)
+                    logger.info(f"Coach automatically assigned to athlete {request.athleteId}: {request.newCoachId}")
+                    return {"status": "success", "message": "Coach assigned successfully", "autoApproved": True}
+        
+        # For regular coach change requests (when changing from one coach to another)
+        # Create coach change requests directory if it doesn't exist
+        requests_dir = "data/coach_change_requests"
+        os.makedirs(requests_dir, exist_ok=True)
+        
+        # Generate request ID
+        request_id = str(uuid.uuid4())[:8]
+        
+        # Prepare request record
+        request_data = {
+            "id": request_id,
+            "athleteId": request.athleteId,
+            "currentCoachId": request.currentCoachId,
+            "newCoachId": request.newCoachId,
+            "reason": request.reason,
+            "status": "pending",  # pending, approved, rejected
+            "created_at": datetime.now().isoformat(),
+            "approved_at": None,
+            "approved_by": None
+        }
+        
+        # Save request to file
+        request_file = os.path.join(requests_dir, f"{request_id}.json")
+        with open(request_file, 'w', encoding='utf-8') as f:
+            json.dump(request_data, f, indent=2)
+        
+        logger.info(f"Coach change request submitted: {request_id}")
+        return {"status": "success", "requestId": request_id, "message": "Coach change request submitted successfully"}
+        
+    except Exception as e:
+        logger.error(f"Failed to submit coach change request: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit coach change request")
+
+@app.get("/api/coach-change-requests/{coach_id}")
+async def get_coach_change_requests(coach_id: str):
+    """Get pending coach change requests for a specific coach"""
+    try:
+        requests_dir = "data/coach_change_requests"
+        if not os.path.exists(requests_dir):
+            return {"requests": []}
+        
+        requests = []
+        for filename in os.listdir(requests_dir):
+            if filename.endswith('.json'):
+                with open(os.path.join(requests_dir, filename), 'r', encoding='utf-8') as f:
+                    request_data = json.load(f)
+                    # Only return requests for this coach that are pending
+                    if (request_data.get("newCoachId") == coach_id and 
+                        request_data.get("status") == "pending"):
+                        requests.append(request_data)
+        
+        return {"requests": requests}
+        
+    except Exception as e:
+        logger.error(f"Failed to get coach change requests: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get coach change requests")
+
+@app.post("/api/coach-change-requests/{request_id}/approve")
+async def approve_coach_change_request(request_id: str, coach_id: str):
+    """Approve a coach change request"""
+    try:
+        requests_dir = "data/coach_change_requests"
+        request_file = os.path.join(requests_dir, f"{request_id}.json")
+        
+        if not os.path.exists(request_file):
+            raise HTTPException(status_code=404, detail="Request not found")
+        
+        # Load request data
+        with open(request_file, 'r', encoding='utf-8') as f:
+            request_data = json.load(f)
+        
+        if request_data.get("newCoachId") != coach_id:
+            raise HTTPException(status_code=403, detail="Unauthorized to approve this request")
+        
+        if request_data.get("status") != "pending":
+            raise HTTPException(status_code=400, detail="Request is not pending")
+        
+        # Update athlete's coach in athletes.json
+        athletes_file = "data/athletes.json"
+        if os.path.exists(athletes_file):
+            with open(athletes_file, 'r', encoding='utf-8') as f:
+                athletes = json.load(f)
+            
+            # Find and update the athlete
+            athlete_updated = False
+            for athlete in athletes:
+                if athlete.get("id") == request_data["athleteId"]:
+                    athlete["coachId"] = request_data["newCoachId"]
+                    # Get new coach name
+                    coaches_file = "data/coaches.json"
+                    if os.path.exists(coaches_file):
+                        with open(coaches_file, 'r', encoding='utf-8') as f:
+                            coaches = json.load(f)
+                        new_coach = next((c for c in coaches if c.get("id") == request_data["newCoachId"]), None)
+                        if new_coach:
+                            athlete["coachName"] = new_coach.get("username", "Unknown Coach")
+                    athlete_updated = True
+                    break
+            
+            if athlete_updated:
+                with open(athletes_file, 'w', encoding='utf-8') as f:
+                    json.dump(athletes, f, indent=2)
+        
+        # Update request status
+        request_data["status"] = "approved"
+        request_data["approved_at"] = datetime.now().isoformat()
+        request_data["approved_by"] = coach_id
+        
+        with open(request_file, 'w', encoding='utf-8') as f:
+            json.dump(request_data, f, indent=2)
+        
+        logger.info(f"Coach change request approved: {request_id}")
+        return {"status": "success", "message": "Coach change request approved successfully"}
+        
+    except Exception as e:
+        logger.error(f"Failed to approve coach change request: {e}")
+        raise HTTPException(status_code=500, detail="Failed to approve coach change request")
+
+@app.post("/api/assign-coach")
+async def assign_coach(athlete_id: str, coach_id: str):
+    """Directly assign a coach to an athlete (for initial assignment)"""
+    try:
+        athletes_file = "data/athletes.json"
+        if not os.path.exists(athletes_file):
+            raise HTTPException(status_code=404, detail="Athletes data not found")
+        
+        with open(athletes_file, 'r', encoding='utf-8') as f:
+            athletes = json.load(f)
+        
+        # Find and update the athlete
+        athlete_updated = False
+        for athlete in athletes:
+            if athlete.get("id") == athlete_id:
+                athlete["coachId"] = coach_id
+                # Get coach name
+                coaches_file = "data/coaches.json"
+                if os.path.exists(coaches_file):
+                    with open(coaches_file, 'r', encoding='utf-8') as f:
+                        coaches = json.load(f)
+                    coach = next((c for c in coaches if c.get("id") == coach_id), None)
+                    if coach:
+                        athlete["coachName"] = coach.get("username", "Unknown Coach")
+                athlete_updated = True
+                break
+        
+        if not athlete_updated:
+            raise HTTPException(status_code=404, detail="Athlete not found")
+        
+        # Save updated athletes data
+        with open(athletes_file, 'w', encoding='utf-8') as f:
+            json.dump(athletes, f, indent=2)
+        
+        logger.info(f"Coach {coach_id} assigned to athlete {athlete_id}")
+        return {"status": "success", "message": "Coach assigned successfully"}
+        
+    except Exception as e:
+        logger.error(f"Failed to assign coach: {e}")
+        raise HTTPException(status_code=500, detail="Failed to assign coach")
 @app.post("/api/feedback")
 async def submit_feedback(feedback_data: dict):
     """Submit user feedback"""
