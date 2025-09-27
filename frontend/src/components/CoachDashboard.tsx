@@ -536,207 +536,8 @@ const CoachDashboard: React.FC = () => {
         )}
       </div>
 
-      {/* Injury Alerts Section */}
-      <div className="injury-alerts-section">
-        <h2>🚨 Injury Alerts</h2>
-        {loadingAlerts ? (
-          <div className="loading-alerts">
-            <p>Loading injury alerts...</p>
-          </div>
-        ) : injuryAlerts && !injuryAlerts.error ? (
-          <>
-            <div className="alerts-header">
-              <div className="alerts-summary">
-                <span className={`alert-count high ${injuryAlerts.high_priority > 0 ? 'active' : ''}`}>
-                  {injuryAlerts.high_priority} High Priority
-                </span>
-                <span className={`alert-count medium ${injuryAlerts.medium_priority > 0 ? 'active' : ''}`}>
-                  {injuryAlerts.medium_priority} Medium Priority
-                </span>
-                <span className={`alert-count low ${injuryAlerts.low_priority > 0 ? 'active' : ''}`}>
-                  {injuryAlerts.low_priority} Low Priority
-                </span>
-              </div>
-            </div>
-            
-            {injuryAlerts.alerts && injuryAlerts.alerts.length > 0 ? (
-              <div className="alerts-list">
-                {injuryAlerts.alerts.map((alert: any) => (
-                  <div key={alert.id} className={`alert-card ${alert.severity}`}>
-                    <div className="alert-header">
-                      <div className="alert-info">
-                        <h3 className="athlete-name">{alert.athlete_name}</h3>
-                        <span className={`severity-badge ${alert.severity}`}>
-                          {alert.severity.toUpperCase()}
-                        </span>
-                      </div>
-                      <div className="alert-actions">
-                        {!alert.acknowledged && (
-                          <button 
-                            className="btn-acknowledge"
-                            onClick={() => handleAcknowledgeAlert(alert.id)}
-                          >
-                            Acknowledge
-                          </button>
-                        )}
-                        <button 
-                          className="btn-resolve"
-                          onClick={() => handleResolveAlert(alert.id)}
-                        >
-                          Resolve
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <div className="alert-details">
-                      <div className="risk-factors">
-                        <h4>Risk Factors:</h4>
-                        <ul>
-                          {alert.risk_factors.map((factor: string, index: number) => (
-                            <li key={index}>{factor.replace('_', ' ').toUpperCase()}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      
-                      <div className="recommendations">
-                        <h4>Recommendations:</h4>
-                        <ul>
-                          {alert.recommendations.slice(0, 3).map((rec: string, index: number) => (
-                            <li key={index}>{rec}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                    
-                    <div className="alert-footer">
-                      <span className="alert-time">
-                        {new Date(alert.created_at).toLocaleString()}
-                      </span>
-                      {alert.acknowledged && (
-                        <span className="acknowledged-badge">
-                          ✓ Acknowledged
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="no-alerts">
-                <p>🎉 No injury alerts at this time. All athletes are performing safely!</p>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="no-alerts">
-            <p>🎉 No injury alerts at this time. All athletes are performing safely!</p>
-          </div>
-        )}
-      </div>
 
-      {/* Long-term Plans Section */}
-      <div className="longterm-plans-section">
-        <div className="plans-header">
-          <h2>📋 Long-term Development Plans</h2>
-          <button 
-            className="btn-primary"
-            onClick={() => setShowCreatePlan(true)}
-          >
-            + Create New Plan
-          </button>
-        </div>
 
-        {loadingPlans ? (
-          <div className="loading-plans">
-            <p>Loading your long-term plans...</p>
-          </div>
-        ) : longTermPlans.length > 0 ? (
-          <div className="plans-content">
-            {/* Plan Analytics */}
-            {planAnalytics && (
-              <div className="plan-analytics">
-                <div className="analytics-grid">
-                  <div className="analytics-card">
-                    <div className="analytics-value">{planAnalytics.total_plans || 0}</div>
-                    <div className="analytics-label">Total Plans</div>
-                  </div>
-                  <div className="analytics-card">
-                    <div className="analytics-value">{planAnalytics.active_plans || 0}</div>
-                    <div className="analytics-label">Active Plans</div>
-                  </div>
-                  <div className="analytics-card">
-                    <div className="analytics-value">{planAnalytics.completed_plans || 0}</div>
-                    <div className="analytics-label">Completed</div>
-                  </div>
-                  <div className="analytics-card">
-                    <div className="analytics-value">{planAnalytics.average_progress || 0}%</div>
-                    <div className="analytics-label">Avg Progress</div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Plans List */}
-            <div className="plans-list">
-              {longTermPlans.map((plan) => (
-                <div key={plan.id} className={`plan-card ${plan.status}`}>
-                  <div className="plan-header">
-                    <div className="plan-title">{plan.title}</div>
-                    <div className="plan-actions">
-                      <button 
-                        className="btn-small"
-                        onClick={() => handleUpdatePlan(plan.id, { status: plan.status === 'active' ? 'paused' : 'active' })}
-                      >
-                        {plan.status === 'active' ? 'Pause' : 'Resume'}
-                      </button>
-                      <button 
-                        className="btn-small btn-danger"
-                        onClick={() => handleDeletePlan(plan.id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                  <div className="plan-description">{plan.description}</div>
-                  <div className="plan-details">
-                    <div className="plan-athlete">
-                      <strong>Athlete:</strong> {plan.athlete_name}
-                    </div>
-                    <div className="plan-phase">
-                      <strong>Phase:</strong> {plan.phase.replace('_', ' ').toUpperCase()}
-                    </div>
-                    <div className="plan-duration">
-                      <strong>Duration:</strong> {plan.duration_weeks} weeks
-                    </div>
-                  </div>
-                  <div className="plan-progress">
-                    <div className="progress-bar">
-                      <div 
-                        className="progress-fill" 
-                        style={{ width: `${plan.progress_tracking?.overall_progress || 0}%` }}
-                      ></div>
-                    </div>
-                    <div className="progress-text">
-                      {plan.progress_tracking?.overall_progress || 0}% Complete
-                    </div>
-                  </div>
-                  <div className="plan-meta">
-                    <span className={`priority-badge ${plan.priority}`}>{plan.priority}</span>
-                    <span className="plan-status">{plan.status}</span>
-                    {plan.start_date && (
-                      <span className="plan-date">Started: {new Date(plan.start_date).toLocaleDateString()}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="no-plans">
-            <p>No long-term plans created yet. Create your first development plan for an athlete!</p>
-          </div>
-        )}
-      </div>
 
       {/* Create Plan Modal */}
       {showCreatePlan && (
@@ -929,6 +730,166 @@ const CoachDashboard: React.FC = () => {
           </div>
           
           <div className="sessions-board-content">
+            {/* Injury Alerts for this Athlete */}
+            <div className="athlete-injury-alerts">
+              <h3>🚨 Injury Alerts</h3>
+              {loadingAlerts ? (
+                <div className="loading-alerts">
+                  <p>Loading injury alerts...</p>
+                </div>
+              ) : injuryAlerts && !injuryAlerts.error && injuryAlerts.alerts ? (
+                <>
+                  {injuryAlerts.alerts.filter((alert: any) => alert.athlete_id === selectedAthlete?.id).length > 0 ? (
+                    <div className="alerts-list">
+                      {injuryAlerts.alerts.filter((alert: any) => alert.athlete_id === selectedAthlete?.id).map((alert: any) => (
+                        <div key={alert.id} className={`alert-card ${alert.severity}`}>
+                          <div className="alert-header">
+                            <div className="alert-info">
+                              <span className={`severity-badge ${alert.severity}`}>
+                                {alert.severity.toUpperCase()}
+                              </span>
+                            </div>
+                            <div className="alert-actions">
+                              {!alert.acknowledged && (
+                                <button 
+                                  className="btn-acknowledge"
+                                  onClick={() => handleAcknowledgeAlert(alert.id)}
+                                >
+                                  Acknowledge
+                                </button>
+                              )}
+                              <button 
+                                className="btn-resolve"
+                                onClick={() => handleResolveAlert(alert.id)}
+                              >
+                                Resolve
+                              </button>
+                            </div>
+                          </div>
+                          
+                          <div className="alert-details">
+                            <div className="risk-factors">
+                              <h4>Risk Factors:</h4>
+                              <ul>
+                                {alert.risk_factors.map((factor: string, index: number) => (
+                                  <li key={index}>{factor.replace('_', ' ').toUpperCase()}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            
+                            <div className="recommendations">
+                              <h4>Recommendations:</h4>
+                              <ul>
+                                {alert.recommendations.slice(0, 3).map((rec: string, index: number) => (
+                                  <li key={index}>{rec}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                          
+                          <div className="alert-footer">
+                            <span className="alert-time">
+                              {new Date(alert.created_at).toLocaleString()}
+                            </span>
+                            {alert.acknowledged && (
+                              <span className="acknowledged-badge">
+                                ✓ Acknowledged
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="no-alerts">
+                      <p>🎉 No injury alerts for this athlete. They're performing safely!</p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="no-alerts">
+                  <p>🎉 No injury alerts for this athlete. They're performing safely!</p>
+                </div>
+              )}
+            </div>
+
+            {/* Long-term Goals for this Athlete */}
+            <div className="athlete-longterm-goals">
+              <div className="goals-header">
+                <h3>📋 Long-term Development Goals</h3>
+                <button 
+                  className="btn-primary"
+                  onClick={() => setShowCreatePlan(true)}
+                >
+                  + Create New Goal
+                </button>
+              </div>
+
+              {loadingPlans ? (
+                <div className="loading-plans">
+                  <p>Loading goals...</p>
+                </div>
+              ) : longTermPlans.filter(plan => plan.athlete_id === selectedAthlete?.id).length > 0 ? (
+                <div className="goals-list">
+                  {longTermPlans.filter(plan => plan.athlete_id === selectedAthlete?.id).map((plan) => (
+                    <div key={plan.id} className={`goal-card ${plan.status}`}>
+                      <div className="goal-header">
+                        <div className="goal-title">{plan.title}</div>
+                        <div className="goal-actions">
+                          <button 
+                            className="btn-small"
+                            onClick={() => handleUpdatePlan(plan.id, { status: plan.status === 'active' ? 'paused' : 'active' })}
+                          >
+                            {plan.status === 'active' ? 'Pause' : 'Resume'}
+                          </button>
+                          <button 
+                            className="btn-small btn-danger"
+                            onClick={() => handleDeletePlan(plan.id)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                      <div className="goal-description">{plan.description}</div>
+                      <div className="goal-details">
+                        <div className="goal-phase">
+                          <strong>Phase:</strong> {plan.phase.replace('_', ' ').toUpperCase()}
+                        </div>
+                        <div className="goal-duration">
+                          <strong>Duration:</strong> {plan.duration_weeks} weeks
+                        </div>
+                      </div>
+                      <div className="goal-progress">
+                        <div className="progress-bar">
+                          <div 
+                            className="progress-fill" 
+                            style={{ width: `${plan.progress_tracking?.overall_progress || 0}%` }}
+                          ></div>
+                        </div>
+                        <div className="progress-text">
+                          {plan.progress_tracking?.overall_progress || 0}% Complete
+                        </div>
+                      </div>
+                      <div className="goal-meta">
+                        <span className={`priority-badge ${plan.priority}`}>{plan.priority}</span>
+                        <span className="goal-status">{plan.status}</span>
+                        {plan.start_date && (
+                          <span className="goal-date">Started: {new Date(plan.start_date).toLocaleDateString()}</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="no-goals">
+                  <p>No long-term goals set for this athlete yet. Create their first development goal!</p>
+                </div>
+              )}
+            </div>
+
+            {/* Sessions Table */}
+            <div className="sessions-table-section">
+              <h3>📊 Training Sessions</h3>
           
           {sessions.length === 0 ? (
             <div className="no-sessions">
@@ -1035,6 +996,7 @@ const CoachDashboard: React.FC = () => {
               </table>
             </div>
           )}
+            </div>
           </div>
         </div>
       )}

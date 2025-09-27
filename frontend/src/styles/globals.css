@@ -3287,6 +3287,200 @@ button:disabled {
   transform: none;
 }
 
+/* Athlete-specific sections in sessions board */
+.athlete-injury-alerts,
+.athlete-longterm-goals,
+.sessions-table-section {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.athlete-injury-alerts h3,
+.athlete-longterm-goals h3,
+.sessions-table-section h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 1.4rem;
+  font-weight: 600;
+  border-bottom: 2px solid #f1f3f4;
+  padding-bottom: 10px;
+}
+
+.goals-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.goals-header h3 {
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+
+.goals-list {
+  display: grid;
+  gap: 15px;
+}
+
+.goal-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  border-left: 4px solid #667eea;
+  transition: all 0.3s ease;
+}
+
+.goal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.goal-card.active {
+  border-left-color: #10b981;
+}
+
+.goal-card.paused {
+  border-left-color: #f59e0b;
+}
+
+.goal-card.completed {
+  border-left-color: #6b7280;
+}
+
+.goal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.goal-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.goal-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.goal-description {
+  color: #666;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.goal-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.goal-details > div {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.goal-progress {
+  margin-bottom: 15px;
+}
+
+.progress-bar {
+  background: #e5e7eb;
+  border-radius: 10px;
+  height: 8px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.85rem;
+  color: #666;
+  text-align: right;
+}
+
+.goal-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.priority-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.priority-badge.high {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.priority-badge.medium {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.priority-badge.low {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.goal-status {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.goal-status.active {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.goal-status.paused {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.goal-status.completed {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.goal-date {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.no-goals {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.no-goals p {
+  margin: 0;
+  font-size: 1rem;
+}
+
 /* Responsive Design for Athlete Sessions Board */
 @media (max-width: 768px) {
   .sessions-board-header {
