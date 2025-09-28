@@ -1,30 +1,5 @@
 {
-  "athlete_1": [
-    {
-      "id": "goal_athlete_1_1_1847927",
-      "user_id": "athlete_1",
-      "title": "Endurance Challenge",
-      "description": "Complete high-rep sessions without fatigue",
-      "type": "endurance",
-      "target_value": 30,
-      "current_value": 27.266,
-      "unit": "minutes",
-      "priority": "medium",
-      "status": "active",
-      "start_date": "2025-09-07T13:46:25.922306",
-      "target_date": "2025-10-26",
-      "created_at": "2025-09-07T13:46:25.922372",
-      "updated_at": "2025-09-27T19:28:25.705217",
-      "progress_percentage": 90.89,
-      "milestones": [],
-      "tags": [
-        "strength",
-        "endurance"
-      ],
-      "is_public": false,
-      "motivation_notes": "Focus on endurance challenge for uday"
-    }
-  ],
+  "athlete_1": [],
   "athlete_2": [
     {
       "id": "goal_athlete_2_1_3247055",

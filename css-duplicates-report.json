@@ -1,0 +1,537 @@
+{
+  "timestamp": "2025-09-28T06:28:50.357Z",
+  "file": "frontend/src/styles/globals.css",
+  "summary": {
+    "totalDuplicates": 26,
+    "duplicateSelectors": 0,
+    "similarRules": 0,
+    "duplicateProperties": 26
+  },
+  "duplicates": {
+    "selectors": [],
+    "rules": [],
+    "properties": [
+      {
+        "signature": "align-items:center|display:flex|gap:12px",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".logo-section",
+            "startLine": 73,
+            "endLine": 77
+          },
+          {
+            "selector": ".header-right",
+            "startLine": 121,
+            "endLine": 125
+          }
+        ]
+      },
+      {
+        "signature": "color:var(--text-primary)|font-size:18px|font-weight:600|margin:0",
+        "count": 5,
+        "selectors": [
+          {
+            "selector": ".welcome-text h1",
+            "startLine": 103,
+            "endLine": 108
+          },
+          {
+            "selector": ".session-header h3",
+            "startLine": 620,
+            "endLine": 625
+          },
+          {
+            "selector": ".athlete-name",
+            "startLine": 1010,
+            "endLine": 1015
+          },
+          {
+            "selector": ".feedback-modal-title",
+            "startLine": 1414,
+            "endLine": 1419
+          },
+          {
+            "selector": ".chat-title",
+            "startLine": 1534,
+            "endLine": 1539
+          }
+        ]
+      },
+      {
+        "signature": "color:var(--brand-primary)",
+        "count": 4,
+        "selectors": [
+          {
+            "selector": ".username-highlight",
+            "startLine": 116,
+            "endLine": 118
+          },
+          {
+            "selector": ".progress-achievements-btn.active .icon",
+            "startLine": 471,
+            "endLine": 473
+          },
+          {
+            "selector": ".goals-progress-btn.active .icon",
+            "startLine": 510,
+            "endLine": 512
+          },
+          {
+            "selector": ".message-session-ref:hover",
+            "startLine": 1630,
+            "endLine": 1632
+          }
+        ]
+      },
+      {
+        "signature": "background:var(--bg-2)|border-color:var(--brand-primary)|box-shadow:0 0 0 4px var(--focus-ring)|outline:none",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".search-input:focus",
+            "startLine": 141,
+            "endLine": 146
+          },
+          {
+            "selector": ".coach-dropdown:focus",
+            "startLine": 192,
+            "endLine": 197
+          }
+        ]
+      },
+      {
+        "signature": "background:rgba(255,255,255,0.02)",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".search-input:hover",
+            "startLine": 148,
+            "endLine": 150
+          },
+          {
+            "selector": ".training-sessions-table tbody tr:hover",
+            "startLine": 1267,
+            "endLine": 1269
+          }
+        ]
+      },
+      {
+        "signature": "color:var(--muted)",
+        "count": 3,
+        "selectors": [
+          {
+            "selector": ".search-input::placeholder",
+            "startLine": 152,
+            "endLine": 154
+          },
+          {
+            "selector": ".feedback-form textarea::placeholder",
+            "startLine": 1460,
+            "endLine": 1462
+          },
+          {
+            "selector": ".chat-input::placeholder",
+            "startLine": 1731,
+            "endLine": 1733
+          }
+        ]
+      },
+      {
+        "signature": "color:var(--text-secondary)|font-size:16px",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".search-icon",
+            "startLine": 156,
+            "endLine": 159
+          },
+          {
+            "selector": ".logout-icon",
+            "startLine": 336,
+            "endLine": 339
+          }
+        ]
+      },
+      {
+        "signature": "background:rgba(30,144,255,0.06)|color:var(--brand-primary)",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".coach-dropdown option:checked",
+            "startLine": 204,
+            "endLine": 207
+          },
+          {
+            "selector": ".exercise-dropdown option:checked",
+            "startLine": 665,
+            "endLine": 668
+          }
+        ]
+      },
+      {
+        "signature": "background:rgba(30,144,255,0.06)",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".coach-dropdown option:hover",
+            "startLine": 209,
+            "endLine": 211
+          },
+          {
+            "selector": ".exercise-dropdown option:hover",
+            "startLine": 670,
+            "endLine": 672
+          }
+        ]
+      },
+      {
+        "signature": "border-color:var(--brand-primary)|box-shadow:0 0 0 2px var(--focus-ring)|outline:none",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".video-queue-btn:focus",
+            "startLine": 234,
+            "endLine": 238
+          },
+          {
+            "selector": ".messages-btn:focus",
+            "startLine": 280,
+            "endLine": 284
+          }
+        ]
+      },
+      {
+        "signature": "background:var(--brand-primary)|border-color:var(--brand-primary)|color:#0B0F1A",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".section-nav-btn.active",
+            "startLine": 387,
+            "endLine": 391
+          },
+          {
+            "selector": ".feedback-chip.active",
+            "startLine": 1374,
+            "endLine": 1378
+          }
+        ]
+      },
+      {
+        "signature": "background:transparent|border:1px solid var(--border)|color:var(--text-primary)",
+        "count": 3,
+        "selectors": [
+          {
+            "selector": ".performance-insights-btn",
+            "startLine": 399,
+            "endLine": 403
+          },
+          {
+            "selector": ".training-plan-btn",
+            "startLine": 420,
+            "endLine": 424
+          },
+          {
+            "selector": ".goals-progress-btn",
+            "startLine": 476,
+            "endLine": 480
+          }
+        ]
+      },
+      {
+        "signature": "color:var(--text-secondary)",
+        "count": 4,
+        "selectors": [
+          {
+            "selector": ".performance-insights-btn .icon",
+            "startLine": 405,
+            "endLine": 407
+          },
+          {
+            "selector": ".training-plan-btn .icon",
+            "startLine": 426,
+            "endLine": 428
+          },
+          {
+            "selector": ".progress-achievements-btn .icon",
+            "startLine": 448,
+            "endLine": 450
+          },
+          {
+            "selector": ".goals-progress-btn .icon",
+            "startLine": 482,
+            "endLine": 484
+          }
+        ]
+      },
+      {
+        "signature": "background:var(--bg-2)|border-color:var(--brand-primary)|color:var(--text-primary)",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".progress-achievements-btn.active",
+            "startLine": 465,
+            "endLine": 469
+          },
+          {
+            "selector": ".goals-progress-btn.active",
+            "startLine": 504,
+            "endLine": 508
+          }
+        ]
+      },
+      {
+        "signature": "background:var(--accent-cyan)|color:#0B0F1A",
+        "count": 5,
+        "selectors": [
+          {
+            "selector": ".goals-progress-btn .goal-chip.active",
+            "startLine": 494,
+            "endLine": 497
+          },
+          {
+            "selector": ".goal-chip.active",
+            "startLine": 591,
+            "endLine": 594
+          },
+          {
+            "selector": ".action-btn-secondary:hover",
+            "startLine": 1339,
+            "endLine": 1342
+          },
+          {
+            "selector": ".action-btn-secondary.filled",
+            "startLine": 1344,
+            "endLine": 1347
+          },
+          {
+            "selector": ".session-tag.feedback",
+            "startLine": 1658,
+            "endLine": 1661
+          }
+        ]
+      },
+      {
+        "signature": "background:var(--muted)|color:var(--text-secondary)",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".goals-progress-btn .goal-chip.inactive",
+            "startLine": 499,
+            "endLine": 502
+          },
+          {
+            "selector": ".goal-chip.inactive",
+            "startLine": 596,
+            "endLine": 599
+          }
+        ]
+      },
+      {
+        "signature": "border-color:var(--brand-primary)|box-shadow:0 0 0 4px var(--focus-ring)|outline:none",
+        "count": 3,
+        "selectors": [
+          {
+            "selector": ".exercise-dropdown:focus",
+            "startLine": 653,
+            "endLine": 657
+          },
+          {
+            "selector": ".feedback-form textarea:focus",
+            "startLine": 1454,
+            "endLine": 1458
+          },
+          {
+            "selector": ".chat-input:focus",
+            "startLine": 1725,
+            "endLine": 1729
+          }
+        ]
+      },
+      {
+        "signature": "background:rgba(255,255,255,0.02)|color:var(--text-primary)",
+        "count": 5,
+        "selectors": [
+          {
+            "selector": ".cancel-session-btn:hover",
+            "startLine": 732,
+            "endLine": 735
+          },
+          {
+            "selector": ".session-actions .btn-secondary:hover",
+            "startLine": 967,
+            "endLine": 970
+          },
+          {
+            "selector": ".feedback-modal-close:hover",
+            "startLine": 1432,
+            "endLine": 1435
+          },
+          {
+            "selector": ".feedback-modal-actions .btn-secondary:hover",
+            "startLine": 1501,
+            "endLine": 1504
+          },
+          {
+            "selector": ".chat-close-btn:hover",
+            "startLine": 1552,
+            "endLine": 1555
+          }
+        ]
+      },
+      {
+        "signature": "background:var(--brand-primary)|border-radius:8px|border:none|color:#0B0F1A|cursor:pointer|font-size:14px|font-weight:600|padding:10px 20px|transition:all 0.2s ease",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".upload-cta",
+            "startLine": 849,
+            "endLine": 859
+          },
+          {
+            "selector": ".feedback-modal-actions .btn-primary",
+            "startLine": 1473,
+            "endLine": 1483
+          }
+        ]
+      },
+      {
+        "signature": "background:var(--brand-primary-dark)|transform:translateY(-2px)",
+        "count": 3,
+        "selectors": [
+          {
+            "selector": ".upload-cta:hover",
+            "startLine": 861,
+            "endLine": 864
+          },
+          {
+            "selector": ".session-actions .btn-primary:hover",
+            "startLine": 950,
+            "endLine": 953
+          },
+          {
+            "selector": ".action-btn-primary:hover",
+            "startLine": 1322,
+            "endLine": 1325
+          }
+        ]
+      },
+      {
+        "signature": "background:var(--brand-primary)|color:#0B0F1A",
+        "count": 3,
+        "selectors": [
+          {
+            "selector": ".status-pill.success",
+            "startLine": 878,
+            "endLine": 881
+          },
+          {
+            "selector": ".form-score-circle.neutral",
+            "startLine": 1129,
+            "endLine": 1132
+          },
+          {
+            "selector": ".session-tag.active",
+            "startLine": 1653,
+            "endLine": 1656
+          }
+        ]
+      },
+      {
+        "signature": "background:var(--warning)|color:#0B0F1A",
+        "count": 4,
+        "selectors": [
+          {
+            "selector": ".status-pill.warning",
+            "startLine": 883,
+            "endLine": 886
+          },
+          {
+            "selector": ".form-score-circle.warning",
+            "startLine": 1119,
+            "endLine": 1122
+          },
+          {
+            "selector": ".table-badge.warning",
+            "startLine": 1286,
+            "endLine": 1289
+          },
+          {
+            "selector": ".session-tag.retest",
+            "startLine": 1663,
+            "endLine": 1666
+          }
+        ]
+      },
+      {
+        "signature": "background:var(--danger)|color:#FFFFFF",
+        "count": 3,
+        "selectors": [
+          {
+            "selector": ".status-pill.error",
+            "startLine": 888,
+            "endLine": 891
+          },
+          {
+            "selector": ".form-score-circle.danger",
+            "startLine": 1124,
+            "endLine": 1127
+          },
+          {
+            "selector": ".table-badge.danger",
+            "startLine": 1281,
+            "endLine": 1284
+          }
+        ]
+      },
+      {
+        "signature": "background:var(--info)|color:#0B0F1A",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".status-pill.info",
+            "startLine": 893,
+            "endLine": 896
+          },
+          {
+            "selector": ".table-badge.info",
+            "startLine": 1296,
+            "endLine": 1299
+          }
+        ]
+      },
+      {
+        "signature": "background:var(--brand-primary)|border-radius:8px|border:none|color:#0B0F1A|cursor:pointer|font-size:14px|font-weight:600|padding:12px 24px|transition:all 0.2s ease",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".session-actions .btn-primary",
+            "startLine": 938,
+            "endLine": 948
+          },
+          {
+            "selector": ".action-btn-primary",
+            "startLine": 1310,
+            "endLine": 1320
+          }
+        ]
+      },
+      {
+        "signature": "background:var(--success)|color:#0B0F1A",
+        "count": 2,
+        "selectors": [
+          {
+            "selector": ".form-score-circle.good",
+            "startLine": 1114,
+            "endLine": 1117
+          },
+          {
+            "selector": ".table-badge.success",
+            "startLine": 1291,
+            "endLine": 1294
+          }
+        ]
+      }
+    ]
+  }
+}

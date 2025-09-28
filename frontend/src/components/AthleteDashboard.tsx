@@ -893,14 +893,14 @@ const AthleteDashboard: React.FC = () => {
           <div className="logo-section">
             <img src="/logo.png" alt="AI Sports Platform" className="logo" />
             <div className="welcome-text">
-              <h1>Welcome back, {user?.username}!</h1>
+              <h1>Welcome back, <span className="username-highlight">{user?.username}</span>!</h1>
               <p>Track your performance and improve your form</p>
             </div>
           </div>
         </div>
         <div className="header-right">
           <div className="coach-select">
-            <label htmlFor="coach-dropdown">Current Coach:</label>
+            <span className="coach-label">Current Coach:</span>
             <select 
               id="coach-dropdown"
               value={selectedCoach}
@@ -914,21 +914,17 @@ const AthleteDashboard: React.FC = () => {
                 </option>
               ))}
             </select>
-            {selectedCoach !== 'none' && (
-              <div className="coach-info">
-                <span className="current-coach-label">
-                  Current: {coaches.find(c => c.id === selectedCoach)?.username || 'Unknown Coach'}
-                </span>
-              </div>
-            )}
-          </div>
+            </div>
           <button 
             onClick={() => setShowVideoQueue(!showVideoQueue)} 
             className="video-queue-btn"
             title={`Video Queue (${videoQueue.length})`}
           >
             <span className="queue-icon">📹</span>
-            Queue ({videoQueue.length})
+            Queue
+            {videoQueue.length > 0 && (
+              <span className="queue-badge">{videoQueue.length}</span>
+            )}
           </button>
           <button 
             onClick={() => setShowChat(!showChat)} 

@@ -124,7 +124,7 @@ const CoachDashboard: React.FC = () => {
           <div className="logo-section">
             <img src="/logo.png" alt="AI Sports Platform" className="logo" />
             <div className="welcome-text">
-              <h1>Welcome, {user?.username}!</h1>
+              <h1>Welcome, <span className="username-highlight">{user?.username}</span>!</h1>
               <p>Monitor athlete performance and provide feedback</p>
             </div>
           </div>
