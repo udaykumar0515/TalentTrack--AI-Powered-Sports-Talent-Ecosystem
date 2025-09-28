@@ -324,7 +324,7 @@ const AthleteDashboard: React.FC = () => {
   // Directly assign coach (for initial assignment)
   const assignCoachDirectly = async (coachId: string) => {
     try {
-      const result = await assignCoach(user?.id || '', coachId);
+      await assignCoach(user?.id || '', coachId);
       setSelectedCoach(coachId);
       if (user?.id) {
         localStorage.setItem(`selectedCoach_${user.id}`, coachId);

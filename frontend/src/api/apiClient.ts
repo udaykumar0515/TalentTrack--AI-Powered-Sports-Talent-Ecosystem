@@ -56,8 +56,7 @@ export async function analyzeVideoEnhanced(
   videoFile: File, 
   exercise: string, 
   athleteId: string, 
-  athleteName: string,
-  metadata?: any // Kept for compatibility but not used
+  athleteName: string
 ): Promise<any> {
   const formData = new FormData();
   formData.append('file', videoFile);
@@ -183,17 +182,6 @@ export async function getAthleteMessages(athleteId: string): Promise<CoachMessag
   return response.json();
 }
 
-export async function getCoachMessages(coachId: string): Promise<CoachMessage[]> {
-  const response = await fetch(`${API_BASE_URL}/coach-messages/coach/${encodeURIComponent(coachId)}`);
-
-  if (!response.ok) {
-    const text = await response.text().catch(() => '');
-    console.error('getCoachMessages error response:', text);
-    throw new Error('Failed to fetch coach messages');
-  }
-
-  return response.json();
-}
 
 export async function markMessageAsRead(messageId: string): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/coach-messages/${encodeURIComponent(messageId)}/read`, {
@@ -230,49 +218,8 @@ export async function uploadVideo(videoFile: File, sessionData: any): Promise<an
 }
 
 // Benchmarking API functions
-export const getLeaderboard = async (exercise: string, coachId?: string) => {
-  const url = coachId 
-    ? `${API_BASE_URL}/benchmarks/leaderboard/${exercise}?coach_id=${coachId}`
-    : `${API_BASE_URL}/benchmarks/leaderboard/${exercise}`;
-    
-  const response = await fetch(url);
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch leaderboard');
-  }
-  
-  return response.json();
-};
 
-export const getExerciseStandards = async (exercise: string) => {
-  const response = await fetch(`${API_BASE_URL}/benchmarks/standards/${exercise}`);
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch exercise standards');
-  }
-  
-  return response.json();
-};
 
-export const getAthletePredictiveAnalytics = async (athleteId: string) => {
-  const response = await fetch(`${API_BASE_URL}/predictive-analytics/athlete/${athleteId}`);
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch athlete predictive analytics');
-  }
-  
-  return response.json();
-};
-
-export const getCoachPredictiveAnalytics = async (coachId: string) => {
-  const response = await fetch(`${API_BASE_URL}/predictive-analytics/coach/${coachId}`);
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch coach predictive analytics');
-  }
-  
-  return response.json();
-};
 
 export const getAthleteTrainingPlan = async (athleteId: string) => {
   const response = await fetch(`${API_BASE_URL}/training-plans/athlete/${athleteId}`);
@@ -312,107 +259,7 @@ export const createCoachTrainingPlan = async (athleteId: string, planData: any) 
   return response.json();
 };
 
-export const updateAthleteTrainingPlan = async (athleteId: string, updates: any) => {
-  const response = await fetch(`${API_BASE_URL}/training-plans/athlete/${athleteId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(updates)
-  });
-  
-  if (!response.ok) {
-    throw new Error('Failed to update training plan');
-  }
-  
-  return response.json();
-};
 
-export const getCoachTrainingPlans = async (coachId: string) => {
-  const response = await fetch(`${API_BASE_URL}/training-plans/coach/${coachId}`);
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch coach training plans');
-  }
-  
-  return response.json();
-};
-
-export const getAthleteInjuryAnalysis = async (athleteId: string) => {
-  const response = await fetch(`${API_BASE_URL}/injury-alerts/athlete/${athleteId}`);
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch athlete injury analysis');
-  }
-  
-  return response.json();
-};
-
-export const getCoachInjuryAlerts = async (coachId: string) => {
-  const response = await fetch(`${API_BASE_URL}/injury-alerts/coach/${coachId}`);
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch coach injury alerts');
-  }
-  
-  return response.json();
-};
-
-export const analyzeAthleteInjuryRisk = async (athleteId: string) => {
-  const response = await fetch(`${API_BASE_URL}/injury-alerts/athlete/${athleteId}/analyze`, {
-    method: 'POST'
-  });
-  
-  if (!response.ok) {
-    throw new Error('Failed to analyze athlete injury risk');
-  }
-  
-  return response.json();
-};
-
-export const acknowledgeInjuryAlert = async (alertId: string, coachId: string) => {
-  const response = await fetch(`${API_BASE_URL}/injury-alerts/${alertId}/acknowledge`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ coach_id: coachId })
-  });
-  
-  if (!response.ok) {
-    throw new Error('Failed to acknowledge injury alert');
-  }
-  
-  return response.json();
-};
-
-export const resolveInjuryAlert = async (alertId: string, coachId: string) => {
-  const response = await fetch(`${API_BASE_URL}/injury-alerts/${alertId}/resolve`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ coach_id: coachId })
-  });
-  
-  if (!response.ok) {
-    throw new Error('Failed to resolve injury alert');
-  }
-  
-  return response.json();
-};
-
-export const runBulkInjuryAnalysis = async () => {
-  const response = await fetch(`${API_BASE_URL}/injury-alerts/bulk-analysis`, {
-    method: 'POST'
-  });
-  
-  if (!response.ok) {
-    throw new Error('Failed to run bulk injury analysis');
-  }
-  
-  return response.json();
-};
 
 // Gamification API functions
 export const getUserGamificationStats = async (userId: string): Promise<any> => {
@@ -441,31 +288,6 @@ export const getGamificationLeaderboard = async (category: string = 'total_point
   return response.json();
 };
 
-export const getAllAchievements = async (): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/gamification/achievements`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to get achievements');
-  }
-  return response.json();
-};
-
-export const getAllBadges = async (): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/gamification/badges`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to get badges');
-  }
-  return response.json();
-};
 
 // Goal Setting API functions
 export const createGoal = async (goalData: any): Promise<any> => {
@@ -549,127 +371,6 @@ export const getGoalRecommendations = async (userId: string): Promise<any> => {
   return response.json();
 };
 
-// Long-term Plans API functions
-export const createLongTermPlan = async (planData: any): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/longterm-plans`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(planData),
-  });
-  if (!response.ok) {
-    throw new Error('Failed to create long-term plan');
-  }
-  return response.json();
-};
-
-export const getCoachPlans = async (coachId: string, status?: string): Promise<any> => {
-  const url = status ? `${API_BASE_URL}/longterm-plans/coach/${coachId}?status=${status}` : `${API_BASE_URL}/longterm-plans/coach/${coachId}`;
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to get coach plans');
-  }
-  return response.json();
-};
-
-export const getAthletePlans = async (athleteId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/longterm-plans/athlete/${athleteId}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to get athlete plans');
-  }
-  return response.json();
-};
-
-export const updateLongTermPlan = async (coachId: string, planId: string, updates: any): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/longterm-plans/${coachId}/${planId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(updates),
-  });
-  if (!response.ok) {
-    throw new Error('Failed to update long-term plan');
-  }
-  return response.json();
-};
-
-export const deleteLongTermPlan = async (coachId: string, planId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/longterm-plans/${coachId}/${planId}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to delete long-term plan');
-  }
-  return response.json();
-};
-
-export const getPlanAnalytics = async (coachId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/longterm-plans/${coachId}/analytics`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to get plan analytics');
-  }
-  return response.json();
-};
-
-export const getPlanRecommendations = async (coachId: string, athleteId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/longterm-plans/${coachId}/recommendations/${athleteId}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to get plan recommendations');
-  }
-  return response.json();
-};
-
-export const createPlanTemplate = async (templateData: any): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/longterm-plans/templates`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(templateData),
-  });
-  if (!response.ok) {
-    throw new Error('Failed to create plan template');
-  }
-  return response.json();
-};
-
-export const getPlanTemplates = async (coachId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/longterm-plans/templates/${coachId}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to get plan templates');
-  }
-  return response.json();
-};
 
 // Offline Video API functions
 export const storeOfflineVideo = async (videoData: any): Promise<any> => {
@@ -740,18 +441,6 @@ export const getOfflineVideoStats = async (userId: string): Promise<any> => {
   return response.json();
 };
 
-export const getPendingAnalysisVideos = async (): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/offline-videos/pending`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to get pending analysis videos');
-  }
-  return response.json();
-};
 
 // Coach management functions
 export const getAthlete = async (athleteId: string): Promise<any> => {
