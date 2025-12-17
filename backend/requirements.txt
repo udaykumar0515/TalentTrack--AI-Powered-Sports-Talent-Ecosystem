@@ -22,3 +22,6 @@ pydantic
 
 # File handling
 Pillow
+
+# Security
+bcrypt

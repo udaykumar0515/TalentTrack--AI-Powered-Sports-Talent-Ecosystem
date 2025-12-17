@@ -22,6 +22,24 @@ from engines.gamification import GamificationEngine
 from engines.goal_setting import GoalSettingEngine
 from engines.longterm_plans import LongTermPlansEngine
 from services.offline_video_manager import OfflineVideoManager
+import bcrypt
+
+# Password hashing utilities
+def hash_password(password: str) -> str:
+    """Hash a password using bcrypt"""
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed.decode('utf-8')
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify a password against its hash"""
+    try:
+        return bcrypt.checkpw(
+            plain_password.encode('utf-8'),
+            hashed_password.encode('utf-8')
+        )
+    except Exception:
+        return False
 
 # Initialize gamification engine
 gamification_engine = GamificationEngine()
@@ -865,11 +883,11 @@ async def register(user_data: UserCreate):
         if any(user["email"] == user_data.email for user in users):
             raise HTTPException(status_code=400, detail="Email already registered")
         
-        # Create new user with plain text password
+        # Create new user with HASHED password
         new_user = {
             "id": str(uuid.uuid4()),
             "email": user_data.email,
-            "password": user_data.password,
+            "password": hash_password(user_data.password),  # Hash password!
             "username": user_data.username,
             "role": user_data.role,
             "created_at": datetime.now().isoformat()
@@ -902,8 +920,9 @@ async def login(login_data: UserLogin):
         if not user:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
-        # Verify password (direct comparison)
-        if login_data.password != user["password"]:
+        
+        # Verify password using bcrypt
+        if not verify_password(login_data.password, user["password"]):
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
         # Check role if specified
