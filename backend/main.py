@@ -70,6 +70,8 @@ class UserCreate(BaseModel):
     password: str
     username: str
     role: str
+    age: Optional[int] = None
+    gender: Optional[str] = None
 
 class CoachChangeRequest(BaseModel):
     athleteId: str
@@ -88,6 +90,8 @@ class User(BaseModel):
     username: str
     role: str
     created_at: str
+    age: Optional[int] = None
+    gender: Optional[str] = None
 
 
 class CoachMessage(BaseModel):
@@ -420,11 +424,31 @@ async def list_sessions(
                     session["thumbnailUrl"] = None
                 all_sessions.append(session)
 
+    # Filter by user ID
+    filtered_sessions = all_sessions
     if athleteId:
-        return [s for s in all_sessions if s.get("athleteId") == athleteId]
+        filtered_sessions = [s for s in filtered_sessions if s.get("athleteId") == athleteId]
     if coachId:
-        return [s for s in all_sessions if s.get("coachId") == coachId]
-    return all_sessions
+        filtered_sessions = [s for s in filtered_sessions if s.get("coachId") == coachId]
+        
+    # Sort by timestamp descending (newest first)
+    filtered_sessions.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+    
+    # Calculate total and apply pagination
+    total = len(filtered_sessions)
+    start = skip
+    end = skip + limit
+    paginated_sessions = filtered_sessions[start:end]
+
+    return {
+        "sessions": paginated_sessions,
+        "pagination": {
+            "total": total,
+            "skip": skip,
+            "limit": limit,
+            "has_more": end < total
+        }
+    }
 
 @app.post("/api/sessions")
 async def post_session(session: Dict[str, Any]):
@@ -956,7 +980,9 @@ async def register(user_data: UserCreate):
             "password": hash_password(user_data.password),  # Hash password!
             "username": validated_username,  # Use validated username
             "role": user_data.role,
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
+            "age": user_data.age,
+            "gender": user_data.gender
         }
         
         users.append(new_user)

@@ -279,4 +279,4 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
   );
 };
 
-export default VideoRecorder;
+export default React.memo(VideoRecorder);

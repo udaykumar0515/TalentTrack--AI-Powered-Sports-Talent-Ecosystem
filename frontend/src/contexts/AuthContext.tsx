@@ -12,7 +12,7 @@ export interface AuthContextType {
   user: User | null;
   login: (email: string, password: string, expectedRole?: 'athlete' | 'coach') => Promise<boolean>;
   googleLogin: (email: string, name: string, role: 'athlete' | 'coach') => Promise<boolean>;
-  register: (email: string, password: string, username: string, role: 'athlete' | 'coach') => Promise<boolean>;
+  register: (email: string, password: string, username: string, role: 'athlete' | 'coach', age?: number, gender?: string) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
   error: string | null;
@@ -117,7 +117,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   // 🔹 Register using backend
-  const register = async (email: string, password: string, username: string, role: 'athlete' | 'coach'): Promise<boolean> => {
+  const register = async (email: string, password: string, username: string, role: 'athlete' | 'coach', age?: number, gender?: string): Promise<boolean> => {
     setIsLoading(true);
     setError(null);
 
@@ -125,7 +125,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await fetch(`${API_BASE}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, username, role }),
+        body: JSON.stringify({ email, password, username, role, age, gender }),
       });
 
       if (response.ok) {

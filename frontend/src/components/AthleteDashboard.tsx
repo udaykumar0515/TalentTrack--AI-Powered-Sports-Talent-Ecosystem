@@ -77,27 +77,61 @@ const AthleteDashboard: React.FC = () => {
     setActiveSection(activeSection === sectionName ? null : sectionName);
   };
 
-  // Session flow functions
-  const handleStartSession = () => {
-    setShowSessionOptions(true);
+  // Helper functions to convert files to base64
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   };
 
-  const handleCancelSession = () => {
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const loadVideoQueue = async () => {
+    try {
+      if (!user?.id) return;
+      
+      const response = await fetch(`/api/offline-videos/${user.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setVideoQueue(data.videos || []);
+      }
+    } catch (error) {
+      console.error('Error loading video queue:', error);
+    }
+  };
+
+
+  // Session flow functions
+  const handleStartSession = React.useCallback(() => {
+    setShowSessionOptions(true);
+  }, []);
+
+  const handleCancelSession = React.useCallback(() => {
     setShowSessionOptions(false);
     setIsOfflineMode(false);
     // Clear video preview and reset components
     setVideoResetKey(prev => prev + 1);
     setCurrentSession(null);
     setIsAnalyzing(false);
-  };
+  }, []);
 
-  const handleOfflineToggle = () => {
-    setIsOfflineMode(!isOfflineMode);
+  const handleOfflineToggle = React.useCallback(() => {
+    setIsOfflineMode(prev => !prev);
     // Clear any existing video preview when switching modes
     setVideoResetKey(prev => prev + 1);
-  };
+  }, []);
 
-  const handleVideoQueued = async (videoData: any) => {
+  const handleVideoQueued = React.useCallback(async (videoData: any) => {
     try {
       if (!user?.id) return;
 
@@ -135,53 +169,21 @@ const AthleteDashboard: React.FC = () => {
       });
 
       if (response.ok) {
-        const storedVideo = await response.json();
-        // Reload the video queue from backend
-        await loadVideoQueue();
-        // Reset video components after successful upload
-        setVideoResetKey(prev => prev + 1);
-        setShowSessionOptions(false);
-        setIsOfflineMode(false);
+        if (user?.id) {
+          // Just uploaded to queue, no need to store full video object locally as it's in the queue
+          await loadVideoQueue();
+          // Reset video components after successful upload
+          setVideoResetKey(prev => prev + 1);
+          setShowSessionOptions(false);
+          setIsOfflineMode(false);
+        }
       } else {
         console.error('Failed to store offline video');
       }
     } catch (error) {
       console.error('Error storing offline video:', error);
     }
-  };
-
-  // Helper functions to convert files to base64
-  const blobToBase64 = (blob: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  };
-
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const loadVideoQueue = async () => {
-    try {
-      if (!user?.id) return;
-      
-      const response = await fetch(`/api/offline-videos/${user.id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setVideoQueue(data.videos || []);
-      }
-    } catch (error) {
-      console.error('Error loading video queue:', error);
-    }
-  };
+  }, [user?.id, loadVideoQueue]);
 
   const handleAnalyzeQueuedVideo = async (queuedVideo: any) => {
     try {
@@ -201,7 +203,7 @@ const AthleteDashboard: React.FC = () => {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json();
         // Reload video queue and sessions
         await loadVideoQueue();
         await loadSessions();
@@ -251,7 +253,7 @@ const AthleteDashboard: React.FC = () => {
       video.play()
         .then(() => {
           })
-        .catch(e => {
+        .catch(() => {
           // Try again after a short delay
           setTimeout(() => {
             video.play().catch((e) => console.error('Error:', e));
@@ -314,7 +316,7 @@ const AthleteDashboard: React.FC = () => {
   // Directly assign coach (for initial assignment)
   const assignCoachDirectly = async (coachId: string) => {
     try {
-      const result = await assignCoach(user?.id || '', coachId);
+      await assignCoach(user?.id || '', coachId);
       setSelectedCoach(coachId);
       if (user?.id) {
         localStorage.setItem(`selectedCoach_${user.id}`, coachId);

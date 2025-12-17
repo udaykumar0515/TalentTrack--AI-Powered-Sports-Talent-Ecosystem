@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { saveSession, getSessionById } from '../api/apiClient';
+import { getSessionById } from '../api/apiClient';
 
 interface SessionViewProps {
   session?: any;
@@ -11,7 +11,7 @@ interface SessionViewProps {
 const SessionView: React.FC<SessionViewProps> = ({ 
   session: propSession, 
   onBack, 
-  isAthlete = false 
+  // isAthlete prop available for future use
 }) => {
   const { sessionId } = useParams();
   const navigate = useNavigate();
@@ -35,39 +35,12 @@ const SessionView: React.FC<SessionViewProps> = ({
     }
   };
 
-  const handleSave = async () => {
-    try {
-      await saveSession(session);
-      alert('Session saved successfully!');
-    } catch (error) {
-      console.error('Failed to save session:', error);
-      alert('Session saved! (Demo mode)');
-    }
-  };
-
-  const handleDownloadPDF = () => {
-    // TODO: Implement PDF generation
-    alert('PDF download would be implemented here');
-  };
-
   const handleBack = () => {
     if (onBack) {
       onBack();
     } else {
       navigate(-1);
     }
-  };
-
-  const getCheatDetectionClass = (cheatDetection: any) => {
-    if (!cheatDetection) return 'green';
-    if (cheatDetection.cheatDetected) {
-      switch (cheatDetection.riskLevel?.toLowerCase()) {
-        case 'high': return 'red';
-        case 'medium': return 'yellow';
-        default: return 'yellow';
-      }
-    }
-    return 'green';
   };
 
   const getPerformanceLevelClass = (level: string) => {
@@ -185,4 +158,4 @@ const SessionView: React.FC<SessionViewProps> = ({
   );
 };
 
-export default SessionView;
+export default React.memo(SessionView);

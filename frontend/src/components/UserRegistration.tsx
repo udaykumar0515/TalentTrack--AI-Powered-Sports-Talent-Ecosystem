@@ -16,13 +16,15 @@ const UserRegistration: React.FC<UserRegistrationProps> = ({ role, onBack, onSuc
     email: '',
     password: '',
     confirmPassword: '',
-    username: ''
+    username: '',
+    age: '',
+    gender: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -57,6 +59,11 @@ const UserRegistration: React.FC<UserRegistrationProps> = ({ role, onBack, onSuc
       errors.username = 'Username can only contain letters, numbers, and underscores';
     }
 
+    // Age validation
+    if (formData.age && (isNaN(Number(formData.age)) || Number(formData.age) < 0 || Number(formData.age) > 120)) {
+       errors.age = 'Please enter a valid age';
+    }
+
     // Password validation
     if (!formData.password) {
       errors.password = 'Password is required';
@@ -82,7 +89,17 @@ const UserRegistration: React.FC<UserRegistrationProps> = ({ role, onBack, onSuc
       return;
     }
 
-    const success = await register(formData.email, formData.password, formData.username, role);
+    const ageNumber = formData.age ? parseInt(formData.age) : undefined;
+
+    const success = await register(
+      formData.email, 
+      formData.password, 
+      formData.username, 
+      role,
+      ageNumber,
+      formData.gender
+    );
+
     if (success) {
       // If registering as a coach, add to CoachContext
       if (role === 'coach') {
@@ -166,6 +183,44 @@ const UserRegistration: React.FC<UserRegistrationProps> = ({ role, onBack, onSuc
             {validationErrors.username && (
               <p className="mt-1 text-sm text-red-600">{validationErrors.username}</p>
             )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="transform transition-all duration-200 hover:scale-105">
+              <label htmlFor="age" className="block text-sm font-medium text-gray-700">Age (Optional)</label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                value={formData.age}
+                onChange={handleInputChange}
+                className={`mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-gray-50/50 p-2.5 transition-colors duration-200 hover:bg-gray-50 ${
+                  validationErrors.age ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                }`}
+                placeholder="25"
+                min="0"
+                max="120"
+              />
+              {validationErrors.age && (
+                <p className="mt-1 text-sm text-red-600">{validationErrors.age}</p>
+              )}
+            </div>
+            
+            <div className="transform transition-all duration-200 hover:scale-105">
+              <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender (Optional)</label>
+              <select
+                id="gender"
+                name="gender"
+                value={formData.gender}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-gray-50/50 p-2.5 transition-colors duration-200 hover:bg-gray-50"
+              >
+                <option value="">Select</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
           </div>
 
           <div className="transform transition-all duration-200 hover:scale-105">
