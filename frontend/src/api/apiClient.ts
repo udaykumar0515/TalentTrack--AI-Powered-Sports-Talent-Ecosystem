@@ -49,8 +49,6 @@ export interface Session {
   analysis_config?: any;
 }
 
-
-
 // Enhanced analysis with metadata
 export async function analyzeVideoEnhanced(
   videoFile: File, 
@@ -143,7 +141,6 @@ export async function getAthletes(): Promise<any[]> {
   return response.json();
 }
 
-
 // Get a specific session by ID
 export async function getSessionById(sessionId: string): Promise<Session> {
   const response = await fetch(`${API_BASE_URL}/sessions/${encodeURIComponent(sessionId)}`);
@@ -206,8 +203,6 @@ export async function markMessageAsRead(messageId: string): Promise<void> {
     throw new Error('Failed to mark message as read');
   }
 }
-
-
 
 // Upload video file to backend storage
 export async function uploadVideo(videoFile: File, sessionData: any): Promise<any> {

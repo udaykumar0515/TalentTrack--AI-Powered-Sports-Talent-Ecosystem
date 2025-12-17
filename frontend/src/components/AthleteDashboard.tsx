@@ -138,8 +138,6 @@ const AthleteDashboard: React.FC = () => {
         const storedVideo = await response.json();
         // Reload the video queue from backend
         await loadVideoQueue();
-        console.log('Video stored offline successfully:', storedVideo);
-        
         // Reset video components after successful upload
         setVideoResetKey(prev => prev + 1);
         setShowSessionOptions(false);
@@ -204,13 +202,10 @@ const AthleteDashboard: React.FC = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Video analysis result:', result);
-        
         // Reload video queue and sessions
         await loadVideoQueue();
         await loadSessions();
-        console.log('Queued video analyzed and moved to sessions');
-      } else {
+        } else {
         console.error('Failed to analyze video:', response.statusText);
       }
     } catch (error) {
@@ -221,8 +216,6 @@ const AthleteDashboard: React.FC = () => {
   // Load sessions and messages on component mount
   useEffect(() => {
     const loadData = async () => {
-      console.log('User object in useEffect:', user);
-      console.log('User ID:', user?.id);
       await loadSessions();
       await loadMessages();
       await loadTrainingPlan();
@@ -250,7 +243,6 @@ const AthleteDashboard: React.FC = () => {
   // Update video element when camera stream changes
   useEffect(() => {
     if (cameraStream && videoRef.current) {
-      console.log('Updating video element with camera stream');
       const video = videoRef.current;
       video.srcObject = cameraStream;
       
@@ -258,13 +250,11 @@ const AthleteDashboard: React.FC = () => {
       video.load();
       video.play()
         .then(() => {
-          console.log('Video started playing successfully');
-        })
+          })
         .catch(e => {
-          console.log('Video play error:', e);
           // Try again after a short delay
           setTimeout(() => {
-            video.play().catch(console.log);
+            video.play().catch((e) => console.error('Error:', e));
           }, 100);
         });
     }
@@ -404,9 +394,6 @@ const AthleteDashboard: React.FC = () => {
       // Load from backend first
       try {
         const backendSessions = await getSessions(user.id);
-        console.log('Loaded sessions from backend:', backendSessions);
-        console.log('First session predictive analytics:', backendSessions[0]?.predictiveAnalytics);
-        
         // Clean up any test video URLs - treat them as no video
         const cleanedSessions = backendSessions.map((session: any) => ({
           ...session,
@@ -427,8 +414,7 @@ const AthleteDashboard: React.FC = () => {
         localStorage.setItem(`sessions_${user.id}`, JSON.stringify(sortedSessions));
         return;
       } catch (backendError) {
-        console.warn('Failed to load sessions from backend, falling back to localStorage:', backendError);
-      }
+        }
       
       // Fallback to localStorage if backend fails
       const storedSessions = localStorage.getItem(`sessions_${user.id}`) || '[]';
@@ -469,9 +455,7 @@ const AthleteDashboard: React.FC = () => {
     
     setLoadingTrainingPlan(true);
     try {
-      console.log('Loading training plan for user:', user.id);
       const plan = await getAthleteTrainingPlan(user.id);
-      console.log('Training plan loaded:', plan);
       setTrainingPlan(plan);
     } catch (error) {
       console.error('Error loading training plan:', error);
@@ -484,14 +468,11 @@ const AthleteDashboard: React.FC = () => {
     if (!user?.id) return;
     
     try {
-      console.log('Loading coach plan for user:', user.id);
       const response = await fetch(`/api/training-plans/coach-plan/${user.id}`);
       if (response.ok) {
         const plan = await response.json();
-        console.log('Coach plan loaded:', plan);
         setCoachPlan(plan);
       } else {
-        console.log('No coach plan found');
         setCoachPlan(null);
       }
     } catch (error) {
@@ -505,9 +486,7 @@ const AthleteDashboard: React.FC = () => {
     
     setLoadingTrainingPlan(true);
     try {
-      console.log('Generating new training plan for user:', user.id);
       const plan = await generateAthleteTrainingPlan(user.id);
-      console.log('New training plan generated:', plan);
       setTrainingPlan(plan);
     } catch (error) {
       console.error('Error generating training plan:', error);
@@ -519,11 +498,9 @@ const AthleteDashboard: React.FC = () => {
   const loadGamificationStats = async () => {
     if (!user?.id) return;
     
-    console.log('Loading gamification stats for user:', user.id);
     setLoadingGamification(true);
     try {
       const stats = await getUserGamificationStats(user.id);
-      console.log('Gamification stats received:', stats);
       setGamificationStats(stats);
     } catch (error) {
       console.error('Error loading gamification stats:', error);
@@ -534,9 +511,7 @@ const AthleteDashboard: React.FC = () => {
 
   const loadLeaderboard = async () => {
     try {
-      console.log('Loading leaderboard...');
       const leaderboardData = await getGamificationLeaderboard('total_points', 10);
-      console.log('Leaderboard data received:', leaderboardData);
       setLeaderboard(leaderboardData.leaderboard || []);
     } catch (error) {
       console.error('Error loading leaderboard:', error);
@@ -680,10 +655,6 @@ const AthleteDashboard: React.FC = () => {
 
   // Offline functionality - handled by loadVideoQueue()
 
-
-
-
-
   const handleVideoAnalyzed = async (session: any) => {
     // existing logic: augment with athlete and coach
     const sessionWithCoach = {
@@ -702,8 +673,6 @@ const AthleteDashboard: React.FC = () => {
     // Save to backend first
     try {
       await saveSession(sessionWithCoach);
-      console.info('Session saved to backend with coach:', sessionWithCoach.coachName || 'No coach selected');
-      
       // Reload sessions from backend to get complete, up-to-date list
       await loadSessions();
       
@@ -764,8 +733,7 @@ const AthleteDashboard: React.FC = () => {
         console.error('Could not update localStorage', e);
       }
 
-      console.log('Session deleted successfully');
-    } catch (error) {
+      } catch (error) {
       console.error('Error deleting session:', error);
       alert('Failed to delete session. Please try again.');
     }
@@ -777,7 +745,6 @@ const AthleteDashboard: React.FC = () => {
 
   const handleOpenCamera = async () => {
     try {
-      console.log('Requesting camera access...');
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { 
           width: { ideal: 1280 },
@@ -787,7 +754,6 @@ const AthleteDashboard: React.FC = () => {
         audio: false
       });
       
-      console.log('Camera access granted, setting up stream...');
       setCameraStream(stream);
       setCameraActive(true);
       setCurrentVideoUrl(null);
@@ -812,7 +778,6 @@ const AthleteDashboard: React.FC = () => {
 
   const handleStartRecording = () => {
     // This will be handled by VideoRecorder component
-    console.log('Starting actual recording...');
     setCurrentVideoUrl(null); // Clear any existing video preview
   };
 

@@ -63,7 +63,6 @@ const AthleteDetailDashboard: React.FC<AthleteDetailDashboardProps> = ({
     setShowDetailedAnalysis(true);
   };
 
-
   const handleCreateCoachPlan = () => {
     setShowCoachPlanModal(true);
   };
@@ -454,8 +453,7 @@ const AthleteDetailDashboard: React.FC<AthleteDetailDashboardProps> = ({
                               className="btn-primary btn-sm"
                               onClick={() => {
                                 // Handle video viewing
-                                console.log('View video for session:', session.sessionId);
-                              }}
+                                }}
                             >
                               Video
                             </button>

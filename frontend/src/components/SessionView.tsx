@@ -89,7 +89,6 @@ const SessionView: React.FC<SessionViewProps> = ({
     );
   }
 
-
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">

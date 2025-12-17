@@ -70,8 +70,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
             onVideoReady(url);
           }
         } catch (e) {
-          console.warn('Could not create preview URL:', e);
-        }
+          }
       };
 
       mediaRecorder.start();

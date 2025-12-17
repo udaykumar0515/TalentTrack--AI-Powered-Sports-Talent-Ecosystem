@@ -20,7 +20,6 @@ const CoachDashboard: React.FC = () => {
     // reload when user changes (login/logout)
   }, [user?.id]);
 
-
   const loadDashboardData = async () => {
     try {
       if (!user?.id) {
@@ -94,9 +93,6 @@ const CoachDashboard: React.FC = () => {
     }
   };
 
-
-
-
   const handleAthleteClick = (athlete: any) => {
     setSelectedAthlete({ id: athlete.id, name: athlete.name });
     setShowAthleteSessions(true);
@@ -114,8 +110,6 @@ const CoachDashboard: React.FC = () => {
   const getRiskClass = (risk: string) => {
     return (risk || '').toLowerCase();
   };
-
-
 
   return (
     <div className={`dashboard-container ${showChat ? 'chat-open' : ''}`}>
@@ -146,7 +140,6 @@ const CoachDashboard: React.FC = () => {
           </button>
         </div>
       </header>
-
 
       {selectedAthlete && (
         <ChatSidebar
@@ -231,10 +224,6 @@ const CoachDashboard: React.FC = () => {
           </div>
         </div>
       )}
-
-
-
-
 
       {!showAthleteSessions && (
         <section className="athletes-section">
@@ -338,11 +327,9 @@ const CoachDashboard: React.FC = () => {
           selectedAthlete={selectedAthlete}
           onBack={handleBackToAthletes}
           onMessageAthlete={() => {
-            console.log('Message button clicked, setting showChat to true');
             setShowChat(true);
           }}
           onMessageAthleteWithSession={(sessionId: string) => {
-            console.log('Feedback button clicked for session:', sessionId);
             setTaggedSessionId(sessionId);
             setShowChat(true);
           }}
