@@ -331,17 +331,6 @@ def update_user_goals_progress(user_id: str, session_data: Dict[str, Any]) -> No
         logger.error(f"Error updating goals progress for user {user_id}: {e}")
 
 
-def validate_exercise_name(exercise: str) -> str:
-    """Validate and normalize exercise name"""
-    exercise = exercise.lower().strip()
-    if exercise not in EXERCISE_MAPPING:
-        valid_exercises = list(set(EXERCISE_MAPPING.keys()))
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Invalid exercise '{exercise}'. Valid exercises: {valid_exercises}"
-        )
-    return EXERCISE_MAPPING[exercise]
-
 # Health check endpoint
 @app.get("/api/health")
 async def health_check():
@@ -388,9 +377,15 @@ async def get_athlete(athlete_id: str):
 
 
 @app.get("/api/sessions")
-async def list_sessions(athleteId: Optional[str] = None, coachId: Optional[str] = None):
+async def list_sessions(
+    athleteId: Optional[str] = None,
+    coachId: Optional[str] = None,
+    skip: int = 0,
+    limit: int = 50
+):
     """
     Return list of sessions with video URLs.
+    Supports pagination via skip/limit parameters.
     Optional query params:
       - athleteId: filter by athlete
       - coachId: filter by coach
@@ -706,7 +701,7 @@ async def submit_feedback(feedback_data: dict):
         raise HTTPException(status_code=500, detail="Failed to submit feedback")
 
 @app.get("/api/benchmarks/leaderboard/{exercise}")
-async def get_leaderboard(exercise: str, coach_id: Optional[str] = None):
+async def get_benchmark_leaderboard(exercise: str, coach_id: Optional[str] = None):
     """Get leaderboard for specific exercise"""
     try:
         leaderboard = benchmarking_engine.generate_leaderboard(exercise, coach_id)
@@ -777,7 +772,7 @@ async def update_athlete_training_plan(athlete_id: str, updates: dict):
 
 @app.get("/api/training-plans/coach/{coach_id}")
 async def get_coach_training_plans(coach_id: str):
-    """Get all training plans for coach's athletes"""
+    """Get all training plans for coaches athletes"""
     try:
         plans = training_plan_generator.get_coach_training_plans(coach_id)
         return plans
@@ -817,7 +812,7 @@ async def get_athlete_injury_analysis(athlete_id: str):
 
 @app.get("/api/injury-alerts/coach/{coach_id}")
 async def get_coach_injury_alerts(coach_id: str):
-    """Get all injury alerts for coach's athletes"""
+    """Get all injury alerts for coaches athletes"""
     try:
         alerts = injury_alert_system.get_coach_alerts(coach_id)
         return alerts
@@ -1493,7 +1488,7 @@ async def get_video(session_id: str):
 # Gamification endpoints
 @app.get("/api/gamification/user/{user_id}")
 async def get_user_gamification_stats(user_id: str):
-    """Get user's gamification statistics"""
+    """Get users gamification statistics"""
     try:
         stats = gamification_engine.get_user_stats(user_id)
         return stats
