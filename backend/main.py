@@ -139,6 +139,28 @@ EXERCISE_MAPPING = {
     "jumping_jacks": "jumping_jacks"
 }
 
+# File upload configuration
+MAX_VIDEO_SIZE = int(os.getenv("MAX_VIDEO_SIZE_MB", "100")) * 1024 * 1024  # Default 100MB
+
+# Input validation utilities
+import re
+
+def sanitize_filename(filename: str) -> str:
+    """Remove dangerous characters from filename"""
+    # Remove path separators and dangerous chars
+    safe = re.sub(r'[<>:"/\\|?*\x00-\x1f]', '', filename)
+    # Remove leading/trailing dots and spaces
+    safe = safe.strip('. ')
+    # Limit length
+    return safe[:100]
+
+def validate_exercise_name(exercise: str) -> str:
+    """Validate and normalize exercise name"""
+    clean = exercise.lower().strip()
+    if clean not in EXERCISE_MAPPING:
+        raise HTTPException(400, f"Invalid exercise. Must be one of: {list(EXERCISE_MAPPING.keys())}")
+    return EXERCISE_MAPPING[clean]
+
 def init_data_directories():
     """Ensure all required data directories exist"""
     directories = ["data", "data/sessions", "data/athletes", "data/gamification", "data/goals", "data/injury_alerts", "data/videos", "data/system", "videos", "videos/athletes", "videos/coaches"]
@@ -1341,14 +1363,28 @@ async def upload_video(
 ):
     """Upload video file with session metadata"""
     try:
+        # Check file size FIRST
+        file.file.seek(0, 2)  # Seek to end
+        file_size = file.file.tell()
+        file.file.seek(0)  # Seek back to start
+        
+        if file_size > MAX_VIDEO_SIZE:
+            raise HTTPException(
+                status_code=413,
+                detail=f"File too large. Maximum size: {MAX_VIDEO_SIZE / (1024*1024):.0f}MB"
+            )
+        
         # Parse session data
         session_info = json.loads(session_data)
         session_id = session_info.get("sessionId", str(uuid.uuid4())[:8])
         athlete_id = session_info.get("athleteId")
         
-        # Create video filename with timestamp
+        # Validate and sanitize exercise name
+        exercise = validate_exercise_name(session_info['exercise'])
+        
+        # Create video filename with timestamp (sanitized)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        video_filename = f"{session_id}_{session_info['exercise']}_{timestamp}.mp4"
+        video_filename = sanitize_filename(f"{session_id}_{exercise}_{timestamp}.mp4")
         
         # Store in athlete-specific directory
         athlete_video_dir = os.path.join("videos", "athletes", athlete_id)
