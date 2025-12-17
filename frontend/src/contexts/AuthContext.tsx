@@ -150,7 +150,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
-    console.log('User logged out');
   };
 
   // 🔹 Fetch all users (for admin/debugging)
