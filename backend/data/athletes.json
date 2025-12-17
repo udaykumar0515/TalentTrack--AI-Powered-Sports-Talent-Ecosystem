@@ -7,5 +7,13 @@
     "role": "athlete",
     "created_at": "2025-12-17T12:29:43.120322",
     "google_id": "google_1765954783105"
+  },
+  {
+    "id": "0990e036-4af0-4a83-8447-e732263e7d35",
+    "email": "udaykumarhaibathi@gmail.com",
+    "password": "$2b$12$1wm4wllCduv0yYR2Hi1aVedLWpjwyUKwGvXWu4ffIOb/x9ApfQLUO",
+    "username": "Udaykumar_H",
+    "role": "athlete",
+    "created_at": "2025-12-17T13:52:17.536330"
   }
 ]
