@@ -23,6 +23,10 @@ from engines.goal_setting import GoalSettingEngine
 from engines.longterm_plans import LongTermPlansEngine
 from services.offline_video_manager import OfflineVideoManager
 import bcrypt
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Password hashing utilities
 def hash_password(password: str) -> str:
@@ -113,10 +117,13 @@ class VideoMetadata(BaseModel):
 
 app = FastAPI(title="Exercise Analysis API", version="1.0.0")
 
+# Get allowed origins from environment
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173", "http://127.0.0.1:3000"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

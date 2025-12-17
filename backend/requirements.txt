@@ -25,3 +25,6 @@ Pillow
 
 # Security
 bcrypt
+
+# Environment variables
+python-dotenv
