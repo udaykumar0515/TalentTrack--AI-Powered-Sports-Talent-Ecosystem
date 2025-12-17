@@ -172,6 +172,28 @@ def validate_email(email: str) -> str:
         raise HTTPException(400, "Email too long")
     return email
 
+def validate_username(username: str) -> str:
+    """Validate username"""
+    username = username.strip()
+    if len(username) < 2:
+        raise HTTPException(400, "Username must be at least 2 characters")
+    if len(username) > 50:
+        raise HTTPException(400, "Username too long (max 50 characters)")
+    # Allow alphanumeric, spaces, dots, underscores, hyphens
+    if not re.match(r'^[a-zA-Z0-9 ._-]+$', username):
+        raise HTTPException(400, "Username contains invalid characters")
+    return username
+
+def validate_password(password: str) -> None:
+    """Validate password strength"""
+    if len(password) < 6:
+        raise HTTPException(400, "Password must be at least 6 characters")
+    if len(password) > 128:
+        raise HTTPException(400, "Password too long (max 128 characters)")
+    # At least one number or special character for basic security
+    if not re.search(r'[0-9!@#$%^&*(),.?":{}|<>]', password):
+        raise HTTPException(400, "Password must contain at least one number or special character")
+
 def init_data_directories():
     """Ensure all required data directories exist"""
     directories = ["data", "data/sessions", "data/athletes", "data/gamification", "data/goals", "data/injury_alerts", "data/videos", "data/system", "videos", "videos/athletes", "videos/coaches"]
@@ -922,6 +944,12 @@ async def register(user_data: UserCreate):
         # Validate email format
         validated_email = validate_email(user_data.email)
         
+        # Validate username
+        validated_username = validate_username(user_data.username)
+        
+        # Validate password strength
+        validate_password(user_data.password)
+        
         # Check if user already exists
         if any(user["email"] == validated_email for user in users):
             raise HTTPException(status_code=400, detail="Email already registered")
@@ -931,7 +959,7 @@ async def register(user_data: UserCreate):
             "id": str(uuid.uuid4()),
             "email": validated_email,  # Use validated email
             "password": hash_password(user_data.password),  # Hash password!
-            "username": user_data.username,
+            "username": validated_username,  # Use validated username
             "role": user_data.role,
             "created_at": datetime.now().isoformat()
         }
