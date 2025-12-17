@@ -161,6 +161,17 @@ def validate_exercise_name(exercise: str) -> str:
         raise HTTPException(400, f"Invalid exercise. Must be one of: {list(EXERCISE_MAPPING.keys())}")
     return EXERCISE_MAPPING[clean]
 
+def validate_email(email: str) -> str:
+    """Basic email validation"""
+    email = email.strip().lower()
+    # Simple regex for email validation
+    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if not re.match(email_pattern, email):
+        raise HTTPException(400, "Invalid email format")
+    if len(email) > 254:  # RFC 5321
+        raise HTTPException(400, "Email too long")
+    return email
+
 def init_data_directories():
     """Ensure all required data directories exist"""
     directories = ["data", "data/sessions", "data/athletes", "data/gamification", "data/goals", "data/injury_alerts", "data/videos", "data/system", "videos", "videos/athletes", "videos/coaches"]
@@ -904,18 +915,21 @@ async def register(user_data: UserCreate):
         if user_data.role not in ["coach", "athlete"]:
             raise HTTPException(status_code=400, detail="Role must be 'coach' or 'athlete'")
         
-        # Determine which file to use based on role
-        filename = "coaches.json" if user_data.role == "coach" else "athletes.json"
+        # Determine which file to use based on role (with correct path!)
+        filename = "athletes/coaches.json" if user_data.role == "coach" else "athletes/athletes.json"
         users = read_json_file(filename)
+       
+        # Validate email format
+        validated_email = validate_email(user_data.email)
         
         # Check if user already exists
-        if any(user["email"] == user_data.email for user in users):
+        if any(user["email"] == validated_email for user in users):
             raise HTTPException(status_code=400, detail="Email already registered")
         
         # Create new user with HASHED password
         new_user = {
             "id": str(uuid.uuid4()),
-            "email": user_data.email,
+            "email": validated_email,  # Use validated email
             "password": hash_password(user_data.password),  # Hash password!
             "username": user_data.username,
             "role": user_data.role,
@@ -987,8 +1001,8 @@ async def google_login(google_data: GoogleLoginRequest):
         user = next((u for u in all_users if u["email"] == google_data.email), None)
         
         if not user:
-            # Create new user
-            filename = "coaches.json" if google_data.role == "coach" else "athletes.json"
+            # Create new user with correct path
+            filename = "athletes/coaches.json" if google_data.role == "coach" else "athletes/athletes.json"
             users = read_json_file(filename)
             
             new_user = {
