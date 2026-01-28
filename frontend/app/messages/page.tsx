@@ -1,23 +1,27 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { AppLayout } from '@/components/app-layout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/lib/auth-context';
 import { api } from '@/lib/api';
 import type { CoachMessage, Athlete } from '@/lib/types';
 import { 
-  MessageSquare, 
   Send, 
   Loader2, 
-  RefreshCw,
-  User,
-  Clock
+  Search,
+  MessageSquare,
+  MoreVertical,
+  Phone,
+  Video
 } from 'lucide-react';
+import { format } from 'date-fns';
 
 export default function MessagesPage() {
   const router = useRouter();
@@ -25,10 +29,10 @@ export default function MessagesPage() {
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [athletes, setAthletes] = useState<Athlete[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [selectedAthleteId, setSelectedAthleteId] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState('');
-  const [selectedAthleteId, setSelectedAthleteId] = useState('');
   const [sending, setSending] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -36,18 +40,19 @@ export default function MessagesPage() {
     }
   }, [user, authLoading, router]);
 
+  // Load initial data
   useEffect(() => {
     const fetchData = async () => {
       if (!user) return;
 
       setIsLoading(true);
-      setError(null);
-
       try {
         if (user.role === 'athlete') {
+          // Athletes see messages directly
           const data = await api.getAthleteMessages(user.id);
-          setMessages(Array.isArray(data) ? data : []);
+          setMessages(Array.isArray(data) ? data.reverse() : []); // Oldest first for chat
         } else {
+          // Coaches see list of athletes and their messages
           const [messagesData, athletesData] = await Promise.all([
             api.getCoachMessages(user.id),
             api.getAthletes(),
@@ -57,64 +62,59 @@ export default function MessagesPage() {
         }
       } catch (err) {
         console.error('Error fetching messages:', err);
-        setError('Failed to load messages.');
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (user) {
-      fetchData();
-    }
+    fetchData();
+    
+    // Auto-refresh messages every 10 seconds
+    const interval = setInterval(fetchData, 10000);
+    return () => clearInterval(interval);
   }, [user]);
 
-  const handleRefresh = async () => {
-    if (!user) return;
-    setIsLoading(true);
-    try {
-      if (user.role === 'athlete') {
-        const data = await api.getAthleteMessages(user.id);
-        setMessages(Array.isArray(data) ? data : []);
-      } else {
-        const data = await api.getCoachMessages(user.id);
-        setMessages(Array.isArray(data) ? data : []);
-      }
-    } catch (err) {
-      console.error('Error refreshing:', err);
-    } finally {
-      setIsLoading(false);
+  // Scroll to bottom on new messages
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  };
+  }, [messages, selectedAthleteId]);
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!user || !newMessage.trim()) return;
     
-    // Generate unique message ID
+    // For coach: must have athlete selected
+    if (user.role === 'coach' && !selectedAthleteId) return;
+
+    setSending(true);
+    
+    // Generate unique ID
     const messageId = `msg_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    const timestamp = new Date().toISOString();
     
     let messageData: Partial<CoachMessage>;
-    
+
     if (user.role === 'coach') {
-      // Coach sending to athlete
-      if (!selectedAthleteId) return;
       const selectedAthlete = athletes.find(a => a.id === selectedAthleteId);
       messageData = {
         id: messageId,
         coachId: user.id,
         coachName: user.name || user.username || 'Coach',
-        athleteId: selectedAthleteId,
+        athleteId: selectedAthleteId!,
         athleteName: selectedAthlete?.name || selectedAthlete?.username || 'Athlete',
-        type: 'feedback',
+        type: 'text',
         message: newMessage,
-        sessionId: '',
-        timestamp: new Date().toISOString(),
+        timestamp,
         read: false,
+        senderId: user.id,
+        sessionId: '',
       };
     } else {
-      // Athlete sending to their coach
       const athlete = user as import('@/lib/types').Athlete;
       if (!athlete.coachId) {
-        setError('No coach assigned. Please select a coach first.');
+        // Should not happen if layout handles this, but safety check
         return;
       }
       messageData = {
@@ -123,155 +123,210 @@ export default function MessagesPage() {
         coachName: athlete.coachName || 'Coach',
         athleteId: user.id,
         athleteName: user.name || user.username || 'Athlete',
-        type: 'feedback',
+        type: 'text',
         message: newMessage,
-        sessionId: '',
-        timestamp: new Date().toISOString(),
+        timestamp,
         read: false,
+        senderId: user.id,
+        sessionId: '',
       };
     }
 
-    setSending(true);
     try {
-      const message = await api.sendCoachMessage(messageData);
-      setMessages([message, ...messages]);
+      // Optimistic update
+      const optimisticMsg = messageData as CoachMessage;
+      setMessages(prev => [...prev, optimisticMsg]);
       setNewMessage('');
-      setError(null);
+      
+      await api.sendCoachMessage(messageData);
     } catch (err) {
       console.error('Error sending message:', err);
-      setError('Failed to send message. Please try again.');
+      // Revert if failed (could implement retry logic here)
     } finally {
       setSending(false);
     }
   };
 
-  const handleMarkAsRead = async (messageId: string) => {
-    try {
-      await api.markMessageAsRead(messageId);
-      setMessages(messages.map(m => m.id === messageId ? { ...m, read: true } : m));
-    } catch (err) {
-      console.error('Error marking as read:', err);
-    }
-  };
-
   if (authLoading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <span className="text-lg text-foreground">Loading...</span>
-        </div>
+      <div className="h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
+  // Filter messages for current view
+  const activeMessages = user.role === 'athlete' 
+    ? messages 
+    : messages
+        .filter(m => m.athleteId === selectedAthleteId)
+        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+  // Get conversation partner info
+  const partnerName = user.role === 'athlete' 
+    ? ((user as any).coachName || 'Coach')
+    : (athletes.find(a => a.id === selectedAthleteId)?.name || 'Athlete');
+
   return (
     <AppLayout user={user}>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Messages</h1>
-            <p className="text-muted-foreground mt-1">
-              {user.role === 'athlete' ? 'Messages from your coach' : 'Communicate with your athletes'}
-            </p>
-          </div>
-          <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isLoading}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-        </div>
-
-        {/* Error State */}
-        {error && (
-          <Card className="p-4 border-destructive/50 bg-destructive/10">
-            <p className="text-destructive">{error}</p>
-          </Card>
-        )}
-
-        {/* Send Message (Coach only) */}
+      <div className="h-[calc(100vh-8rem)] flex rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
+        
+        {/* Sidebar (Coach Only) */}
         {user.role === 'coach' && (
-          <Card className="p-4">
-            <div className="flex flex-col sm:flex-row gap-3">
-              <select
-                className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
-                value={selectedAthleteId}
-                onChange={(e) => setSelectedAthleteId(e.target.value)}
-              >
-                <option value="">Select Athlete</option>
-                {athletes.map(athlete => (
-                  <option key={athlete.id} value={athlete.id}>
-                    {athlete.name || athlete.username || athlete.email}
-                  </option>
-                ))}
-              </select>
-              <Input
-                placeholder="Type your message..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                className="flex-1"
-                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-              />
-              <Button onClick={handleSendMessage} disabled={sending || !newMessage.trim() || !selectedAthleteId}>
-                {sending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-              </Button>
+          <div className="w-80 border-r border-border flex flex-col bg-muted/5">
+            <div className="p-4 border-b border-border">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input placeholder="Search athletes..." className="pl-9 bg-background" />
+              </div>
             </div>
-          </Card>
+            
+            <ScrollArea className="flex-1">
+              <div className="flex flex-col gap-1 p-2">
+                {athletes.map(athlete => {
+                  const lastMsg = messages
+                    .filter(m => m.athleteId === athlete.id)
+                    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
+                  
+                  return (
+                    <button
+                      key={athlete.id}
+                      onClick={() => setSelectedAthleteId(athlete.id)}
+                      className={`flex items-start gap-3 p-3 text-left rounded-lg transition-colors ${
+                        selectedAthleteId === athlete.id 
+                          ? 'bg-primary/10 hover:bg-primary/15' 
+                          : 'hover:bg-muted'
+                      }`}
+                    >
+                      <Avatar>
+                        <AvatarImage src={athlete.profileImage} />
+                        <AvatarFallback>{(athlete.name || athlete.username || 'A').charAt(0).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 overflow-hidden">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-medium truncate">{athlete.name || athlete.username}</span>
+                          {lastMsg && (
+                            <span className="text-xs text-muted-foreground">
+                              {format(new Date(lastMsg.timestamp), 'h:mm a')}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {lastMsg ? lastMsg.message : 'No messages yet'}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </ScrollArea>
+          </div>
         )}
 
-        {/* Messages List */}
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="ml-2 text-muted-foreground">Loading messages...</span>
-          </div>
-        ) : messages.length > 0 ? (
-          <div className="space-y-4">
-            {messages.map((msg, index) => (
-              <Card 
-                key={`${msg.id || 'msg'}-${index}`} 
-                className={`p-4 ${!msg.read && user.role === 'athlete' ? 'border-primary/50 bg-primary/5' : ''}`}
-                onClick={() => !msg.read && user.role === 'athlete' && handleMarkAsRead(msg.id)}
-              >
-                <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                    <User className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-foreground">
-                        {user.role === 'athlete' ? msg.coachName : msg.athleteName}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        {!msg.read && <Badge variant="secondary">New</Badge>}
-                        <Badge variant="outline">{msg.type}</Badge>
-                      </div>
-                    </div>
-                    <p className="text-muted-foreground">{msg.message}</p>
-                    <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
-                      <Clock className="h-3 w-3" />
-                      {new Date(msg.timestamp).toLocaleString()}
-                    </div>
+        {/* Chat Area */}
+        <div className="flex-1 flex flex-col bg-background">
+          {user.role === 'coach' && !selectedAthleteId ? (
+            <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground">
+              <MessageSquare className="h-16 w-16 mb-4 opacity-20" />
+              <p className="text-lg">Select an athlete to start chatting</p>
+            </div>
+          ) : (
+            <>
+              {/* Chat Header */}
+              <div className="h-16 border-b border-border flex items-center justify-between px-6 bg-card/50 backdrop-blur">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-10 w-10 border border-border">
+                    <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                      {partnerName.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h2 className="font-semibold">{partnerName}</h2>
                   </div>
                 </div>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <Card className="p-12 text-center">
-            <MessageSquare className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">No Messages</h3>
-            <p className="text-muted-foreground">
-              {user.role === 'coach' 
-                ? 'Send a message to one of your athletes to get started.'
-                : 'Your coach hasn\'t sent any messages yet.'}
-            </p>
-          </Card>
-        )}
+                  <Button variant="ghost" size="icon">
+                    <MoreVertical className="h-5 w-5 text-muted-foreground" />
+                  </Button>
+              </div>
+
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4" ref={scrollRef}>
+                {activeMessages.map((msg, i) => {
+                  const sentByMe = msg.senderId ? msg.senderId === user.id : (
+                    // Fallback for old messages without senderId
+                    user.role === 'coach' ? msg.coachId === user.id : msg.athleteId === user.id
+                    // Note: This fallback is imperfect if we don't know who sent it,
+                    // but newly sent messages will have senderId.
+                  );
+
+                  return (
+                    <div
+                      key={`${msg.id}-${i}`}
+                      className={`flex ${sentByMe ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div
+                        className={`flex items-end gap-2 max-w-[70%] ${
+                          sentByMe ? 'flex-row-reverse' : 'flex-row'
+                        }`}
+                      >
+                        {/* Avatar only for other person */}
+                        {!sentByMe && (
+                          <Avatar className="h-8 w-8 border border-border shrink-0">
+                            <AvatarFallback className="text-xs">
+                              {partnerName.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
+
+                        <div
+                          className={`group relative px-4 py-2 rounded-2xl text-sm ${
+                            sentByMe
+                              ? 'bg-primary text-primary-foreground rounded-br-none'
+                              : 'bg-muted text-foreground rounded-bl-none'
+                          }`}
+                        >
+                          <p>{msg.message}</p>
+                          <span className={`text-[10px] opacity-70 mt-1 block ${
+                            sentByMe ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                          }`}>
+                            {format(new Date(msg.timestamp), 'h:mm a')}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+          
+          {/* Message Input Area */}
+          {(selectedAthleteId || user.role === 'athlete') && (
+            <div className="p-4 border-t border-border bg-card/50 backdrop-blur">
+              <form onSubmit={handleSendMessage} className="flex gap-2 items-end">
+                <Input
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder="Type a message..."
+                  className="flex-1 bg-background min-h-[44px]"
+                  disabled={sending}
+                />
+                <Button 
+                  type="submit" 
+                  size="icon" 
+                  disabled={!newMessage.trim() || sending}
+                  className="h-11 w-11 shrink-0"
+                >
+                  {sending ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <Send className="h-5 w-5" />
+                  )}
+                </Button>
+              </form>
+            </div>
+          )}
+        </div>
       </div>
     </AppLayout>
   );

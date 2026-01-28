@@ -105,6 +105,7 @@ class CoachMessage(BaseModel):
     message: str
     timestamp: str
     read: bool = False
+    senderId: Optional[str] = None
 
 
 class VideoMetadata(BaseModel):

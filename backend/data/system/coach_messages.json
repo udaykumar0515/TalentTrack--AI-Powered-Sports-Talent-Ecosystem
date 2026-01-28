@@ -22,5 +22,18 @@
     "message": "what are you doing",
     "timestamp": "2026-01-28T07:04:36.427Z",
     "read": false
+  },
+  {
+    "id": "msg_1769584430845_00yltoc",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "sessionId": "",
+    "type": "text",
+    "message": "hi",
+    "timestamp": "2026-01-28T07:13:50.845Z",
+    "read": false,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
   }
 ]

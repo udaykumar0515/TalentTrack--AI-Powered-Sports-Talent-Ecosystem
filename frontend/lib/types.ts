@@ -122,10 +122,11 @@ export interface CoachMessage {
   athleteId: string;
   athleteName: string;
   sessionId: string;
-  type: 'retest' | 'feedback' | 'note';
+  type: 'retest' | 'feedback' | 'note' | 'text';
   message: string;
   timestamp: string;
   read: boolean;
+  senderId?: string;
 }
 
 export interface Message {
