@@ -8,7 +8,7 @@ import shutil
 import tempfile
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 import subprocess
 import time
 import os
@@ -19,7 +19,6 @@ from engines.benchmarking import benchmarking_engine
 from engines.predictive_analytics import predictive_analytics
 from engines.training_plans import training_plan_generator
 from engines.injury_alerts import injury_alert_system
-from engines.gamification import GamificationEngine
 from engines.goal_setting import GoalSettingEngine
 from engines.longterm_plans import LongTermPlansEngine
 from services.offline_video_manager import OfflineVideoManager
@@ -45,9 +44,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
         )
     except Exception:
         return False
-
-# Initialize gamification engine
-gamification_engine = GamificationEngine()
 
 # Initialize goal setting engine
 goal_setting_engine = GoalSettingEngine()
@@ -431,7 +427,11 @@ async def list_sessions(
     if athleteId:
         filtered_sessions = [s for s in filtered_sessions if s.get("athleteId") == athleteId]
     if coachId:
-        filtered_sessions = [s for s in filtered_sessions if s.get("coachId") == coachId]
+        # Look up which athletes are assigned to this coach
+        athletes = read_json_file("athletes/athletes.json")
+        coach_athlete_ids = [a["id"] for a in athletes if a.get("coachId") == coachId]
+        # Filter sessions by those athletes
+        filtered_sessions = [s for s in filtered_sessions if s.get("athleteId") in coach_athlete_ids]
         
     # Sort by timestamp descending (newest first)
     filtered_sessions.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
@@ -470,18 +470,157 @@ async def post_session(session: Dict[str, Any]):
         # Save it (save_session_result expects same dict format)
         save_session_result(session)
         
-        # Recalculate gamification stats for the user
-        athlete_id = session.get("athleteId")
-        if athlete_id:
-            gamification_engine.recalculate_user_stats_from_sessions(athlete_id)
-            
-            # Note: Goal progress is updated in the analyze-video endpoint to avoid double counting
-        
         return {"status": "ok", "sessionId": sid}
     except Exception as e:
         logger.error(f"Failed to persist session: {e}")
         raise HTTPException(status_code=500, detail="Failed to save session")
 
+
+@app.get("/api/streak/{athlete_id}")
+async def get_athlete_streak(athlete_id: str):
+    """
+    Calculate streak for an athlete based on consecutive days with sessions.
+    Like Snapchat/LeetCode - streak increments on consecutive days, resets if a day is missed.
+    """
+    try:
+        sessions_file = "data/sessions/sessions.json"
+        if not os.path.exists(sessions_file):
+            return {"streak": 0, "lastSessionDate": None}
+        
+        with open(sessions_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+        # Get sessions for this athlete
+        athlete_sessions = []
+        if athlete_id in data and "sessions" in data[athlete_id]:
+            athlete_sessions = data[athlete_id]["sessions"]
+        
+        if not athlete_sessions:
+            return {"streak": 0, "lastSessionDate": None}
+        
+        # Extract unique dates when sessions occurred (in user's local date)
+        session_dates = set()
+        for session in athlete_sessions:
+            timestamp = session.get("timestamp") or session.get("date")
+            if timestamp:
+                try:
+                    # Parse the timestamp and get the date part
+                    if "T" in timestamp:
+                        dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+                    else:
+                        dt = datetime.fromisoformat(timestamp)
+                    # Use date only (ignore time)
+                    session_dates.add(dt.date())
+                except Exception:
+                    continue
+        
+        if not session_dates:
+            return {"streak": 0, "lastSessionDate": None}
+        
+        # Sort dates descending (most recent first)
+        sorted_dates = sorted(session_dates, reverse=True)
+        
+        # Get today's date
+        today = datetime.now().date()
+        
+        # Calculate streak
+        streak = 0
+        last_session_date = sorted_dates[0]
+        
+        # Check if there's a session today or yesterday (streak is still active)
+        days_since_last = (today - last_session_date).days
+        
+        if days_since_last > 1:
+            # More than 1 day since last session - streak is broken
+            return {
+                "streak": 0, 
+                "lastSessionDate": last_session_date.isoformat(),
+                "message": "Streak broken! Record a session to start a new streak."
+            }
+        
+        # Count consecutive days going backwards from most recent session
+        current_date = last_session_date
+        for i, session_date in enumerate(sorted_dates):
+            if i == 0:
+                streak = 1
+                continue
+            
+            # Check if this date is exactly 1 day before the previous
+            expected_date = sorted_dates[i-1] - timedelta(days=1)
+            if session_date == expected_date:
+                streak += 1
+            else:
+                # Gap in days - streak ends here
+                break
+        
+        return {
+            "streak": streak,
+            "lastSessionDate": last_session_date.isoformat(),
+            "todayCompleted": today in session_dates
+        }
+        
+    except Exception as e:
+        logger.error(f"Error calculating streak for {athlete_id}: {e}")
+        return {"streak": 0, "lastSessionDate": None, "error": str(e)}
+
+
+@app.get("/api/activity/{athlete_id}")
+async def get_athlete_activity(athlete_id: str, months: int = 12):
+    """
+    Get session activity for an athlete - for GitHub-style activity heatmap.
+    Returns a dict with:
+      - activity: { "YYYY-MM-DD": count } for each day with sessions
+      - totalSessions: total number of sessions
+      - streak: current streak
+    """
+    try:
+        sessions_file = "data/sessions/sessions.json"
+        if not os.path.exists(sessions_file):
+            return {"activity": {}, "totalSessions": 0, "streak": 0}
+        
+        with open(sessions_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+        # Get sessions for this athlete
+        athlete_sessions = []
+        if athlete_id in data and "sessions" in data[athlete_id]:
+            athlete_sessions = data[athlete_id]["sessions"]
+        
+        if not athlete_sessions:
+            return {"activity": {}, "totalSessions": 0, "streak": 0}
+        
+        # Count sessions per day
+        activity = {}
+        cutoff_date = datetime.now() - timedelta(days=months * 30)
+        
+        for session in athlete_sessions:
+            timestamp = session.get("timestamp") or session.get("date")
+            if timestamp:
+                try:
+                    if "T" in timestamp:
+                        dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+                    else:
+                        dt = datetime.fromisoformat(timestamp)
+                    
+                    # Only include sessions within the requested time range
+                    if dt.replace(tzinfo=None) >= cutoff_date:
+                        date_str = dt.date().isoformat()
+                        activity[date_str] = activity.get(date_str, 0) + 1
+                except Exception:
+                    continue
+        
+        # Get streak using existing logic
+        streak_data = await get_athlete_streak(athlete_id)
+        
+        return {
+            "activity": activity,
+            "totalSessions": len(athlete_sessions),
+            "streak": streak_data.get("streak", 0)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting activity for {athlete_id}: {e}")
+        return {"activity": {}, "totalSessions": 0, "streak": 0, "error": str(e)}
 @app.post("/api/coach-change-request")
 async def submit_coach_change_request(request: CoachChangeRequest):
     """Submit a coach change request from an athlete"""
@@ -1378,72 +1517,21 @@ async def analyze_video(
             if key not in parsed:
                 logger.warning(f"Missing key '{key}' in parsed result, using default")
 
-        # Get coach information from athlete data
-        athletes = read_json_file("athletes/athletes.json")
-        athlete_data = next((athlete for athlete in athletes if athlete["id"] == athleteId), None)
-        coach_id = athlete_data.get("coachId") if athlete_data else None
-        coach_name = athlete_data.get("coachName") if athlete_data else None
 
-        # Construct session data for frontend & storage
-        # Extract cheat detection data
-        cheat_detection = parsed.get("cheatDetection", {})
-        
-        # Generate benchmarking data
-        temp_session_data = {
-            "exercise": exercise,
-            "reps": int(parsed.get("reps", 0)),
-            "formScore": int(parsed.get("formScore", 0)),
-            "durationSec": float(parsed.get("durationSec", 0.0)),
-            "athleteId": athleteId,
-            "coachId": coach_id
-        }
-        
-        benchmarking_data = benchmarking_engine.get_benchmarking_data(temp_session_data)
-        
-        # Generate predictive analytics data
-        predictive_data = predictive_analytics.get_predictive_analytics(athleteId)
-        
-        # Generate training plan data
-        training_plan_data = training_plan_generator.generate_training_plan(athleteId)
-        
-        # Generate injury risk analysis
-        injury_analysis = injury_alert_system.analyze_athlete_injury_risk(athleteId)
-        
-        # Generate gamification data
-        gamification_data = gamification_engine.update_user_progress(athleteId, temp_session_data)
-        
-        # Recalculate user stats from all sessions to ensure accuracy
-        gamification_engine.recalculate_user_stats_from_sessions(athleteId)
-        
-        # Update goal progress for all active goals
-        update_user_goals_progress(athleteId, temp_session_data)
-        
+        # Simple session data with only core metrics (tied to athlete, not coach)
         session_data = {
-            "exercise": exercise,  # Use original exercise name for frontend
+            "sessionId": str(uuid.uuid4())[:8],
+            "exercise": exercise,
             "reps": int(parsed.get("reps", 0)),
             "formScore": int(parsed.get("formScore", 0)),
             "durationSec": float(parsed.get("durationSec", 0.0)),
             "timestamp": datetime.now().isoformat() + "Z",
             "athleteId": athleteId,
-            "athleteName": parsed.get("userName", athleteName),
-            "coachId": coach_id,
-            "coachName": coach_name,
-            "sessionId": str(uuid.uuid4())[:8],
-            "cheatDetection": {
-                "cheatDetected": cheat_detection.get("cheatDetected", False),
-                "cheatPercentage": cheat_detection.get("cheatPercentage", 0.0),
-                "totalFlags": cheat_detection.get("totalFlags", 0),
-                "confidence": cheat_detection.get("confidence", 0.0),
-                "riskLevel": cheat_detection.get("riskLevel", "low"),
-                "flags": cheat_detection.get("flags", {}),
-                "suspiciousPatterns": cheat_detection.get("suspiciousPatterns", [])
-            },
-            "benchmarking": benchmarking_data,
-            "predictiveAnalytics": predictive_data,
-            "trainingPlan": training_plan_data,
-            "injuryAnalysis": injury_analysis,
-            "gamification": gamification_data
+            "athleteName": parsed.get("userName", athleteName)
         }
+        
+        # Update goal progress for active goals
+        update_user_goals_progress(athleteId, session_data)
 
         # Save session result
         if save_session_result(session_data):
@@ -2028,72 +2116,7 @@ async def process_offline_video(video_id: str, analysis_result: dict):
 # MISSING ENDPOINTS IMPLEMENTATION
 # ==========================================
 
-@app.get("/api/sessions")
-async def get_sessions(
-    athleteId: Optional[str] = None, 
-    coachId: Optional[str] = None,
-    skip: int = 0, 
-    limit: int = 20
-):
-    """Get all sessions with filtering"""
-    # DEBUG: Log received parameters
-    print(f"[SESSIONS DEBUG] athleteId param: {athleteId}")
-    print(f"[SESSIONS DEBUG] coachId param: {coachId}")
-    
-    try:
-        sessions_file = "data/sessions/sessions.json"
-        if not os.path.exists(sessions_file):
-            print("[SESSIONS DEBUG] sessions.json file not found!")
-            return []
-            
-        with open(sessions_file, "r", encoding="utf-8") as f:
-            content = f.read().strip()
-            data = json.loads(content) if content else {}
-        
-        print(f"[SESSIONS DEBUG] Loaded data keys: {list(data.keys())}")
-            
-        # Handle legacy list format if it still exists (robustness)
-        if isinstance(data, list):
-            print("[SESSIONS DEBUG] Data is list format - returning empty!")
-            return []
-            
-        all_sessions = []
-        
-        # Iterate over all athletes
-        for a_id, a_data in data.items():
-            if "sessions" in a_data:
-                for session in a_data["sessions"]:
-                    session_athlete_id = session.get("athleteId")
-                    print(f"[SESSIONS DEBUG] Session athleteId: {session_athlete_id}, comparing to param: {athleteId}")
-                    
-                    # Filter by athleteId
-                    if athleteId and session_athlete_id != athleteId:
-                        print(f"[SESSIONS DEBUG] Skipping - ID mismatch")
-                        continue
-                        
-                    # Filter by coachId
-                    if coachId and session.get("coachId") != coachId:
-                        continue
-                        
-                    all_sessions.append(session)
-        
-        print(f"[SESSIONS DEBUG] Total sessions matched: {len(all_sessions)}")
-        
-        # Sort by timestamp (newest first)
-        def get_sort_key(s):
-            return s.get("timestamp") or s.get("date") or ""
-            
-        all_sessions.sort(key=get_sort_key, reverse=True)
-        
-        # Apply pagination
-        start = skip
-        end = skip + limit
-        return all_sessions[start:end]
-        
-    except Exception as e:
-        logger.error(f"Error getting sessions: {e}")
-        print(f"[SESSIONS DEBUG] Exception: {e}")
-        return []
+# Note: /api/sessions endpoint is already defined above at line 385
 
 @app.post("/api/training-plans/athlete/{athlete_id}/generate")
 async def generate_training_plan(athlete_id: str):

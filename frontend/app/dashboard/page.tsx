@@ -11,14 +11,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/lib/auth-context';
 import { api } from '@/lib/api';
-import type { Session, GamificationData, Athlete } from '@/lib/types';
+import type { Session, Athlete } from '@/lib/types';
 import { Play, TrendingUp, Target, Flame, Loader2, Users, AlertTriangle } from 'lucide-react';
 
 export default function DashboardPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [gamification, setGamification] = useState<GamificationData | null>(null);
+  const [streak, setStreak] = useState<number>(0);
   const [athletes, setAthletes] = useState<Athlete[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,12 +38,12 @@ export default function DashboardPage() {
 
       try {
         if (user.role === 'athlete') {
-          const [sessionsData, gamificationData] = await Promise.all([
+          const [sessionsData, streakData] = await Promise.all([
             api.getSessions({ athleteId: user.id }),
-            api.getGamificationData(user.id).catch(() => null),
+            api.getStreak(user.id).catch(() => ({ streak: 0 })),
           ]);
           setSessions(Array.isArray(sessionsData) ? sessionsData : []);
-          setGamification(gamificationData);
+          setStreak(streakData?.streak || 0);
         } else {
           // Coach view
           const [sessionsData, athletesData] = await Promise.all([
@@ -134,7 +134,7 @@ export default function DashboardPage() {
         ) : (
           <>
             {/* Stats Overview */}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {user.role === 'athlete' ? (
                 <>
                   <StatCard
@@ -149,15 +149,9 @@ export default function DashboardPage() {
                   />
                   <StatCard
                     title="Current Streak"
-                    value={gamification?.streak || 0}
+                    value={streak}
                     subtitle="days"
                     icon={Flame}
-                  />
-                  <StatCard
-                    title="Level"
-                    value={gamification?.level || 1}
-                    subtitle={`${gamification?.xp || 0} XP`}
-                    icon={Target}
                   />
                 </>
               ) : (
@@ -223,23 +217,7 @@ export default function DashboardPage() {
               )}
             </div>
 
-            {/* Quick Actions for Athletes */}
-            {user.role === 'athlete' && gamification && (
-              <Card className="p-6">
-                <h2 className="text-lg font-semibold mb-4">Your Achievements</h2>
-                <div className="flex flex-wrap gap-3">
-                  {gamification.badges && gamification.badges.length > 0 ? (
-                    gamification.badges.slice(0, 5).map((badge, i) => (
-                      <Badge key={badge.id || i} variant="secondary" className="px-3 py-1">
-                        {badge.icon || '🏆'} {badge.name}
-                      </Badge>
-                    ))
-                  ) : (
-                    <p className="text-muted-foreground">Complete sessions to earn badges!</p>
-                  )}
-                </div>
-              </Card>
-            )}
+
           </>
         )}
       </div>

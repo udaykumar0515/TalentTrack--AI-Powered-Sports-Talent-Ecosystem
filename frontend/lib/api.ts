@@ -4,7 +4,6 @@ import type {
   Coach,
   Session,
   Video,
-  GamificationData,
   Goal,
   TrainingPlan,
   PredictiveAnalytics,
@@ -13,7 +12,6 @@ import type {
   LongTermPlan,
   BenchmarkEntry,
   ExerciseStandard,
-  LeaderboardEntry,
 } from './types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -88,7 +86,7 @@ class ApiClient {
     coachId?: string;
     skip?: number;
     limit?: number;
-  }) {
+  }): Promise<Session[]> {
     const queryParams = new URLSearchParams();
     if (params?.athleteId) queryParams.append('athleteId', params.athleteId);
     if (params?.coachId) queryParams.append('coachId', params.coachId);
@@ -96,7 +94,13 @@ class ApiClient {
     if (params?.limit !== undefined) queryParams.append('limit', params.limit.toString());
 
     const query = queryParams.toString() ? `?${queryParams.toString()}` : '';
-    return this.request<Session[]>(`/api/sessions${query}`);
+    const response = await this.request<{ sessions: Session[]; pagination: any } | Session[]>(`/api/sessions${query}`);
+    
+    // Handle both paginated response and direct array response
+    if (Array.isArray(response)) {
+      return response;
+    }
+    return response.sessions || [];
   }
 
   async getSession(sessionId: string) {
@@ -150,6 +154,26 @@ class ApiClient {
   }
 
   // ============================================
+  // STREAK
+  // ============================================
+  async getStreak(athleteId: string) {
+    return this.request<{
+      streak: number;
+      lastSessionDate: string | null;
+      todayCompleted?: boolean;
+      message?: string;
+    }>(`/api/streak/${encodeURIComponent(athleteId)}`);
+  }
+
+  async getActivity(athleteId: string, months: number = 12) {
+    return this.request<{
+      activity: Record<string, number>;
+      totalSessions: number;
+      streak: number;
+    }>(`/api/activity/${encodeURIComponent(athleteId)}?months=${months}`);
+  }
+
+  // ============================================
   // COACH MESSAGING
   // ============================================
   async getAthleteMessages(athleteId: string) {
@@ -171,17 +195,6 @@ class ApiClient {
     return this.request<void>(`/api/coach-messages/${encodeURIComponent(messageId)}/read`, {
       method: 'PUT',
     });
-  }
-
-  // ============================================
-  // GAMIFICATION
-  // ============================================
-  async getGamificationData(userId: string) {
-    return this.request<GamificationData>(`/api/gamification/user/${encodeURIComponent(userId)}`);
-  }
-
-  async getLeaderboard(category: string = 'total_points', limit: number = 10) {
-    return this.request<LeaderboardEntry[]>(`/api/gamification/leaderboard?category=${category}&limit=${limit}`);
   }
 
   // ============================================

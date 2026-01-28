@@ -123,12 +123,7 @@ export default function LandingPage() {
               description: 'Connect with coaches for personalized guidance and support',
               color: 'text-success',
             },
-            {
-              icon: Zap,
-              title: 'Gamification',
-              description: 'Earn XP, badges, and compete on leaderboards',
-              color: 'text-warning',
-            },
+
           ].map((feature, i) => (
             <div
               key={i}

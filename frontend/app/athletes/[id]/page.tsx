@@ -10,17 +10,15 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/lib/auth-context';
 import { api } from '@/lib/api';
-import type { Athlete, Session, GamificationData, InjuryAlert, PredictiveAnalytics } from '@/lib/types';
+import type { Athlete, Session, InjuryAlert, PredictiveAnalytics } from '@/lib/types';
 import { 
   ArrowLeft, 
   TrendingUp, 
   Activity, 
   AlertTriangle, 
-  Award,
   Loader2,
   Target,
   Flame,
-  Star,
   Calendar
 } from 'lucide-react';
 
@@ -32,7 +30,7 @@ export default function AthleteDetailPage() {
 
   const [athlete, setAthlete] = useState<Athlete | null>(null);
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [gamification, setGamification] = useState<GamificationData | null>(null);
+  const [streak, setStreak] = useState<number>(0);
   const [injuryAlerts, setInjuryAlerts] = useState<InjuryAlert[]>([]);
   const [analytics, setAnalytics] = useState<PredictiveAnalytics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -53,17 +51,17 @@ export default function AthleteDetailPage() {
       setError(null);
 
       try {
-        const [athleteData, sessionsData, gamificationData, injuryData, analyticsData] = await Promise.all([
+        const [athleteData, sessionsData, streakData, injuryData, analyticsData] = await Promise.all([
           api.getAthlete(athleteId),
           api.getSessions({ athleteId }),
-          api.getGamificationData(athleteId).catch(() => null),
+          api.getStreak(athleteId).catch(() => ({ streak: 0 })),
           api.getInjuryAlerts(athleteId).catch(() => []),
           api.getPredictiveAnalytics(athleteId).catch(() => null),
         ]);
 
         setAthlete(athleteData);
         setSessions(Array.isArray(sessionsData) ? sessionsData : []);
-        setGamification(gamificationData);
+        setStreak(streakData?.streak || 0);
         setInjuryAlerts(Array.isArray(injuryData) ? injuryData : []);
         setAnalytics(analyticsData);
       } catch (err) {
@@ -195,15 +193,9 @@ export default function AthleteDetailPage() {
           />
           <StatCard
             title="Current Streak"
-            value={gamification?.streak || 0}
+            value={streak}
             subtitle="days"
             icon={Flame}
-          />
-          <StatCard
-            title="Level"
-            value={gamification?.level || 1}
-            subtitle={`${gamification?.xp || 0} XP`}
-            icon={Star}
           />
         </div>
 
@@ -298,25 +290,7 @@ export default function AthleteDetailPage() {
             </div>
           </Card>
 
-          {/* Badges & Achievements */}
-          <Card className="p-6">
-            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <Award className="h-5 w-5 text-primary" />
-              Badges & Achievements
-            </h2>
-            {gamification?.badges && gamification.badges.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {gamification.badges.map((badge, i) => (
-                  <div key={badge.id || i} className="p-3 rounded-lg bg-primary/10 text-center">
-                    <span className="text-2xl">{badge.icon || '🏆'}</span>
-                    <p className="text-xs font-medium mt-1">{badge.name}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground text-center py-4">No badges earned yet</p>
-            )}
-          </Card>
+
         </div>
       </div>
     </AppLayout>

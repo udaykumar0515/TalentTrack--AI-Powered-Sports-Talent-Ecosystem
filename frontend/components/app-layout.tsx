@@ -14,7 +14,7 @@ interface AppLayoutProps {
 export function AppLayout({ children, user }: AppLayoutProps) {
   return (
     <div className="min-h-screen bg-background">
-      <AppSidebar userRole={user.role} />
+      <AppSidebar user={user} />
       <div className="ml-64">
         <AppTopBar user={user} />
         <main className="p-6">{children}</main>

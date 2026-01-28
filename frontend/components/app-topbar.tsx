@@ -1,18 +1,8 @@
 'use client';
-
 import { useRouter } from 'next/navigation';
-import { Bell, LogOut } from 'lucide-react';
+import { Bell, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import type { User } from '@/lib/types';
-import { useAuth } from '@/lib/auth-context';
 
 interface AppTopBarProps {
   user: User;
@@ -20,12 +10,6 @@ interface AppTopBarProps {
 
 export function AppTopBar({ user }: AppTopBarProps) {
   const router = useRouter();
-  const { logout } = useAuth();
-
-  const handleLogout = () => {
-    logout();
-    router.push('/login');
-  };
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 px-6">
@@ -36,6 +20,11 @@ export function AppTopBar({ user }: AppTopBarProps) {
       </div>
 
       <div className="flex items-center gap-4">
+        {/* Messages */}
+        <Button variant="ghost" size="icon" onClick={() => router.push('/messages')}>
+          <MessageSquare className="h-5 w-5" />
+        </Button>
+
         {/* Notifications */}
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />
@@ -44,33 +33,7 @@ export function AppTopBar({ user }: AppTopBarProps) {
           </span>
         </Button>
 
-        {/* User Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-semibold text-sm">
-                {(user.name || user.username || 'U').charAt(0).toUpperCase()}
-              </div>
-              <span className="text-sm font-medium">{user.name || user.username}</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium">{user.name || user.username}</p>
-                <p className="text-xs text-muted-foreground">{user.email}</p>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => router.push('/profile')}>Profile Settings</DropdownMenuItem>
-            <DropdownMenuItem>Preferences</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="text-destructive">
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+
       </div>
     </header>
   );

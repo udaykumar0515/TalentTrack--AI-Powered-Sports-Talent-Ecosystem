@@ -172,50 +172,8 @@ export interface Message {
 }
 
 // ============================================
-// Gamification Types
+
 // ============================================
-export interface GamificationData {
-  userId: string;
-  xp: number;
-  level: number;
-  streak: number;
-  total_points?: number;
-  badges: Badge[];
-  achievements: Achievement[];
-  unlocked_badges?: string[];
-  unlocked_achievements?: string[];
-}
-
-export interface Badge {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-  earnedAt?: string;
-  category?: string;
-}
-
-export interface Achievement {
-  id: string;
-  title: string;
-  name?: string;
-  description: string;
-  progress: number;
-  target: number;
-  completed: boolean;
-  category?: string;
-}
-
-export interface LeaderboardEntry {
-  rank: number;
-  userId: string;
-  name: string;
-  username?: string;
-  xp: number;
-  level: number;
-  profileImage?: string;
-  total_points?: number;
-}
 
 // ============================================
 // Goals Types

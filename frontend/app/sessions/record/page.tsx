@@ -78,16 +78,7 @@ export default function RecordSessionPage() {
       clearInterval(interval);
       setProgress(100);
       setResult(response);
-
-      // Redirect to session detail after a delay
-      setTimeout(() => {
-        const sessionId = response.session_id || response.sessionId || response.id;
-        if (sessionId) {
-          router.push(`/sessions/${sessionId}`);
-        } else {
-          router.push('/sessions');
-        }
-      }, 2000);
+      setIsAnalyzing(false);
     } catch (err) {
       clearInterval(interval);
       console.error('Error analyzing video:', err);
@@ -231,27 +222,49 @@ export default function RecordSessionPage() {
             </Button>
           </Card>
         ) : (
-          /* Success Result */
-          <Card className="p-8 text-center space-y-4">
+          /* Success Result - Show 3 Core Metrics */
+          <Card className="p-8 text-center space-y-6">
             <CheckCircle className="h-16 w-16 text-success mx-auto" />
             <h2 className="text-2xl font-bold text-foreground">Analysis Complete!</h2>
-            <div className="p-4 rounded-lg bg-muted">
-              <p className="text-sm text-muted-foreground mb-1">Form Score</p>
-              <p className="text-4xl font-bold text-primary">
-                {result.form_score || result.formScore || result.score || 'N/A'}%
-              </p>
-            </div>
-            {(result.recommendations || result.feedback) && (
-              <div className="text-left">
-                <p className="font-medium mb-2">Recommendations:</p>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  {(result.recommendations || [result.feedback]).slice(0, 3).map((rec: string, i: number) => (
-                    <li key={i}>• {rec}</li>
-                  ))}
-                </ul>
+            
+            {/* 3 Core Metrics */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="p-4 rounded-lg bg-muted">
+                <p className="text-sm text-muted-foreground mb-1">Form Score</p>
+                <p className="text-4xl font-bold text-primary">
+                  {result.formScore || result.form_score || 0}%
+                </p>
               </div>
-            )}
-            <p className="text-muted-foreground">Redirecting to session details...</p>
+              <div className="p-4 rounded-lg bg-muted">
+                <p className="text-sm text-muted-foreground mb-1">Reps</p>
+                <p className="text-4xl font-bold text-foreground">
+                  {result.reps || 0}
+                </p>
+              </div>
+              <div className="p-4 rounded-lg bg-muted">
+                <p className="text-sm text-muted-foreground mb-1">Duration</p>
+                <p className="text-4xl font-bold text-foreground">
+                  {Math.round(result.durationSec || result.duration || 0)}s
+                </p>
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="flex gap-4 justify-center pt-4">
+              <Button variant="outline" onClick={() => router.push('/sessions')}>
+                View All Sessions
+              </Button>
+              <Button onClick={() => {
+                setResult(null);
+                setVideoFile(null);
+                setExercise('');
+                setProgress(0);
+                setIsAnalyzing(false);
+              }}>
+                <Play className="h-4 w-4 mr-2" />
+                Record Another
+              </Button>
+            </div>
           </Card>
         )}
       </div>

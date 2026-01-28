@@ -15,12 +15,15 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+import type { User as UserType } from '@/lib/types';
+
 interface SidebarProps {
-  userRole: 'athlete' | 'coach';
+  user: UserType;
 }
 
-export function AppSidebar({ userRole }: SidebarProps) {
+export function AppSidebar({ user }: SidebarProps) {
   const pathname = usePathname();
+  const userRole = user.role;
 
   const athleteItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -28,7 +31,6 @@ export function AppSidebar({ userRole }: SidebarProps) {
     { href: '/training-plan', label: 'Training Plan', icon: Calendar },
     { href: '/goals', label: 'Goals', icon: Target },
     { href: '/coaches', label: 'Find Coach', icon: Users },
-    { href: '/messages', label: 'Messages', icon: MessageSquare },
     { href: '/profile', label: 'Profile', icon: User },
   ];
 
@@ -39,7 +41,6 @@ export function AppSidebar({ userRole }: SidebarProps) {
     { href: '/goals', label: 'Goals', icon: Target },
     { href: '/analytics', label: 'Analytics', icon: BarChart3 },
     { href: '/athletes', label: 'Athletes', icon: Users },
-    { href: '/messages', label: 'Messages', icon: MessageSquare },
     { href: '/profile', label: 'Profile', icon: User },
   ];
 
@@ -86,11 +87,11 @@ export function AppSidebar({ userRole }: SidebarProps) {
         <div className="border-t border-sidebar-border p-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sidebar-accent text-sidebar-accent-foreground font-semibold">
-              {userRole === 'coach' ? 'C' : 'A'}
+              {(user.name || user.username || 'U').charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-sidebar-foreground truncate">
-                {userRole === 'coach' ? 'Coach Profile' : 'Athlete Profile'}
+                {user.name || user.username || 'User'}
               </p>
               <p className="text-xs text-sidebar-foreground/60 capitalize">
                 {userRole}

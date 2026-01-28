@@ -2,61 +2,14 @@
   "c867df8f-9cdf-4e32-a29d-379c892b220f": {
     "sessions": [
       {
+        "sessionId": "733276c2",
         "exercise": "squat",
         "reps": 2,
         "formScore": 61,
         "durationSec": 8.0,
         "timestamp": "2026-01-28T19:55:13.858314Z",
         "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
-        "athleteName": "Udaykumar Haibathi",
-        "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
-        "coachName": "john",
-        "sessionId": "733276c2",
-        "cheatDetection": {
-          "cheatDetected": false,
-          "cheatPercentage": 0.0,
-          "totalFlags": 0,
-          "confidence": 86.7,
-          "riskLevel": "medium",
-          "flags": {},
-          "suspiciousPatterns": []
-        },
-        "benchmarking": {
-          "performance_level": {
-            "level": "unknown",
-            "score": 0,
-            "description": "Unknown exercise"
-          },
-          "peer_comparison": {
-            "percentile": 50,
-            "rank": "N/A",
-            "total_athletes": 0
-          },
-          "global_rank": "N/A",
-          "coach_rank": "N/A",
-          "total_global_athletes": 0,
-          "total_coach_athletes": 0,
-          "improvement_suggestions": []
-        },
-        "predictiveAnalytics": {
-          "error": "No sessions found for athlete"
-        },
-        "trainingPlan": {
-          "error": "No sessions found for athlete"
-        },
-        "injuryAnalysis": {
-          "error": "No sessions found for athlete"
-        },
-        "gamification": {
-          "session_points": 30,
-          "total_points": 150,
-          "level": 1,
-          "new_achievements": [],
-          "new_badges": [],
-          "current_streak": 2,
-          "longest_streak": 2,
-          "sessions_completed": 5
-        }
+        "athleteName": "Udaykumar Haibathi"
       }
     ]
   }

@@ -1,11 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { Session } from '@/lib/types';
-import { Calendar, Target, TrendingUp, Trash2, AlertTriangle } from 'lucide-react';
+import { Calendar, Target, TrendingUp, Trash2, Clock } from 'lucide-react';
 
 interface SessionCardProps {
   session: Session;
@@ -17,8 +15,8 @@ export function SessionCard({ session, onDelete }: SessionCardProps) {
   const sessionId = session.id || session.sessionId || '';
   const formScore = session.formScore || session.metrics?.formScore || 0;
   const reps = session.reps || session.metrics?.reps || 0;
+  const duration = session.durationSec || session.duration || 0;
   const date = session.date || session.timestamp || session.createdAt;
-  const risk = session.risk || 'Low';
   const athleteName = session.athleteName || '';
 
   const getScoreColor = (score: number) => {
@@ -27,15 +25,14 @@ export function SessionCard({ session, onDelete }: SessionCardProps) {
     return 'text-destructive';
   };
 
-  const getRiskVariant = (riskLevel: string): 'default' | 'secondary' | 'destructive' | 'outline' => {
-    switch (riskLevel) {
-      case 'High':
-        return 'destructive';
-      case 'Medium':
-        return 'secondary';
-      default:
-        return 'outline';
-    }
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   const handleDelete = (e: React.MouseEvent) => {
@@ -47,61 +44,52 @@ export function SessionCard({ session, onDelete }: SessionCardProps) {
   };
 
   return (
-    <Link href={`/sessions/${sessionId}`}>
-      <Card className="group p-4 border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all cursor-pointer">
-        <div className="flex items-start justify-between mb-3">
-          <div>
-            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors capitalize">
-              {session.exercise.replace('_', ' ')}
-            </h3>
-            {athleteName && (
-              <p className="text-sm text-muted-foreground">{athleteName}</p>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            {risk !== 'Low' && (
-              <Badge variant={getRiskVariant(risk)} className="flex items-center gap-1">
-                <AlertTriangle className="h-3 w-3" />
-                {risk}
-              </Badge>
-            )}
-            {onDelete && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={handleDelete}
-              >
-                <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
-              </Button>
-            )}
-          </div>
+    <Card className="p-4 border-border/50">
+      <div className="flex items-start justify-between mb-3">
+        <div>
+          <h3 className="font-semibold text-foreground capitalize">
+            {session.exercise.replace('_', ' ')}
+          </h3>
+          {athleteName && (
+            <p className="text-sm text-muted-foreground">{athleteName}</p>
+          )}
         </div>
+        <div className="flex items-center gap-2">
+          {date && (
+            <span className="text-xs text-muted-foreground">
+              {formatDate(date)}
+            </span>
+          )}
+          {onDelete && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={handleDelete}
+            >
+              <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+            </Button>
+          )}
+        </div>
+      </div>
 
-        <div className="grid grid-cols-3 gap-3 text-center">
-          <div className="space-y-1">
-            <TrendingUp className="h-4 w-4 text-muted-foreground mx-auto" />
-            <p className={`text-lg font-bold ${getScoreColor(formScore)}`}>{formScore}%</p>
-            <p className="text-xs text-muted-foreground">Form Score</p>
-          </div>
-          <div className="space-y-1">
-            <Target className="h-4 w-4 text-muted-foreground mx-auto" />
-            <p className="text-lg font-bold text-foreground">{reps}</p>
-            <p className="text-xs text-muted-foreground">Reps</p>
-          </div>
-          <div className="space-y-1">
-            <Calendar className="h-4 w-4 text-muted-foreground mx-auto" />
-            <p className="text-sm font-medium text-foreground">
-              {date ? new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'N/A'}
-            </p>
-            <p className="text-xs text-muted-foreground">Date</p>
-          </div>
+      <div className="grid grid-cols-3 gap-3 text-center">
+        <div className="space-y-1">
+          <TrendingUp className="h-4 w-4 text-muted-foreground mx-auto" />
+          <p className={`text-lg font-bold ${getScoreColor(formScore)}`}>{formScore}%</p>
+          <p className="text-xs text-muted-foreground">Form Score</p>
         </div>
-
-        <div className="mt-3 pt-3 border-t border-border/50">
-          <p className="text-sm text-primary group-hover:underline">View Details →</p>
+        <div className="space-y-1">
+          <Target className="h-4 w-4 text-muted-foreground mx-auto" />
+          <p className="text-lg font-bold text-foreground">{reps}</p>
+          <p className="text-xs text-muted-foreground">Reps</p>
         </div>
-      </Card>
-    </Link>
+        <div className="space-y-1">
+          <Clock className="h-4 w-4 text-muted-foreground mx-auto" />
+          <p className="text-lg font-bold text-foreground">{Math.round(duration)}s</p>
+          <p className="text-xs text-muted-foreground">Duration</p>
+        </div>
+      </div>
+    </Card>
   );
 }

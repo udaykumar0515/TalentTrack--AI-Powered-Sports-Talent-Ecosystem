@@ -4,28 +4,28 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AppLayout } from '@/components/app-layout';
 import { StatCard } from '@/components/stat-card';
+import { ActivityHeatmap } from '@/components/activity-heatmap';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/lib/auth-context';
 import { api } from '@/lib/api';
-import type { GamificationData, Session } from '@/lib/types';
+import type { Session } from '@/lib/types';
 import { 
-  User, 
   Mail, 
-  Award, 
   Flame, 
-  Star, 
   Target,
   Loader2,
-  TrendingUp
+  TrendingUp,
+  LogOut
 } from 'lucide-react';
 
 export default function ProfilePage() {
   const router = useRouter();
   const { user, isLoading: authLoading, logout } = useAuth();
-  const [gamification, setGamification] = useState<GamificationData | null>(null);
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [activity, setActivity] = useState<Record<string, number>>({});
+  const [streak, setStreak] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -40,12 +40,13 @@ export default function ProfilePage() {
 
       setIsLoading(true);
       try {
-        const [gamificationData, sessionsData] = await Promise.all([
-          api.getGamificationData(user.id).catch(() => null),
+        const [sessionsData, activityData] = await Promise.all([
           api.getSessions({ athleteId: user.id }).catch(() => []),
+          api.getActivity(user.id).catch(() => ({ activity: {}, totalSessions: 0, streak: 0 })),
         ]);
-        setGamification(gamificationData);
         setSessions(Array.isArray(sessionsData) ? sessionsData : []);
+        setActivity(activityData?.activity || {});
+        setStreak(activityData?.streak || 0);
       } catch (err) {
         console.error('Error fetching profile data:', err);
       } finally {
@@ -73,6 +74,11 @@ export default function ProfilePage() {
     ? Math.round(sessions.reduce((acc, s) => acc + (s.formScore || s.metrics?.formScore || 0), 0) / sessions.length)
     : 0;
 
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
+
   return (
     <AppLayout user={user}>
       <div className="space-y-6">
@@ -81,9 +87,13 @@ export default function ProfilePage() {
           <div>
             <h1 className="text-3xl font-bold text-foreground">Profile</h1>
             <p className="text-muted-foreground mt-1">
-              View your profile and achievements
+              View your profile and activity
             </p>
           </div>
+          <Button variant="destructive" onClick={handleLogout}>
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
+          </Button>
         </div>
 
         {/* Profile Card */}
@@ -113,9 +123,9 @@ export default function ProfilePage() {
           </div>
         ) : (
           <>
-            {/* Stats */}
+            {/* Stats - Simplified (no Level/XP) */}
             {user.role === 'athlete' && (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-6 md:grid-cols-3">
                 <StatCard
                   title="Total Sessions"
                   value={sessions.length}
@@ -128,75 +138,22 @@ export default function ProfilePage() {
                 />
                 <StatCard
                   title="Current Streak"
-                  value={gamification?.streak || 0}
+                  value={streak}
                   subtitle="days"
                   icon={Flame}
-                />
-                <StatCard
-                  title="Level"
-                  value={gamification?.level || 1}
-                  subtitle={`${gamification?.xp || 0} XP`}
-                  icon={Star}
                 />
               </div>
             )}
 
-            {/* Badges */}
-            {user.role === 'athlete' && gamification && (
+            {/* Activity Heatmap - GitHub/LeetCode style */}
+            {user.role === 'athlete' && (
               <Card className="p-6">
-                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <Award className="h-5 w-5 text-primary" />
-                  Badges & Achievements
-                </h2>
-                {gamification.badges && gamification.badges.length > 0 ? (
-                  <div className="flex flex-wrap gap-4">
-                    {gamification.badges.map((badge, i) => (
-                      <div 
-                        key={badge.id || i} 
-                        className="flex flex-col items-center p-4 rounded-lg bg-primary/5 border border-primary/20"
-                      >
-                        <span className="text-3xl mb-2">{badge.icon || '🏆'}</span>
-                        <span className="font-medium text-sm">{badge.name}</span>
-                        <span className="text-xs text-muted-foreground text-center mt-1">
-                          {badge.description}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-muted-foreground">Complete sessions to earn badges!</p>
-                )}
-              </Card>
-            )}
-
-            {/* Achievements Progress */}
-            {user.role === 'athlete' && gamification?.achievements && gamification.achievements.length > 0 && (
-              <Card className="p-6">
-                <h2 className="text-lg font-semibold mb-4">Achievement Progress</h2>
-                <div className="space-y-4">
-                  {gamification.achievements.map((achievement, i) => {
-                    const progress = achievement.target > 0 
-                      ? Math.round((achievement.progress / achievement.target) * 100) 
-                      : 0;
-                    return (
-                      <div key={achievement.id || i} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">{achievement.title || achievement.name}</span>
-                          <span className="text-sm text-muted-foreground">
-                            {achievement.progress}/{achievement.target}
-                          </span>
-                        </div>
-                        <div className="h-2 bg-muted rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-primary transition-all"
-                            style={{ width: `${Math.min(progress, 100)}%` }}
-                          />
-                        </div>
-                        <p className="text-xs text-muted-foreground">{achievement.description}</p>
-                      </div>
-                    );
-                  })}
-                </div>
+                <h2 className="text-lg font-semibold mb-4">Session Activity</h2>
+                <ActivityHeatmap 
+                  activity={activity}
+                  totalSessions={sessions.length}
+                  streak={streak}
+                />
               </Card>
             )}
           </>
