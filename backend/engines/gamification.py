@@ -301,22 +301,26 @@ class GamificationEngine:
         
         # Check first session
         if user_data["sessions_completed"] == 0 and "first_session" not in user_data["achievements"]:
-            new_achievements.append(achievements["first_session"])
+            if "first_session" in achievements:
+                new_achievements.append(achievements["first_session"])
         
         # Check perfect form
-        form_score = session_data.get('form_score', 0)
+        form_score = session_data.get('form_score', session_data.get('formScore', 0))
         if form_score >= 95 and "perfect_form" not in user_data["achievements"]:
-            new_achievements.append(achievements["perfect_form"])
+            if "perfect_form" in achievements:
+                new_achievements.append(achievements["perfect_form"])
         
         # Check speed demon
         reps = session_data.get('reps', 0)
-        duration = session_data.get('duration', 1)
+        duration = session_data.get('duration', session_data.get('durationSec', 1))
         if reps >= 20 and duration <= 30 and "speed_demon" not in user_data["achievements"]:
-            new_achievements.append(achievements["speed_demon"])
+            if "speed_demon" in achievements:
+                new_achievements.append(achievements["speed_demon"])
         
         # Check endurance king
         if reps >= 50 and "endurance_king" not in user_data["achievements"]:
-            new_achievements.append(achievements["endurance_king"])
+            if "endurance_king" in achievements:
+                new_achievements.append(achievements["endurance_king"])
         
         # Check improvement master
         if "improvement_master" not in user_data["achievements"]:
@@ -329,7 +333,7 @@ class GamificationEngine:
         if session_time.hour < 8 and "early_bird" not in user_data["achievements"]:
             # Count early morning sessions
             early_sessions = user_data.get("early_sessions", 0) + 1
-            if early_sessions >= 5:
+            if early_sessions >= 5 and "early_bird" in achievements:
                 new_achievements.append(achievements["early_bird"])
             user_data["early_sessions"] = early_sessions
         
@@ -337,7 +341,7 @@ class GamificationEngine:
         if session_time.hour >= 22 and "night_owl" not in user_data["achievements"]:
             # Count late night sessions
             night_sessions = user_data.get("night_sessions", 0) + 1
-            if night_sessions >= 5:
+            if night_sessions >= 5 and "night_owl" in achievements:
                 new_achievements.append(achievements["night_owl"])
             user_data["night_sessions"] = night_sessions
         
@@ -345,7 +349,7 @@ class GamificationEngine:
         risk_level = session_data.get('risk_level', 'medium').lower()
         if risk_level == 'low' and "risk_free" not in user_data["achievements"]:
             low_risk_sessions = user_data.get("low_risk_sessions", 0) + 1
-            if low_risk_sessions >= 10:
+            if low_risk_sessions >= 10 and "risk_free" in achievements:
                 new_achievements.append(achievements["risk_free"])
             user_data["low_risk_sessions"] = low_risk_sessions
         
@@ -354,7 +358,7 @@ class GamificationEngine:
         if "variety_seeker" not in user_data["achievements"]:
             unique_exercises = set(user_data.get("unique_exercises", []))
             unique_exercises.add(exercise_type)
-            if len(unique_exercises) >= 5:
+            if len(unique_exercises) >= 5 and "variety_seeker" in achievements:
                 new_achievements.append(achievements["variety_seeker"])
             user_data["unique_exercises"] = list(unique_exercises)
         

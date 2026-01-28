@@ -56,13 +56,13 @@ class GoalSettingEngine:
                 "title": goal_data.get("title", ""),
                 "description": goal_data.get("description", ""),
                 "type": goal_data.get("type", GoalType.REPS.value),
-                "target_value": goal_data.get("target_value", 0),
-                "current_value": 0,
+                "target": goal_data.get("target", goal_data.get("target_value", 0)),
+                "current": 0,
                 "unit": goal_data.get("unit", ""),
                 "priority": goal_data.get("priority", GoalPriority.MEDIUM.value),
                 "status": GoalStatus.ACTIVE.value,
                 "start_date": datetime.now().isoformat(),
-                "target_date": goal_data.get("target_date", ""),
+                "deadline": goal_data.get("deadline", goal_data.get("target_date", "")),
                 "created_at": datetime.now().isoformat(),
                 "updated_at": datetime.now().isoformat(),
                 "progress_percentage": 0.0,
@@ -151,7 +151,7 @@ class GoalSettingEngine:
                     progress_update = self._calculate_progress(goal, session_data)
                     
                     # Update goal with new progress
-                    goal["current_value"] = progress_update["current_value"]
+                    goal["current"] = progress_update["current"]
                     goal["progress_percentage"] = progress_update["progress_percentage"]
                     goal["updated_at"] = datetime.now().isoformat()
                     
@@ -180,8 +180,8 @@ class GoalSettingEngine:
     def _calculate_progress(self, goal: Dict[str, Any], session_data: Dict[str, Any]) -> Dict[str, Any]:
         """Calculate progress for a specific goal based on session data"""
         goal_type = goal["type"]
-        target_value = goal["target_value"]
-        current_value = goal.get("current_value", 0)
+        target = goal.get("target", goal.get("target_value"))
+        current = goal.get("current", goal.get("current_value", 0))
         
         # Get relevant value from session data
         session_value = 0
@@ -203,16 +203,16 @@ class GoalSettingEngine:
         # Update current value
         if goal_type in [GoalType.REPS.value, GoalType.FORM_SCORE.value, GoalType.DURATION.value, GoalType.ENDURANCE.value]:
             # For cumulative goals, add to current value
-            new_current_value = current_value + session_value
+            new_current = current + session_value
         else:
             # For other goals, use the session value directly
-            new_current_value = session_value
+            new_current = session_value
         
         # Calculate progress percentage
-        progress_percentage = min((new_current_value / target_value) * 100, 100) if target_value > 0 else 0
+        progress_percentage = min((new_current / target) * 100, 100) if target > 0 else 0
         
         return {
-            "current_value": new_current_value,
+            "current": new_current,
             "progress_percentage": round(progress_percentage, 2),
             "session_contribution": session_value
         }
@@ -283,7 +283,7 @@ class GoalSettingEngine:
                     "type": GoalType.REPS.value,
                     "title": "Increase Rep Count",
                     "description": f"Work towards completing {int(avg_reps * 1.5)} reps per session",
-                    "target_value": int(avg_reps * 1.5),
+                    "target": int(avg_reps * 1.5),
                     "unit": "reps",
                     "priority": GoalPriority.MEDIUM.value,
                     "reason": f"Your current average is {avg_reps:.1f} reps. Let's aim for 50% more!"
@@ -294,7 +294,7 @@ class GoalSettingEngine:
                     "type": GoalType.FORM_SCORE.value,
                     "title": "Improve Form Quality",
                     "description": f"Focus on achieving a form score of 85+ consistently",
-                    "target_value": 85,
+                    "target": 85,
                     "unit": "score",
                     "priority": GoalPriority.HIGH.value,
                     "reason": f"Your current average form score is {avg_form_score:.1f}. Good form is crucial for progress!"
@@ -305,7 +305,7 @@ class GoalSettingEngine:
                     "type": GoalType.DURATION.value,
                     "title": "Build Endurance",
                     "description": f"Increase session duration to {int(avg_duration * 1.5)} seconds",
-                    "target_value": int(avg_duration * 1.5),
+                    "target": int(avg_duration * 1.5),
                     "unit": "seconds",
                     "priority": GoalPriority.LOW.value,
                     "reason": f"Your current average session duration is {avg_duration:.1f} seconds. Building endurance will help with overall fitness!"
@@ -317,7 +317,7 @@ class GoalSettingEngine:
                     "type": GoalType.SESSIONS_COMPLETED.value,
                     "title": "Build Consistency",
                     "description": "Complete 10 sessions this month",
-                    "target_value": 10,
+                    "target": 10,
                     "unit": "sessions",
                     "priority": GoalPriority.MEDIUM.value,
                     "reason": "Consistency is key to seeing results. Aim for regular practice!"
