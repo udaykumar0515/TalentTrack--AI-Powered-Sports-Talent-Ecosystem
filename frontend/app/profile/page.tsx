@@ -23,7 +23,7 @@ import {
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, isLoading: authLoading, switchDemoRole } = useAuth();
+  const { user, isLoading: authLoading, logout } = useAuth();
   const [gamification, setGamification] = useState<GamificationData | null>(null);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -84,9 +84,6 @@ export default function ProfilePage() {
               View your profile and achievements
             </p>
           </div>
-          <Button variant="outline" onClick={switchDemoRole}>
-            Switch to {user.role === 'athlete' ? 'Coach' : 'Athlete'} View
-          </Button>
         </div>
 
         {/* Profile Card */}

@@ -16,7 +16,7 @@ import { Play, TrendingUp, Target, Flame, Loader2, Users, AlertTriangle } from '
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, isLoading: authLoading, switchDemoRole } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [gamification, setGamification] = useState<GamificationData | null>(null);
   const [athletes, setAthletes] = useState<Athlete[]>([]);
@@ -107,9 +107,6 @@ export default function DashboardPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={switchDemoRole}>
-              Switch to {user.role === 'athlete' ? 'Coach' : 'Athlete'} View
-            </Button>
             {user.role === 'athlete' && (
               <Link href="/sessions/record">
                 <Button>

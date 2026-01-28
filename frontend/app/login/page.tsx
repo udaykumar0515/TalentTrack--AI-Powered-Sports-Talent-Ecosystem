@@ -1,7 +1,6 @@
 'use client';
 
 import React from "react"
-
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -28,22 +27,8 @@ export default function LoginPage() {
       await login(email, password);
       router.push('/dashboard');
     } catch (err) {
-      setError('Invalid credentials. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleQuickLogin = async (role: 'athlete' | 'coach') => {
-    setIsLoading(true);
-    try {
-      await login(
-        role === 'athlete' ? 'athlete@example.com' : 'coach@example.com',
-        'password'
-      );
-      router.push('/dashboard');
-    } catch (err) {
-      setError('Login failed. Please try again.');
+      const message = err instanceof Error ? err.message : 'Login failed';
+      setError(message);
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +44,7 @@ export default function LoginPage() {
               <Zap className="h-8 w-8 text-primary-foreground" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Welcome Back</h1>
+          <h1 className="text-3xl font-bold text-foreground">TalentTrack</h1>
           <p className="mt-2 text-muted-foreground">
             Sign in to continue your training journey
           </p>
@@ -121,34 +106,6 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Quick Demo Login</span>
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <Button
-                variant="outline"
-                onClick={() => handleQuickLogin('athlete')}
-                disabled={isLoading}
-              >
-                As Athlete
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => handleQuickLogin('coach')}
-                disabled={isLoading}
-              >
-                As Coach
-              </Button>
-            </div>
-          </div>
         </Card>
 
         {/* Sign Up Link */}

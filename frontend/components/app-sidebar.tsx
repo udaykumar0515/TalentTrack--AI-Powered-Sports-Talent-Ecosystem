@@ -27,6 +27,7 @@ export function AppSidebar({ userRole }: SidebarProps) {
     { href: '/sessions', label: 'Sessions', icon: Activity },
     { href: '/training-plan', label: 'Training Plan', icon: Calendar },
     { href: '/goals', label: 'Goals', icon: Target },
+    { href: '/coaches', label: 'Find Coach', icon: Users },
     { href: '/messages', label: 'Messages', icon: MessageSquare },
     { href: '/profile', label: 'Profile', icon: User },
   ];

@@ -88,25 +88,58 @@ export default function MessagesPage() {
 
   const handleSendMessage = async () => {
     if (!user || !newMessage.trim()) return;
-    if (user.role === 'coach' && !selectedAthleteId) return;
-
-    setSending(true);
-    try {
-      const message = await api.sendCoachMessage({
-        coachId: user.role === 'coach' ? user.id : undefined,
-        coachName: user.role === 'coach' ? (user.name || user.username) : undefined,
-        athleteId: user.role === 'athlete' ? user.id : selectedAthleteId,
-        athleteName: user.role === 'athlete' ? (user.name || user.username) : undefined,
+    
+    // Generate unique message ID
+    const messageId = `msg_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    
+    let messageData: Partial<CoachMessage>;
+    
+    if (user.role === 'coach') {
+      // Coach sending to athlete
+      if (!selectedAthleteId) return;
+      const selectedAthlete = athletes.find(a => a.id === selectedAthleteId);
+      messageData = {
+        id: messageId,
+        coachId: user.id,
+        coachName: user.name || user.username || 'Coach',
+        athleteId: selectedAthleteId,
+        athleteName: selectedAthlete?.name || selectedAthlete?.username || 'Athlete',
         type: 'feedback',
         message: newMessage,
         sessionId: '',
         timestamp: new Date().toISOString(),
         read: false,
-      });
+      };
+    } else {
+      // Athlete sending to their coach
+      const athlete = user as import('@/lib/types').Athlete;
+      if (!athlete.coachId) {
+        setError('No coach assigned. Please select a coach first.');
+        return;
+      }
+      messageData = {
+        id: messageId,
+        coachId: athlete.coachId,
+        coachName: athlete.coachName || 'Coach',
+        athleteId: user.id,
+        athleteName: user.name || user.username || 'Athlete',
+        type: 'feedback',
+        message: newMessage,
+        sessionId: '',
+        timestamp: new Date().toISOString(),
+        read: false,
+      };
+    }
+
+    setSending(true);
+    try {
+      const message = await api.sendCoachMessage(messageData);
       setMessages([message, ...messages]);
       setNewMessage('');
+      setError(null);
     } catch (err) {
       console.error('Error sending message:', err);
+      setError('Failed to send message. Please try again.');
     } finally {
       setSending(false);
     }
@@ -198,9 +231,9 @@ export default function MessagesPage() {
           </div>
         ) : messages.length > 0 ? (
           <div className="space-y-4">
-            {messages.map((msg) => (
+            {messages.map((msg, index) => (
               <Card 
-                key={msg.id} 
+                key={`${msg.id || 'msg'}-${index}`} 
                 className={`p-4 ${!msg.read && user.role === 'athlete' ? 'border-primary/50 bg-primary/5' : ''}`}
                 onClick={() => !msg.read && user.role === 'athlete' && handleMarkAsRead(msg.id)}
               >

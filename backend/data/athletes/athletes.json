@@ -1,56 +1,14 @@
 [
   {
-    "id": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
-    "email": "uday@example.com",
-    "password": "$2b$12$jseiUcJeabgo6UeikqwTlOe.tMBZSf2jh5klQrRIjQd6dhAn2VRui",
-    "username": "Udaykumar_H",
+    "id": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "email": "udaykumarhaibathi@gmail.com",
+    "password": "$2b$12$YMVXu/7FMxecIaEiuWW/Yelo3MAq..r8A0H7euY6.xm5jpclQtyge",
+    "username": "Udaykumar Haibathi",
     "role": "athlete",
-    "created_at": "2025-12-17T15:47:54.950666",
-    "age": 19,
-    "gender": "male",
-    "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
-    "coachName": "mike"
-  },
-  {
-    "id": "187a4a5c-482e-462f-8824-abb4c6ddb237",
-    "email": "sunny@example.com",
-    "password": "$2b$12$T9H2bOMK3NHjkjtsuwyRxOluA7/UymqkiuttrEAjES3hUp.zTRE0a",
-    "username": "sunny",
-    "role": "athlete",
-    "created_at": "2025-12-17T15:48:26.949552",
-    "age": 20,
-    "gender": "male",
-    "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
-    "coachName": "mike"
-  },
-  {
-    "id": "f84b9445-7f49-43fe-8c5a-3af6d21bca5b",
-    "email": "test@test.com",
-    "password": "$2b$12$k0IBcBCOIcxwprkr9E/OveNtv9WwzW71vt8IG6xFmTVkpnbt2NY.6",
-    "username": "testuser",
-    "role": "athlete",
-    "created_at": "2026-01-27T17:52:17.699978",
+    "created_at": "2026-01-28T12:32:03.926090",
     "age": null,
-    "gender": null
-  },
-  {
-    "id": "620cbf6e-1059-4f6b-bd48-87ad19c357cd",
-    "email": "verify_1769530483@example.com",
-    "password": "$2b$12$9yCNWJX2NyVV2AglmFM/aOq/dSmUCgKM4h9N3ru.o64p/xrstFDF6",
-    "username": "verify_1769530483",
-    "role": "athlete",
-    "created_at": "2026-01-27T21:44:46.024150",
-    "age": 25,
-    "gender": "male"
-  },
-  {
-    "id": "d8e6f7df-b294-4326-932d-c40f4c355a07",
-    "email": "verify_1769530623@example.com",
-    "password": "$2b$12$8kEuxFdY1FD3Qv/ACLzObeY7cJg.1jbVdehV6OB88lFtVMFSrRYMi",
-    "username": "verify_1769530623",
-    "role": "athlete",
-    "created_at": "2026-01-27T21:47:05.898817",
-    "age": 25,
-    "gender": "male"
+    "gender": null,
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john"
   }
 ]

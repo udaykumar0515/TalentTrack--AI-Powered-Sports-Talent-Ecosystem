@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { Bell, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,22 +12,26 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { User } from '@/lib/types';
+import { useAuth } from '@/lib/auth-context';
 
 interface AppTopBarProps {
   user: User;
 }
 
 export function AppTopBar({ user }: AppTopBarProps) {
+  const router = useRouter();
+  const { logout } = useAuth();
+
   const handleLogout = () => {
-    // TODO: Implement logout logic
-    console.log('Logout clicked');
+    logout();
+    router.push('/login');
   };
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 px-6">
       <div className="flex items-center gap-4">
         <h1 className="text-lg font-semibold text-foreground">
-          Welcome back, {user.name}
+          Welcome back, {user.name || user.username || 'User'}
         </h1>
       </div>
 
@@ -44,20 +49,20 @@ export function AppTopBar({ user }: AppTopBarProps) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-semibold text-sm">
-                {user.name.charAt(0).toUpperCase()}
+                {(user.name || user.username || 'U').charAt(0).toUpperCase()}
               </div>
-              <span className="text-sm font-medium">{user.name}</span>
+              <span className="text-sm font-medium">{user.name || user.username}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium">{user.name}</p>
+                <p className="text-sm font-medium">{user.name || user.username}</p>
                 <p className="text-xs text-muted-foreground">{user.email}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile Settings</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/profile')}>Profile Settings</DropdownMenuItem>
             <DropdownMenuItem>Preferences</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} className="text-destructive">

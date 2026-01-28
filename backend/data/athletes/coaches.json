@@ -1,12 +1,12 @@
 [
   {
-    "id": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
-    "email": "mike@coach.com",
-    "password": "$2b$12$eO5fXkwzu1syoxmjEfzqI.x.BP.xiO49c8ZzhTStSMKVRJUZXCaEy",
-    "username": "mike",
+    "id": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "email": "john@gmail.com",
+    "password": "$2b$12$I63Q2sqLO3V.aykIsx3NfOs0KKvC14M.qrZxPrFwDTWLJBAJfREbS",
+    "username": "john",
     "role": "coach",
-    "created_at": "2025-12-17T15:49:14.203848",
-    "age": 35,
-    "gender": "male"
+    "created_at": "2026-01-28T12:32:15.041393",
+    "age": null,
+    "gender": null
   }
 ]
