@@ -3,34 +3,35 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import type { User, Athlete, Coach } from './types';
 
-// Demo users for development/testing
+// Demo users matching actual backend database records
+// These IDs match records in backend/data/athletes/athletes.json and coaches.json
 const DEMO_ATHLETE: Athlete = {
-  id: 'demo-athlete-1',
-  email: 'athlete@demo.com',
-  name: 'Demo Athlete',
-  username: 'demo_athlete',
+  id: '53aa59ac-6739-4ff7-bda8-21883bd3ecb3',
+  email: 'uday@example.com',
+  name: 'Udaykumar H',
+  username: 'Udaykumar_H',
   role: 'athlete',
-  coachId: 'demo-coach-1',
-  coachName: 'Demo Coach',
-  createdAt: new Date().toISOString(),
+  coachId: 'dcd85641-bfbf-4a80-bf25-633ac9fc22fb',
+  coachName: 'Mike',
+  createdAt: '2025-12-17T15:47:54.950666',
   stats: {
-    totalSessions: 0,
-    averageFormScore: 0,
-    streak: 0,
-    xp: 0,
-    level: 1,
+    totalSessions: 12,
+    averageFormScore: 85,
+    streak: 5,
+    xp: 1250,
+    level: 3,
   },
 };
 
 const DEMO_COACH: Coach = {
-  id: 'demo-coach-1',
-  email: 'coach@demo.com',
-  name: 'Demo Coach',
-  username: 'demo_coach',
+  id: 'dcd85641-bfbf-4a80-bf25-633ac9fc22fb',
+  email: 'mike@coach.com',
+  name: 'Mike',
+  username: 'mike',
   role: 'coach',
   specialization: 'Strength & Conditioning',
-  athleteCount: 0,
-  createdAt: new Date().toISOString(),
+  athleteCount: 2,
+  createdAt: '2025-12-17T15:49:14.203848',
 };
 
 interface AuthContextType {
