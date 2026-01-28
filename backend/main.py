@@ -1240,10 +1240,6 @@ async def analyze_video(
         # Validate exercise name
         exercise_internal = validate_exercise_name(exercise)
         
-        # Check if exercise counter script exists
-        if not os.path.exists("services/exercise_counter.py"):
-            raise HTTPException(status_code=500, detail="Exercise counter script not found")
-
         # Create temporary file with proper extension
         file_extension = ".mp4"
         if file.filename:
@@ -1255,9 +1251,23 @@ async def analyze_video(
 
         logger.info(f"Saved uploaded video to {temp_file_path} for athlete {athleteId}")
 
-        # Build command
+        # Determine which script to use - prefer v2 (MediaPipe Tasks API)
+        use_fallback = False
+        main_script = "services/exercise_counter_v2.py"
+        fallback_script = "services/exercise_counter_fallback.py"
+        
+        # Check if main script exists
+        if not os.path.exists(main_script):
+            if os.path.exists(fallback_script):
+                use_fallback = True
+                logger.warning("Main exercise counter not found, using fallback")
+            else:
+                raise HTTPException(status_code=500, detail="Exercise counter script not found")
+        
+        # Build command with appropriate script
+        script_to_use = fallback_script if use_fallback else main_script
         cmd = [
-            PYTHON_EXECUTABLE, "services/exercise_counter.py",
+            PYTHON_EXECUTABLE, script_to_use,
             "--user-id", athleteId,
             "--user-name", athleteName,
             "--exercise", exercise_internal,
@@ -1284,11 +1294,48 @@ async def analyze_video(
         if stderr:
             logger.info(f"Analyzer stderr: {stderr.strip()}")
 
-        # Check return code
+        # Check return code - if TensorFlow error, retry with fallback
         if process.returncode != 0:
             error_msg = stderr.strip() if stderr else "Unknown error"
-            logger.error(f"Analyzer failed (code {process.returncode}): {error_msg}")
-            raise HTTPException(status_code=500, detail=f"Analysis failed: {error_msg}")
+            
+            # Detect TensorFlow/MediaPipe import errors and retry with fallback
+            tensorflow_error = any(keyword in error_msg.lower() for keyword in [
+                'tensorflow', 'mediapipe', 'no module named', 'dll load failed', 
+                'importerror', 'modulenotfounderror', 'pywrap'
+            ])
+            
+            if tensorflow_error and not use_fallback and os.path.exists(fallback_script):
+                logger.warning(f"TensorFlow error detected, retrying with fallback script: {error_msg[:200]}")
+                
+                # Retry with fallback script
+                cmd = [
+                    PYTHON_EXECUTABLE, fallback_script,
+                    "--user-id", athleteId,
+                    "--user-name", athleteName,
+                    "--exercise", exercise_internal,
+                    "--video-file", temp_file_path
+                ]
+                
+                process = subprocess.Popen(
+                    cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True
+                )
+                
+                try:
+                    stdout, stderr = process.communicate(timeout=60)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    raise HTTPException(status_code=500, detail="Fallback analysis timed out")
+                
+                if process.returncode != 0:
+                    error_msg = stderr.strip() if stderr else "Unknown error"
+                    logger.error(f"Fallback analyzer failed (code {process.returncode}): {error_msg}")
+                    raise HTTPException(status_code=500, detail=f"Analysis failed: {error_msg}")
+            else:
+                logger.error(f"Analyzer failed (code {process.returncode}): {error_msg}")
+                raise HTTPException(status_code=500, detail=f"Analysis failed: {error_msg}")
 
         # Parse stdout JSON
         try:
