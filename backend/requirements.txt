@@ -28,3 +28,6 @@ bcrypt
 
 # Environment variables
 python-dotenv
+
+# AI
+google-generativeai

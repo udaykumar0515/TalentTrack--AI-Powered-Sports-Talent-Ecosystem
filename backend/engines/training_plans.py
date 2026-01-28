@@ -11,6 +11,7 @@ from typing import Dict, List, Any, Optional, Tuple
 import os
 from .predictive_analytics import predictive_analytics
 from .benchmarking import benchmarking_engine
+from services.gemini_client import gemini_client
 
 class TrainingPlanGenerator:
     def __init__(self):
@@ -520,6 +521,192 @@ class TrainingPlanGenerator:
         except Exception as e:
             print(f"Error creating coach training plan: {e}")
             raise e
+
+    async def analyze_user_goal(self, goal_text: str) -> Dict[str, Any]:
+        """Using Gemini to analyze goal and generate clarification questions"""
+        prompt = f"""
+        Act as an elite sports performance coach. 
+        A user has expressed this training goal: "{goal_text}"
+        
+        I need to create a personalized 4-week training plan for them.
+        To do this effectively, I need to ask them 3-5 clarifying questions.
+        
+        You MUST include questions about:
+        1. Time availability (How many days/week? How many mins/session?) - BE SPECIFIC
+        2. Equipment access (Gym, Home, etc.)
+        3. Experience level or Current ability relative to the goal.
+        
+        Return a JSON object with a list of questions.
+        Schema:
+        {{
+            "questions": [
+                {{
+                    "id": "unique_id",
+                    "text": "The question text",
+                    "type": "select" | "text" | "number" | "multiselect",
+                    "options": ["Option A", "Option B"] (only for select/multiselect),
+                    "why": "Brief explanation of why you are asking this (e.g. 'To determine intensity')"
+                }}
+            ]
+        }}
+        """
+        
+        result = await gemini_client.generate_json(prompt)
+        if not result:
+            # Fallback if AI fails
+            return {
+                "questions": [
+                    {
+                        "id": "days_per_week",
+                        "text": "How many days per week can you train?",
+                        "type": "select",
+                        "options": ["2 days", "3 days", "4 days", "5+ days"],
+                        "why": "To build a realistic schedule"
+                    },
+                    {
+                        "id": "session_duration",
+                        "text": "How much time do you have per session?",
+                        "type": "select",
+                        "options": ["30 mins", "45 mins", "60 mins", "90+ mins"],
+                        "why": "To check intensity capacity"
+                    },
+                    {
+                        "id": "equipment",
+                        "text": "What equipment do you have access to?",
+                        "type": "select",
+                        "options": ["Full Gym", "Home Gym", "Bodyweight Only"],
+                        "why": "To select exercises"
+                    }
+                ]
+            }
+        return result
+
+    async def generate_ai_plan(self, athlete_id: str, goal_text: str, answers: Dict[str, Any]) -> Dict[str, Any]:
+        """Generate full plan using Gemini based on goal and answers"""
+        
+        answers_context = "\\n".join([f"- {k}: {v}" for k, v in answers.items()])
+        
+        prompt = f"""
+        Act as an elite sports performance coach.
+        Create a detailed 4-Week Progressive Training Plan for an athlete.
+        
+        GOAL: "{goal_text}"
+        
+        CONTEXT & CONSTRAINTS:
+        {answers_context}
+        
+        STRUCTURE:
+        Create a 4-week Micro-Cycle.
+        - Week 1: Introduction/Base
+        - Week 2: Progression/Ramp Up
+        - Week 3: Peak Intensity
+        - Week 4: Deload/Recovery
+        
+        OUTPUT FORMAT: Valid JSON Only.
+        {{
+            "title": "Plan Title",
+            "description": "Overview of the strategy.",
+            "duration": "4 weeks",
+            "frequency": "Based on input",
+            "goal_focus": "{goal_text}",
+            "weekly_schedule": [
+                {{
+                    "day": "Monday",
+                    "focus": "Leg Strength",
+                    "exercises": [
+                         {{
+                            "name": "Squat",
+                            "sets": 3,
+                            "reps": "10-12",
+                            "notes": "Focus on depth"
+                         }}
+                    ]
+                }},
+                ... (create a representative week template)
+            ],
+            "progression_plan": [
+                {{
+                    "week": 1,
+                    "focus": "Base Building",
+                    "instruction": "Low weights, focus on form."
+                }},
+                ... (Weeks 2-4)
+            ],
+            "coaching_tips": ["Tip 1", "Tip 2"]
+        }}
+        """
+        
+        try:
+            plan_data = await gemini_client.generate_json(prompt)
+        except Exception as e:
+            print(f"Gemini generation failed: {e}")
+            plan_data = None
+        
+        if not plan_data:
+            # Fallback Plan
+            print("Using Fallback AI Plan")
+            plan_data = {
+                "title": f"4-Week {goal_text} Prep (Starter)",
+                "description": f"A foundational program designed to help you achieve '{goal_text}'. Focuses on stability, strength, and gradual progression.",
+                "duration": "4 weeks",
+                "frequency": answers.get("days_per_week", "3 days"),
+                "goal_focus": goal_text,
+                "weekly_schedule": [
+                    {
+                        "day": "Monday",
+                        "focus": "Full Body Strength",
+                        "exercises": [
+                            {"name": "Squat", "sets": 3, "reps": "10", "notes": "Control the descent"},
+                            {"name": "Pushups", "sets": 3, "reps": "12", "notes": "Keep core tight"},
+                            {"name": "Plank", "sets": 3, "reps": "30s", "notes": "Solid base"}
+                        ]
+                    },
+                    {
+                        "day": "Wednesday",
+                        "focus": "Conditioning & Core",
+                        "exercises": [
+                            {"name": "Burpees", "sets": 3, "reps": "10", "notes": "Explosive movement"},
+                            {"name": "Mountain Climbers", "sets": 3, "reps": "30s", "notes": "Fast pace"},
+                            {"name": "Leg Raises", "sets": 3, "reps": "15", "notes": "Controlled"}
+                        ]
+                    },
+                    {
+                        "day": "Friday",
+                        "focus": "Stability & Recovery",
+                        "exercises": [
+                            {"name": "Lunges", "sets": 3, "reps": "10/leg", "notes": "Knee alignment"},
+                            {"name": "Glute Bridges", "sets": 3, "reps": "15", "notes": "Squeeze at top"}
+                        ]
+                    }
+                ],
+                "progression_plan": [
+                    {"week": 1, "focus": "Adaptation", "instruction": "Focus on technique and consistency."},
+                    {"week": 2, "focus": "Volume", "instruction": "Add 1 set to main lifts."},
+                    {"week": 3, "focus": "Intensity", "instruction": "Decrease rest times by 15s."},
+                    {"week": 4, "focus": "Deload", "instruction": "Reduce volume by 50% for recovery."}
+                ],
+                "coaching_tips": [
+                    "Consistency is key.",
+                    "Sleep at least 7 hours.",
+                    "Hydrate before sessions."
+                ]
+            }
+            
+        full_plan = {
+            "athlete_id": athlete_id,
+            "created_by": "ai_coach",
+            "created_at": datetime.now().isoformat() + "Z",
+            "valid_until": (datetime.now() + timedelta(weeks=4)).isoformat() + "Z",
+            "status": "active",
+            **plan_data
+        }
+        
+        # Save to storage (omitted as per context, assuming `_save_training_plans` handles it)
+        plans = self._load_training_plans() # Need to ensure self context is valid
+        plans[athlete_id] = full_plan
+        self._save_training_plans(plans)
+        
+        return full_plan
 
 # Create global instance
 training_plan_generator = TrainingPlanGenerator()

@@ -240,6 +240,20 @@ class ApiClient {
     });
   }
 
+  async analyzeGoal(goal: string) {
+    return this.request<{ questions: any[] }>('/api/training-plans/ai/analyze-goal', {
+      method: 'POST',
+      body: JSON.stringify({ goal }),
+    });
+  }
+
+  async generateAIPlan(athleteId: string, goal: string, answers: Record<string, any>) {
+    return this.request<TrainingPlan>('/api/training-plans/ai/generate', {
+      method: 'POST',
+      body: JSON.stringify({ athleteId, goal, answers }),
+    });
+  }
+
   // ============================================
   // PREDICTIVE ANALYTICS
   // ============================================

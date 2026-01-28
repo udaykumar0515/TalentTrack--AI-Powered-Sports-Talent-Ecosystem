@@ -213,6 +213,8 @@ export interface TrainingPlan {
   athleteId: string;
   coachId?: string;
   name: string;
+  title?: string;
+  duration?: string;
   description: string;
   weeks: TrainingWeek[];
   startDate: string;
@@ -222,6 +224,11 @@ export interface TrainingPlan {
   createdAt?: string;
   focus_areas?: string[];
   difficulty_level?: string;
+  // AI Generated Fields
+  weekly_schedule?: any[];
+  progression_plan?: any[];
+  coaching_tips?: string[];
+  goal_focus?: string;
 }
 
 export interface TrainingWeek {

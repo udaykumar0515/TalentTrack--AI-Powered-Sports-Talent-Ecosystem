@@ -117,6 +117,14 @@ class VideoMetadata(BaseModel):
     coachName: Optional[str] = None
     syncStatus: str = "synced"
 
+class AnalyzeGoalRequest(BaseModel):
+    goal: str
+
+class GenerateAIPlanRequest(BaseModel):
+    athleteId: str
+    goal: str
+    answers: Dict[str, Any]
+
 app = FastAPI(title="Exercise Analysis API", version="1.0.0")
 
 # Get allowed origins from environment
@@ -2153,7 +2161,30 @@ async def get_training_plan(athlete_id: str):
     except Exception as e:
         logger.error(f"Error getting training plan: {e}")
         # Return empty/default if not found
+        # Return empty/default if not found
         return None
+
+@app.post("/api/training-plans/ai/analyze-goal")
+async def analyze_training_goal(request: AnalyzeGoalRequest):
+    """Analyze goal and return clarification questions"""
+    try:
+        return await training_plan_generator.analyze_user_goal(request.goal)
+    except Exception as e:
+        logger.error(f"Error analyzing goal: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/training-plans/ai/generate")
+async def generate_ai_training_plan(request: GenerateAIPlanRequest):
+    """Generate full AI training plan"""
+    try:
+        return await training_plan_generator.generate_ai_plan(
+            request.athleteId,
+            request.goal,
+            request.answers
+        )
+    except Exception as e:
+        logger.error(f"Error generating AI plan: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
