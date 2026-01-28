@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/lib/auth-context';
 import { api } from '@/lib/api';
-import type { Session } from '@/lib/types';
+import type { Session, DetailedMetrics } from '@/lib/types';
 import { 
   ArrowLeft, 
   Trash2, 
@@ -18,7 +18,12 @@ import {
   AlertTriangle,
   TrendingUp,
   Loader2,
-  CheckCircle
+  CheckCircle,
+  Shield,
+  Activity,
+  Zap,
+  Eye,
+  Timer
 } from 'lucide-react';
 
 export default function SessionDetailPage() {
@@ -116,7 +121,24 @@ export default function SessionDetailPage() {
   const reps = session.reps || session.metrics?.reps || 0;
   const duration = session.durationSec || session.duration || 0;
   const date = session.date || session.timestamp || session.createdAt;
-  const risk = session.risk || 'Low';
+  const riskLevel = session.cheatDetection?.riskLevel;
+  const risk = session.risk || (riskLevel ? riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1) : 'Low');
+  const cheatDetection = session.cheatDetection;
+  const detailedMetrics = session.detailedMetrics as DetailedMetrics | undefined;
+
+  const getRiskColor = (riskLevel: string) => {
+    switch (riskLevel?.toLowerCase()) {
+      case 'high': return 'text-destructive';
+      case 'medium': return 'text-warning';
+      default: return 'text-success';
+    }
+  };
+
+  const getConfidenceColor = (confidence: number) => {
+    if (confidence >= 80) return 'text-success';
+    if (confidence >= 60) return 'text-warning';
+    return 'text-destructive';
+  };
 
   return (
     <AppLayout user={user}>
@@ -156,7 +178,7 @@ export default function SessionDetailPage() {
               {duration > 0 && (
                 <span className="flex items-center gap-1">
                   <Clock className="h-4 w-4" />
-                  {Math.round(duration / 60)} min
+                  {duration >= 60 ? `${Math.round(duration / 60)} min` : `${Math.round(duration)}s`}
                 </span>
               )}
               {session.athleteName && (
@@ -172,7 +194,7 @@ export default function SessionDetailPage() {
           </Badge>
         </div>
 
-        {/* Metrics Cards */}
+        {/* Primary Metrics Cards */}
         <div className="grid gap-6 md:grid-cols-3">
           <Card className="p-6 text-center">
             <TrendingUp className="h-8 w-8 text-primary mx-auto mb-2" />
@@ -190,6 +212,144 @@ export default function SessionDetailPage() {
             <p className="text-4xl font-bold text-foreground">{Math.round(duration)}s</p>
           </Card>
         </div>
+
+        {/* Risk Assessment Card */}
+        {cheatDetection && (
+          <Card className={`p-6 ${cheatDetection.riskLevel === 'high' ? 'border-destructive/30 bg-destructive/5' : cheatDetection.riskLevel === 'medium' ? 'border-warning/30 bg-warning/5' : 'border-success/30 bg-success/5'}`}>
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Shield className={`h-5 w-5 ${getRiskColor(cheatDetection.riskLevel)}`} />
+              Risk Assessment
+            </h2>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <p className="text-2xl font-semibold mb-2">{cheatDetection.riskExplanation}</p>
+                {cheatDetection.riskFactors && cheatDetection.riskFactors.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {cheatDetection.riskFactors.map((factor, idx) => (
+                      <Badge key={idx} variant="outline" className="text-xs">
+                        {factor}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div className="p-3 bg-background rounded-lg border">
+                  <Eye className="h-5 w-5 text-muted-foreground mx-auto mb-1" />
+                  <p className={`text-2xl font-bold ${getConfidenceColor(cheatDetection.confidence)}`}>
+                    {cheatDetection.confidence}%
+                  </p>
+                  <p className="text-xs text-muted-foreground">Confidence</p>
+                </div>
+                <div className="p-3 bg-background rounded-lg border">
+                  <AlertTriangle className="h-5 w-5 text-muted-foreground mx-auto mb-1" />
+                  <p className="text-2xl font-bold text-foreground">{cheatDetection.totalFlags}</p>
+                  <p className="text-xs text-muted-foreground">Issues Found</p>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Form Analysis Flags */}
+        {cheatDetection?.cheat_flags && (
+          <Card className="p-6">
+            <h2 className="text-lg font-semibold text-foreground mb-2 flex items-center gap-2">
+              <Activity className="h-5 w-5 text-primary" />
+              Form Analysis
+            </h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              <span className="inline-flex items-center gap-1"><CheckCircle className="h-3 w-3 text-success" /> Good</span>
+              {" • "}
+              <span className="inline-flex items-center gap-1"><AlertTriangle className="h-3 w-3 text-warning" /> Needs Attention</span>
+            </p>
+            <div className="grid gap-3 md:grid-cols-3">
+              {Object.entries(cheatDetection.cheat_flags).map(([flag, detected]) => {
+                // Map flag names to clear descriptions
+                const flagDescriptions: Record<string, { good: string; bad: string }> = {
+                  too_fast_reps: { good: "Pace is Good", bad: "Reps Too Fast" },
+                  inconsistent_form: { good: "Form is Consistent", bad: "Inconsistent Form" },
+                  minimal_movement: { good: "Good Range of Motion", bad: "Limited Movement" },
+                  suspicious_timing: { good: "Natural Timing", bad: "Suspicious Timing" },
+                  form_deterioration: { good: "Form Maintained", bad: "Form Declining" },
+                  repetitive_pattern: { good: "Natural Movement", bad: "Repetitive Pattern" }
+                };
+                const desc = flagDescriptions[flag] || { good: flag.replace(/_/g, ' '), bad: flag.replace(/_/g, ' ') };
+                const label = detected ? desc.bad : desc.good;
+                
+                return (
+                  <div 
+                    key={flag}
+                    className={`p-3 rounded-lg border flex items-center gap-3 ${detected ? 'border-warning/50 bg-warning/10' : 'border-success/50 bg-success/10'}`}
+                  >
+                    {detected ? (
+                      <AlertTriangle className="h-4 w-4 text-warning flex-shrink-0" />
+                    ) : (
+                      <CheckCircle className="h-4 w-4 text-success flex-shrink-0" />
+                    )}
+                    <span className="text-sm">
+                      {label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+        )}
+
+        {/* Detailed Metrics */}
+        {detailedMetrics && (
+          <Card className="p-6">
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Zap className="h-5 w-5 text-primary" />
+              Detailed Metrics
+            </h2>
+            <div className="grid gap-4 md:grid-cols-4">
+              {detailedMetrics.avgAngle !== undefined && (
+                <div className="p-3 bg-muted/30 rounded-lg text-center">
+                  <p className="text-2xl font-bold text-foreground">{detailedMetrics.avgAngle}°</p>
+                  <p className="text-xs text-muted-foreground">Avg Angle</p>
+                </div>
+              )}
+              {detailedMetrics.angleRange !== undefined && (
+                <div className="p-3 bg-muted/30 rounded-lg text-center">
+                  <p className="text-2xl font-bold text-foreground">{detailedMetrics.angleRange}°</p>
+                  <p className="text-xs text-muted-foreground">Range of Motion</p>
+                </div>
+              )}
+              {detailedMetrics.formConsistency !== undefined && (
+                <div className="p-3 bg-muted/30 rounded-lg text-center">
+                  <p className="text-2xl font-bold text-foreground">{Math.round(detailedMetrics.formConsistency * 100)}%</p>
+                  <p className="text-xs text-muted-foreground">Form Consistency</p>
+                </div>
+              )}
+              {detailedMetrics.totalFramesAnalyzed !== undefined && (
+                <div className="p-3 bg-muted/30 rounded-lg text-center">
+                  <p className="text-2xl font-bold text-foreground">{detailedMetrics.totalFramesAnalyzed}</p>
+                  <p className="text-xs text-muted-foreground">Frames Analyzed</p>
+                </div>
+              )}
+            </div>
+          </Card>
+        )}
+
+        {/* Suspicious Patterns */}
+        {cheatDetection?.suspiciousPatterns && cheatDetection.suspiciousPatterns.length > 0 && (
+          <Card className="p-6 border-warning/30 bg-warning/5">
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Timer className="h-5 w-5 text-warning" />
+              Detected Patterns
+            </h2>
+            <ul className="space-y-2">
+              {cheatDetection.suspiciousPatterns.map((pattern, idx) => (
+                <li key={idx} className="flex items-start gap-2 text-muted-foreground">
+                  <span className="text-warning mt-0.5">•</span>
+                  <span>{pattern}</span>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        )}
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Injury Flags */}
@@ -265,3 +425,4 @@ export default function SessionDetailPage() {
     </AppLayout>
   );
 }
+

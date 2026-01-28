@@ -1,11 +1,12 @@
 {
   "c867df8f-9cdf-4e32-a29d-379c892b220f": {
     "athlete_id": "c867df8f-9cdf-4e32-a29d-379c892b220f",
-    "generated_at": "2026-01-28T19:08:59.436764Z",
-    "valid_until": "2026-02-27T19:08:59.436764Z",
+    "generated_at": "2026-01-28T19:50:23.518988Z",
+    "valid_until": "2026-02-27T19:50:23.519991Z",
     "analysis": {
       "gaps": [
         "Form technique needs improvement",
+        "Rep count declining - may need rest or form focus",
         "Limited exercise variety - need more diverse training"
       ],
       "strengths": [
@@ -13,10 +14,11 @@
       ],
       "focus_areas": [
         "form_technique",
+        "endurance",
         "variety"
       ],
       "avg_form": 61.0,
-      "reps_trend": 0,
+      "reps_trend": -1.6429779903597286e-16,
       "exercise_variety": 1,
       "cheat_rate": 0.0
     },
@@ -35,6 +37,21 @@
           "Stop if form breaks down"
         ],
         "priority": "high"
+      },
+      {
+        "exercise": "squat",
+        "type": "endurance",
+        "sets": 2,
+        "reps": "15-20",
+        "intensity": "light",
+        "focus": "Build stamina and consistency",
+        "instructions": [
+          "Maintain steady pace",
+          "Focus on breathing rhythm",
+          "Take short breaks between sets",
+          "Gradually increase reps"
+        ],
+        "priority": "medium"
       },
       {
         "exercise": "jumping_jack",
@@ -72,6 +89,23 @@
       },
       {
         "day": "Wednesday",
+        "exercise": "squat",
+        "type": "endurance",
+        "sets": 2,
+        "reps": "15-20",
+        "intensity": "light",
+        "focus": "Build stamina and consistency",
+        "instructions": [
+          "Maintain steady pace",
+          "Focus on breathing rhythm",
+          "Take short breaks between sets",
+          "Gradually increase reps"
+        ],
+        "priority": "medium",
+        "estimated_duration": "15-20 minutes"
+      },
+      {
+        "day": "Friday",
         "exercise": "jumping_jack",
         "type": "cardio",
         "sets": 3,
@@ -85,23 +119,6 @@
           "Breathe consistently"
         ],
         "priority": "medium",
-        "estimated_duration": "15-20 minutes"
-      },
-      {
-        "day": "Friday",
-        "exercise": "squat",
-        "type": "form_focus",
-        "sets": 3,
-        "reps": "8-12",
-        "intensity": "moderate",
-        "focus": "Perfect form over speed",
-        "instructions": [
-          "Slow down your movements",
-          "Focus on full range of motion",
-          "Maintain control throughout",
-          "Stop if form breaks down"
-        ],
-        "priority": "high",
         "estimated_duration": "15-20 minutes"
       }
     ],
@@ -190,20 +207,35 @@
         "factors": []
       },
       "improvement_potential": {
-        "potential": "unknown",
-        "score": 0,
-        "suggestions": []
+        "potential": "medium",
+        "score": 50,
+        "suggestions": [
+          "Consider increasing intensity or volume",
+          "Consistent performance - ready for advanced training",
+          "Excellent form discipline - ready for progression"
+        ]
       },
       "performance_trends": {
-        "form": {},
-        "reps": {}
+        "form": {
+          "slope": 0.0,
+          "r_squared": 0.0,
+          "trend": "stable",
+          "confidence": 0
+        },
+        "reps": {
+          "slope": 0.0,
+          "r_squared": 0.0,
+          "trend": "stable",
+          "confidence": 0
+        }
       }
     },
     "coaching_notes": [
       "Focus on form technique - current average form score is below 70%",
+      "Rep count declining - consider rest days or form focus",
       "Limited exercise variety - introduce complementary exercises",
       "Excellent form discipline - ready for increased intensity"
     ],
-    "next_review_date": "2026-02-04T19:08:59.436764Z"
+    "next_review_date": "2026-02-04T19:50:23.519991Z"
   }
 }

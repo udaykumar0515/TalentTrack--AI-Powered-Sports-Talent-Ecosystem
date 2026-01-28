@@ -6,7 +6,7 @@ Analyzes historical performance data to predict future trends, injury risks, and
 
 import json
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Any, Optional, Tuple
 import os
 
@@ -91,7 +91,7 @@ class PredictiveAnalytics:
                 risk_score += 30
         
         # Check for overtraining (too many sessions in short time)
-        recent_sessions = [s for s in sessions if self._days_since(s["timestamp"]) <= 7]
+        recent_sessions = [s for s in sessions if self._days_since(s.get("timestamp") or s.get("date", "")) <= 7]
         if len(recent_sessions) > 5:
             risk_factors.append("Potential overtraining")
             risk_score += 20

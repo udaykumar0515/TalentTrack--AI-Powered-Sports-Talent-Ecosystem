@@ -90,6 +90,8 @@ export interface Session {
   analysis_config?: any;
   
   aiAnalysis?: AIAnalysis;
+  cheatDetection?: CheatDetection;
+  detailedMetrics?: DetailedMetrics;
 }
 
 export interface AIAnalysis {
@@ -98,6 +100,35 @@ export interface AIAnalysis {
   keyPoints: string[];
   improvements: string[];
   timestamp: string;
+}
+
+export interface CheatDetection {
+  cheatDetected: boolean;
+  cheatPercentage: number;
+  totalFlags: number;
+  confidence: number;
+  riskLevel: 'low' | 'medium' | 'high' | 'unknown';
+  riskExplanation: string;
+  riskFactors: string[];
+  cheat_flags: {
+    too_fast_reps: boolean;
+    inconsistent_form: boolean;
+    minimal_movement: boolean;
+    suspicious_timing: boolean;
+    form_deterioration: boolean;
+    repetitive_pattern: boolean;
+  };
+  suspiciousPatterns: string[];
+}
+
+export interface DetailedMetrics {
+  avgAngle: number;
+  minAngle: number;
+  maxAngle: number;
+  angleRange: number;
+  formConsistency: number;
+  repFormScores: number[];
+  totalFramesAnalyzed: number;
 }
 
 // ============================================
