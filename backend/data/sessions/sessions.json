@@ -1,1 +1,78 @@
-[]
+{
+  "c867df8f-9cdf-4e32-a29d-379c892b220f": {
+    "sessions": [
+      {
+        "sessionId": "06161238",
+        "exercise": "squat",
+        "date": "2026-01-28T13:34:04.510874Z",
+        "reps": 2,
+        "formScore": 61,
+        "durationSec": 8.0,
+        "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+        "athleteName": "Udaykumar Haibathi",
+        "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 61,
+        "durationSec": 8.0,
+        "timestamp": "2026-01-28T19:04:04.798602Z",
+        "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+        "athleteName": "Udaykumar Haibathi",
+        "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+        "coachName": "john",
+        "sessionId": "c807e8c1",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 90.0,
+          "riskLevel": "low",
+          "flags": {},
+          "suspiciousPatterns": []
+        },
+        "benchmarking": {
+          "performance_level": {
+            "level": "unknown",
+            "score": 0,
+            "description": "Unknown exercise"
+          },
+          "peer_comparison": {
+            "percentile": 100.0,
+            "rank": "N/A",
+            "total_athletes": 1,
+            "performance_score": 36.0,
+            "average_score": 36.0
+          },
+          "global_rank": 1,
+          "coach_rank": "N/A",
+          "total_global_athletes": 1,
+          "total_coach_athletes": 0,
+          "improvement_suggestions": [
+            "Excellent performance! Keep up the great work"
+          ]
+        },
+        "predictiveAnalytics": {
+          "error": "No sessions found for athlete"
+        },
+        "trainingPlan": {
+          "error": "No sessions found for athlete"
+        },
+        "injuryAnalysis": {
+          "error": "No sessions found for athlete"
+        },
+        "gamification": {
+          "session_points": 30,
+          "total_points": 30,
+          "level": 1,
+          "new_achievements": [],
+          "new_badges": [],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
+        }
+      }
+    ]
+  }
+}

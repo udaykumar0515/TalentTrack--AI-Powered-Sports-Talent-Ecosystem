@@ -122,5 +122,24 @@
       "icon": "\ud83e\udd49",
       "points_required": 100
     }
+  },
+  "c867df8f-9cdf-4e32-a29d-379c892b220f": {
+    "total_points": 30,
+    "achievements": [
+      "first_session"
+    ],
+    "badges": [],
+    "level": 1,
+    "sessions_completed": 1,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_session_date": "2026-01-28T13:34:04.510874Z",
+    "unique_exercises": [
+      "squat"
+    ],
+    "early_sessions": 0,
+    "night_sessions": 0,
+    "low_risk_sessions": 0,
+    "current_badge": null
   }
 }

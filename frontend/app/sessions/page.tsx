@@ -41,8 +41,23 @@ export default function SessionsPage() {
           ? { athleteId: user.id }
           : { coachId: user.id };
         
-        const data = await api.getSessions(params);
-        setSessions(Array.isArray(data) ? data : []);
+        console.log('[SESSIONS DEBUG] Fetching with params:', params);
+        
+        const response = await api.getSessions(params);
+        
+        console.log('[SESSIONS DEBUG] Raw response:', response);
+        
+        // Handle both array and paginated response formats
+        let sessionsData: Session[] = [];
+        if (Array.isArray(response)) {
+          sessionsData = response;
+        } else if (response && typeof response === 'object' && 'sessions' in response) {
+          // Paginated response: { sessions: [...], pagination: {...} }
+          sessionsData = (response as { sessions: Session[] }).sessions || [];
+        }
+        
+        console.log('[SESSIONS DEBUG] Extracted sessions:', sessionsData.length);
+        setSessions(sessionsData);
       } catch (err) {
         console.error('Error fetching sessions:', err);
         setError('Failed to load sessions. Please check if the backend is running.');
@@ -61,8 +76,16 @@ export default function SessionsPage() {
     setIsLoading(true);
     try {
       const params = user.role === 'athlete' ? { athleteId: user.id } : { coachId: user.id };
-      const data = await api.getSessions(params);
-      setSessions(Array.isArray(data) ? data : []);
+      const response = await api.getSessions(params);
+      
+      // Handle both array and paginated response formats
+      let sessionsData: Session[] = [];
+      if (Array.isArray(response)) {
+        sessionsData = response;
+      } else if (response && typeof response === 'object' && 'sessions' in response) {
+        sessionsData = (response as { sessions: Session[] }).sessions || [];
+      }
+      setSessions(sessionsData);
     } catch (err) {
       console.error('Error refreshing:', err);
     } finally {

@@ -14,6 +14,7 @@ import time
 import os
 import logging
 import sys
+sys.dont_write_bytecode = True
 from engines.benchmarking import benchmarking_engine
 from engines.predictive_analytics import predictive_analytics
 from engines.training_plans import training_plan_generator
@@ -1625,25 +1626,34 @@ async def recalculate_user_gamification_stats(user_id: str):
 async def create_goal(goal_data: dict):
     """Create a new goal for a user"""
     try:
-        user_id = goal_data.get("user_id")
+        # Handle both camelCase (frontend) and snake_case (backend)
+        user_id = goal_data.get("user_id") or goal_data.get("userId")
+        
         if not user_id:
             raise HTTPException(status_code=400, detail="user_id is required")
         
+        # Ensure user_id is in goal_data for the engine
+        if "user_id" not in goal_data:
+            goal_data["user_id"] = user_id
+            
         goal = goal_setting_engine.create_goal(user_id, goal_data)
         if not goal:
             raise HTTPException(status_code=500, detail="Failed to create goal")
         
         return goal
+    except HTTPException:
+        # Re-raise HTTP exceptions (like 400) directly instead of wrapping in 500
+        raise
     except Exception as e:
         logger.error(f"Error creating goal: {e}")
-        raise HTTPException(status_code=500, detail="Failed to create goal")
+        raise HTTPException(status_code=500, detail=f"Failed to create goal: {str(e)}")
 
 @app.get("/api/goals/{user_id}")
 async def get_user_goals(user_id: str, status: Optional[str] = None):
     """Get all goals for a user"""
     try:
         goals = goal_setting_engine.get_user_goals(user_id, status)
-        return {"goals": goals}
+        return goals
     except Exception as e:
         logger.error(f"Error getting user goals: {e}")
         raise HTTPException(status_code=500, detail="Failed to get user goals")
@@ -2012,6 +2022,115 @@ async def process_offline_video(video_id: str, analysis_result: dict):
         logger.error(f"Error processing offline video: {e}")
         raise HTTPException(status_code=500, detail="Failed to process offline video")
 
+
+
+# ==========================================
+# MISSING ENDPOINTS IMPLEMENTATION
+# ==========================================
+
+@app.get("/api/sessions")
+async def get_sessions(
+    athleteId: Optional[str] = None, 
+    coachId: Optional[str] = None,
+    skip: int = 0, 
+    limit: int = 20
+):
+    """Get all sessions with filtering"""
+    # DEBUG: Log received parameters
+    print(f"[SESSIONS DEBUG] athleteId param: {athleteId}")
+    print(f"[SESSIONS DEBUG] coachId param: {coachId}")
+    
+    try:
+        sessions_file = "data/sessions/sessions.json"
+        if not os.path.exists(sessions_file):
+            print("[SESSIONS DEBUG] sessions.json file not found!")
+            return []
+            
+        with open(sessions_file, "r", encoding="utf-8") as f:
+            content = f.read().strip()
+            data = json.loads(content) if content else {}
+        
+        print(f"[SESSIONS DEBUG] Loaded data keys: {list(data.keys())}")
+            
+        # Handle legacy list format if it still exists (robustness)
+        if isinstance(data, list):
+            print("[SESSIONS DEBUG] Data is list format - returning empty!")
+            return []
+            
+        all_sessions = []
+        
+        # Iterate over all athletes
+        for a_id, a_data in data.items():
+            if "sessions" in a_data:
+                for session in a_data["sessions"]:
+                    session_athlete_id = session.get("athleteId")
+                    print(f"[SESSIONS DEBUG] Session athleteId: {session_athlete_id}, comparing to param: {athleteId}")
+                    
+                    # Filter by athleteId
+                    if athleteId and session_athlete_id != athleteId:
+                        print(f"[SESSIONS DEBUG] Skipping - ID mismatch")
+                        continue
+                        
+                    # Filter by coachId
+                    if coachId and session.get("coachId") != coachId:
+                        continue
+                        
+                    all_sessions.append(session)
+        
+        print(f"[SESSIONS DEBUG] Total sessions matched: {len(all_sessions)}")
+        
+        # Sort by timestamp (newest first)
+        def get_sort_key(s):
+            return s.get("timestamp") or s.get("date") or ""
+            
+        all_sessions.sort(key=get_sort_key, reverse=True)
+        
+        # Apply pagination
+        start = skip
+        end = skip + limit
+        return all_sessions[start:end]
+        
+    except Exception as e:
+        logger.error(f"Error getting sessions: {e}")
+        print(f"[SESSIONS DEBUG] Exception: {e}")
+        return []
+
+@app.post("/api/training-plans/athlete/{athlete_id}/generate")
+async def generate_training_plan(athlete_id: str):
+    """Generate a training plan for an athlete"""
+    try:
+        # Check for existing sessions to base plan on
+        sessions_file = "data/sessions/sessions.json"
+        has_sessions = False
+        if os.path.exists(sessions_file):
+            with open(sessions_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict) and athlete_id in data and data[athlete_id].get("sessions"):
+                    has_sessions = True
+        
+        # Call generator
+        plan = training_plan_generator.generate_training_plan(athlete_id)
+        
+        if not plan:
+            # If generation failed, create a basic fallback plan
+            plan = training_plan_generator.generate_fallback_plan(athlete_id)
+            
+        return plan
+    except Exception as e:
+        logger.error(f"Error generating training plan: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Failed to generate training plan: {str(e)}")
+
+@app.get("/api/training-plans/athlete/{athlete_id}")
+async def get_training_plan(athlete_id: str):
+    """Get existing training plan for an athlete"""
+    try:
+        return training_plan_generator.get_training_plan(athlete_id)
+    except Exception as e:
+        logger.error(f"Error getting training plan: {e}")
+        # Return empty/default if not found
+        return None
 
 if __name__ == "__main__":
     import uvicorn

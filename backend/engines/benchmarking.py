@@ -92,6 +92,9 @@ class BenchmarkingEngine:
         try:
             with open(sessions_file, "r", encoding="utf-8") as f:
                 all_sessions = json.load(f)
+                # Handle legacy list format
+                if isinstance(all_sessions, list):
+                    all_sessions = {}
         except:
             return {"percentile": 50, "rank": "N/A", "total_athletes": 0}
         

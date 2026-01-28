@@ -13,6 +13,7 @@ import uuid
 import datetime
 import argparse
 import sys
+sys.dont_write_bytecode = True
 import logging
 
 # MediaPipe Tasks imports
@@ -47,7 +48,11 @@ def load_sessions():
         try:
             with open(DATA_FILE, "r", encoding="utf-8") as f:
                 content = f.read().strip()
-                return json.loads(content) if content else {}
+                data = json.loads(content) if content else {}
+                # Ensure data is a dictionary (handle legacy list format)
+                if isinstance(data, list):
+                    return {} 
+                return data
         except Exception:
             return {}
     return {}
