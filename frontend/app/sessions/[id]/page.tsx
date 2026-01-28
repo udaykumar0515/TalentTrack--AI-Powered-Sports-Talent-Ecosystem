@@ -1,0 +1,267 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { AppLayout } from '@/components/app-layout';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/lib/auth-context';
+import { api } from '@/lib/api';
+import type { Session } from '@/lib/types';
+import { 
+  ArrowLeft, 
+  Trash2, 
+  Calendar, 
+  Clock, 
+  Target, 
+  AlertTriangle,
+  TrendingUp,
+  Loader2,
+  CheckCircle
+} from 'lucide-react';
+
+export default function SessionDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const { user, isLoading: authLoading } = useAuth();
+  const sessionId = params?.id as string;
+
+  const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, authLoading, router]);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      if (!sessionId) return;
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const data = await api.getSession(sessionId);
+        setSession(data);
+      } catch (err) {
+        console.error('Error fetching session:', err);
+        setError('Failed to load session details.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (sessionId) {
+      fetchSession();
+    }
+  }, [sessionId]);
+
+  const handleDelete = async () => {
+    if (!session || !confirm('Are you sure you want to delete this session?')) return;
+    
+    setDeleting(true);
+    try {
+      await api.deleteSession(session.id || session.sessionId || sessionId);
+      router.push('/sessions');
+    } catch (err) {
+      console.error('Error deleting session:', err);
+      setDeleting(false);
+    }
+  };
+
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <span className="text-lg text-foreground">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <AppLayout user={user}>
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <span className="ml-2 text-muted-foreground">Loading session...</span>
+        </div>
+      </AppLayout>
+    );
+  }
+
+  if (error || !session) {
+    return (
+      <AppLayout user={user}>
+        <Card className="p-8 text-center">
+          <AlertTriangle className="h-12 w-12 text-destructive mx-auto mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Session Not Found</h2>
+          <p className="text-muted-foreground mb-4">{error || 'This session could not be found.'}</p>
+          <Button onClick={() => router.push('/sessions')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Sessions
+          </Button>
+        </Card>
+      </AppLayout>
+    );
+  }
+
+  const formScore = session.formScore || session.metrics?.formScore || 0;
+  const reps = session.reps || session.metrics?.reps || 0;
+  const duration = session.durationSec || session.duration || 0;
+  const date = session.date || session.timestamp || session.createdAt;
+  const risk = session.risk || 'Low';
+
+  return (
+    <AppLayout user={user}>
+      <div className="space-y-6">
+        {/* Back & Actions */}
+        <div className="flex items-center justify-between">
+          <Button variant="ghost" size="sm" onClick={() => router.push('/sessions')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Sessions
+          </Button>
+          <Button 
+            variant="destructive" 
+            size="sm" 
+            onClick={handleDelete}
+            disabled={deleting}
+          >
+            {deleting ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Trash2 className="h-4 w-4 mr-2" />
+            )}
+            Delete Session
+          </Button>
+        </div>
+
+        {/* Session Header */}
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground capitalize">{session.exercise}</h1>
+            <div className="flex items-center gap-4 mt-2 text-muted-foreground">
+              {date && (
+                <span className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
+                  {new Date(date).toLocaleDateString()}
+                </span>
+              )}
+              {duration > 0 && (
+                <span className="flex items-center gap-1">
+                  <Clock className="h-4 w-4" />
+                  {Math.round(duration / 60)} min
+                </span>
+              )}
+              {session.athleteName && (
+                <span>Athlete: {session.athleteName}</span>
+              )}
+            </div>
+          </div>
+          <Badge 
+            variant={risk === 'High' ? 'destructive' : risk === 'Medium' ? 'secondary' : 'outline'}
+            className="text-sm"
+          >
+            {risk} Risk
+          </Badge>
+        </div>
+
+        {/* Metrics Cards */}
+        <div className="grid gap-6 md:grid-cols-3">
+          <Card className="p-6 text-center">
+            <TrendingUp className="h-8 w-8 text-primary mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground mb-1">Form Score</p>
+            <p className="text-4xl font-bold text-foreground">{formScore}%</p>
+          </Card>
+          <Card className="p-6 text-center">
+            <Target className="h-8 w-8 text-primary mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground mb-1">Reps Completed</p>
+            <p className="text-4xl font-bold text-foreground">{reps}</p>
+          </Card>
+          <Card className="p-6 text-center">
+            <Clock className="h-8 w-8 text-primary mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground mb-1">Duration</p>
+            <p className="text-4xl font-bold text-foreground">{Math.round(duration)}s</p>
+          </Card>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Injury Flags */}
+          {session.injuryFlags && session.injuryFlags.length > 0 && (
+            <Card className="p-6 border-destructive/30 bg-destructive/5">
+              <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5 text-destructive" />
+                Injury Flags
+              </h2>
+              <div className="space-y-3">
+                {session.injuryFlags.map((flag, i) => (
+                  <div key={i} className="p-3 rounded-lg bg-background border border-destructive/30">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-medium capitalize">{flag.type}</span>
+                      <Badge variant="destructive">{flag.severity}</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{flag.message}</p>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {/* Recommendations */}
+          {session.recommendations && session.recommendations.length > 0 && (
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-primary" />
+                Recommendations
+              </h2>
+              <ul className="space-y-2">
+                {session.recommendations.map((rec, i) => (
+                  <li key={i} className="flex items-start gap-2 text-muted-foreground">
+                    <span className="text-primary mt-0.5">•</span>
+                    <span>{rec}</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+
+          {/* AI Analysis */}
+          {session.aiAnalysis && (
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold text-foreground mb-4">AI Analysis</h2>
+              <p className="text-muted-foreground mb-4">{session.aiAnalysis.feedback}</p>
+              {session.aiAnalysis.keyPoints && session.aiAnalysis.keyPoints.length > 0 && (
+                <div>
+                  <p className="font-medium mb-2">Key Points:</p>
+                  <ul className="space-y-1 text-sm text-muted-foreground">
+                    {session.aiAnalysis.keyPoints.map((point, i) => (
+                      <li key={i}>• {point}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </Card>
+          )}
+        </div>
+
+        {/* Video Player */}
+        {session.videoUrl && (
+          <Card className="p-6">
+            <h2 className="text-lg font-semibold text-foreground mb-4">Session Video</h2>
+            <video 
+              src={session.videoUrl} 
+              controls 
+              className="w-full rounded-lg max-h-[500px]"
+            />
+          </Card>
+        )}
+      </div>
+    </AppLayout>
+  );
+}
