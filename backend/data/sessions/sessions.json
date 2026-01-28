@@ -1,3 +1,2883 @@
 {
-
+  "53aa59ac-6739-4ff7-bda8-21883bd3ecb3": {
+    "sessions": [
+      {
+        "sessionId": "e0580303",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 46,
+        "formScore": 88,
+        "durationSec": 154.8,
+        "timestamp": "2025-11-19T02:34:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "06cdb6ed",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 44,
+        "formScore": 93,
+        "durationSec": 127.4,
+        "timestamp": "2025-11-18T23:02:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "881ec4a0",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 22,
+        "formScore": 85,
+        "durationSec": 69.6,
+        "timestamp": "2025-11-20T10:23:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "054dbe31",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 48,
+        "formScore": 93,
+        "durationSec": 136.0,
+        "timestamp": "2025-11-21T10:27:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "3d7a44da",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 27,
+        "formScore": 86,
+        "durationSec": 84.2,
+        "timestamp": "2025-11-22T05:07:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "c76563cf",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 32,
+        "formScore": 98,
+        "durationSec": 96.8,
+        "timestamp": "2025-11-23T02:09:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "d223da3e",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 39,
+        "formScore": 94,
+        "durationSec": 143.8,
+        "timestamp": "2025-11-24T01:23:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "1682b1d2",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 35,
+        "formScore": 91,
+        "durationSec": 99.0,
+        "timestamp": "2025-11-26T00:06:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "da55dfbe",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 47,
+        "formScore": 80,
+        "durationSec": 147.7,
+        "timestamp": "2025-11-27T06:56:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "06754690",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 49,
+        "formScore": 98,
+        "durationSec": 140.5,
+        "timestamp": "2025-11-28T06:12:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "0240e836",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 48,
+        "formScore": 98,
+        "durationSec": 131.4,
+        "timestamp": "2025-11-29T02:10:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "55e5cb6d",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 26,
+        "formScore": 95,
+        "durationSec": 66.9,
+        "timestamp": "2025-11-29T10:04:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "b134a451",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 32,
+        "formScore": 85,
+        "durationSec": 118.7,
+        "timestamp": "2025-11-30T10:49:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "d3b6cc41",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 25,
+        "formScore": 82,
+        "durationSec": 69.1,
+        "timestamp": "2025-12-01T06:47:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "074cf0b5",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 34,
+        "formScore": 97,
+        "durationSec": 135.4,
+        "timestamp": "2025-12-02T05:31:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "e91018a3",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 31,
+        "formScore": 93,
+        "durationSec": 118.2,
+        "timestamp": "2025-12-02T11:14:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "43594bd4",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 49,
+        "formScore": 85,
+        "durationSec": 143.1,
+        "timestamp": "2025-12-03T11:15:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "bd06683c",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 26,
+        "formScore": 82,
+        "durationSec": 93.4,
+        "timestamp": "2025-12-04T00:47:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "f449fd54",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 23,
+        "formScore": 96,
+        "durationSec": 76.1,
+        "timestamp": "2025-12-03T22:24:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "eec37d04",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 35,
+        "formScore": 86,
+        "durationSec": 136.1,
+        "timestamp": "2025-12-05T09:48:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "e533b15a",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 49,
+        "formScore": 91,
+        "durationSec": 128.1,
+        "timestamp": "2025-12-06T00:26:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "658865b1",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 35,
+        "formScore": 92,
+        "durationSec": 109.1,
+        "timestamp": "2025-12-07T11:17:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "239d4d8b",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 36,
+        "formScore": 97,
+        "durationSec": 130.3,
+        "timestamp": "2025-12-08T09:26:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "dfdba1b5",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 49,
+        "formScore": 98,
+        "durationSec": 163.7,
+        "timestamp": "2025-12-08T11:11:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "77cf5643",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 45,
+        "formScore": 90,
+        "durationSec": 127.4,
+        "timestamp": "2025-12-09T04:36:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "646cddd9",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 35,
+        "formScore": 81,
+        "durationSec": 109.7,
+        "timestamp": "2025-12-09T22:45:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "98c2b43f",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 30,
+        "formScore": 88,
+        "durationSec": 104.5,
+        "timestamp": "2025-12-11T08:47:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "16f5f9ff",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 29,
+        "formScore": 96,
+        "durationSec": 73.0,
+        "timestamp": "2025-12-12T07:25:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "9055a8c2",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 46,
+        "formScore": 86,
+        "durationSec": 183.2,
+        "timestamp": "2025-12-13T04:18:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "cbf6d85b",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 20,
+        "formScore": 93,
+        "durationSec": 52.1,
+        "timestamp": "2025-12-14T01:17:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "bdc0e242",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 26,
+        "formScore": 87,
+        "durationSec": 99.3,
+        "timestamp": "2025-12-15T01:37:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "023041cc",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 28,
+        "formScore": 92,
+        "durationSec": 107.0,
+        "timestamp": "2025-12-16T05:48:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "590b7b5a",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 48,
+        "formScore": 98,
+        "durationSec": 125.1,
+        "timestamp": "2025-12-17T04:49:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "1fb77f33",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 37,
+        "formScore": 85,
+        "durationSec": 110.3,
+        "timestamp": "2025-12-17T12:01:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "b5b40016",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 49,
+        "formScore": 95,
+        "durationSec": 191.3,
+        "timestamp": "2025-12-18T01:49:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "10f75d52",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 33,
+        "formScore": 97,
+        "durationSec": 89.2,
+        "timestamp": "2025-12-19T06:52:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "cf373574",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 41,
+        "formScore": 80,
+        "durationSec": 125.0,
+        "timestamp": "2025-12-19T02:04:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "fbb6dc63",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 20,
+        "formScore": 80,
+        "durationSec": 76.9,
+        "timestamp": "2025-12-19T22:11:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "fd815d3e",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 31,
+        "formScore": 98,
+        "durationSec": 116.6,
+        "timestamp": "2025-12-20T11:58:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "6c1e26c8",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 20,
+        "formScore": 89,
+        "durationSec": 74.7,
+        "timestamp": "2025-12-21T06:13:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "5a90050b",
+        "athleteId": "53aa59ac-6739-4ff7-bda8-21883bd3ecb3",
+        "athleteName": "Udaykumar_H",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 37,
+        "formScore": 97,
+        "durationSec": 97.7,
+        "timestamp": "2025-12-22T04:01:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      }
+    ]
+  },
+  "187a4a5c-482e-462f-8824-abb4c6ddb237": {
+    "sessions": [
+      {
+        "sessionId": "8a7b5c13",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 32,
+        "formScore": 83,
+        "durationSec": 121.4,
+        "timestamp": "2025-11-18T05:41:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "52359a2d",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 11,
+        "formScore": 74,
+        "durationSec": 40.3,
+        "timestamp": "2025-11-18T22:47:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "a226a3e4",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 23,
+        "formScore": 86,
+        "durationSec": 68.3,
+        "timestamp": "2025-11-22T00:41:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "ef5d49b6",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 11,
+        "formScore": 92,
+        "durationSec": 36.5,
+        "timestamp": "2025-11-23T02:40:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "3a03f2e4",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 32,
+        "formScore": 89,
+        "durationSec": 98.1,
+        "timestamp": "2025-11-24T10:45:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "3bbfaa1f",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 14,
+        "formScore": 78,
+        "durationSec": 50.1,
+        "timestamp": "2025-11-25T10:09:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "648b426c",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 30,
+        "formScore": 92,
+        "durationSec": 75.8,
+        "timestamp": "2025-11-27T12:24:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "dee18a78",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 10,
+        "formScore": 86,
+        "durationSec": 29.6,
+        "timestamp": "2025-11-29T01:19:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "60c6478f",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 16,
+        "formScore": 81,
+        "durationSec": 48.4,
+        "timestamp": "2025-11-30T10:11:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "0da35a30",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 27,
+        "formScore": 79,
+        "durationSec": 94.1,
+        "timestamp": "2025-12-01T08:37:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "34412a7d",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 23,
+        "formScore": 71,
+        "durationSec": 62.9,
+        "timestamp": "2025-12-02T03:30:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "2416c4d1",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 27,
+        "formScore": 83,
+        "durationSec": 88.9,
+        "timestamp": "2025-12-03T03:43:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "a180e9f3",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 33,
+        "formScore": 85,
+        "durationSec": 119.7,
+        "timestamp": "2025-12-04T10:49:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "e2d7ebc1",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 14,
+        "formScore": 84,
+        "durationSec": 48.3,
+        "timestamp": "2025-12-05T07:52:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "a774b5f1",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 32,
+        "formScore": 86,
+        "durationSec": 127.3,
+        "timestamp": "2025-12-06T07:15:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "821fecfa",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 13,
+        "formScore": 84,
+        "durationSec": 38.0,
+        "timestamp": "2025-12-07T05:42:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "90e1275d",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 13,
+        "formScore": 85,
+        "durationSec": 43.7,
+        "timestamp": "2025-12-09T12:36:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "ead33b70",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "pushups",
+        "reps": 13,
+        "formScore": 79,
+        "durationSec": 38.5,
+        "timestamp": "2025-12-10T02:29:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "5c8863e6",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 27,
+        "formScore": 91,
+        "durationSec": 92.6,
+        "timestamp": "2025-12-12T23:56:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "5c327b52",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 31,
+        "formScore": 85,
+        "durationSec": 84.3,
+        "timestamp": "2025-12-14T06:21:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "deaa987a",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 32,
+        "formScore": 89,
+        "durationSec": 89.7,
+        "timestamp": "2025-12-15T12:18:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "a979d5a8",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 25,
+        "formScore": 79,
+        "durationSec": 92.3,
+        "timestamp": "2025-12-16T06:47:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "9fc1ad06",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "jumping_jacks",
+        "reps": 14,
+        "formScore": 81,
+        "durationSec": 45.0,
+        "timestamp": "2025-12-19T00:46:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      },
+      {
+        "sessionId": "c611327a",
+        "athleteId": "187a4a5c-482e-462f-8824-abb4c6ddb237",
+        "athleteName": "sunny",
+        "coachId": "dcd85641-bfbf-4a80-bf25-633ac9fc22fb",
+        "coachName": "mike",
+        "exercise": "squat",
+        "reps": 24,
+        "formScore": 81,
+        "durationSec": 84.5,
+        "timestamp": "2025-12-19T22:24:21.290256",
+        "videoUrl": null,
+        "thumbnailUrl": null,
+        "sessionType": "mock_generated",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "flags": {}
+        }
+      }
+    ]
+  },
+  "demo-athlete-1": {
+    "sessions": [
+      {
+        "exercise": "squat",
+        "reps": 8,
+        "formScore": 75,
+        "durationSec": 17.69,
+        "timestamp": "2026-01-27T20:27:34.269887Z",
+        "athleteId": "demo-athlete-1",
+        "athleteName": "Test Athlete",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "a3dda4f0",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 85.0,
+          "riskLevel": "low",
+          "flags": {},
+          "suspiciousPatterns": []
+        },
+        "benchmarking": {
+          "performance_level": {
+            "level": "unknown",
+            "score": 0,
+            "description": "Unknown exercise"
+          },
+          "peer_comparison": {
+            "percentile": 0.0,
+            "rank": "N/A",
+            "total_athletes": 17,
+            "performance_score": 54.489315997738835,
+            "average_score": 77.1
+          },
+          "global_rank": "N/A",
+          "coach_rank": "N/A",
+          "total_global_athletes": 17,
+          "total_coach_athletes": 17,
+          "improvement_suggestions": [
+            "Focus on consistent practice to improve ranking"
+          ]
+        },
+        "predictiveAnalytics": {
+          "error": "No sessions found for athlete"
+        },
+        "trainingPlan": {
+          "error": "No sessions found for athlete"
+        },
+        "injuryAnalysis": {
+          "error": "No sessions found for athlete"
+        },
+        "gamification": {
+          "session_points": 50,
+          "total_points": 100,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "first_session",
+              "name": "First Steps",
+              "description": "Complete your first exercise session",
+              "points": 50,
+              "icon": "🎯",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Earn 100 points",
+              "icon": "🥉",
+              "points_required": 100
+            }
+          ],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
+        }
+      },
+      {
+        "exercise": "squat",
+        "reps": 5,
+        "formScore": 70,
+        "durationSec": 15.13,
+        "timestamp": "2026-01-28T11:25:25.466548Z",
+        "athleteId": "demo-athlete-1",
+        "athleteName": "Demo Athlete",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "a6129651",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 85.0,
+          "riskLevel": "low",
+          "flags": {},
+          "suspiciousPatterns": []
+        },
+        "benchmarking": {
+          "performance_level": {
+            "level": "unknown",
+            "score": 0,
+            "description": "Unknown exercise"
+          },
+          "peer_comparison": {
+            "percentile": 0.0,
+            "rank": 19,
+            "total_athletes": 20,
+            "performance_score": 45.21877065432915,
+            "average_score": 73.7
+          },
+          "global_rank": 19,
+          "coach_rank": 19,
+          "total_global_athletes": 20,
+          "total_coach_athletes": 20,
+          "improvement_suggestions": [
+            "Focus on consistent practice to improve ranking"
+          ]
+        },
+        "predictiveAnalytics": {
+          "athlete_id": "demo-athlete-1",
+          "total_sessions": 1,
+          "injury_risk": {
+            "risk_level": "low",
+            "risk_score": 0,
+            "factors": []
+          },
+          "improvement_potential": {
+            "potential": "unknown",
+            "score": 0,
+            "suggestions": []
+          },
+          "future_performance": {
+            "prediction": "insufficient_data",
+            "confidence": 0
+          },
+          "performance_trends": {
+            "form": {},
+            "reps": {}
+          },
+          "last_updated": "2026-01-28T11:25:25.363072Z"
+        },
+        "trainingPlan": {
+          "athlete_id": "demo-athlete-1",
+          "generated_at": "2026-01-28T11:25:25.368446Z",
+          "valid_until": "2026-02-27T11:25:25.368446Z",
+          "analysis": {
+            "gaps": [
+              "Limited exercise variety - need more diverse training"
+            ],
+            "strengths": [
+              "Excellent form discipline"
+            ],
+            "focus_areas": [
+              "variety"
+            ],
+            "avg_form": 75.0,
+            "reps_trend": 0,
+            "exercise_variety": 1,
+            "cheat_rate": 0.0
+          },
+          "recommendations": [
+            {
+              "exercise": "jumping_jack",
+              "type": "cardio",
+              "sets": 3,
+              "reps": "30-45",
+              "intensity": "moderate",
+              "focus": "Cardiovascular fitness",
+              "instructions": [
+                "Maintain steady rhythm",
+                "Land softly on feet",
+                "Keep core engaged",
+                "Breathe consistently"
+              ],
+              "priority": "medium"
+            }
+          ],
+          "weekly_schedule": [
+            {
+              "day": "Monday",
+              "exercise": "jumping_jack",
+              "type": "cardio",
+              "sets": 3,
+              "reps": "30-45",
+              "intensity": "moderate",
+              "focus": "Cardiovascular fitness",
+              "instructions": [
+                "Maintain steady rhythm",
+                "Land softly on feet",
+                "Keep core engaged",
+                "Breathe consistently"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            },
+            {
+              "day": "Wednesday",
+              "exercise": "jumping_jack",
+              "type": "cardio",
+              "sets": 3,
+              "reps": "30-45",
+              "intensity": "moderate",
+              "focus": "Cardiovascular fitness",
+              "instructions": [
+                "Maintain steady rhythm",
+                "Land softly on feet",
+                "Keep core engaged",
+                "Breathe consistently"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            },
+            {
+              "day": "Friday",
+              "exercise": "jumping_jack",
+              "type": "cardio",
+              "sets": 3,
+              "reps": "30-45",
+              "intensity": "moderate",
+              "focus": "Cardiovascular fitness",
+              "instructions": [
+                "Maintain steady rhythm",
+                "Land softly on feet",
+                "Keep core engaged",
+                "Breathe consistently"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            }
+          ],
+          "progression_plan": {
+            "weeks": [
+              {
+                "week": 1,
+                "form_target": 77.0,
+                "reps_target": 9,
+                "focus": "Foundation building and form mastery",
+                "key_metrics": [
+                  "Form score",
+                  "Consistency",
+                  "Range of motion"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 77.0 or higher",
+                  "Complete 9 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 2,
+                "form_target": 79.0,
+                "reps_target": 11,
+                "focus": "Consistency and endurance",
+                "key_metrics": [
+                  "Rep count",
+                  "Endurance",
+                  "Breathing"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 79.0 or higher",
+                  "Complete 11 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 3,
+                "form_target": 81.0,
+                "reps_target": 12,
+                "focus": "Progressive overload and strength",
+                "key_metrics": [
+                  "Strength",
+                  "Speed",
+                  "Control"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 81.0 or higher",
+                  "Complete 12 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 4,
+                "form_target": 83.0,
+                "reps_target": 14,
+                "focus": "Peak performance and refinement",
+                "key_metrics": [
+                  "Peak performance",
+                  "Efficiency",
+                  "Technique"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 83.0 or higher",
+                  "Complete 14 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              }
+            ],
+            "goals": [
+              "Improve form score from 75 to 83.0",
+              "Increase reps from 8 to 14",
+              "Maintain consistent training schedule",
+              "Reduce form violations by 50%"
+            ]
+          },
+          "analytics_insights": {
+            "injury_risk": {
+              "risk_level": "low",
+              "risk_score": 0,
+              "factors": []
+            },
+            "improvement_potential": {
+              "potential": "unknown",
+              "score": 0,
+              "suggestions": []
+            },
+            "performance_trends": {
+              "form": {},
+              "reps": {}
+            }
+          },
+          "coaching_notes": [
+            "Limited exercise variety - introduce complementary exercises",
+            "Excellent form discipline - ready for increased intensity"
+          ],
+          "next_review_date": "2026-02-04T11:25:25.368446Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "demo-athlete-1",
+          "analyzed_at": "2026-01-28T11:25:25.401685Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Insufficient data"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Insufficient data"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Insufficient data"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "Insufficient data"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 1
+        },
+        "gamification": {
+          "session_points": 45,
+          "total_points": 145,
+          "level": 1,
+          "new_achievements": [],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Earn 100 points",
+              "icon": "🥉",
+              "points_required": 100
+            }
+          ],
+          "current_streak": 2,
+          "longest_streak": 2,
+          "sessions_completed": 2
+        }
+      },
+      {
+        "exercise": "squat",
+        "reps": 14,
+        "formScore": 82,
+        "durationSec": 15.13,
+        "timestamp": "2026-01-28T11:26:54.321260Z",
+        "athleteId": "demo-athlete-1",
+        "athleteName": "Demo Athlete",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "f27dc8d2",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 85.0,
+          "riskLevel": "low",
+          "flags": {},
+          "suspiciousPatterns": []
+        },
+        "benchmarking": {
+          "performance_level": {
+            "level": "unknown",
+            "score": 0,
+            "description": "Unknown exercise"
+          },
+          "peer_comparison": {
+            "percentile": 28.6,
+            "rank": 19,
+            "total_athletes": 21,
+            "performance_score": 64.0,
+            "average_score": 72.3
+          },
+          "global_rank": 19,
+          "coach_rank": 19,
+          "total_global_athletes": 21,
+          "total_coach_athletes": 21,
+          "improvement_suggestions": []
+        },
+        "predictiveAnalytics": {
+          "athlete_id": "demo-athlete-1",
+          "total_sessions": 2,
+          "injury_risk": {
+            "risk_level": "low",
+            "risk_score": 0,
+            "factors": []
+          },
+          "improvement_potential": {
+            "potential": "unknown",
+            "score": 0,
+            "suggestions": []
+          },
+          "future_performance": {
+            "prediction": "insufficient_data",
+            "confidence": 0
+          },
+          "performance_trends": {
+            "form": {
+              "slope": -5.0,
+              "r_squared": 1.0,
+              "trend": "declining",
+              "confidence": 100.0
+            },
+            "reps": {
+              "slope": -3.0,
+              "r_squared": 1.0,
+              "trend": "declining",
+              "confidence": 100.0
+            }
+          },
+          "last_updated": "2026-01-28T11:26:54.129949Z"
+        },
+        "trainingPlan": {
+          "athlete_id": "demo-athlete-1",
+          "generated_at": "2026-01-28T11:26:54.150915Z",
+          "valid_until": "2026-02-27T11:26:54.150915Z",
+          "analysis": {
+            "gaps": [
+              "Rep count declining - may need rest or form focus",
+              "Limited exercise variety - need more diverse training"
+            ],
+            "strengths": [
+              "Excellent form discipline"
+            ],
+            "focus_areas": [
+              "endurance",
+              "variety"
+            ],
+            "avg_form": 72.5,
+            "reps_trend": -3.0000000000000018,
+            "exercise_variety": 1,
+            "cheat_rate": 0.0
+          },
+          "recommendations": [
+            {
+              "exercise": "squat",
+              "type": "endurance",
+              "sets": 2,
+              "reps": "15-20",
+              "intensity": "light",
+              "focus": "Build stamina and consistency",
+              "instructions": [
+                "Maintain steady pace",
+                "Focus on breathing rhythm",
+                "Take short breaks between sets",
+                "Gradually increase reps"
+              ],
+              "priority": "medium"
+            },
+            {
+              "exercise": "jumping_jack",
+              "type": "cardio",
+              "sets": 3,
+              "reps": "30-45",
+              "intensity": "moderate",
+              "focus": "Cardiovascular fitness",
+              "instructions": [
+                "Maintain steady rhythm",
+                "Land softly on feet",
+                "Keep core engaged",
+                "Breathe consistently"
+              ],
+              "priority": "medium"
+            }
+          ],
+          "weekly_schedule": [
+            {
+              "day": "Monday",
+              "exercise": "squat",
+              "type": "endurance",
+              "sets": 2,
+              "reps": "15-20",
+              "intensity": "light",
+              "focus": "Build stamina and consistency",
+              "instructions": [
+                "Maintain steady pace",
+                "Focus on breathing rhythm",
+                "Take short breaks between sets",
+                "Gradually increase reps"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            },
+            {
+              "day": "Wednesday",
+              "exercise": "jumping_jack",
+              "type": "cardio",
+              "sets": 3,
+              "reps": "30-45",
+              "intensity": "moderate",
+              "focus": "Cardiovascular fitness",
+              "instructions": [
+                "Maintain steady rhythm",
+                "Land softly on feet",
+                "Keep core engaged",
+                "Breathe consistently"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            },
+            {
+              "day": "Friday",
+              "exercise": "squat",
+              "type": "endurance",
+              "sets": 2,
+              "reps": "15-20",
+              "intensity": "light",
+              "focus": "Build stamina and consistency",
+              "instructions": [
+                "Maintain steady pace",
+                "Focus on breathing rhythm",
+                "Take short breaks between sets",
+                "Gradually increase reps"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            }
+          ],
+          "progression_plan": {
+            "weeks": [
+              {
+                "week": 1,
+                "form_target": 74.5,
+                "reps_target": 8,
+                "focus": "Foundation building and form mastery",
+                "key_metrics": [
+                  "Form score",
+                  "Consistency",
+                  "Range of motion"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 74.5 or higher",
+                  "Complete 8 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 2,
+                "form_target": 76.5,
+                "reps_target": 9,
+                "focus": "Consistency and endurance",
+                "key_metrics": [
+                  "Rep count",
+                  "Endurance",
+                  "Breathing"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 76.5 or higher",
+                  "Complete 9 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 3,
+                "form_target": 78.5,
+                "reps_target": 11,
+                "focus": "Progressive overload and strength",
+                "key_metrics": [
+                  "Strength",
+                  "Speed",
+                  "Control"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 78.5 or higher",
+                  "Complete 11 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 4,
+                "form_target": 80.5,
+                "reps_target": 12,
+                "focus": "Peak performance and refinement",
+                "key_metrics": [
+                  "Peak performance",
+                  "Efficiency",
+                  "Technique"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 80.5 or higher",
+                  "Complete 12 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              }
+            ],
+            "goals": [
+              "Improve form score from 72 to 80.5",
+              "Increase reps from 6 to 12",
+              "Maintain consistent training schedule",
+              "Reduce form violations by 50%"
+            ]
+          },
+          "analytics_insights": {
+            "injury_risk": {
+              "risk_level": "low",
+              "risk_score": 0,
+              "factors": []
+            },
+            "improvement_potential": {
+              "potential": "unknown",
+              "score": 0,
+              "suggestions": []
+            },
+            "performance_trends": {
+              "form": {
+                "slope": -5.0,
+                "r_squared": 1.0,
+                "trend": "declining",
+                "confidence": 100.0
+              },
+              "reps": {
+                "slope": -3.0,
+                "r_squared": 1.0,
+                "trend": "declining",
+                "confidence": 100.0
+              }
+            }
+          },
+          "coaching_notes": [
+            "Rep count declining - consider rest days or form focus",
+            "Limited exercise variety - introduce complementary exercises",
+            "Excellent form discipline - ready for increased intensity"
+          ],
+          "next_review_date": "2026-02-04T11:26:54.150915Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "demo-athlete-1",
+          "analyzed_at": "2026-01-28T11:26:54.204463Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Insufficient data"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Insufficient data"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Insufficient data"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "Insufficient data"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 2
+        },
+        "gamification": {
+          "session_points": 75,
+          "total_points": 175,
+          "level": 1,
+          "new_achievements": [],
+          "new_badges": [],
+          "current_streak": 2,
+          "longest_streak": 2,
+          "sessions_completed": 2
+        }
+      },
+      {
+        "sessionId": "0bc44f89",
+        "exercise": "squat",
+        "date": "2026-01-28T06:19:33.375022Z",
+        "reps": 2,
+        "formScore": 71,
+        "durationSec": 8.63
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 71,
+        "durationSec": 8.63,
+        "timestamp": "2026-01-28T11:49:33.561764Z",
+        "athleteId": "demo-athlete-1",
+        "athleteName": "Demo Athlete",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "1a1f51e2",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 90.0,
+          "riskLevel": "low",
+          "flags": {},
+          "suspiciousPatterns": []
+        },
+        "benchmarking": {
+          "performance_level": {
+            "level": "unknown",
+            "score": 0,
+            "description": "Unknown exercise"
+          },
+          "peer_comparison": {
+            "percentile": 21.4,
+            "rank": 16,
+            "total_athletes": 28,
+            "performance_score": 39.269988412514486,
+            "average_score": 63.1
+          },
+          "global_rank": 16,
+          "coach_rank": 16,
+          "total_global_athletes": 28,
+          "total_coach_athletes": 28,
+          "improvement_suggestions": [
+            "Focus on consistent practice to improve ranking"
+          ]
+        },
+        "predictiveAnalytics": {
+          "athlete_id": "demo-athlete-1",
+          "total_sessions": 3,
+          "injury_risk": {
+            "risk_level": "low",
+            "risk_score": 0,
+            "factors": []
+          },
+          "improvement_potential": {
+            "potential": "high",
+            "score": 75,
+            "suggestions": [
+              "Form is improving - maintain current training",
+              "Rep count increasing - good progress",
+              "Consistent performance - ready for advanced training"
+            ]
+          },
+          "future_performance": {
+            "prediction": "insufficient_data",
+            "confidence": 0
+          },
+          "performance_trends": {
+            "form": {
+              "slope": 3.5,
+              "r_squared": 0.3371559633027522,
+              "trend": "improving",
+              "confidence": 33.71559633027522
+            },
+            "reps": {
+              "slope": 3.0,
+              "r_squared": 0.4285714285714286,
+              "trend": "improving",
+              "confidence": 42.85714285714286
+            }
+          },
+          "last_updated": "2026-01-28T11:49:33.514044Z"
+        },
+        "trainingPlan": {
+          "athlete_id": "demo-athlete-1",
+          "generated_at": "2026-01-28T11:49:33.521676Z",
+          "valid_until": "2026-02-27T11:49:33.521676Z",
+          "analysis": {
+            "gaps": [
+              "Limited exercise variety - need more diverse training"
+            ],
+            "strengths": [
+              "Rep count improving consistently",
+              "Excellent form discipline"
+            ],
+            "focus_areas": [
+              "variety"
+            ],
+            "avg_form": 75.66666666666667,
+            "reps_trend": 2.9999999999999973,
+            "exercise_variety": 1,
+            "cheat_rate": 0.0
+          },
+          "recommendations": [
+            {
+              "exercise": "jumping_jack",
+              "type": "cardio",
+              "sets": 3,
+              "reps": "30-45",
+              "intensity": "moderate",
+              "focus": "Cardiovascular fitness",
+              "instructions": [
+                "Maintain steady rhythm",
+                "Land softly on feet",
+                "Keep core engaged",
+                "Breathe consistently"
+              ],
+              "priority": "medium"
+            }
+          ],
+          "weekly_schedule": [
+            {
+              "day": "Monday",
+              "exercise": "jumping_jack",
+              "type": "cardio",
+              "sets": 3,
+              "reps": "30-45",
+              "intensity": "moderate",
+              "focus": "Cardiovascular fitness",
+              "instructions": [
+                "Maintain steady rhythm",
+                "Land softly on feet",
+                "Keep core engaged",
+                "Breathe consistently"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            },
+            {
+              "day": "Wednesday",
+              "exercise": "jumping_jack",
+              "type": "cardio",
+              "sets": 3,
+              "reps": "30-45",
+              "intensity": "moderate",
+              "focus": "Cardiovascular fitness",
+              "instructions": [
+                "Maintain steady rhythm",
+                "Land softly on feet",
+                "Keep core engaged",
+                "Breathe consistently"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            },
+            {
+              "day": "Friday",
+              "exercise": "jumping_jack",
+              "type": "cardio",
+              "sets": 3,
+              "reps": "30-45",
+              "intensity": "moderate",
+              "focus": "Cardiovascular fitness",
+              "instructions": [
+                "Maintain steady rhythm",
+                "Land softly on feet",
+                "Keep core engaged",
+                "Breathe consistently"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            }
+          ],
+          "progression_plan": {
+            "weeks": [
+              {
+                "week": 1,
+                "form_target": 77.66666666666667,
+                "reps_target": 10,
+                "focus": "Foundation building and form mastery",
+                "key_metrics": [
+                  "Form score",
+                  "Consistency",
+                  "Range of motion"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 77.66666666666667 or higher",
+                  "Complete 10 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 2,
+                "form_target": 79.66666666666667,
+                "reps_target": 12,
+                "focus": "Consistency and endurance",
+                "key_metrics": [
+                  "Rep count",
+                  "Endurance",
+                  "Breathing"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 79.66666666666667 or higher",
+                  "Complete 12 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 3,
+                "form_target": 81.66666666666667,
+                "reps_target": 13,
+                "focus": "Progressive overload and strength",
+                "key_metrics": [
+                  "Strength",
+                  "Speed",
+                  "Control"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 81.66666666666667 or higher",
+                  "Complete 13 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 4,
+                "form_target": 83.66666666666667,
+                "reps_target": 15,
+                "focus": "Peak performance and refinement",
+                "key_metrics": [
+                  "Peak performance",
+                  "Efficiency",
+                  "Technique"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 83.66666666666667 or higher",
+                  "Complete 15 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              }
+            ],
+            "goals": [
+              "Improve form score from 76 to 83.66666666666667",
+              "Increase reps from 9 to 15",
+              "Maintain consistent training schedule",
+              "Reduce form violations by 50%"
+            ]
+          },
+          "analytics_insights": {
+            "injury_risk": {
+              "risk_level": "low",
+              "risk_score": 0,
+              "factors": []
+            },
+            "improvement_potential": {
+              "potential": "high",
+              "score": 75,
+              "suggestions": [
+                "Form is improving - maintain current training",
+                "Rep count increasing - good progress",
+                "Consistent performance - ready for advanced training"
+              ]
+            },
+            "performance_trends": {
+              "form": {
+                "slope": 3.5,
+                "r_squared": 0.3371559633027522,
+                "trend": "improving",
+                "confidence": 33.71559633027522
+              },
+              "reps": {
+                "slope": 3.0,
+                "r_squared": 0.4285714285714286,
+                "trend": "improving",
+                "confidence": 42.85714285714286
+              }
+            }
+          },
+          "coaching_notes": [
+            "Strong progression in rep count - maintain current approach",
+            "Limited exercise variety - introduce complementary exercises",
+            "Excellent form discipline - ready for increased intensity",
+            "High improvement potential - athlete ready for advanced training"
+          ],
+          "next_review_date": "2026-02-04T11:49:33.521676Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "demo-athlete-1",
+          "analyzed_at": "2026-01-28T11:49:33.530295Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "Insufficient data"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 3
+        },
+        "gamification": {
+          "session_points": 30,
+          "total_points": 175,
+          "level": 1,
+          "new_achievements": [],
+          "new_badges": [],
+          "current_streak": 3,
+          "longest_streak": 3,
+          "sessions_completed": 3
+        }
+      },
+      {
+        "sessionId": "c16f8695",
+        "exercise": "squat",
+        "date": "2026-01-28T06:19:59.795635Z",
+        "reps": 2,
+        "formScore": 61,
+        "durationSec": 8.0
+      },
+      {
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 61,
+        "durationSec": 8.0,
+        "timestamp": "2026-01-28T11:50:00.170195Z",
+        "athleteId": "demo-athlete-1",
+        "athleteName": "Demo Athlete",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "9a02d090",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 90.0,
+          "riskLevel": "low",
+          "flags": {},
+          "suspiciousPatterns": []
+        },
+        "benchmarking": {
+          "performance_level": {
+            "level": "unknown",
+            "score": 0,
+            "description": "Unknown exercise"
+          },
+          "peer_comparison": {
+            "percentile": 20.0,
+            "rank": 16,
+            "total_athletes": 30,
+            "performance_score": 36.0,
+            "average_score": 61.4
+          },
+          "global_rank": 16,
+          "coach_rank": 16,
+          "total_global_athletes": 30,
+          "total_coach_athletes": 30,
+          "improvement_suggestions": [
+            "Focus on consistent practice to improve ranking"
+          ]
+        },
+        "predictiveAnalytics": {
+          "athlete_id": "demo-athlete-1",
+          "total_sessions": 4,
+          "injury_risk": {
+            "risk_level": "low",
+            "risk_score": 0,
+            "factors": []
+          },
+          "improvement_potential": {
+            "potential": "low",
+            "score": 35,
+            "suggestions": [
+              "Consistent performance - ready for advanced training",
+              "Excellent form discipline - ready for progression"
+            ]
+          },
+          "future_performance": {
+            "prediction": "insufficient_data",
+            "confidence": 0
+          },
+          "performance_trends": {
+            "form": {
+              "slope": 0.0,
+              "r_squared": 0.0,
+              "trend": "stable",
+              "confidence": 0.0
+            },
+            "reps": {
+              "slope": -0.9,
+              "r_squared": 0.05142857142857138,
+              "trend": "declining",
+              "confidence": 5.142857142857138
+            }
+          },
+          "last_updated": "2026-01-28T11:50:00.085356Z"
+        },
+        "trainingPlan": {
+          "athlete_id": "demo-athlete-1",
+          "generated_at": "2026-01-28T11:50:00.089496Z",
+          "valid_until": "2026-02-27T11:50:00.089496Z",
+          "analysis": {
+            "gaps": [
+              "Rep count declining - may need rest or form focus",
+              "Limited exercise variety - need more diverse training"
+            ],
+            "strengths": [
+              "Excellent form discipline"
+            ],
+            "focus_areas": [
+              "endurance",
+              "variety"
+            ],
+            "avg_form": 74.5,
+            "reps_trend": -0.8999999999999996,
+            "exercise_variety": 1,
+            "cheat_rate": 0.0
+          },
+          "recommendations": [
+            {
+              "exercise": "squat",
+              "type": "endurance",
+              "sets": 2,
+              "reps": "15-20",
+              "intensity": "light",
+              "focus": "Build stamina and consistency",
+              "instructions": [
+                "Maintain steady pace",
+                "Focus on breathing rhythm",
+                "Take short breaks between sets",
+                "Gradually increase reps"
+              ],
+              "priority": "medium"
+            },
+            {
+              "exercise": "jumping_jack",
+              "type": "cardio",
+              "sets": 3,
+              "reps": "30-45",
+              "intensity": "moderate",
+              "focus": "Cardiovascular fitness",
+              "instructions": [
+                "Maintain steady rhythm",
+                "Land softly on feet",
+                "Keep core engaged",
+                "Breathe consistently"
+              ],
+              "priority": "medium"
+            }
+          ],
+          "weekly_schedule": [
+            {
+              "day": "Monday",
+              "exercise": "squat",
+              "type": "endurance",
+              "sets": 2,
+              "reps": "15-20",
+              "intensity": "light",
+              "focus": "Build stamina and consistency",
+              "instructions": [
+                "Maintain steady pace",
+                "Focus on breathing rhythm",
+                "Take short breaks between sets",
+                "Gradually increase reps"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            },
+            {
+              "day": "Wednesday",
+              "exercise": "jumping_jack",
+              "type": "cardio",
+              "sets": 3,
+              "reps": "30-45",
+              "intensity": "moderate",
+              "focus": "Cardiovascular fitness",
+              "instructions": [
+                "Maintain steady rhythm",
+                "Land softly on feet",
+                "Keep core engaged",
+                "Breathe consistently"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            },
+            {
+              "day": "Friday",
+              "exercise": "squat",
+              "type": "endurance",
+              "sets": 2,
+              "reps": "15-20",
+              "intensity": "light",
+              "focus": "Build stamina and consistency",
+              "instructions": [
+                "Maintain steady pace",
+                "Focus on breathing rhythm",
+                "Take short breaks between sets",
+                "Gradually increase reps"
+              ],
+              "priority": "medium",
+              "estimated_duration": "15-20 minutes"
+            }
+          ],
+          "progression_plan": {
+            "weeks": [
+              {
+                "week": 1,
+                "form_target": 76.5,
+                "reps_target": 8,
+                "focus": "Foundation building and form mastery",
+                "key_metrics": [
+                  "Form score",
+                  "Consistency",
+                  "Range of motion"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 76.5 or higher",
+                  "Complete 8 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 2,
+                "form_target": 78.5,
+                "reps_target": 10,
+                "focus": "Consistency and endurance",
+                "key_metrics": [
+                  "Rep count",
+                  "Endurance",
+                  "Breathing"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 78.5 or higher",
+                  "Complete 10 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 3,
+                "form_target": 80.5,
+                "reps_target": 11,
+                "focus": "Progressive overload and strength",
+                "key_metrics": [
+                  "Strength",
+                  "Speed",
+                  "Control"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 80.5 or higher",
+                  "Complete 11 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              },
+              {
+                "week": 4,
+                "form_target": 82.5,
+                "reps_target": 13,
+                "focus": "Peak performance and refinement",
+                "key_metrics": [
+                  "Peak performance",
+                  "Efficiency",
+                  "Technique"
+                ],
+                "success_criteria": [
+                  "Achieve form score of 82.5 or higher",
+                  "Complete 13 reps with good form",
+                  "Complete all scheduled sessions",
+                  "No form violations in final session"
+                ]
+              }
+            ],
+            "goals": [
+              "Improve form score from 74 to 82.5",
+              "Increase reps from 7 to 13",
+              "Maintain consistent training schedule",
+              "Reduce form violations by 50%"
+            ]
+          },
+          "analytics_insights": {
+            "injury_risk": {
+              "risk_level": "low",
+              "risk_score": 0,
+              "factors": []
+            },
+            "improvement_potential": {
+              "potential": "low",
+              "score": 35,
+              "suggestions": [
+                "Consistent performance - ready for advanced training",
+                "Excellent form discipline - ready for progression"
+              ]
+            },
+            "performance_trends": {
+              "form": {
+                "slope": 0.0,
+                "r_squared": 0.0,
+                "trend": "stable",
+                "confidence": 0.0
+              },
+              "reps": {
+                "slope": -0.9,
+                "r_squared": 0.05142857142857138,
+                "trend": "declining",
+                "confidence": 5.142857142857138
+              }
+            }
+          },
+          "coaching_notes": [
+            "Rep count declining - consider rest days or form focus",
+            "Limited exercise variety - introduce complementary exercises",
+            "Excellent form discipline - ready for increased intensity"
+          ],
+          "next_review_date": "2026-02-04T11:50:00.089496Z"
+        },
+        "injuryAnalysis": {
+          "athlete_id": "demo-athlete-1",
+          "analyzed_at": "2026-01-28T11:50:00.114153Z",
+          "overall_risk": false,
+          "overall_severity": "low",
+          "analyses": {
+            "form_deterioration": {
+              "risk": false,
+              "severity": "low",
+              "details": "Form trend stable"
+            },
+            "cheat_patterns": {
+              "risk": false,
+              "severity": "low",
+              "details": "Cheat patterns normal"
+            },
+            "overtraining": {
+              "risk": false,
+              "severity": "low",
+              "details": "Training frequency normal"
+            },
+            "fatigue_indicators": {
+              "risk": false,
+              "severity": "low",
+              "details": "Insufficient data"
+            },
+            "predictive_risk": {
+              "risk": false,
+              "severity": "low",
+              "details": "Injury risk within normal range"
+            }
+          },
+          "recommendations": [
+            "Continue current training approach",
+            "Maintain regular monitoring"
+          ],
+          "total_sessions_analyzed": 4
+        },
+        "gamification": {
+          "session_points": 30,
+          "total_points": 280,
+          "level": 1,
+          "new_achievements": [],
+          "new_badges": [],
+          "current_streak": 3,
+          "longest_streak": 3,
+          "sessions_completed": 5
+        }
+      }
+    ]
+  },
+  "620cbf6e-1059-4f6b-bd48-87ad19c357cd": {
+    "sessions": [
+      {
+        "exercise": "squat",
+        "reps": 11,
+        "formScore": 70,
+        "durationSec": 17.69,
+        "timestamp": "2026-01-27T21:44:57.063461Z",
+        "athleteId": "620cbf6e-1059-4f6b-bd48-87ad19c357cd",
+        "athleteName": "Verifier",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "3453f453",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 85.0,
+          "riskLevel": "low",
+          "flags": {},
+          "suspiciousPatterns": []
+        },
+        "benchmarking": {
+          "performance_level": {
+            "level": "unknown",
+            "score": 0,
+            "description": "Unknown exercise"
+          },
+          "peer_comparison": {
+            "percentile": 5.6,
+            "rank": "N/A",
+            "total_athletes": 18,
+            "performance_score": 56.8,
+            "average_score": 75.8
+          },
+          "global_rank": "N/A",
+          "coach_rank": "N/A",
+          "total_global_athletes": 18,
+          "total_coach_athletes": 18,
+          "improvement_suggestions": [
+            "Focus on consistent practice to improve ranking"
+          ]
+        },
+        "predictiveAnalytics": {
+          "error": "No sessions found for athlete"
+        },
+        "trainingPlan": {
+          "error": "No sessions found for athlete"
+        },
+        "injuryAnalysis": {
+          "error": "No sessions found for athlete"
+        },
+        "gamification": {
+          "session_points": 60,
+          "total_points": 110,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "first_session",
+              "name": "First Steps",
+              "description": "Complete your first exercise session",
+              "points": 50,
+              "icon": "🎯",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Earn 100 points",
+              "icon": "🥉",
+              "points_required": 100
+            }
+          ],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
+        }
+      },
+      {
+        "athleteId": "620cbf6e-1059-4f6b-bd48-87ad19c357cd",
+        "exercise": "pushups",
+        "reps": 20,
+        "durationSec": 45,
+        "formScore": 85,
+        "timestamp": "2026-01-27T21:44:57.100687",
+        "sessionId": "75715447"
+      }
+    ]
+  },
+  "d8e6f7df-b294-4326-932d-c40f4c355a07": {
+    "sessions": [
+      {
+        "exercise": "squat",
+        "reps": 7,
+        "formScore": 74,
+        "durationSec": 17.69,
+        "timestamp": "2026-01-27T21:47:15.933070Z",
+        "athleteId": "d8e6f7df-b294-4326-932d-c40f4c355a07",
+        "athleteName": "Verifier",
+        "coachId": null,
+        "coachName": null,
+        "sessionId": "0ec32180",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 85.0,
+          "riskLevel": "low",
+          "flags": {},
+          "suspiciousPatterns": []
+        },
+        "benchmarking": {
+          "performance_level": {
+            "level": "unknown",
+            "score": 0,
+            "description": "Unknown exercise"
+          },
+          "peer_comparison": {
+            "percentile": 0.0,
+            "rank": "N/A",
+            "total_athletes": 19,
+            "performance_score": 51.02815149802148,
+            "average_score": 74.8
+          },
+          "global_rank": "N/A",
+          "coach_rank": "N/A",
+          "total_global_athletes": 19,
+          "total_coach_athletes": 19,
+          "improvement_suggestions": [
+            "Focus on consistent practice to improve ranking"
+          ]
+        },
+        "predictiveAnalytics": {
+          "error": "No sessions found for athlete"
+        },
+        "trainingPlan": {
+          "error": "No sessions found for athlete"
+        },
+        "injuryAnalysis": {
+          "error": "No sessions found for athlete"
+        },
+        "gamification": {
+          "session_points": 50,
+          "total_points": 100,
+          "level": 1,
+          "new_achievements": [
+            {
+              "id": "first_session",
+              "name": "First Steps",
+              "description": "Complete your first exercise session",
+              "points": 50,
+              "icon": "🎯",
+              "category": "milestone"
+            }
+          ],
+          "new_badges": [
+            {
+              "name": "Bronze Badge",
+              "description": "Earn 100 points",
+              "icon": "🥉",
+              "points_required": 100
+            }
+          ],
+          "current_streak": 1,
+          "longest_streak": 1,
+          "sessions_completed": 1
+        }
+      }
+    ]
+  },
+  "test123": {
+    "sessions": [
+      {
+        "sessionId": "81c2f31a",
+        "exercise": "squat",
+        "date": "2026-01-28T06:11:52.412140Z",
+        "reps": 0,
+        "formScore": 61,
+        "durationSec": 8.0
+      },
+      {
+        "sessionId": "16c58582",
+        "exercise": "squat",
+        "date": "2026-01-28T06:12:52.983032Z",
+        "reps": 0,
+        "formScore": 61,
+        "durationSec": 8.0
+      },
+      {
+        "sessionId": "7e236ee8",
+        "exercise": "squat",
+        "date": "2026-01-28T06:13:45.286991Z",
+        "reps": 0,
+        "formScore": 61,
+        "durationSec": 8.0
+      },
+      {
+        "sessionId": "bf02dcaa",
+        "exercise": "squat",
+        "date": "2026-01-28T06:15:45.293638Z",
+        "reps": 2,
+        "formScore": 61,
+        "durationSec": 8.0
+      },
+      {
+        "sessionId": "7a7eed3a",
+        "exercise": "squat",
+        "date": "2026-01-28T06:16:59.371409Z",
+        "reps": 2,
+        "formScore": 61,
+        "durationSec": 8.0
+      }
+    ]
+  }
 }

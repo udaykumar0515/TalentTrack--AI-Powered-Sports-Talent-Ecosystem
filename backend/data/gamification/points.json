@@ -1,2 +1,126 @@
 {
- }
+  "53aa59ac-6739-4ff7-bda8-21883bd3ecb3": {
+    "total_points": 4250,
+    "achievements": [
+      "first_session",
+      "perfect_form",
+      "early_bird"
+    ],
+    "badges": [],
+    "level": 9,
+    "sessions_completed": 41,
+    "current_streak": 12,
+    "longest_streak": 14,
+    "last_session_date": "2025-12-22T04:01:21.290256",
+    "unique_exercises": [
+      "pushups",
+      "jumping_jacks",
+      "squat"
+    ],
+    "early_sessions": 24,
+    "night_sessions": 4,
+    "low_risk_sessions": 0,
+    "current_badge": null
+  },
+  "187a4a5c-482e-462f-8824-abb4c6ddb237": {
+    "total_points": 1775,
+    "achievements": [
+      "first_session",
+      "early_bird"
+    ],
+    "badges": [],
+    "level": 4,
+    "sessions_completed": 24,
+    "current_streak": 1,
+    "longest_streak": 9,
+    "last_session_date": "2025-12-19T22:24:21.290256",
+    "unique_exercises": [
+      "pushups",
+      "jumping_jacks",
+      "squat"
+    ],
+    "early_sessions": 13,
+    "night_sessions": 3,
+    "low_risk_sessions": 0,
+    "current_badge": null
+  },
+  "demo-athlete-1": {
+    "total_points": 310,
+    "achievements": [
+      "first_session"
+    ],
+    "badges": [
+      "Bronze Badge"
+    ],
+    "level": 1,
+    "sessions_completed": 6,
+    "current_streak": 2,
+    "longest_streak": 2,
+    "last_session_date": "2026-01-28T11:49:33.561764Z",
+    "unique_exercises": [
+      "squat"
+    ],
+    "early_sessions": 2,
+    "night_sessions": 0,
+    "low_risk_sessions": 0,
+    "current_badge": {
+      "name": "Bronze Badge",
+      "description": "Earn 100 points",
+      "icon": "\ud83e\udd49",
+      "points_required": 100
+    }
+  },
+  "620cbf6e-1059-4f6b-bd48-87ad19c357cd": {
+    "total_points": 195,
+    "achievements": [
+      "first_session"
+    ],
+    "badges": [
+      "Bronze Badge"
+    ],
+    "level": 1,
+    "sessions_completed": 2,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_session_date": "2026-01-27T21:44:57.100687",
+    "unique_exercises": [
+      "squat",
+      "pushups"
+    ],
+    "early_sessions": 0,
+    "night_sessions": 0,
+    "low_risk_sessions": 0,
+    "current_badge": {
+      "name": "Bronze Badge",
+      "description": "Earn 100 points",
+      "icon": "\ud83e\udd49",
+      "points_required": 100
+    }
+  },
+  "d8e6f7df-b294-4326-932d-c40f4c355a07": {
+    "total_points": 100,
+    "achievements": [
+      "first_session"
+    ],
+    "badges": [
+      "Bronze Badge"
+    ],
+    "level": 1,
+    "sessions_completed": 1,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_session_date": "2026-01-27T21:47:15.933070Z",
+    "unique_exercises": [
+      "squat"
+    ],
+    "early_sessions": 0,
+    "night_sessions": 0,
+    "low_risk_sessions": 0,
+    "current_badge": {
+      "name": "Bronze Badge",
+      "description": "Earn 100 points",
+      "icon": "\ud83e\udd49",
+      "points_required": 100
+    }
+  }
+}
