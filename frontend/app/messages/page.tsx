@@ -22,6 +22,7 @@ import {
   Video
 } from 'lucide-react';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 export default function MessagesPage() {
   const router = useRouter();
@@ -167,6 +168,28 @@ export default function MessagesPage() {
     ? ((user as any).coachName || 'Coach')
     : (athletes.find(a => a.id === selectedAthleteId)?.name || 'Athlete');
 
+  // Mark messages as read when viewing
+  useEffect(() => {
+    if (!user || activeMessages.length === 0) return;
+
+    const unreadMessages = activeMessages.filter(msg => 
+      !msg.read && 
+      (msg.senderId ? msg.senderId !== user.id : true) // Incoming messages only
+    );
+
+    if (unreadMessages.length > 0) {
+      // Mark as read in backend
+      unreadMessages.forEach(msg => {
+        api.markMessageAsRead(msg.id).catch(console.error);
+      });
+
+      // Optimistically update local state
+      setMessages(prev => prev.map(m => 
+        unreadMessages.some(u => u.id === m.id) ? { ...m, read: true } : m
+      ));
+    }
+  }, [activeMessages.length, selectedAthleteId, user]); // Trigger when messages change or athlete selected
+
   return (
     <AppLayout user={user}>
       <div className="h-[calc(100vh-8rem)] flex rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
@@ -184,9 +207,9 @@ export default function MessagesPage() {
             <ScrollArea className="flex-1">
               <div className="flex flex-col gap-1 p-2">
                 {athletes.map(athlete => {
-                  const lastMsg = messages
-                    .filter(m => m.athleteId === athlete.id)
-                    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
+                  const athleteMessages = messages.filter(m => m.athleteId === athlete.id);
+                  const lastMsg = athleteMessages.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
+                  const hasUnread = athleteMessages.some(m => !m.read && m.senderId !== user.id);
                   
                   return (
                     <button
@@ -198,20 +221,27 @@ export default function MessagesPage() {
                           : 'hover:bg-muted'
                       }`}
                     >
-                      <Avatar>
-                        <AvatarImage src={athlete.profileImage} />
-                        <AvatarFallback>{(athlete.name || athlete.username || 'A').charAt(0).toUpperCase()}</AvatarFallback>
-                      </Avatar>
+                      <div className="relative">
+                        <Avatar>
+                          <AvatarImage src={athlete.profileImage} />
+                          <AvatarFallback>{(athlete.name || athlete.username || 'A').charAt(0).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                        {hasUnread && (
+                            <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-primary ring-2 ring-background" />
+                        )}
+                      </div>
                       <div className="flex-1 overflow-hidden">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="font-medium truncate">{athlete.name || athlete.username}</span>
+                          <span className={cn("truncate", hasUnread ? "font-bold text-foreground" : "font-medium")}>
+                            {athlete.name || athlete.username}
+                          </span>
                           {lastMsg && (
                             <span className="text-xs text-muted-foreground">
                               {format(new Date(lastMsg.timestamp), 'h:mm a')}
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-muted-foreground truncate">
+                        <p className={cn("text-xs truncate", hasUnread ? "text-foreground font-medium" : "text-muted-foreground")}>
                           {lastMsg ? lastMsg.message : 'No messages yet'}
                         </p>
                       </div>
