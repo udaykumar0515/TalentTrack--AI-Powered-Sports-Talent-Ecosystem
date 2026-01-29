@@ -14,6 +14,11 @@ import time
 import os
 import logging
 import sys
+from dotenv import load_dotenv
+
+# Load environment variables immediately
+load_dotenv()
+
 sys.dont_write_bytecode = True
 from engines.benchmarking import benchmarking_engine
 from engines.predictive_analytics import predictive_analytics
@@ -23,10 +28,6 @@ from engines.goal_setting import GoalSettingEngine
 from engines.longterm_plans import LongTermPlansEngine
 from services.offline_video_manager import OfflineVideoManager
 import bcrypt
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
 
 # Password hashing utilities
 def hash_password(password: str) -> str:
@@ -128,7 +129,7 @@ class GenerateAIPlanRequest(BaseModel):
 app = FastAPI(title="Exercise Analysis API", version="1.0.0")
 
 # Get allowed origins from environment
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*").split(",")
 
 # Add CORS middleware
 app.add_middleware(

@@ -528,13 +528,16 @@ class TrainingPlanGenerator:
         Act as an elite sports performance coach. 
         A user has expressed this training goal: "{goal_text}"
         
-        I need to create a personalized 4-week training plan for them.
-        To do this effectively, I need to ask them 3-5 clarifying questions.
+        I need to create a personalized, scientifically optimal 4-week training plan for them.
+        To do this effectively, I need to ask proper follow-up questions to understand their context, limitations, and physiology.
         
-        You MUST include questions about:
-        1. Time availability (How many days/week? How many mins/session?) - BE SPECIFIC
-        2. Equipment access (Gym, Home, etc.)
-        3. Experience level or Current ability relative to the goal.
+        Generate 3 to 7 crucial clarifying questions.
+        
+        MANDATORY TOPICS:
+        1. Time availability (Days/week, Mins/session).
+        2. Equipment access (Be specific).
+        3. Experience level / Current metrics.
+        4. Specific constraints or injuries.
         
         Return a JSON object with a list of questions.
         Schema:
@@ -587,13 +590,18 @@ class TrainingPlanGenerator:
         answers_context = "\\n".join([f"- {k}: {v}" for k, v in answers.items()])
         
         prompt = f"""
-        Act as an elite sports performance coach.
-        Create a detailed 4-Week Progressive Training Plan for an athlete.
+        Act as an elite sports performance coach and physiologist.
+        Design the BEST POSSIBLE 4-Week Progressive Training Plan for this athlete.
         
         GOAL: "{goal_text}"
         
-        CONTEXT & CONSTRAINTS:
+        ATHLETE PROFILE & ANSWERS:
         {answers_context}
+        
+        INSTRUCTIONS:
+        - Use scientific principles of Periodization and Progressive Overload.
+        - The plan must be specific to the equipment available.
+        - Ensure volume and intensity match the user's experience.
         
         STRUCTURE:
         Create a 4-week Micro-Cycle.

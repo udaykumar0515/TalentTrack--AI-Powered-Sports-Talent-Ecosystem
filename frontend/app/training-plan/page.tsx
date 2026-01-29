@@ -41,6 +41,7 @@ export default function TrainingPlanPage() {
   const [goal, setGoal] = useState('');
   const [questions, setQuestions] = useState<any[]>([]);
   const [answers, setAnswers] = useState<Record<string, any>>({});
+  const [customAnswers, setCustomAnswers] = useState<Record<string, string>>({});
   const [generatingPhase, setGeneratingPhase] = useState<string>(''); // For loading text
 
   // Initial Load
@@ -125,7 +126,16 @@ export default function TrainingPlanPage() {
       // Small delay to show phase
       setTimeout(async () => {
         setGeneratingPhase('Finalizing exercises and load...');
-        const newPlan = await api.generateAIPlan(user.id, goal, answers);
+        
+        // Merge custom answers
+        const finalAnswers = { ...answers };
+        Object.keys(customAnswers).forEach(key => {
+            if (answers[key] === 'Other') {
+                finalAnswers[key] = customAnswers[key];
+            }
+        });
+
+        const newPlan = await api.generateAIPlan(user.id, goal, finalAnswers);
         setPlan(newPlan);
         setStep('dashboard');
       }, 1500);
@@ -225,18 +235,30 @@ export default function TrainingPlanPage() {
                                 </Label>
                                 
                                 {q.type === 'select' && (
-                                    <Select 
-                                        onValueChange={(val) => setAnswers({...answers, [q.id]: val})}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select an option" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {q.options?.map((opt: string) => (
-                                                <SelectItem key={opt} value={opt}>{opt}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <div className="space-y-2">
+                                        <Select 
+                                            onValueChange={(val) => setAnswers({...answers, [q.id]: val})}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select an option" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {q.options?.map((opt: string) => (
+                                                    <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                                                ))}
+                                                <SelectItem value="Other">Other (Type below)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        
+                                        {answers[q.id] === 'Other' && (
+                                            <Input 
+                                                placeholder="Please specify..."
+                                                value={customAnswers[q.id] || ''}
+                                                onChange={(e) => setCustomAnswers({...customAnswers, [q.id]: e.target.value})}
+                                                className="mt-2 border-primary/50"
+                                            />
+                                        )}
+                                    </div>
                                 )}
                                 
                                 {(q.type === 'text' || q.type === 'number') && (
