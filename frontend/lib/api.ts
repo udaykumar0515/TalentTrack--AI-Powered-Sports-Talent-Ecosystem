@@ -63,6 +63,13 @@ class ApiClient {
     });
   }
 
+  async updateUser(userId: string, updates: Partial<User>) {
+    return this.request<User>(`/api/users/${encodeURIComponent(userId)}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates),
+    });
+  }
+
   // ============================================
   // USERS / COACHES / ATHLETES
   // ============================================

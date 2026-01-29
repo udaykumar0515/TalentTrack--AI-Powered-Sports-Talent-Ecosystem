@@ -14,6 +14,8 @@ export interface User {
   created_at?: string;
   age?: number;
   gender?: string;
+  weight?: string;
+  height?: string;
 }
 
 export interface Athlete extends User {

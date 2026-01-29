@@ -86,10 +86,14 @@ class User(BaseModel):
     id: str
     email: str
     username: str
+    name: Optional[str] = None
     role: str
     created_at: str
     age: Optional[int] = None
     gender: Optional[str] = None
+    weight: Optional[str] = None
+    height: Optional[str] = None
+    profileImage: Optional[str] = None
 
 
 class CoachMessage(BaseModel):
@@ -385,6 +389,63 @@ async def get_athlete(athlete_id: str):
     except Exception as e:
         logger.error(f"Failed to get athlete {athlete_id}: {e}")
         raise HTTPException(status_code=500, detail="Failed to get athlete")
+
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    weight: Optional[str] = None
+    height: Optional[str] = None
+    bio: Optional[str] = None
+
+@app.put("/api/users/{user_id}")
+async def update_user(user_id: str, updates: UserUpdate):
+    """Update user profile"""
+    try:
+        # Check athletes first
+        athletes_file = "data/athletes/athletes.json"
+        if os.path.exists(athletes_file):
+            with open(athletes_file, "r", encoding="utf-8") as f:
+                athletes = json.load(f)
+            
+            for i, athlete in enumerate(athletes):
+                if athlete["id"] == user_id:
+                    # Update fields
+                    update_data = updates.dict(exclude_unset=True)
+                    athlete.update(update_data)
+                    athletes[i] = athlete
+                    
+                    # Save back
+                    with open(athletes_file, "w", encoding="utf-8") as f:
+                        json.dump(athletes, f, indent=2)
+                    
+                    return athlete
+        
+        # Check coaches
+        coaches_file = "data/athletes/coaches.json"
+        if os.path.exists(coaches_file):
+            with open(coaches_file, "r", encoding="utf-8") as f:
+                coaches = json.load(f)
+                
+            for i, coach in enumerate(coaches):
+                if coach["id"] == user_id:
+                    update_data = updates.dict(exclude_unset=True)
+                    coach.update(update_data)
+                    coaches[i] = coach
+                    
+                    with open(coaches_file, "w", encoding="utf-8") as f:
+                        json.dump(coaches, f, indent=2)
+                        
+                    return coach
+                    
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating user {user_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to update user: {str(e)}")
 
 
 @app.get("/api/sessions")
