@@ -140,6 +140,37 @@ class GoalSettingEngine:
         except Exception as e:
             print(f"Error deleting goal: {e}")
             return False
+
+    def update_goals_from_session(self, user_id: str, session_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Update all active goals based on new session data"""
+        updated_goals = []
+        try:
+            goals = self.load_goals()
+            user_goals = goals.get(user_id, [])
+            
+            for goal in user_goals:
+                # Only update active goals
+                if goal.get("status") != GoalStatus.ACTIVE.value:
+                    continue
+                
+                # Check if this goal type is relevant to sessions
+                # We update all relevant types (reps, duration, form, sessions_completed)
+                # The _calculate_progress method handles the specifics
+                
+                # Update the goal
+                result = self.update_goal_progress(user_id, goal["id"], session_data)
+                if result:
+                    updated_goals.append({
+                        "id": goal["id"],
+                        "title": goal["title"],
+                        "progress": result
+                    })
+            
+            return updated_goals
+            
+        except Exception as e:
+            print(f"Error updating goals from session: {e}")
+            return []
     
     def update_goal_progress(self, user_id: str, goal_id: str, session_data: Dict[str, Any]) -> Dict[str, Any]:
         """Update goal progress based on session data"""
@@ -203,7 +234,7 @@ class GoalSettingEngine:
             session_value = session_data.get("durationSec", 0)
         
         # Update current value
-        if goal_type in [GoalType.REPS.value, GoalType.FORM_SCORE.value, GoalType.DURATION.value, GoalType.ENDURANCE.value]:
+        if goal_type in [GoalType.REPS.value, GoalType.FORM_SCORE.value, GoalType.DURATION.value, GoalType.ENDURANCE.value, GoalType.SESSIONS_COMPLETED.value]:
             # For cumulative goals, add to current value
             new_current = current + session_value
         else:

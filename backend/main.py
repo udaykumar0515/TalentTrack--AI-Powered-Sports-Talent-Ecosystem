@@ -1540,7 +1540,12 @@ async def analyze_video(
         }
         
         # Update goal progress for active goals
-        update_user_goals_progress(athleteId, session_data)
+        try:
+            updated_goals = goal_setting_engine.update_goals_from_session(athleteId, session_data)
+            if updated_goals:
+                logger.info(f"Updated {len(updated_goals)} goals for athlete {athleteId}")
+        except Exception as e:
+            logger.error(f"Error updating goals: {e}")
 
         # Save session result
         if save_session_result(session_data):
@@ -2049,7 +2054,12 @@ async def analyze_offline_video(user_id: str, video_id: str, analysis_request: d
                     save_session_result(session_data)
                     
                     # Update goal progress for all active goals
-                    update_user_goals_progress(user_id, session_data)
+                    try:
+                        updated_goals = goal_setting_engine.update_goals_from_session(user_id, session_data)
+                        if updated_goals:
+                            logger.info(f"Updated {len(updated_goals)} goals for user {user_id}")
+                    except Exception as e:
+                        logger.error(f"Error updating goals: {e}")
                     
                     # Remove the video from offline queue after successful analysis
                     offline_video_manager.delete_offline_video(user_id, video_id)
