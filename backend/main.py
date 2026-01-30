@@ -976,10 +976,11 @@ async def get_coach_predictive_analytics(coach_id: str):
         raise HTTPException(status_code=500, detail="Failed to get coach predictive analytics")
 
 @app.get("/api/training-plans/athlete/{athlete_id}")
-async def get_athlete_training_plan(athlete_id: str):
+@app.get("/api/training-plans/athlete/{athlete_id}")
+async def get_athlete_training_plan(athlete_id: str, source: Optional[str] = None):
     """Get training plan for a specific athlete"""
     try:
-        plan = training_plan_generator.get_training_plan(athlete_id)
+        plan = training_plan_generator.get_training_plan(athlete_id, source)
         return plan
     except Exception as e:
         logger.error(f"Error getting athlete training plan: {e}")
@@ -2260,30 +2261,38 @@ async def generate_training_plan(athlete_id: str):
         raise HTTPException(status_code=500, detail=f"Failed to generate training plan: {str(e)}")
 
 @app.get("/api/training-plans/athlete/{athlete_id}")
-async def get_training_plan(athlete_id: str):
+async def get_training_plan(athlete_id: str, source: Optional[str] = None):
     """Get existing training plan for an athlete"""
     try:
-        # Check if athlete has explicitly assigned plan
-        athletes = read_json_file("athletes/athletes.json")
-        if athlete_id in athletes and "currentPlanId" in athletes[athlete_id]:
-            plan_id = athletes[athlete_id]["currentPlanId"]
+        # Check if athlete has explicitly assigned plan (unless source='ai')
+        if source != 'ai':
+            athletes = read_json_file("athletes/athletes.json")
+            # Find athlete in list
+            athlete = next((a for a in athletes if a.get("id") == athlete_id), None)
             
-            # Check LongTerm Plans
-            try:
-                # Iterate through all coaches to find the plan
-                all_plans_map = longterm_plans_engine.load_plans()
-                for coach_id, plans in all_plans_map.items():
-                    for plan in plans:
-                        if plan["id"] == plan_id:
-                            return plan
-            except Exception as e:
-                logger.error(f"Error looking up assigned plan {plan_id}: {e}")
+            if athlete and "currentPlanId" in athlete:
+                plan_id = athlete["currentPlanId"]
+                
+                # Check LongTerm Plans
+                try:
+                    # Iterate through all coaches to find the plan
+                    all_plans_map = longterm_plans_engine.load_plans()
+                    for coach_id, plans in all_plans_map.items():
+                        for plan in plans:
+                            if plan["id"] == plan_id:
+                                # Ensure it has the structure expected by frontend or flag it
+                                plan["type"] = "coach_assigned"
+                                return plan
+                except Exception as e:
+                    logger.error(f"Error looking up assigned plan {plan_id}: {e}")
 
-        return training_plan_generator.get_training_plan(athlete_id)
+        # Default to AI plan
+        plan = training_plan_generator.get_training_plan(athlete_id)
+        if plan:
+            plan["type"] = "ai_generated"
+        return plan
     except Exception as e:
         logger.error(f"Error getting training plan: {e}")
-        # Return empty/default if not found
-        # Return empty/default if not found
         return None
 
 @app.post("/api/athletes/{athlete_id}/assign-plan")
@@ -2296,10 +2305,18 @@ async def assign_training_plan(athlete_id: str, plan_data: dict):
 
         # Update athlete record in athletes.json
         athletes = read_json_file("athletes/athletes.json")
-        if athlete_id not in athletes:
+        
+        # logic handles list structure
+        found_index = -1
+        for i, athlete in enumerate(athletes):
+            if athlete.get("id") == athlete_id:
+                found_index = i
+                break
+        
+        if found_index == -1:
              raise HTTPException(status_code=404, detail="Athlete not found")
 
-        athletes[athlete_id]["currentPlanId"] = plan_id
+        athletes[found_index]["currentPlanId"] = plan_id
         write_json_file("athletes/athletes.json", athletes)
 
         return {"success": True, "message": "Plan assigned successfully"}

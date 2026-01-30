@@ -1,0 +1,216 @@
+{
+  "c867df8f-9cdf-4e32-a29d-379c892b220f": {
+    "athlete_id": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "created_by": "ai_coach",
+    "created_at": "2026-01-29T19:13:17.684406Z",
+    "valid_until": "2026-02-26T19:13:17.684406Z",
+    "status": "active",
+    "title": "4-Week i want a lean yet storng body like gojo sathuru Prep (Starter)",
+    "description": "A foundational program designed to help you achieve 'i want a lean yet storng body like gojo sathuru'. Focuses on stability, strength, and gradual progression.",
+    "duration": "4 weeks",
+    "frequency": "5+ days",
+    "goal_focus": "i want a lean yet storng body like gojo sathuru",
+    "weekly_schedule": [
+      {
+        "day": "Monday",
+        "focus": "Full Body Strength",
+        "exercises": [
+          {
+            "name": "Squat",
+            "sets": 3,
+            "reps": "10",
+            "notes": "Control the descent"
+          },
+          {
+            "name": "Pushups",
+            "sets": 3,
+            "reps": "12",
+            "notes": "Keep core tight"
+          },
+          {
+            "name": "Plank",
+            "sets": 3,
+            "reps": "30s",
+            "notes": "Solid base"
+          }
+        ]
+      },
+      {
+        "day": "Wednesday",
+        "focus": "Conditioning & Core",
+        "exercises": [
+          {
+            "name": "Burpees",
+            "sets": 3,
+            "reps": "10",
+            "notes": "Explosive movement"
+          },
+          {
+            "name": "Mountain Climbers",
+            "sets": 3,
+            "reps": "30s",
+            "notes": "Fast pace"
+          },
+          {
+            "name": "Leg Raises",
+            "sets": 3,
+            "reps": "15",
+            "notes": "Controlled"
+          }
+        ]
+      },
+      {
+        "day": "Friday",
+        "focus": "Stability & Recovery",
+        "exercises": [
+          {
+            "name": "Lunges",
+            "sets": 3,
+            "reps": "10/leg",
+            "notes": "Knee alignment"
+          },
+          {
+            "name": "Glute Bridges",
+            "sets": 3,
+            "reps": "15",
+            "notes": "Squeeze at top"
+          }
+        ]
+      }
+    ],
+    "progression_plan": [
+      {
+        "week": 1,
+        "focus": "Adaptation",
+        "instruction": "Focus on technique and consistency."
+      },
+      {
+        "week": 2,
+        "focus": "Volume",
+        "instruction": "Add 1 set to main lifts."
+      },
+      {
+        "week": 3,
+        "focus": "Intensity",
+        "instruction": "Decrease rest times by 15s."
+      },
+      {
+        "week": 4,
+        "focus": "Deload",
+        "instruction": "Reduce volume by 50% for recovery."
+      }
+    ],
+    "coaching_tips": [
+      "Consistency is key.",
+      "Sleep at least 7 hours.",
+      "Hydrate before sessions."
+    ]
+  },
+  "test_athlete_123": {
+    "athlete_id": "test_athlete_123",
+    "created_by": "ai_coach",
+    "created_at": "2026-01-29T21:24:26.734660Z",
+    "valid_until": "2026-02-26T21:24:26.734660Z",
+    "status": "active",
+    "title": "4-Week I want to improve my vertical jump for basketball Prep (Starter)",
+    "description": "A foundational program designed to help you achieve 'I want to improve my vertical jump for basketball'. Focuses on stability, strength, and gradual progression.",
+    "duration": "4 weeks",
+    "frequency": "4 days",
+    "goal_focus": "I want to improve my vertical jump for basketball",
+    "weekly_schedule": [
+      {
+        "day": "Monday",
+        "focus": "Full Body Strength",
+        "exercises": [
+          {
+            "name": "Squat",
+            "sets": 3,
+            "reps": "10",
+            "notes": "Control the descent"
+          },
+          {
+            "name": "Pushups",
+            "sets": 3,
+            "reps": "12",
+            "notes": "Keep core tight"
+          },
+          {
+            "name": "Plank",
+            "sets": 3,
+            "reps": "30s",
+            "notes": "Solid base"
+          }
+        ]
+      },
+      {
+        "day": "Wednesday",
+        "focus": "Conditioning & Core",
+        "exercises": [
+          {
+            "name": "Burpees",
+            "sets": 3,
+            "reps": "10",
+            "notes": "Explosive movement"
+          },
+          {
+            "name": "Mountain Climbers",
+            "sets": 3,
+            "reps": "30s",
+            "notes": "Fast pace"
+          },
+          {
+            "name": "Leg Raises",
+            "sets": 3,
+            "reps": "15",
+            "notes": "Controlled"
+          }
+        ]
+      },
+      {
+        "day": "Friday",
+        "focus": "Stability & Recovery",
+        "exercises": [
+          {
+            "name": "Lunges",
+            "sets": 3,
+            "reps": "10/leg",
+            "notes": "Knee alignment"
+          },
+          {
+            "name": "Glute Bridges",
+            "sets": 3,
+            "reps": "15",
+            "notes": "Squeeze at top"
+          }
+        ]
+      }
+    ],
+    "progression_plan": [
+      {
+        "week": 1,
+        "focus": "Adaptation",
+        "instruction": "Focus on technique and consistency."
+      },
+      {
+        "week": 2,
+        "focus": "Volume",
+        "instruction": "Add 1 set to main lifts."
+      },
+      {
+        "week": 3,
+        "focus": "Intensity",
+        "instruction": "Decrease rest times by 15s."
+      },
+      {
+        "week": 4,
+        "focus": "Deload",
+        "instruction": "Reduce volume by 50% for recovery."
+      }
+    ],
+    "coaching_tips": [
+      "Consistency is key.",
+      "Sleep at least 7 hours.",
+      "Hydrate before sessions."
+    ]
+  }
+}

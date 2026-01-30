@@ -1,0 +1,84 @@
+{
+  "f2076b42-bac5-4906-a029-fc79865f3f7a": [
+    {
+      "id": "plan_f2076b42-bac5-4906-a029-fc79865f3f7a_c867df8f-9cdf-4e32-a29d-379c892b220f_1_1769775343",
+      "coach_id": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+      "athlete_id": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+      "athlete_name": "Udaykumar Haibathi",
+      "title": "gojo",
+      "description": "make it",
+      "phase": "foundation",
+      "priority": "medium",
+      "status": "draft",
+      "start_date": "2026-01-30T17:45:43.887054",
+      "end_date": "",
+      "duration_weeks": 2,
+      "created_at": "2026-01-30T17:45:43.887054",
+      "updated_at": "2026-01-30T17:45:43.887054",
+      "objectives": [],
+      "milestones": [],
+      "training_schedule": {
+        "weeks": [
+          {
+            "weekNumber": 1,
+            "focus": "Introduction",
+            "days": [
+              {
+                "dayName": "Monday",
+                "focus": "Upper Body",
+                "exercises": [
+                  {
+                    "name": "reps",
+                    "sets": 3,
+                    "reps": "10",
+                    "notes": ""
+                  },
+                  {
+                    "name": "all",
+                    "sets": 3,
+                    "reps": "10",
+                    "notes": ""
+                  }
+                ]
+              },
+              {
+                "dayName": "tuesday",
+                "focus": "General",
+                "exercises": []
+              }
+            ]
+          },
+          {
+            "weekNumber": 2,
+            "focus": "Progression",
+            "days": [
+              {
+                "dayName": "monday",
+                "focus": "General",
+                "exercises": [
+                  {
+                    "name": "whatever",
+                    "sets": 3,
+                    "reps": "10",
+                    "notes": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "assessment_criteria": {},
+      "progress_tracking": {
+        "current_phase": "foundation",
+        "phase_completion": 0.0,
+        "overall_progress": 0.0,
+        "last_assessment": null,
+        "next_milestone": null
+      },
+      "notes": "",
+      "tags": [],
+      "is_template": false
+    }
+  ]
+}

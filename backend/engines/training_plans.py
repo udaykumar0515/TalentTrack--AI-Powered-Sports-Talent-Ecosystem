@@ -11,6 +11,7 @@ from typing import Dict, List, Any, Optional, Tuple
 import os
 from .predictive_analytics import predictive_analytics
 from .benchmarking import benchmarking_engine
+from .longterm_plans import LongTermPlansEngine
 from services.gemini_client import gemini_client
 
 class TrainingPlanGenerator:
@@ -18,7 +19,7 @@ class TrainingPlanGenerator:
         self.data_dir = "data"
         self.sessions_file = os.path.join(self.data_dir, "sessions", "sessions.json")
         self.athletes_file = os.path.join(self.data_dir, "athletes", "athletes.json")
-        self.training_plans_file = os.path.join(self.data_dir, "training_plans", "training_plans.json")
+        self.training_plans_file = os.path.join(self.data_dir, "training_plans", "ai_generated_training_plans", "training_plans.json")
         
     def _load_sessions(self) -> List[Dict]:
         """Load all sessions data"""
@@ -433,15 +434,44 @@ class TrainingPlanGenerator:
         
         return notes
     
-    def get_training_plan(self, athlete_id: str) -> Dict[str, Any]:
+    def get_training_plan(self, athlete_id: str, source: Optional[str] = None) -> Dict[str, Any]:
         """Get existing training plan for athlete (AI or Coach created)"""
+        
+        # 1. Try Coach Plan First (unless explicitly asking for AI)
+        if source != 'ai':
+            try:
+                # Check athletes.json for currentPlanId
+                if os.path.exists(self.athletes_file):
+                    with open(self.athletes_file, 'r', encoding='utf-8') as f:
+                        athletes = json.load(f)
+                    
+                    athlete = next((a for a in athletes if a.get("id") == athlete_id), None)
+                    current_plan_id = athlete.get("currentPlanId") if athlete else None
+                    
+                    if current_plan_id:
+                        # Load Coach Plans via engine
+                        ltp_engine = LongTermPlansEngine()
+                        coach_plans_map = ltp_engine.load_plans()
+                        
+                        # Find plan by ID across all coaches
+                        for coach_id, plans_list in coach_plans_map.items():
+                             for p in plans_list:
+                                 if p.get("id") == current_plan_id:
+                                     # Inject type for frontend identification
+                                     p["type"] = "coach_assigned"
+                                     return p
+            except Exception as e:
+                print(f"Error checking coach plans: {e}")
+
+        # 2. Fallback to AI Plan checking
         plans = self._load_training_plans()
         
-        # First check for AI-generated plan
         if athlete_id in plans:
-            return plans[athlete_id]
+            plan = plans[athlete_id]
+            plan["type"] = "ai_generated"
+            return plan
         
-        # Then check for coach-created plan
+        # 3. Check for legacy coach-created plan format in ai_plans directory (fallback)
         coach_plan_key = f"{athlete_id}_coach"
         if coach_plan_key in plans:
             return plans[coach_plan_key]

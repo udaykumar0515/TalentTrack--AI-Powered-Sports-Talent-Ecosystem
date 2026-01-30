@@ -31,7 +31,7 @@ class PlanPriority(Enum):
     CRITICAL = "critical"
 
 class LongTermPlansEngine:
-    def __init__(self, plans_file: str = "data/system/longterm_plans.json"):
+    def __init__(self, plans_file: str = "data/training_plans/coach_generated_training_plans/longterm_plans.json"):
         self.plans_file = plans_file
         self.ensure_plans_file()
     

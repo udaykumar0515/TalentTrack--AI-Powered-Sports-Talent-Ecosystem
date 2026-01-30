@@ -244,8 +244,11 @@ class ApiClient {
   // ============================================
   // TRAINING PLANS
   // ============================================
-  async getTrainingPlan(athleteId: string) {
-    return this.request<TrainingPlan>(`/api/training-plans/athlete/${encodeURIComponent(athleteId)}`);
+  async getTrainingPlan(athleteId: string, source?: string) {
+    const url = source 
+      ? `/api/training-plans/athlete/${encodeURIComponent(athleteId)}?source=${source}`
+      : `/api/training-plans/athlete/${encodeURIComponent(athleteId)}`;
+    return this.request<TrainingPlan>(url);
   }
 
   async generateTrainingPlan(athleteId: string) {
@@ -318,7 +321,22 @@ class ApiClient {
   }
 
   async getAthletePlans(athleteId: string) {
-    return this.request<LongTermPlan[]>(`/api/longterm-plans/athlete/${encodeURIComponent(athleteId)}`);
+    return this.request<{ plans: LongTermPlan[] }>(`/api/longterm-plans/athlete/${encodeURIComponent(athleteId)}`)
+      .then(res => res.plans || []);
+  }
+
+  async createLongTermPlan(planData: Partial<LongTermPlan>) {
+    return this.request<LongTermPlan>('/api/longterm-plans', {
+      method: 'POST',
+      body: JSON.stringify(planData),
+    });
+  }
+
+  async updateLongTermPlan(coachId: string, planId: string, updates: Partial<LongTermPlan>) {
+    return this.request<{ success: boolean; message: string }>(`/api/longterm-plans/${encodeURIComponent(coachId)}/${encodeURIComponent(planId)}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates),
+    });
   }
 
   // ============================================

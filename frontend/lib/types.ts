@@ -252,12 +252,30 @@ export interface Workout {
 
 export interface Exercise {
   name: string;
-  sets: number;
-  reps: number;
+  sets: number; // Keep as number for basic compat
+  reps: number | string; // Allow string for "8-12"
   weight?: number;
   notes?: string;
   rest_seconds?: number;
+  rpe?: number;
 }
+
+// Custom Coach Plan Types
+export interface CustomPlanDay {
+  dayName: string;
+  focus: string;
+  exercises: Exercise[];
+}
+
+export interface CustomPlanWeek {
+  weekNumber: number;
+  focus: string;
+  days: CustomPlanDay[];
+}
+
+export interface CoachCustomSchedule {
+  weeks: CustomPlanWeek[];
+} 
 
 // ============================================
 // Analytics & Injury Types
