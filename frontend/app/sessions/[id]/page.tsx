@@ -218,6 +218,19 @@ export default function SessionDetailPage() {
           </Badge>
         </div>
 
+        {/* Video Player */}
+        {/* Video Player */}
+        {session.videoUrl && (
+          <Card className="p-6">
+            <h2 className="text-lg font-semibold text-foreground mb-4">Session Video</h2>
+            <video 
+              src={session.videoUrl.startsWith('http') ? session.videoUrl : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${session.videoUrl}`}
+              controls 
+              className="w-full rounded-lg max-h-[500px]"
+            />
+          </Card>
+        )}
+
         {/* Primary Metrics Cards */}
         <div className="grid gap-6 md:grid-cols-3">
           <Card className="p-6 text-center">
@@ -267,7 +280,7 @@ export default function SessionDetailPage() {
                 </div>
                 <div className="p-3 bg-background rounded-lg border">
                   <AlertTriangle className="h-5 w-5 text-muted-foreground mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-foreground">{cheatDetection.totalFlags}</p>
+                  <p className="text-2xl font-bold text-foreground">{cheatDetection.totalFlags ?? 0}</p>
                   <p className="text-xs text-muted-foreground">Issues Found</p>
                 </div>
               </div>
@@ -479,17 +492,9 @@ export default function SessionDetailPage() {
           )}
         </div>
 
-        {/* Video Player */}
-        {session.videoUrl && (
-          <Card className="p-6">
-            <h2 className="text-lg font-semibold text-foreground mb-4">Session Video</h2>
-            <video 
-              src={session.videoUrl} 
-              controls 
-              className="w-full rounded-lg max-h-[500px]"
-            />
-          </Card>
-        )}
+
+
+
       </div>
     </AppLayout>
   );

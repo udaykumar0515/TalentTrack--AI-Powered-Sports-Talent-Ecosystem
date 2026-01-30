@@ -3,6 +3,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { Session } from '@/lib/types';
+import Link from 'next/link';
 import { Calendar, Target, TrendingUp, Trash2, Clock } from 'lucide-react';
 
 interface SessionCardProps {
@@ -89,6 +90,15 @@ export function SessionCard({ session, onDelete }: SessionCardProps) {
           <p className="text-lg font-bold text-foreground">{Math.round(duration)}s</p>
           <p className="text-xs text-muted-foreground">Duration</p>
         </div>
+      </div>
+
+
+      <div className="mt-4 pt-3 border-t border-border/50">
+        <Link href={`/sessions/${sessionId}`} className="w-full block">
+          <Button variant="outline" size="sm" className="w-full">
+            View Details
+          </Button>
+        </Link>
       </div>
     </Card>
   );

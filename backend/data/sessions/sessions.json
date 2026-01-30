@@ -10,6 +10,229 @@
         "timestamp": "2026-01-28T19:55:13.858314Z",
         "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
         "athleteName": "Udaykumar Haibathi"
+      },
+      {
+        "sessionId": "41da6178",
+        "exercise": "squat",
+        "reps": 5,
+        "formScore": 85,
+        "durationSec": 45.0,
+        "timestamp": "2026-01-30T20:18:32.125676",
+        "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+        "athleteName": "Udaykumar Haibathi",
+        "metrics": {
+          "velocity": 0.45,
+          "peak_power": 1200,
+          "tempo": "2-0-2",
+          "rep_consistency": 0.92,
+          "depth_achieved": "parallel"
+        },
+        "extra_metric_root_level": "Extra Value Test"
+      },
+      {
+        "sessionId": "417b0b3a",
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 70,
+        "durationSec": 8.63,
+        "timestamp": "2026-01-30T20:23:45.072254Z",
+        "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+        "athleteName": "Udaykumar Haibathi"
+      },
+      {
+        "sessionId": "fe081a2f",
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 61,
+        "durationSec": 8.0,
+        "timestamp": "2026-01-30T20:27:09.646056Z",
+        "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+        "athleteName": "Udaykumar Haibathi",
+        "userName": "Udaykumar Haibathi",
+        "analysis": {
+          "mode": "mediapipe_tasks_v2",
+          "framesProcessed": 192,
+          "processingTimeSec": 4.74
+        },
+        "cheatDetection": {
+          "cheat_detected": true,
+          "cheat_percentage": 16.7,
+          "cheat_flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": true,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspicious_patterns": [],
+          "total_flags": 1,
+          "confidence": 86.7,
+          "riskLevel": "medium",
+          "riskExplanation": "⚡ Good effort! Focus on maintaining consistent form.",
+          "riskFactors": [
+            "low form score"
+          ]
+        },
+        "metrics": {
+          "avgAngle": 154.8,
+          "minAngle": 105.9,
+          "maxAngle": 178.6,
+          "angleRange": 72.7,
+          "formConsistency": 0.94,
+          "repFormScores": [
+            60,
+            60
+          ],
+          "totalFramesAnalyzed": 192
+        }
+      },
+      {
+        "sessionId": "41eac630",
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 61,
+        "durationSec": 8.0,
+        "timestamp": "2026-01-30T20:55:09.577389Z",
+        "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+        "athleteName": "Udaykumar Haibathi",
+        "videoUrl": "http://localhost:8000/videos/athletes/c867df8f-9cdf-4e32-a29d-379c892b220f/69df5bb4.mp4",
+        "userName": "Udaykumar Haibathi",
+        "analysis": {
+          "mode": "mediapipe_tasks_v2",
+          "framesProcessed": 192,
+          "processingTimeSec": 6.12
+        },
+        "cheatDetection": {
+          "cheat_detected": true,
+          "cheat_percentage": 16.7,
+          "cheat_flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": true,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspicious_patterns": [],
+          "total_flags": 1,
+          "confidence": 86.7,
+          "riskLevel": "medium",
+          "riskExplanation": "⚡ Good effort! Focus on maintaining consistent form.",
+          "riskFactors": [
+            "low form score"
+          ]
+        },
+        "metrics": {
+          "avgAngle": 154.8,
+          "minAngle": 105.9,
+          "maxAngle": 178.6,
+          "angleRange": 72.7,
+          "formConsistency": 0.94,
+          "repFormScores": [
+            60,
+            60
+          ],
+          "totalFramesAnalyzed": 192
+        }
+      },
+      {
+        "sessionId": "7f8bba5b",
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 61,
+        "durationSec": 8.0,
+        "timestamp": "2026-01-30T20:58:08.469433Z",
+        "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+        "athleteName": "Udaykumar Haibathi",
+        "videoUrl": "http://localhost:8000/videos/athletes/c867df8f-9cdf-4e32-a29d-379c892b220f/7482e4f5.mp4",
+        "userName": "Udaykumar Haibathi",
+        "analysis": {
+          "mode": "mediapipe_tasks_v2",
+          "framesProcessed": 192,
+          "processingTimeSec": 5.23
+        },
+        "cheatDetection": {
+          "cheat_detected": true,
+          "cheat_percentage": 16.7,
+          "cheat_flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": true,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspicious_patterns": [],
+          "total_flags": 1,
+          "confidence": 86.7,
+          "riskLevel": "medium",
+          "riskExplanation": "⚡ Good effort! Focus on maintaining consistent form.",
+          "riskFactors": [
+            "low form score"
+          ]
+        },
+        "metrics": {
+          "avgAngle": 154.8,
+          "minAngle": 105.9,
+          "maxAngle": 178.6,
+          "angleRange": 72.7,
+          "formConsistency": 0.94,
+          "repFormScores": [
+            60,
+            60
+          ],
+          "totalFramesAnalyzed": 192
+        }
+      },
+      {
+        "sessionId": "80e91744",
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 61,
+        "durationSec": 8.0,
+        "timestamp": "2026-01-30T21:02:12.026999Z",
+        "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+        "athleteName": "Udaykumar Haibathi",
+        "videoUrl": "/videos/athletes/c867df8f-9cdf-4e32-a29d-379c892b220f/f0196bd4.mp4",
+        "userName": "Udaykumar Haibathi",
+        "analysis": {
+          "mode": "mediapipe_tasks_v2",
+          "framesProcessed": 192,
+          "processingTimeSec": 5.29
+        },
+        "cheatDetection": {
+          "cheat_detected": true,
+          "cheat_percentage": 16.7,
+          "cheat_flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": true,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspicious_patterns": [],
+          "total_flags": 1,
+          "confidence": 86.7,
+          "riskLevel": "medium",
+          "riskExplanation": "⚡ Good effort! Focus on maintaining consistent form.",
+          "riskFactors": [
+            "low form score"
+          ]
+        },
+        "metrics": {
+          "avgAngle": 154.8,
+          "minAngle": 105.9,
+          "maxAngle": 178.6,
+          "angleRange": 72.7,
+          "formConsistency": 0.94,
+          "repFormScores": [
+            60,
+            60
+          ],
+          "totalFramesAnalyzed": 192
+        }
       }
     ]
   }

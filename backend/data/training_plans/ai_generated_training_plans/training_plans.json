@@ -1,122 +1,244 @@
 {
   "c867df8f-9cdf-4e32-a29d-379c892b220f": {
     "athlete_id": "c867df8f-9cdf-4e32-a29d-379c892b220f",
-    "created_by": "ai_coach",
-    "created_at": "2026-01-29T19:13:17.684406Z",
-    "valid_until": "2026-02-26T19:13:17.684406Z",
-    "status": "active",
-    "title": "4-Week i want a lean yet storng body like gojo sathuru Prep (Starter)",
-    "description": "A foundational program designed to help you achieve 'i want a lean yet storng body like gojo sathuru'. Focuses on stability, strength, and gradual progression.",
-    "duration": "4 weeks",
-    "frequency": "5+ days",
-    "goal_focus": "i want a lean yet storng body like gojo sathuru",
+    "generated_at": "2026-01-30T21:14:50.853675Z",
+    "valid_until": "2026-03-01T21:14:50.853675Z",
+    "analysis": {
+      "gaps": [
+        "Form technique needs improvement",
+        "Rep count declining - may need rest or form focus",
+        "Limited exercise variety - need more diverse training"
+      ],
+      "strengths": [
+        "Excellent form discipline"
+      ],
+      "focus_areas": [
+        "form_technique",
+        "endurance",
+        "variety"
+      ],
+      "avg_form": 65.71428571428571,
+      "reps_trend": -0.21428571428571425,
+      "exercise_variety": 1,
+      "cheat_rate": 0.0
+    },
+    "recommendations": [
+      {
+        "exercise": "squat",
+        "type": "form_focus",
+        "sets": 3,
+        "reps": "8-12",
+        "intensity": "moderate",
+        "focus": "Perfect form over speed",
+        "instructions": [
+          "Slow down your movements",
+          "Focus on full range of motion",
+          "Maintain control throughout",
+          "Stop if form breaks down"
+        ],
+        "priority": "high"
+      },
+      {
+        "exercise": "squat",
+        "type": "endurance",
+        "sets": 2,
+        "reps": "15-20",
+        "intensity": "light",
+        "focus": "Build stamina and consistency",
+        "instructions": [
+          "Maintain steady pace",
+          "Focus on breathing rhythm",
+          "Take short breaks between sets",
+          "Gradually increase reps"
+        ],
+        "priority": "medium"
+      },
+      {
+        "exercise": "jumping_jack",
+        "type": "cardio",
+        "sets": 3,
+        "reps": "30-45",
+        "intensity": "moderate",
+        "focus": "Cardiovascular fitness",
+        "instructions": [
+          "Maintain steady rhythm",
+          "Land softly on feet",
+          "Keep core engaged",
+          "Breathe consistently"
+        ],
+        "priority": "medium"
+      }
+    ],
     "weekly_schedule": [
       {
         "day": "Monday",
-        "focus": "Full Body Strength",
-        "exercises": [
-          {
-            "name": "Squat",
-            "sets": 3,
-            "reps": "10",
-            "notes": "Control the descent"
-          },
-          {
-            "name": "Pushups",
-            "sets": 3,
-            "reps": "12",
-            "notes": "Keep core tight"
-          },
-          {
-            "name": "Plank",
-            "sets": 3,
-            "reps": "30s",
-            "notes": "Solid base"
-          }
-        ]
+        "exercise": "squat",
+        "type": "form_focus",
+        "sets": 3,
+        "reps": "8-12",
+        "intensity": "moderate",
+        "focus": "Perfect form over speed",
+        "instructions": [
+          "Slow down your movements",
+          "Focus on full range of motion",
+          "Maintain control throughout",
+          "Stop if form breaks down"
+        ],
+        "priority": "high",
+        "estimated_duration": "15-20 minutes"
       },
       {
         "day": "Wednesday",
-        "focus": "Conditioning & Core",
-        "exercises": [
-          {
-            "name": "Burpees",
-            "sets": 3,
-            "reps": "10",
-            "notes": "Explosive movement"
-          },
-          {
-            "name": "Mountain Climbers",
-            "sets": 3,
-            "reps": "30s",
-            "notes": "Fast pace"
-          },
-          {
-            "name": "Leg Raises",
-            "sets": 3,
-            "reps": "15",
-            "notes": "Controlled"
-          }
-        ]
+        "exercise": "squat",
+        "type": "endurance",
+        "sets": 2,
+        "reps": "15-20",
+        "intensity": "light",
+        "focus": "Build stamina and consistency",
+        "instructions": [
+          "Maintain steady pace",
+          "Focus on breathing rhythm",
+          "Take short breaks between sets",
+          "Gradually increase reps"
+        ],
+        "priority": "medium",
+        "estimated_duration": "15-20 minutes"
       },
       {
         "day": "Friday",
-        "focus": "Stability & Recovery",
-        "exercises": [
-          {
-            "name": "Lunges",
-            "sets": 3,
-            "reps": "10/leg",
-            "notes": "Knee alignment"
-          },
-          {
-            "name": "Glute Bridges",
-            "sets": 3,
-            "reps": "15",
-            "notes": "Squeeze at top"
-          }
+        "exercise": "jumping_jack",
+        "type": "cardio",
+        "sets": 3,
+        "reps": "30-45",
+        "intensity": "moderate",
+        "focus": "Cardiovascular fitness",
+        "instructions": [
+          "Maintain steady rhythm",
+          "Land softly on feet",
+          "Keep core engaged",
+          "Breathe consistently"
+        ],
+        "priority": "medium",
+        "estimated_duration": "15-20 minutes"
+      }
+    ],
+    "progression_plan": {
+      "weeks": [
+        {
+          "week": 1,
+          "form_target": 64.8,
+          "reps_target": 3,
+          "focus": "Foundation building and form mastery",
+          "key_metrics": [
+            "Form score",
+            "Consistency",
+            "Range of motion"
+          ],
+          "success_criteria": [
+            "Achieve form score of 64.8 or higher",
+            "Complete 3 reps with good form",
+            "Complete all scheduled sessions",
+            "No form violations in final session"
+          ]
+        },
+        {
+          "week": 2,
+          "form_target": 66.8,
+          "reps_target": 5,
+          "focus": "Consistency and endurance",
+          "key_metrics": [
+            "Rep count",
+            "Endurance",
+            "Breathing"
+          ],
+          "success_criteria": [
+            "Achieve form score of 66.8 or higher",
+            "Complete 5 reps with good form",
+            "Complete all scheduled sessions",
+            "No form violations in final session"
+          ]
+        },
+        {
+          "week": 3,
+          "form_target": 68.8,
+          "reps_target": 6,
+          "focus": "Progressive overload and strength",
+          "key_metrics": [
+            "Strength",
+            "Speed",
+            "Control"
+          ],
+          "success_criteria": [
+            "Achieve form score of 68.8 or higher",
+            "Complete 6 reps with good form",
+            "Complete all scheduled sessions",
+            "No form violations in final session"
+          ]
+        },
+        {
+          "week": 4,
+          "form_target": 70.8,
+          "reps_target": 8,
+          "focus": "Peak performance and refinement",
+          "key_metrics": [
+            "Peak performance",
+            "Efficiency",
+            "Technique"
+          ],
+          "success_criteria": [
+            "Achieve form score of 70.8 or higher",
+            "Complete 8 reps with good form",
+            "Complete all scheduled sessions",
+            "No form violations in final session"
+          ]
+        }
+      ],
+      "goals": [
+        "Improve form score from 63 to 70.8",
+        "Increase reps from 2 to 8",
+        "Maintain consistent training schedule",
+        "Reduce form violations by 50%"
+      ]
+    },
+    "analytics_insights": {
+      "injury_risk": {
+        "risk_level": "low",
+        "risk_score": 20,
+        "factors": [
+          "Potential overtraining"
         ]
+      },
+      "improvement_potential": {
+        "potential": "medium",
+        "score": 55,
+        "suggestions": [
+          "Focus on form correction - high improvement potential",
+          "Consistent performance - ready for advanced training",
+          "Excellent form discipline - ready for progression"
+        ]
+      },
+      "performance_trends": {
+        "form": {
+          "slope": -2.0357142857142856,
+          "r_squared": 0.23141025641025603,
+          "trend": "declining",
+          "confidence": 23.141025641025603
+        },
+        "reps": {
+          "slope": -0.21428571428571427,
+          "r_squared": 0.16666666666666674,
+          "trend": "declining",
+          "confidence": 16.666666666666675
+        }
       }
+    },
+    "coaching_notes": [
+      "Focus on form technique - current average form score is below 70%",
+      "Rep count declining - consider rest days or form focus",
+      "Limited exercise variety - introduce complementary exercises",
+      "Excellent form discipline - ready for increased intensity"
     ],
-    "progression_plan": [
-      {
-        "week": 1,
-        "focus": "Adaptation",
-        "instruction": "Focus on technique and consistency."
-      },
-      {
-        "week": 2,
-        "focus": "Volume",
-        "instruction": "Add 1 set to main lifts."
-      },
-      {
-        "week": 3,
-        "focus": "Intensity",
-        "instruction": "Decrease rest times by 15s."
-      },
-      {
-        "week": 4,
-        "focus": "Deload",
-        "instruction": "Reduce volume by 50% for recovery."
-      }
-    ],
-    "coaching_tips": [
-      "Consistency is key.",
-      "Sleep at least 7 hours.",
-      "Hydrate before sessions."
-    ],
-    "feedback": [
-      {
-        "date": "2026-01-30T18:54:12.550173",
-        "text": "Test Feedback for AI Plan 6304a63d",
-        "coach_id": "f2076b42-bac5-4906-a029-fc79865f3f7a"
-      },
-      {
-        "date": "2026-01-30T19:06:11.278331",
-        "text": "hii\n",
-        "coach_id": "f2076b42-bac5-4906-a029-fc79865f3f7a"
-      }
-    ]
+    "next_review_date": "2026-02-06T21:14:50.853675Z"
   },
   "test_athlete_123": {
     "athlete_id": "test_athlete_123",

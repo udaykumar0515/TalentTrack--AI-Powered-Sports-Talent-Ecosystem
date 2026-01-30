@@ -130,7 +130,16 @@ class GenerateAIPlanRequest(BaseModel):
     goal: str
     answers: Dict[str, Any]
 
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
+# ... existing imports ...
+
 app = FastAPI(title="Exercise Analysis API", version="1.0.0")
+
+# Mount videos directory for static serving
+os.makedirs("videos", exist_ok=True)
+app.mount("/videos", StaticFiles(directory="videos"), name="videos")
 
 # Get allowed origins from environment
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*").split(",")
@@ -1452,11 +1461,15 @@ async def get_session_by_id(session_id: str):
                     if session.get("sessionId") == session_id:
                         # Add video URL if available
                         if session_id in video_map:
-                            session["videoUrl"] = f"/api/videos/{session_id}"
-                            session["thumbnailUrl"] = f"/api/videos/{session_id}"
-                        else:
-                            session["videoUrl"] = None
-                            session["thumbnailUrl"] = None
+                             # Only set if not already present or if we want to override (legacy)
+                             # But here we want to PRESERVE the one we just saved
+                             if not session.get("videoUrl"):
+                                session["videoUrl"] = f"/api/videos/{session_id}"
+                                session["thumbnailUrl"] = f"/api/videos/{session_id}"
+                        # IMPORTANT: Do not set to None if we already have it!
+                        # else:
+                        #    session["videoUrl"] = None
+                        #    session["thumbnailUrl"] = None
                         return session
         
         raise HTTPException(status_code=404, detail="Session not found")
@@ -1729,16 +1742,31 @@ async def analyze_video(
                 logger.warning(f"Missing key '{key}' in parsed result, using default")
 
 
+        # Generate session ID early
+        session_id = str(uuid.uuid4())[:8]
+
+        # Save video permanently
+        video_filename = f"{session_id}.mp4"
+        permanent_video_dir = f"videos/athletes/{athleteId}"
+        os.makedirs(permanent_video_dir, exist_ok=True)
+        permanent_video_path = os.path.join(permanent_video_dir, video_filename)
+        
+        # Copy from temp file to permanent location
+        shutil.copy2(temp_file_path, permanent_video_path)
+        logger.info(f"Saved permanent video to {permanent_video_path}")
+        
         # Simple session data with only core metrics (tied to athlete, not coach)
         session_data = {
-            "sessionId": str(uuid.uuid4())[:8],
+            "sessionId": session_id,
             "exercise": exercise,
             "reps": int(parsed.get("reps", 0)),
             "formScore": int(parsed.get("formScore", 0)),
             "durationSec": float(parsed.get("durationSec", 0.0)),
             "timestamp": datetime.now().isoformat() + "Z",
             "athleteId": athleteId,
-            "athleteName": parsed.get("userName", athleteName)
+            "athleteName": parsed.get("userName", athleteName),
+            "videoUrl": f"/videos/athletes/{athleteId}/{video_filename}",
+            **{k: v for k, v in parsed.items() if k not in ["userId", "exercise", "reps", "formScore", "durationSec", "timestamp", "athleteId", "athleteName"]}
         }
         
         # Update goal progress for active goals
