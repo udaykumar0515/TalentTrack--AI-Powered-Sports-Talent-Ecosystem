@@ -198,6 +198,7 @@ export interface Goal {
   category?: string;
   type?: string;
   milestones?: GoalMilestone[];
+  priority?: 'low' | 'medium' | 'high' | 'urgent';
 }
 
 export interface GoalMilestone {

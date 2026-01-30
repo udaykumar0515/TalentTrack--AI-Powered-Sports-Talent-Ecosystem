@@ -172,5 +172,83 @@
     "timestamp": "2026-01-30T19:22:53.635544",
     "read": true,
     "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "bfbaa382-1dc8-4f5d-9f49-f4281d7b9641",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "sessionId": "goal-assignment",
+    "type": "note",
+    "message": "New Goal Assigned: ko\nko",
+    "timestamp": "2026-01-30T14:14:30.928Z",
+    "read": true,
+    "senderId": null
+  },
+  {
+    "id": "f8e92001-0bd1-416d-a8ab-fce7df94e307",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "sessionId": "goal-feedback",
+    "type": "feedback",
+    "message": "Feedback on Goal \"sessions\": \ncomplet it",
+    "timestamp": "2026-01-30T14:18:41.798Z",
+    "read": true,
+    "senderId": null
+  },
+  {
+    "id": "6a2dca01-1cb5-406a-9c83-ee6df33142e4",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "sessionId": "goal-assignment",
+    "type": "note",
+    "message": "New Goal Assigned: new\nnew",
+    "timestamp": "2026-01-30T14:24:02.605Z",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "49c93ec7-3da8-43e1-a8d7-662b3a2ee6e7",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "sessionId": "goal-feedback",
+    "type": "feedback",
+    "message": "Feedback on Goal \"sessions\": good one",
+    "timestamp": "2026-01-30T20:01:18.778",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "ce67ae5c-1062-4efa-824f-17084af7fafd",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "sessionId": "goal-assignment",
+    "type": "note",
+    "message": "New Goal Assigned: going\nledhu",
+    "timestamp": "2026-01-30T20:01:39.713",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "48bee413-7583-4c44-84a9-f98d4aad144d",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "sessionId": "goal-assignment",
+    "type": "note",
+    "message": "New Goal Assigned 🎯\n\nTitle: do it\nTarget: 100 sessions\nPriority: Medium\nDeadline: N/A\n\nDescription:\ndidi it",
+    "timestamp": "2026-01-30T20:10:43.199",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
   }
 ]
