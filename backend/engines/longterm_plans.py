@@ -163,6 +163,35 @@ class LongTermPlansEngine:
         except Exception as e:
             print(f"Error deleting plan: {e}")
             return False
+
+    def add_feedback(self, coach_id: str, plan_id: str, feedback: str) -> bool:
+        """Add feedback to a specific long-term plan"""
+        try:
+            plans = self.load_plans()
+            coach_plans = plans.get(coach_id, [])
+            
+            for i, plan in enumerate(coach_plans):
+                if plan["id"] == plan_id:
+                    if "feedback" not in plan:
+                        plan["feedback"] = []
+                    
+                    plan["feedback"].append({
+                        "date": datetime.now().isoformat(),
+                        "text": feedback,
+                        "coach_id": coach_id
+                    })
+                    
+                    plan["updated_at"] = datetime.now().isoformat()
+                    coach_plans[i] = plan
+                    plans[coach_id] = coach_plans
+                    self.save_plans(plans)
+                    return True
+            
+            return False
+            
+        except Exception as e:
+            print(f"Error adding feedback: {e}")
+            return False
     
     def update_plan_progress(self, coach_id: str, plan_id: str, session_data: Dict[str, Any]) -> Dict[str, Any]:
         """Update plan progress based on session data"""

@@ -148,25 +148,23 @@ export default function MessagesPage() {
     }
   };
 
-  if (authLoading || !user) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
   // Filter messages for current view
-  const activeMessages = user.role === 'athlete' 
-    ? messages 
-    : messages
-        .filter(m => m.athleteId === selectedAthleteId)
-        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  const activeMessages = !user 
+    ? [] 
+    : (user.role === 'athlete' 
+        ? messages 
+        : messages
+            .filter(m => m.athleteId === selectedAthleteId)
+            .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+      );
 
   // Get conversation partner info
-  const partnerName = user.role === 'athlete' 
-    ? ((user as any).coachName || 'Coach')
-    : (athletes.find(a => a.id === selectedAthleteId)?.name || 'Athlete');
+  const partnerName = !user 
+    ? '' 
+    : (user.role === 'athlete' 
+        ? ((user as any).coachName || 'Coach')
+        : (athletes.find(a => a.id === selectedAthleteId)?.name || 'Athlete')
+      );
 
   // Mark messages as read when viewing
   useEffect(() => {
@@ -189,6 +187,14 @@ export default function MessagesPage() {
       ));
     }
   }, [activeMessages.length, selectedAthleteId, user]); // Trigger when messages change or athlete selected
+
+  if (authLoading || !user) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <AppLayout user={user}>

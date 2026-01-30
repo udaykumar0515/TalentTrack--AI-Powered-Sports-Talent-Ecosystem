@@ -100,5 +100,77 @@
     "timestamp": "2026-01-29T16:36:37.485Z",
     "read": true,
     "senderId": "c867df8f-9cdf-4e32-a29d-379c892b220f"
+  },
+  {
+    "id": "sys_1769779452_0d6115",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Feedback on AI Training Plan: Test Feedback for AI Plan 6304a63d",
+    "timestamp": "2026-01-30T18:54:12.547178",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "sys_1769779662_e73ffc",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Feedback on gojo: hii\n",
+    "timestamp": "2026-01-30T18:57:42.921347",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "sys_1769780171_c4741d",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Feedback on [AI Generated] 4-Week i want a lean yet storng body like gojo sathuru Prep (Starter): hii\n",
+    "timestamp": "2026-01-30T19:06:11.276317",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "sys_1769780183_d2fec5",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Feedback on [Coach Custom Plan] gojo: good\n",
+    "timestamp": "2026-01-30T19:06:23.461663",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "sys_1769780895_25c605",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Your training plan 'toji' has been updated.",
+    "timestamp": "2026-01-30T19:18:15.469079",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "sys_1769781173_f057da",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Your training plan 'gojo' has been updated: Weeks 3, 4, 5, 6 added",
+    "timestamp": "2026-01-30T19:22:53.635544",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
   }
 ]

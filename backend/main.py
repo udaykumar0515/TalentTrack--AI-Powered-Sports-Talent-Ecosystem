@@ -209,6 +209,61 @@ def validate_password(password: str) -> None:
     if not re.search(r'[0-9!@#$%^&*(),.?":{}|<>]', password):
         raise HTTPException(400, "Password must contain at least one number or special character")
 
+def _send_system_notification(athlete_id: str, coach_id: str, message_text: str):
+    """Helper to send system notification to athlete via messaging system"""
+    try:
+        messages_file = "data/system/coach_messages.json"
+        
+        # Load existing messages
+        messages = []
+        if os.path.exists(messages_file):
+            with open(messages_file, "r", encoding="utf-8") as f:
+                content = f.read().strip()
+                if content:
+                    messages = json.loads(content)
+        
+        # Create message
+        message_id = f"sys_{int(datetime.now().timestamp())}_{uuid.uuid4().hex[:6]}"
+        
+        # Get Names (Simplified lookup, ideally cache or pass in)
+        coach_name = "Coach"
+        try:
+            with open("data/athletes/coaches.json", "r", encoding="utf-8") as f:
+                coaches = json.load(f)
+                coach = next((c for c in coaches if c.get("id") == coach_id), None)
+                if coach: coach_name = coach.get("username", "Coach")
+        except: pass
+
+        athlete_name = "Athlete"
+        try:
+            with open("data/athletes/athletes.json", "r", encoding="utf-8") as f:
+                athletes = json.load(f)
+                ath = next((a for a in athletes if a.get("id") == athlete_id), None)
+                if ath: athlete_name = ath.get("username", "Athlete")
+        except: pass
+
+        new_msg = {
+            "id": message_id,
+            "coachId": coach_id,
+            "coachName": coach_name,
+            "athleteId": athlete_id,
+            "athleteName": athlete_name,
+            "type": "system",
+            "message": message_text,
+            "timestamp": datetime.now().isoformat(),
+            "read": False,
+            "senderId": coach_id # System messages appear from Coach
+        }
+        
+        messages.append(new_msg)
+        
+        with open(messages_file, "w", encoding="utf-8") as f:
+            json.dump(messages, f, indent=2, ensure_ascii=False)
+            
+    except Exception as e:
+        logger.error(f"Failed to send system notification: {e}")
+
+
 def init_data_directories():
     """Ensure all required data directories exist"""
     directories = ["data", "data/sessions", "data/athletes", "data/gamification", "data/goals", "data/injury_alerts", "data/videos", "data/system", "videos", "videos/athletes", "videos/coaches"]
@@ -1031,10 +1086,61 @@ async def create_coach_training_plan(athlete_id: str, plan_data: dict):
     """Create a training plan for an athlete by their coach"""
     try:
         plan = training_plan_generator.create_coach_training_plan(athlete_id, plan_data)
+        
+        # Send Notification
+        if plan and plan_data.get("coach_id"):
+             _send_system_notification(
+                 athlete_id, 
+                 plan_data["coach_id"], 
+                 f"New Training Plan Assigned: {plan_data.get('title', 'Untitled Plan')}"
+             )
+
         return plan
     except Exception as e:
         logger.error(f"Error creating coach training plan: {e}")
         raise HTTPException(status_code=500, detail="Failed to create coach training plan")
+
+
+@app.post("/api/training-plans/{plan_id}/feedback")
+async def send_plan_feedback(plan_id: str, feedback_data: dict):
+    """Send feedback on a training plan"""
+    try:
+        # feedback_data: { coachId, athleteId, feedback, planTitle }
+        coach_id = feedback_data.get("coachId")
+        athlete_id = feedback_data.get("athleteId")
+        feedback_text = feedback_data.get("feedback")
+        plan_title = feedback_data.get("planTitle", "Training Plan")
+        plan_type = feedback_data.get("planType", "")
+        
+        if not all([coach_id, athlete_id, feedback_text]):
+             raise HTTPException(status_code=400, detail="Missing required fields")
+             
+        # Format Title with Type if available
+        display_title = f"[{plan_type}] {plan_title}" if plan_type else plan_title
+
+        # 1. Send Notification
+        _send_system_notification(
+            athlete_id,
+            coach_id,
+            f"Feedback on {display_title}: {feedback_text}"
+        )
+        
+        # 2. Persist Feedback
+        if plan_id.startswith("plan_"):
+             # Coach Plan
+             lt_engine = LongTermPlansEngine()
+             lt_engine.add_feedback(coach_id, plan_id, feedback_text)
+        else:
+             # AI Plan (TrainingPlanGenerator keyed by athlete_id)
+             training_plan_generator.add_feedback(athlete_id, feedback_text, coach_id)
+             
+        return {"status": "success"}
+
+    except Exception as e:
+        logger.error(f"Error sending plan feedback: {e}")
+        raise HTTPException(status_code=500, detail="Failed to send feedback")
+
+
 
 @app.get("/api/injury-alerts/athlete/{athlete_id}")
 async def get_athlete_injury_analysis(athlete_id: str):
@@ -1952,10 +2058,45 @@ async def get_athlete_plans(athlete_id: str):
 async def update_longterm_plan(coach_id: str, plan_id: str, updates: dict):
     """Update a specific long-term plan"""
     try:
+        # Get old plan first
+        coach_plans = longterm_plans_engine.get_coach_plans(coach_id)
+        old_plan = next((p for p in coach_plans if p["id"] == plan_id), None)
+        
         success = longterm_plans_engine.update_plan(coach_id, plan_id, updates)
         if not success:
             raise HTTPException(status_code=404, detail="Plan not found")
         
+        # Notify Athlete with details
+        try:
+            if old_plan:
+                changes = []
+                
+                # Title Change
+                if updates.get("title") and updates["title"] != old_plan.get("title"):
+                   changes.append(f"renamed to '{updates['title']}'")
+
+                # Weeks Added/Removed
+                old_weeks = len(old_plan.get("training_schedule", {}).get("weeks", []))
+                new_weeks_list = updates.get("training_schedule", {}).get("weeks", [])
+                new_weeks = len(new_weeks_list)
+                
+                if new_weeks > old_weeks:
+                    added_indices = [str(i+1) for i in range(old_weeks, new_weeks)]
+                    week_label = "Weeks" if len(added_indices) > 1 else "Week"
+                    changes.append(f"{week_label} {', '.join(added_indices)} added")
+                elif new_weeks < old_weeks:
+                     changes.append(f"{old_weeks - new_weeks} weeks removed")
+
+                # Construct Message
+                base_msg = f"Your training plan '{old_plan.get('title')}' has been updated"
+                detail_msg = "; ".join(changes)
+                full_msg = f"{base_msg}: {detail_msg}" if changes else f"{base_msg}."
+
+                _send_system_notification(old_plan["athlete_id"], coach_id, full_msg)
+
+        except Exception as e:
+            logger.error(f"Failed to send update notification: {e}")
+
         return {"success": True, "message": "Plan updated successfully"}
     except Exception as e:
         logger.error(f"Error updating plan: {e}")

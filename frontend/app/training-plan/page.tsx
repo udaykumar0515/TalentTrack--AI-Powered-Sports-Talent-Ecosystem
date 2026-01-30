@@ -328,6 +328,29 @@ export default function TrainingPlanPage() {
                                 </CardContent>
                             </Card>
                         )}
+
+                        {plan.feedback && plan.feedback.length > 0 && (
+                            <Card className="border-l-4 border-l-yellow-500 bg-yellow-50/50 dark:bg-yellow-950/10">
+                                <CardHeader className="pb-2">
+                                    <CardTitle className="text-lg flex items-center gap-2">
+                                        <Bot className="h-4 w-4 text-yellow-600 dark:text-yellow-400" /> Coach Feedback
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-3">
+                                        {plan.feedback.slice().reverse().map((fb: any, i: number) => (
+                                            <div key={i} className="bg-background/80 p-3 rounded-md text-sm border shadow-sm">
+                                                <div className="flex justify-between items-center mb-1">
+                                                     <span className="font-semibold text-xs text-muted-foreground">Coach</span>
+                                                     <span className="text-[10px] text-muted-foreground">{new Date(fb.date).toLocaleDateString()}</span>
+                                                </div>
+                                                <p className="text-foreground">{fb.text}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
                     </div>
 
                     {/* Weekly Schedule */}

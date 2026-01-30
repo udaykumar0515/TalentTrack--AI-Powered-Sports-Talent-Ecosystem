@@ -104,6 +104,18 @@
       "Consistency is key.",
       "Sleep at least 7 hours.",
       "Hydrate before sessions."
+    ],
+    "feedback": [
+      {
+        "date": "2026-01-30T18:54:12.550173",
+        "text": "Test Feedback for AI Plan 6304a63d",
+        "coach_id": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+      },
+      {
+        "date": "2026-01-30T19:06:11.278331",
+        "text": "hii\n",
+        "coach_id": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+      }
     ]
   },
   "test_athlete_123": {

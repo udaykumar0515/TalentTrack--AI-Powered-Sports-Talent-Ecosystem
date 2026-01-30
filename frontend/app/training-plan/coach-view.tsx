@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Plus, Trash2, Save, User as UserIcon, Calendar, Dumbbell, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, Save, User as UserIcon, Calendar, Dumbbell, ChevronRight, Edit, Send } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Loader2 } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
@@ -36,6 +36,10 @@ export function CoachView({ userId }: CoachViewProps) {
     ]}
   ]);
   const [isSaving, setIsSaving] = useState(false);
+
+
+  const [feedbackText, setFeedbackText] = useState('');
+  const [isSendingFeedback, setIsSendingFeedback] = useState(false);
 
   // Existing Plans
   const [aiPlan, setAiPlan] = useState<any>(null);
@@ -77,7 +81,8 @@ export function CoachView({ userId }: CoachViewProps) {
         setAssignedPlan(null);
         
         // 1. Get AI Plan
-        const aiData = await api.getTrainingPlan(athleteId);
+        // 1. Get AI Plan explicitly
+        const aiData = await api.getTrainingPlan(athleteId, 'ai');
         if (aiData) setAiPlan(aiData);
 
         // 2. Get Assigned Plan (via LongTermPlans)
@@ -94,12 +99,38 @@ export function CoachView({ userId }: CoachViewProps) {
     }
   };
 
+  // Sync duration with actual weeks
+  useEffect(() => {
+    setDurationWeeks(weeks.length);
+  }, [weeks.length]);
+
+  const handleUpdateDuration = (newDuration: number) => {
+    // If expanding, add weeks
+    if (newDuration > weeks.length) {
+        const weeksToAdd = newDuration - weeks.length;
+        const newWeeks = [...weeks];
+        for (let i = 0; i < weeksToAdd; i++) {
+            newWeeks.push({ 
+                weekNumber: weeks.length + i + 1, 
+                focus: 'General Conditioning', 
+                days: [] 
+            });
+        }
+        setWeeks(newWeeks);
+    } 
+    // If shrinking, truncate
+    else if (newDuration < weeks.length) {
+        if (confirm("Reducing duration will remove scheduled weeks. Continue?")) {
+            setWeeks(weeks.slice(0, newDuration));
+        }
+    }
+    // Duration state is updated by useEffect
+  };
+
   const handleAddWeek = () => {
-    setWeeks([...weeks, { 
-      weekNumber: weeks.length + 1, 
-      focus: 'Progression', 
-      days: [] 
-    }]);
+    // Just add one week, duration auto-updates
+    const newWeekNum = weeks.length + 1;
+    setWeeks([...weeks, { weekNumber: newWeekNum, focus: 'General Conditioning', days: [] }]);
   };
 
   const handleAddDay = (weekIndex: number) => {
@@ -148,7 +179,7 @@ export function CoachView({ userId }: CoachViewProps) {
     try {
         const selectedAthlete = athletes.find(a => a.id === selectedAthleteId);
         
-        // 1. Create Plan Record
+        // 1. Prepare Plan Data
         const planData = {
             coach_id: userId,
             athlete_id: selectedAthleteId,
@@ -158,34 +189,75 @@ export function CoachView({ userId }: CoachViewProps) {
             duration_weeks: durationWeeks,
             training_schedule: { weeks }, // Store our structure inside training_schedule
             status: 'active' as 'active',
-            startDate: new Date().toISOString()
+            startDate: assignedPlan ? assignedPlan.startDate : new Date().toISOString()
         };
 
-        const createdPlan = await api.createLongTermPlan(planData);
-
-        if (createdPlan && createdPlan.id) {
-            // 2. Assign to Athlete
-            await api.assignPlan(selectedAthleteId, createdPlan.id);
+        if (viewMode === 'edit' && assignedPlan?.id) {
+            // UPDATE EXISTING PLAN
+            await api.updateLongTermPlan(userId, assignedPlan.id, planData);
             
             toast({
-                title: "Plan Assigned!",
-                description: `${planTitle} has been assigned to ${planData.athlete_name}.`
+                title: "Plan Updated",
+                description: `${planTitle} has been updated.`
             });
             
-            setAssignedPlan(createdPlan);
-            setActiveTab('assigned');
-        }
+            // Refresh local state
+            const updatedPlan = { ...assignedPlan, ...planData };
+            setAssignedPlan(updatedPlan);
+        } else {
+            // CREATE NEW PLAN
+            const createdPlan = await api.createLongTermPlan(planData);
 
-    } catch (err) {
-        console.error("Error creating plan", err);
-        toast({
-            title: "Error",
-            description: "Failed to create plan.",
-            variant: "destructive"
-        });
+            if (createdPlan && createdPlan.id) {
+                // 2. Assign to Athlete
+                await api.assignPlan(selectedAthleteId, createdPlan.id);
+                
+                toast({
+                    title: "Plan Assigned!",
+                    description: `${planTitle} has been assigned to ${planData.athlete_name}.`
+                });
+                
+                setAssignedPlan(createdPlan);
+            }
+        }
+        
+        setViewMode('read_only');
+    } catch (error) {
+        console.error("Failed to save plan", error);
+        toast({ title: "Error", description: "Failed to save plan", variant: "destructive" });
     } finally {
         setIsSaving(false);
     }
+  };
+
+  const handleEditPlan = () => {
+      if (!assignedPlan) return;
+      setPlanTitle(assignedPlan.title);
+      setPlanDescription(assignedPlan.description || '');
+      setDurationWeeks(assignedPlan.duration_weeks || 4);
+      setWeeks(assignedPlan.training_schedule?.weeks || []);
+      setViewMode('edit');
+  };
+
+  const handleSendFeedback = async (plan: any, type: 'ai' | 'assigned') => {
+      if (!feedbackText.trim() || !selectedAthleteId) return;
+      setIsSendingFeedback(true);
+      try {
+          await api.sendPlanFeedback(plan.id || 'ai-plan', {
+              coachId: userId,
+              athleteId: selectedAthleteId,
+              feedback: feedbackText,
+              planTitle: plan.title,
+              planType: type === 'ai' ? 'AI Generated' : 'Coach Custom Plan'
+          });
+          toast({ title: "Feedback Sent", description: "The athlete has been notified." });
+          setFeedbackText('');
+      } catch (error) {
+          console.error("Failed to send feedback", error);
+          toast({ title: "Error", description: "Failed to send feedback", variant: "destructive" });
+      } finally {
+          setIsSendingFeedback(false);
+      }
   };
 
   if (loading) {
@@ -250,6 +322,7 @@ export function CoachView({ userId }: CoachViewProps) {
 
             <TabsContent value="ai_plan" className="space-y-4">
                 {aiPlan ? (
+                    <>
                     <Card>
                         <CardHeader>
                              <div className="flex justify-between">
@@ -274,6 +347,33 @@ export function CoachView({ userId }: CoachViewProps) {
                              </div>
                         </CardContent>
                     </Card>
+                    
+                    {/* Feedback Section for AI Plan */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-lg">Coach Feedback</CardTitle>
+                            <CardDescription>Provide guidance on this AI-generated plan.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Textarea 
+                                placeholder="Enter your feedback here..." 
+                                value={feedbackText}
+                                onChange={(e) => setFeedbackText(e.target.value)}
+                                className="min-h-[100px]"
+                            />
+                        </CardContent>
+                        <CardFooter className="flex justify-end">
+                            <Button 
+                                onClick={() => handleSendFeedback(aiPlan, 'ai')} 
+                                disabled={!feedbackText.trim() || isSendingFeedback}
+                            >
+                                {isSendingFeedback ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
+                                Send Feedback
+                            </Button>
+                        </CardFooter>
+                    </Card>
+
+                    </>
                 ) : (
                     <div className="text-center p-12 border rounded-lg bg-muted/10">
                         <p className="text-muted-foreground">No AI Plan generated yet.</p>
@@ -283,6 +383,7 @@ export function CoachView({ userId }: CoachViewProps) {
 
             <TabsContent value="assigned" className="space-y-6">
                 {assignedPlan && viewMode === 'read_only' ? (
+                    <>
                     <Card className="border-primary/20 bg-card">
                         <CardHeader>
                             <div className="flex justify-between items-start">
@@ -294,14 +395,19 @@ export function CoachView({ userId }: CoachViewProps) {
                                     <CardTitle className="text-2xl">{assignedPlan.title}</CardTitle>
                                     <CardDescription className="text-base mt-2">{assignedPlan.description}</CardDescription>
                                 </div>
-                                <Button onClick={() => {
-                                    setPlanTitle('New Training Block');
-                                    setPlanDescription('');
-                                    setWeeks([{ weekNumber: 1, focus: 'Introduction', days: [] }]);
-                                    setViewMode('edit'); 
-                                }} variant="outline">
-                                    <Plus className="mr-2 h-4 w-4" /> Assign New Plan
-                                </Button>
+                                <div className="flex gap-2">
+                                    <Button variant="outline" onClick={handleEditPlan}>
+                                        <Edit className="mr-2 h-4 w-4" /> Edit Plan
+                                    </Button>
+                                    <Button onClick={() => {
+                                        setPlanTitle('New Training Block');
+                                        setPlanDescription('');
+                                        setWeeks([{ weekNumber: 1, focus: 'Introduction', days: [] }]);
+                                        setViewMode('edit'); 
+                                    }} variant="default">
+                                        <Plus className="mr-2 h-4 w-4" /> Assign New Plan
+                                    </Button>
+                                </div>
                             </div>
                         </CardHeader>
                         <CardContent>
@@ -329,6 +435,32 @@ export function CoachView({ userId }: CoachViewProps) {
                              </div>
                         </CardContent>
                     </Card>
+
+                    {/* Feedback for Assigned Plan */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-lg">Coach Feedback</CardTitle>
+                            <CardDescription>Provide guidance on this custom plan.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Textarea 
+                                placeholder="Enter your feedback here..." 
+                                value={feedbackText}
+                                onChange={(e) => setFeedbackText(e.target.value)}
+                                className="min-h-[100px]"
+                            />
+                        </CardContent>
+                        <CardFooter className="flex justify-end">
+                            <Button 
+                                onClick={() => handleSendFeedback(assignedPlan, 'assigned')} 
+                                disabled={!feedbackText.trim() || isSendingFeedback}
+                            >
+                                {isSendingFeedback ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
+                                Send Feedback
+                            </Button>
+                        </CardFooter>
+                    </Card> 
+                    </>
                 ) : (
                     <div className="grid gap-6">
                        <div className="flex justify-between items-center mb-2">
@@ -356,12 +488,20 @@ export function CoachView({ userId }: CoachViewProps) {
                                    </div>
                                    <div className="space-y-2">
                                       <Label>Duration (Weeks)</Label>
-                                      <Select value={durationWeeks.toString()} onValueChange={v => setDurationWeeks(parseInt(v))}>
-                                          <SelectTrigger><SelectValue /></SelectTrigger>
-                                          <SelectContent>
-                                              {[2,4,6,8,12].map(w => <SelectItem key={w} value={w.toString()}>{w} Weeks</SelectItem>)}
-                                          </SelectContent>
-                                      </Select>
+                                      <div className="flex items-center gap-2">
+                                        <Input 
+                                            type="number" 
+                                            min="1" 
+                                            max="52" 
+                                            value={weeks.length.toString()} 
+                                            onChange={e => {
+                                                const val = parseInt(e.target.value);
+                                                if (!isNaN(val) && val > 0) handleUpdateDuration(val);
+                                            }}
+                                            className="w-full"
+                                        />
+                                        <span className="text-sm text-muted-foreground whitespace-nowrap">weeks</span>
+                                      </div>
                                    </div>
                               </div>
                               <div className="space-y-2">

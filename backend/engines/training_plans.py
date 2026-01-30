@@ -56,6 +56,29 @@ class TrainingPlanGenerator:
         """Save training plans to file"""
         with open(self.training_plans_file, 'w', encoding='utf-8') as f:
             json.dump(plans, f, indent=2)
+
+    def add_feedback(self, athlete_id: str, feedback: str, coach_id: str = None) -> bool:
+        """Add feedback to an AI training plan"""
+        try:
+            plans = self._load_training_plans()
+            if athlete_id in plans:
+                plan = plans[athlete_id]
+                if "feedback" not in plan:
+                    plan["feedback"] = []
+                
+                plan["feedback"].append({
+                    "date": datetime.now().isoformat(),
+                    "text": feedback,
+                    "coach_id": coach_id
+                })
+                
+                plans[athlete_id] = plan
+                self._save_training_plans(plans)
+                return True
+            return False
+        except Exception as e:
+            print(f"Error adding AI plan feedback: {e}")
+            return False
     
     def _analyze_performance_gaps(self, athlete_sessions: List[Dict]) -> Dict[str, Any]:
         """Analyze performance gaps and areas for improvement"""

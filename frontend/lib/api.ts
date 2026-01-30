@@ -278,6 +278,13 @@ class ApiClient {
     });
   }
 
+  async sendPlanFeedback(planId: string, feedbackData: { coachId: string; athleteId: string; feedback: string; planTitle?: string; planType?: string }) {
+    return this.request<{ status: string }>(`/api/training-plans/${encodeURIComponent(planId)}/feedback`, {
+      method: 'POST',
+      body: JSON.stringify(feedbackData),
+    });
+  }
+
   // ============================================
   // PREDICTIVE ANALYTICS
   // ============================================
