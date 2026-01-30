@@ -63,6 +63,8 @@ export interface Session {
   keypointsUrl?: string;
   keypoints?: any;
   status?: string;
+  coachFeedback?: string;
+  feedbackDate?: string;
   
   metrics?: {
     reps?: number;

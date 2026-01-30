@@ -50,8 +50,33 @@ export default function DashboardPage() {
             api.getSessions({ coachId: user.id }),
             api.getAthletes(),
           ]);
-          setSessions(Array.isArray(sessionsData) ? sessionsData : []);
-          setAthletes(Array.isArray(athletesData) ? athletesData : []);
+
+          const safeSessions = Array.isArray(sessionsData) ? sessionsData : [];
+          const safeAthletes = Array.isArray(athletesData) ? athletesData : [];
+          
+          setSessions(safeSessions);
+
+          // Calculate stats for each athlete
+          const enrichedAthletes = safeAthletes.map(athlete => {
+            const athleteSessions = safeSessions.filter(s => s.athleteId === athlete.id);
+            const totalSessions = athleteSessions.length;
+            const avgScore = totalSessions > 0 
+              ? Math.round(athleteSessions.reduce((sum, s) => sum + (s.formScore || 0), 0) / totalSessions)
+              : 0;
+            
+            return {
+              ...athlete,
+              stats: {
+                totalSessions,
+                averageFormScore: avgScore,
+                streak: 0,
+                xp: 0,
+                level: 1
+              }
+            };
+          });
+
+          setAthletes(enrichedAthletes);
         }
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
@@ -134,7 +159,7 @@ export default function DashboardPage() {
         ) : (
           <>
             {/* Stats Overview */}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className={`grid gap-6 md:grid-cols-2 ${user.role === 'athlete' ? 'lg:grid-cols-3' : 'lg:grid-cols-3'}`}>
               {user.role === 'athlete' ? (
                 <>
                   <StatCard
@@ -171,14 +196,41 @@ export default function DashboardPage() {
                     value={`${avgScore}%`}
                     icon={TrendingUp}
                   />
-                  <StatCard
-                    title="Active Alerts"
-                    value={0}
-                    icon={AlertTriangle}
-                  />
                 </>
               )}
             </div>
+
+            {/* Coach Detailed Stats */}
+            {user.role === 'coach' && athletes.length > 0 && (
+              <div className="grid gap-6 md:grid-cols-2">
+                <StatCard
+                  title="Top Performer"
+                  value={(() => {
+                    const top = athletes.reduce((prev, current) => (prev.stats?.averageFormScore || 0) > (current.stats?.averageFormScore || 0) ? prev : current);
+                    if (!top.stats?.averageFormScore) return 'N/A';
+                    return top.name || top.username || 'Unknown';
+                  })()}
+                  subtitle={`Avg Score: ${(() => {
+                     const top = athletes.reduce((prev, current) => (prev.stats?.averageFormScore || 0) > (current.stats?.averageFormScore || 0) ? prev : current);
+                     return top.stats?.averageFormScore || 0;
+                  })()}%`}
+                  icon={Flame}
+                />
+                <StatCard
+                  title="Most Active"
+                  value={(() => {
+                    const active = athletes.reduce((prev, current) => (prev.stats?.totalSessions || 0) > (current.stats?.totalSessions || 0) ? prev : current);
+                    if (!active.stats?.totalSessions) return 'N/A';
+                    return active.name || active.username || 'Unknown';
+                  })()}
+                  subtitle={`${(() => {
+                    const active = athletes.reduce((prev, current) => (prev.stats?.totalSessions || 0) > (current.stats?.totalSessions || 0) ? prev : current);
+                    return active.stats?.totalSessions || 0;
+                  })()} Sessions`}
+                  icon={Target}
+                />
+              </div>
+            )}
 
             {/* Recent Sessions */}
             <div>
@@ -194,7 +246,7 @@ export default function DashboardPage() {
                     <SessionCard
                       key={session.id || session.sessionId}
                       session={session}
-                      onDelete={handleDeleteSession}
+                      onDelete={user.role === 'athlete' ? handleDeleteSession : undefined}
                     />
                   ))}
                 </div>

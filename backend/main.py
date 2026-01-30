@@ -1101,6 +1101,40 @@ async def run_bulk_injury_analysis():
         logger.error(f"Error running bulk injury analysis: {e}")
         raise HTTPException(status_code=500, detail="Failed to run bulk analysis")
 
+@app.post("/api/sessions/{session_id}/feedback")
+async def update_session_feedback(session_id: str, feedback_data: dict):
+    """Update coach feedback for a session"""
+    try:
+        feedback = feedback_data.get("feedback")
+        if feedback is None:
+             raise HTTPException(status_code=400, detail="feedback is required")
+
+        sessions_data = read_json_file("sessions/sessions.json")
+        session_found = False
+        
+        # Iterate to find the session
+        for athlete_id, athlete_data in sessions_data.items():
+            if "sessions" in athlete_data:
+                for session in athlete_data["sessions"]:
+                    # Match by id or sessionId
+                    if session.get("id") == session_id or session.get("sessionId") == session_id:
+                        session["coachFeedback"] = feedback
+                        session["feedbackDate"] = datetime.now().isoformat()
+                        session_found = True
+                        break
+            if session_found:
+                break
+        
+        if not session_found:
+             raise HTTPException(status_code=404, detail="Session not found")
+             
+        write_json_file("sessions/sessions.json", sessions_data)
+        
+        return {"success": True, "message": "Feedback updated"}
+    except Exception as e:
+        logger.error(f"Error updating feedback: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.delete("/api/sessions/{session_id}")
 async def delete_session(session_id: str):
     """Delete a session by ID"""
@@ -2229,12 +2263,49 @@ async def generate_training_plan(athlete_id: str):
 async def get_training_plan(athlete_id: str):
     """Get existing training plan for an athlete"""
     try:
+        # Check if athlete has explicitly assigned plan
+        athletes = read_json_file("athletes/athletes.json")
+        if athlete_id in athletes and "currentPlanId" in athletes[athlete_id]:
+            plan_id = athletes[athlete_id]["currentPlanId"]
+            
+            # Check LongTerm Plans
+            try:
+                # Iterate through all coaches to find the plan
+                all_plans_map = longterm_plans_engine.load_plans()
+                for coach_id, plans in all_plans_map.items():
+                    for plan in plans:
+                        if plan["id"] == plan_id:
+                            return plan
+            except Exception as e:
+                logger.error(f"Error looking up assigned plan {plan_id}: {e}")
+
         return training_plan_generator.get_training_plan(athlete_id)
     except Exception as e:
         logger.error(f"Error getting training plan: {e}")
         # Return empty/default if not found
         # Return empty/default if not found
         return None
+
+@app.post("/api/athletes/{athlete_id}/assign-plan")
+async def assign_training_plan(athlete_id: str, plan_data: dict):
+    """Assign a training plan to an athlete"""
+    try:
+        plan_id = plan_data.get("planId")
+        if not plan_id:
+            raise HTTPException(status_code=400, detail="planId is required")
+
+        # Update athlete record in athletes.json
+        athletes = read_json_file("athletes/athletes.json")
+        if athlete_id not in athletes:
+             raise HTTPException(status_code=404, detail="Athlete not found")
+
+        athletes[athlete_id]["currentPlanId"] = plan_id
+        write_json_file("athletes/athletes.json", athletes)
+
+        return {"success": True, "message": "Plan assigned successfully"}
+    except Exception as e:
+        logger.error(f"Error assigning plan: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/training-plans/ai/analyze-goal")
 async def analyze_training_goal(request: AnalyzeGoalRequest):

@@ -22,6 +22,8 @@ export default function SessionsPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterExercise, setFilterExercise] = useState('all');
+  const [filterAthlete, setFilterAthlete] = useState('all');
+  const [athletes, setAthletes] = useState<any[]>([]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -41,11 +43,15 @@ export default function SessionsPage() {
           ? { athleteId: user.id }
           : { coachId: user.id };
         
-        console.log('[SESSIONS DEBUG] Fetching with params:', params);
+        // Fetch sessions and athletes if coach
+        const [response, athletesData] = await Promise.all([
+            api.getSessions(params),
+            user.role === 'coach' ? api.getAthletes() : Promise.resolve([])
+        ]);
         
-        const response = await api.getSessions(params);
-        
-        console.log('[SESSIONS DEBUG] Raw response:', response);
+        if (user.role === 'coach') {
+            setAthletes(athletesData);
+        }
         
         // Handle both array and paginated response formats
         let sessionsData: Session[] = [];
@@ -56,7 +62,6 @@ export default function SessionsPage() {
           sessionsData = (response as { sessions: Session[] }).sessions || [];
         }
         
-        console.log('[SESSIONS DEBUG] Extracted sessions:', sessionsData.length);
         setSessions(sessionsData);
       } catch (err) {
         console.error('Error fetching sessions:', err);
@@ -122,7 +127,8 @@ export default function SessionsPage() {
       session.exercise.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (session.athleteName || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesExercise = filterExercise === 'all' || session.exercise === filterExercise;
-    return matchesSearch && matchesExercise;
+    const matchesAthlete = filterAthlete === 'all' || session.athleteId === filterAthlete;
+    return matchesSearch && matchesExercise && matchesAthlete;
   });
 
   return (
@@ -170,6 +176,19 @@ export default function SessionsPage() {
               className="pl-10"
             />
           </div>
+          {user.role === 'coach' && athletes.length > 0 && (
+            <Select value={filterAthlete} onValueChange={setFilterAthlete}>
+              <SelectTrigger className="w-full sm:w-[180px]">
+                <SelectValue placeholder="Filter by athlete" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Athletes</SelectItem>
+                {athletes.map(athlete => (
+                  <SelectItem key={athlete.id} value={athlete.id}>{athlete.name || athlete.username}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
           <Select value={filterExercise} onValueChange={setFilterExercise}>
             <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Filter by exercise" />
@@ -195,7 +214,7 @@ export default function SessionsPage() {
               <SessionCard
                 key={session.id || session.sessionId}
                 session={session}
-                onDelete={handleDeleteSession}
+                onDelete={user.role === 'athlete' ? handleDeleteSession : undefined}
               />
             ))}
           </div>

@@ -127,6 +127,13 @@ class ApiClient {
     });
   }
 
+  async updateSessionFeedback(sessionId: string, feedback: string) {
+    return this.request<{ success: boolean; message: string }>(`/api/sessions/${encodeURIComponent(sessionId)}/feedback`, {
+      method: 'POST',
+      body: JSON.stringify({ feedback }),
+    });
+  }
+
   // ============================================
   // VIDEO ANALYSIS & UPLOAD
   // ============================================
@@ -258,6 +265,13 @@ class ApiClient {
     return this.request<TrainingPlan>('/api/training-plans/ai/generate', {
       method: 'POST',
       body: JSON.stringify({ athleteId, goal, answers }),
+    });
+  }
+
+  async assignPlan(athleteId: string, planId: string) {
+    return this.request<{ success: boolean; message: string }>(`/api/athletes/${encodeURIComponent(athleteId)}/assign-plan`, {
+      method: 'POST',
+      body: JSON.stringify({ planId }),
     });
   }
 

@@ -21,6 +21,23 @@ import {
   Flame,
   Calendar
 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
 
 export default function AthleteDetailPage() {
   const params = useParams();
@@ -37,9 +54,19 @@ export default function AthleteDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [generatingPlan, setGeneratingPlan] = useState(false);
 
+  // Assign Plan State
+  const [availablePlans, setAvailablePlans] = useState<any[]>([]);
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
+  const [selectedPlanId, setSelectedPlanId] = useState('');
+  const [assigningPlan, setAssigningPlan] = useState(false);
+
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/login');
+    }
+    // Fetch plans for coach
+    if (user?.role === 'coach') {
+        api.getCoachPlans(user.id).then(plans => setAvailablePlans(plans)).catch(console.error);
     }
   }, [user, authLoading, router]);
 
@@ -89,6 +116,21 @@ export default function AthleteDetailPage() {
       alert('Failed to generate training plan.');
     } finally {
       setGeneratingPlan(false);
+    }
+  };
+
+  const handleAssignPlan = async () => {
+    if (!selectedPlanId || !athleteId) return;
+    setAssigningPlan(true);
+    try {
+      await api.assignPlan(athleteId, selectedPlanId);
+      setAssignDialogOpen(false);
+      alert('Plan assigned successfully!');
+    } catch (err) {
+      console.error('Error assigning plan:', err);
+      alert('Failed to assign plan.');
+    } finally {
+      setAssigningPlan(false);
     }
   };
 
@@ -160,22 +202,63 @@ export default function AthleteDetailPage() {
             </div>
           </div>
           {user.role === 'coach' && (
-            <Button 
-              onClick={handleGeneratePlan} 
-              disabled={generatingPlan}
-            >
-              {generatingPlan ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Target className="h-4 w-4 mr-2" />
-                  Generate Training Plan
-                </>
-              )}
-            </Button>
+            <div className="flex gap-2">
+              <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Assign Plan
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Assign Training Plan</DialogTitle>
+                    <DialogDescription>
+                      Select an existing plan to assign to this athlete. This will override their current active plan.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="plan" className="text-right">Plan</Label>
+                      <Select value={selectedPlanId} onValueChange={setSelectedPlanId}>
+                        <SelectTrigger className="col-span-3">
+                          <SelectValue placeholder="Select a plan" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availablePlans.length > 0 ? availablePlans.map((plan: any) => (
+                              <SelectItem key={plan.id} value={plan.id}>{plan.title}</SelectItem>
+                          )) : (
+                              <SelectItem value="none" disabled>No long-term plans found</SelectItem>
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button onClick={handleAssignPlan} disabled={assigningPlan || !selectedPlanId}>
+                      {assigningPlan ? <Loader2 className="h-4 w-4 animate-spin mr-2"/> : "Assign Plan"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
+              <Button 
+                onClick={handleGeneratePlan} 
+                disabled={generatingPlan}
+              >
+                {generatingPlan ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Target className="h-4 w-4 mr-2" />
+                    Generate Training Plan
+                  </>
+                )}
+              </Button>
+            </div>
           )}
         </div>
 

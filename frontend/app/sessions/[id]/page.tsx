@@ -23,8 +23,10 @@ import {
   Activity,
   Zap,
   Eye,
-  Timer
+  Timer,
+  MessageSquare
 } from 'lucide-react';
+import { Textarea } from "@/components/ui/textarea"
 
 export default function SessionDetailPage() {
   const params = useParams();
@@ -36,12 +38,34 @@ export default function SessionDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [savingFeedback, setSavingFeedback] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/login');
     }
   }, [user, authLoading, router]);
+
+  useEffect(() => {
+    if (session?.coachFeedback) {
+      setFeedbackText(session.coachFeedback);
+    }
+  }, [session]);
+
+  const handleSaveFeedback = async () => {
+    if (!sessionId) return;
+    setSavingFeedback(true);
+    try {
+      await api.updateSessionFeedback(sessionId, feedbackText);
+      alert('Feedback saved successfully!');
+    } catch (err) {
+      console.error('Error saving feedback:', err);
+      alert('Failed to save feedback.');
+    } finally {
+      setSavingFeedback(false);
+    }
+  };
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -348,6 +372,51 @@ export default function SessionDetailPage() {
                 </li>
               ))}
             </ul>
+          </Card>
+        )}
+
+
+
+        {/* Coach Feedback Section */}
+        {(user.role === 'coach' || session.coachFeedback) && (
+          <Card className="p-6 border-primary/20 bg-primary/5">
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <MessageSquare className="h-5 w-5 text-primary" />
+              Coach Feedback
+            </h2>
+            
+            {user.role === 'coach' ? (
+              <div className="space-y-4">
+                <Textarea
+                  placeholder="Enter your feedback for this session..."
+                  value={feedbackText}
+                  onChange={(e) => setFeedbackText(e.target.value)}
+                  className="min-h-[100px]"
+                />
+                <Button 
+                  onClick={handleSaveFeedback} 
+                  disabled={savingFeedback}
+                >
+                  {savingFeedback ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Feedback"
+                  )}
+                </Button>
+              </div>
+            ) : (
+              <div>
+                <p className="text-foreground whitespace-pre-wrap">{session.coachFeedback}</p>
+                {session.feedbackDate && (
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Received on {new Date(session.feedbackDate).toLocaleDateString()}
+                  </p>
+                )}
+              </div>
+            )}
           </Card>
         )}
 
