@@ -31,8 +31,12 @@ class ApiClient {
     
     const response = await fetch(url, {
       ...options,
+      cache: 'no-store', // Force no caching
       headers: {
         'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
         ...options?.headers,
       },
     });
@@ -74,7 +78,9 @@ class ApiClient {
   // USERS / COACHES / ATHLETES
   // ============================================
   async getCoaches() {
-    return this.request<Coach[]>('/api/coaches');
+    return this.request<Coach[]>('/api/coaches', {
+      cache: 'no-store'
+    });
   }
 
   async getAthletes() {
@@ -83,6 +89,56 @@ class ApiClient {
 
   async getAthlete(athleteId: string) {
     return this.request<Athlete>(`/api/athletes/${encodeURIComponent(athleteId)}`);
+  }
+
+  async getCoachStats(coachId: string): Promise<{
+    athleteCount: number;
+    totalSessionsSupervised: number;
+    teamAvgPerformance: number;
+    goalsAchieved: number;
+    specialization?: string;
+  }> {
+    return this.request(`/api/coach-stats/${encodeURIComponent(coachId)}`);
+  }
+
+  async submitCoachRequest(data: {
+    athleteId: string;
+    currentCoachId: string | null;
+    newCoachId: string;
+    reason: string;
+  }) {
+    return this.request('/api/coach-change-request', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getCoachChangeRequests(coachId: string) {
+    return this.request<{ requests: any[] }>(`/api/coach-change-requests/${encodeURIComponent(coachId)}`);
+  }
+
+  async getAthleteRequests(athleteId: string) {
+    return this.request<{ requests: any[] }>(`/api/athlete-requests/${encodeURIComponent(athleteId)}`);
+  }
+
+  async approveCoachRequest(requestId: string, coachId: string) {
+    return this.request(`/api/coach-change-requests/${encodeURIComponent(requestId)}/approve?coach_id=${encodeURIComponent(coachId)}`, {
+      method: 'POST',
+    });
+  }
+
+  async rejectCoachRequest(requestId: string, coachId: string, reason?: string) {
+    return this.request(`/api/coach-change-requests/${encodeURIComponent(requestId)}/reject?coach_id=${encodeURIComponent(coachId)}`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+    });
+  }
+
+  async leaveCoach(athleteId: string, reason?: string) {
+    return this.request(`/api/athletes/${encodeURIComponent(athleteId)}/leave-coach`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+    });
   }
 
   // ============================================

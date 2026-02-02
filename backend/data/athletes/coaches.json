@@ -6,7 +6,26 @@
     "username": "john",
     "role": "coach",
     "created_at": "2026-01-28T12:32:15.041393",
+    "age": 25,
+    "gender": "Male",
+    "athleteCount": 0,
+    "totalSessionsSupervised": 0,
+    "teamAvgPerformance": 0,
+    "goalsAchieved": 0,
+    "bio": "",
+    "specialization": "Nutritionist"
+  },
+  {
+    "id": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09",
+    "email": "david@gmail.com",
+    "password": "$2b$12$/lPZprfP2o/JFER1gOw5wOUYdMIbuJIlnYCF5DXuvEzVrVY76OBI6",
+    "username": "david",
+    "role": "coach",
+    "created_at": "2026-02-02T17:43:48.253099",
     "age": null,
-    "gender": null
+    "gender": null,
+    "athleteCount": 0,
+    "teamAvgPerformance": 0,
+    "goalsAchieved": 0
   }
 ]

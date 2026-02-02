@@ -12,7 +12,8 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/lib/auth-context';
 import { api } from '@/lib/api';
 import type { Session, Athlete } from '@/lib/types';
-import { Play, TrendingUp, Target, Flame, Loader2, Users, AlertTriangle } from 'lucide-react';
+import { Play, TrendingUp, Target, Flame, Loader2, Users, AlertTriangle, CheckCircle } from 'lucide-react';
+import { CoachRequestsList } from '@/components/coach-requests-list';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function DashboardPage() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [streak, setStreak] = useState<number>(0);
   const [athletes, setAthletes] = useState<Athlete[]>([]);
+  const [coachStats, setCoachStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,6 +46,17 @@ export default function DashboardPage() {
           ]);
           setSessions(Array.isArray(sessionsData) ? sessionsData : []);
           setStreak(streakData?.streak || 0);
+
+          // If athlete has a coach, fetch coach stats
+          const athlete = user as Athlete;
+          if (athlete.coachId) {
+            try {
+              const stats = await api.getCoachStats(athlete.coachId);
+              setCoachStats(stats);
+            } catch (e) {
+              console.error('Failed to load coach stats', e);
+            }
+          }
         } else {
           // Coach view
           const [sessionsData, athletesData] = await Promise.all([
@@ -52,12 +65,14 @@ export default function DashboardPage() {
           ]);
 
           const safeSessions = Array.isArray(sessionsData) ? sessionsData : [];
-          const safeAthletes = Array.isArray(athletesData) ? athletesData : [];
+          // Filter athletes to show ONLY those assigned to this coach
+          const allAthletes = Array.isArray(athletesData) ? athletesData : [];
+          const myTeam = allAthletes.filter(athlete => athlete.coachId === user.id);
           
           setSessions(safeSessions);
 
           // Calculate stats for each athlete
-          const enrichedAthletes = safeAthletes.map(athlete => {
+          const enrichedAthletes = myTeam.map(athlete => {
             const athleteSessions = safeSessions.filter(s => s.athleteId === athlete.id);
             const totalSessions = athleteSessions.length;
             const avgScore = totalSessions > 0 
@@ -199,6 +214,47 @@ export default function DashboardPage() {
                 </>
               )}
             </div>
+
+            {/* Coach Stats for Athlete View */}
+            {user.role === 'athlete' && coachStats && (
+              <div className="mt-8 mb-6">
+                <h2 className="text-xl font-semibold text-foreground mb-4">Your Coach's Team Stats</h2>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                  <StatCard
+                    title="Team Size"
+                    value={coachStats.athleteCount || 0}
+                    subtitle="Athletes"
+                    icon={Users}
+                  />
+                  <StatCard
+                    title="Sessions"
+                    value={coachStats.totalSessionsSupervised || 0}
+                    subtitle="Supervised"
+                    icon={Target}
+                  />
+                  <StatCard
+                    title="Avg Score"
+                    value={coachStats.teamAvgPerformance || 0}
+                    subtitle="Team Average"
+                    icon={TrendingUp}
+                  />
+                  <StatCard
+                    title="Goals"
+                    value={coachStats.goalsAchieved || 0}
+                    subtitle="Completed"
+                    icon={CheckCircle}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Coach Requests */}
+            {user.role === 'coach' && (
+              <div className="mb-6">
+                 <h2 className="text-xl font-semibold text-foreground mb-4">Pending Requests</h2>
+                 <CoachRequestsList />
+              </div>
+            )}
 
             {/* Coach Detailed Stats */}
             {user.role === 'coach' && athletes.length > 0 && (

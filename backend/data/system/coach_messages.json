@@ -250,5 +250,200 @@
     "timestamp": "2026-01-30T20:10:43.199",
     "read": true,
     "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "0df194cb-7efc-447f-b27e-01c2a5e58270",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "sessionId": "quick-msg",
+    "type": "note",
+    "message": "good\n",
+    "timestamp": "2026-01-30T16:19:28.762Z",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "sys_1769966447_cea0a6",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "You have left your coach.",
+    "timestamp": "2026-02-01T22:50:47.674715",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "msg_1770023429686_otuqkjw",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "content": "ok",
+    "timestamp": "2026-02-02T09:10:29.686Z",
+    "senderId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "isRead": false,
+    "tags": [
+      {
+        "type": "goal",
+        "id": "goal_c867df8f-9cdf-4e32-a29d-379c892b220f_4_1769783042",
+        "title": "new"
+      }
+    ]
+  },
+  {
+    "id": "msg_1770025374461_f1kk6op",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "content": "ok",
+    "timestamp": "2026-02-02T09:42:54.461Z",
+    "senderId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "isRead": false,
+    "tags": [
+      {
+        "type": "session",
+        "title": "squat - 1/31/2026"
+      }
+    ],
+    "type": "text"
+  },
+  {
+    "id": "msg_1770025772040_n0ykdfh",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "content": "ok",
+    "timestamp": "2026-02-02T09:49:32.040Z",
+    "senderId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "isRead": false,
+    "tags": [
+      {
+        "type": "session",
+        "title": "squat - 1/31/2026"
+      }
+    ],
+    "type": "text",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "coachName": "john",
+    "sessionId": "",
+    "read": true
+  },
+  {
+    "id": "sys_1770027815_e1917c",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Your request to join Coach f2076b42-bac5-4906-a029-fc79865f3f7a's team has been approved!",
+    "timestamp": "2026-02-02T15:53:35.761105",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "sys_1770028550_766880",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Your request to join Coach f2076b42-bac5-4906-a029-fc79865f3f7a's team has been approved!",
+    "timestamp": "2026-02-02T16:05:50.999347",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "sys_1770028551_33d2fa",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Your request to join Coach f2076b42-bac5-4906-a029-fc79865f3f7a's team has been approved!",
+    "timestamp": "2026-02-02T16:05:51.916937",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "sys_1770029712_8f0bf2",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Your request to join Coach f2076b42-bac5-4906-a029-fc79865f3f7a's team has been approved!",
+    "timestamp": "2026-02-02T16:25:12.120490",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "sys_1770030859_cb5315",
+    "coachId": "f2076b42-bac5-4906-a029-fc79865f3f7a",
+    "coachName": "john",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Athlete Unknown has left your team.",
+    "timestamp": "2026-02-02T16:44:19.972138",
+    "read": true,
+    "senderId": "f2076b42-bac5-4906-a029-fc79865f3f7a"
+  },
+  {
+    "id": "sys_1770035197_3dff9e",
+    "coachId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09",
+    "coachName": "david",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Your request to join Coach 3cf143c7-d190-4a36-b1b8-ea1673d3ca09's team has been approved!",
+    "timestamp": "2026-02-02T17:56:37.451255",
+    "read": true,
+    "senderId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09"
+  },
+  {
+    "id": "sys_1770036225_d6f23f",
+    "coachId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09",
+    "coachName": "david",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Athlete Unknown has left your team.",
+    "timestamp": "2026-02-02T18:13:45.952763",
+    "read": true,
+    "senderId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09"
+  },
+  {
+    "id": "sys_1770036673_0ed00d",
+    "coachId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09",
+    "coachName": "david",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Your request to join Coach 3cf143c7-d190-4a36-b1b8-ea1673d3ca09's team was not accepted.",
+    "timestamp": "2026-02-02T18:21:13.923084",
+    "read": true,
+    "senderId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09"
+  },
+  {
+    "id": "sys_1770036681_f851cf",
+    "coachId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09",
+    "coachName": "david",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Your request to join Coach 3cf143c7-d190-4a36-b1b8-ea1673d3ca09's team was not accepted.",
+    "timestamp": "2026-02-02T18:21:21.234512",
+    "read": true,
+    "senderId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09"
+  },
+  {
+    "id": "sys_1770037174_d1c14a",
+    "coachId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09",
+    "coachName": "david",
+    "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+    "athleteName": "Udaykumar Haibathi",
+    "type": "system",
+    "message": "Your request to join Coach david's team was not accepted.",
+    "timestamp": "2026-02-02T18:29:34.830368",
+    "read": false,
+    "senderId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09"
   }
 ]

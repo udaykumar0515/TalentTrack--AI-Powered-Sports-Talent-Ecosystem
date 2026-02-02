@@ -5,13 +5,15 @@ import { useRouter } from 'next/navigation';
 import { AppLayout } from '@/components/app-layout';
 import { StatCard } from '@/components/stat-card';
 import { ActivityHeatmap } from '@/components/activity-heatmap';
+import { CoachRequestsList } from '@/components/coach-requests-list';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/lib/auth-context';
 import { api } from '@/lib/api';
-import type { Session } from '@/lib/types';
+import type { Coach, Session } from '@/lib/types';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
     Select,
     SelectContent,
@@ -28,16 +30,28 @@ import {
   LogOut,
   Pencil,
   Save,
-  X
+  X,
+  Users,
+  Trophy,
+  Activity
 } from 'lucide-react';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, isLoading: authLoading, logout } = useAuth();
+  const { user, isLoading: authLoading, logout, updateUser } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [activity, setActivity] = useState<Record<string, number>>({});
   const [streak, setStreak] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Coach-specific stats
+  const [coachStats, setCoachStats] = useState<{
+    athleteCount: number;
+    totalSessionsSupervised: number;
+    teamAvgPerformance: number;
+    goalsAchieved: number;
+    specialization?: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -54,29 +68,39 @@ export default function ProfilePage() {
 
       setIsLoading(true);
       try {
-        const [sessionsData, activityData, athleteData] = await Promise.all([
-          api.getSessions({ athleteId: user.id }).catch(() => []),
-          api.getActivity(user.id).catch(() => ({ activity: {}, totalSessions: 0, streak: 0 })),
-          // Fetch fresh athlete data to get latest stats
-          user.role === 'athlete' ? api.getAthlete(user.id).catch(() => null) : Promise.resolve(null)
-        ]);
-        
-        setSessions(Array.isArray(sessionsData) ? sessionsData : []);
-        setActivity(activityData?.activity || {});
-        setStreak(activityData?.streak || 0);
-        
-        // Use fresh data if available, otherwise fallback to auth user context
-        setProfileData(athleteData || user);
-
-        // Update form data with fresh data
-        const currentData = athleteData || user;
-        setFormData({
-          age: currentData.age?.toString() || '',
-          gender: currentData.gender || '',
-          weight: currentData.weight || '',
-          height: currentData.height || '',
-        });
-        
+        if (user.role === 'coach') {
+          // Fetch coach stats
+          const stats = await api.getCoachStats(user.id).catch(() => null);
+          const coachUser = user as Coach;
+          setCoachStats(stats);
+          setProfileData(user);
+          setFormData({
+            age: user.age?.toString() || '',
+            gender: user.gender || '',
+            specialization: coachUser.specialization || stats?.specialization || 'General Coach',
+            bio: coachUser.bio || '',
+          });
+        } else {
+          // Athlete flow
+          const [sessionsData, activityData, athleteData] = await Promise.all([
+            api.getSessions({ athleteId: user.id }).catch(() => []),
+            api.getActivity(user.id).catch(() => ({ activity: {}, totalSessions: 0, streak: 0 })),
+            api.getAthlete(user.id).catch(() => null)
+          ]);
+          
+          setSessions(Array.isArray(sessionsData) ? sessionsData : []);
+          setActivity(activityData?.activity || {});
+          setStreak(activityData?.streak || 0);
+          
+          const currentData = athleteData || user;
+          setProfileData(currentData);
+          setFormData({
+            age: currentData.age?.toString() || '',
+            gender: currentData.gender || '',
+            weight: currentData.weight || '',
+            height: currentData.height || '',
+          });
+        }
       } catch (err) {
         console.error('Error fetching profile data:', err);
       } finally {
@@ -90,28 +114,45 @@ export default function ProfilePage() {
   }, [user]);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    age: string;
+    gender: string;
+    weight?: string;
+    height?: string;
+    specialization?: string;
+    bio?: string;
+  }>({
     age: '',
     gender: '',
     weight: '',
     height: '',
+    specialization: 'General Coach',
+    bio: '',
   });
 
-  // Removed stale useEffect that overwrote formData from 'user' context
-  
   const handleSaveProfile = async () => {
     if (!user) return;
     try {
       setIsLoading(true);
-      await api.updateUser(user.id, {
+      const updates = {
         age: formData.age ? parseInt(formData.age) : undefined,
         gender: formData.gender,
-        weight: formData.weight,
-        height: formData.height,
-      });
+        ...(user.role === 'athlete' ? { weight: formData.weight, height: formData.height } : {
+             bio: formData.bio,
+             specialization: formData.specialization
+        }),
+      };
+
+      // Call API first
+      await api.updateUser(user.id, updates);
+      
+      // Update local context without reload
+      await updateUser(updates);
+      
+      // Update local state if needed (though context update should trigger re-render)
+      setProfileData({ ...profileData, ...updates });
+      
       setIsEditing(false);
-      // Force reload to update context (since we don't have setUser)
-      window.location.reload();
     } catch (err) {
       console.error("Failed to update profile", err);
     } finally {
@@ -119,7 +160,6 @@ export default function ProfilePage() {
     }
   };
   
-  // Use profileData for display instead of user
   const displayUser = profileData || user;
 
   if (authLoading || !user) {
@@ -181,7 +221,7 @@ export default function ProfilePage() {
         {/* Personal Stats Card */}
         <Card className="p-6 relative">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Personal Stats</h2>
+            <h2 className="text-lg font-semibold">Personal Info</h2>
             {isEditing ? (
               <div className="flex gap-2">
                 <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
@@ -198,7 +238,7 @@ export default function ProfilePage() {
             )}
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className={`grid gap-6 ${user.role === 'athlete' ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-2'}`}>
             {/* Age */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-muted-foreground">Age</label>
@@ -236,45 +276,100 @@ export default function ProfilePage() {
               )}
             </div>
 
-            {/* Height */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">Height</label>
-               {isEditing ? (
-                <div className="flex items-center gap-2">
-                   <Input 
-                    type="number"
-                    value={formData.height} 
-                    onChange={(e) => setFormData({...formData, height: e.target.value})}
-                    placeholder="180"
-                  />
-                  <span className="text-xs text-muted-foreground">cm</span>
-                </div>
-              ) : (
-                <p className="text-lg font-semibold">{displayUser.height ? `${displayUser.height} cm` : '-'}</p>
-              )}
-            </div>
+            {/* Height - Only for Athletes */}
+            {user.role === 'athlete' && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground">Height</label>
+                 {isEditing ? (
+                  <div className="flex items-center gap-2">
+                     <Input 
+                      type="number"
+                      value={formData.height} 
+                      onChange={(e) => setFormData({...formData, height: e.target.value})}
+                      placeholder="180"
+                    />
+                    <span className="text-xs text-muted-foreground">cm</span>
+                  </div>
+                ) : (
+                  <p className="text-lg font-semibold">{displayUser.height ? `${displayUser.height} cm` : '-'}</p>
+                )}
+              </div>
+            )}
 
-             {/* Weight */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">Weight</label>
-               {isEditing ? (
-                <div className="flex items-center gap-2">
-                   <Input 
-                    type="number"
-                    value={formData.weight} 
-                    onChange={(e) => setFormData({...formData, weight: e.target.value})}
-                    placeholder="75"
-                  />
-                  <span className="text-xs text-muted-foreground">kg</span>
-                </div>
-              ) : (
-                <p className="text-lg font-semibold">{displayUser.weight ? `${displayUser.weight} kg` : '-'}</p>
-              )}
-            </div>
+             {/* Weight - Only for Athletes */}
+            {user.role === 'athlete' && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground">Weight</label>
+                 {isEditing ? (
+                  <div className="flex items-center gap-2">
+                     <Input 
+                      type="number"
+                      value={formData.weight} 
+                      onChange={(e) => setFormData({...formData, weight: e.target.value})}
+                      placeholder="75"
+                    />
+                    <span className="text-xs text-muted-foreground">kg</span>
+                  </div>
+                ) : (
+                  <p className="text-lg font-semibold">{displayUser.weight ? `${displayUser.weight} kg` : '-'}</p>
+                )}
+              </div>
+            )}
           </div>
+
+           {/* Coach Specific Fields */}
+           {user.role === 'coach' && (
+              <div className="mt-6 space-y-6 border-t pt-6">
+                  
+                  {/* Specialization */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Specialization</label>
+                    {isEditing ? (
+                       <Select
+                        value={formData.specialization}
+                        onValueChange={(val) => setFormData({ ...formData, specialization: val })}
+                      >
+                        <SelectTrigger className="w-full md:w-1/2">
+                          <SelectValue placeholder="Select Specialization" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="General Coach">General Coach</SelectItem>
+                          <SelectItem value="Strength & Conditioning">Strength & Conditioning</SelectItem>
+                          <SelectItem value="Physiotherapy">Physiotherapy</SelectItem>
+                          <SelectItem value="Mental Performance">Mental Performance</SelectItem>
+                          <SelectItem value="Nutritionist">Nutritionist</SelectItem>
+                          <SelectItem value="Tactical Analyst">Tactical Analyst</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                       <div className="inline-block">
+                         <Badge variant="secondary" className="text-sm px-3 py-1">
+                            {displayUser.specialization || 'General Coach'}
+                        </Badge>
+                       </div>
+                    )}
+                  </div>
+
+                  {/* Bio */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Biography</label>
+                    {isEditing ? (
+                       <Textarea 
+                          value={formData.bio}
+                          onChange={(e) => setFormData({...formData, bio: e.target.value})}
+                          placeholder="Tell athletes about your experience and coaching philosophy..."
+                          className="min-h-[120px]"
+                       />
+                    ) : (
+                       <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                          {displayUser.bio || <span className="italic text-muted-foreground/50">No biography added yet.</span>}
+                       </p>
+                    )}
+                  </div>
+              </div>
+           )}
+
         </Card>
-
-
 
         {/* Loading State */}
         {isLoading && !isEditing ? (
@@ -284,7 +379,40 @@ export default function ProfilePage() {
           </div>
         ) : (
           <>
-            {/* Stats - Simplified (no Level/XP) */}
+            {/* Coach Requests Section - ONLY for Coaches */}
+            {user.role === 'coach' && (
+               <div className="mb-6">
+                  <CoachRequestsList />
+               </div>
+            )}
+
+            {/* Coach Stats */}
+            {user.role === 'coach' && coachStats && (
+              <div className="grid gap-6 md:grid-cols-4">
+                <StatCard
+                  title="Athletes"
+                  value={coachStats.athleteCount}
+                  icon={Users}
+                />
+                <StatCard
+                  title="Sessions Supervised"
+                  value={coachStats.totalSessionsSupervised}
+                  icon={Activity}
+                />
+                <StatCard
+                  title="Team Avg Score"
+                  value={`${coachStats.teamAvgPerformance}%`}
+                  icon={TrendingUp}
+                />
+                <StatCard
+                  title="Goals Achieved"
+                  value={coachStats.goalsAchieved}
+                  icon={Trophy}
+                />
+              </div>
+            )}
+
+            {/* Athlete Stats */}
             {user.role === 'athlete' && (
               <div className="grid gap-6 md:grid-cols-3">
                 <StatCard
@@ -306,7 +434,7 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* Activity Heatmap - GitHub/LeetCode style */}
+            {/* Activity Heatmap - Athletes only */}
             {user.role === 'athlete' && (
               <Card className="p-6">
                 <h2 className="text-lg font-semibold mb-4">Session Activity</h2>
@@ -323,3 +451,4 @@ export default function ProfilePage() {
     </AppLayout>
   );
 }
+

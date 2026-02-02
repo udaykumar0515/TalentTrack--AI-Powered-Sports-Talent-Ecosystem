@@ -36,6 +36,11 @@ export interface Coach extends User {
   role: 'coach';
   specialization?: string;
   athleteCount?: number;
+  totalSessionsSupervised?: number;
+  teamAvgPerformance?: number;
+  goalsAchieved?: number;
+  bio?: string;
+  about?: string;
 }
 
 // ============================================
@@ -162,6 +167,7 @@ export interface CoachMessage {
   timestamp: string;
   read: boolean;
   senderId?: string;
+  tags?: { type: 'session' | 'goal' | 'plan'; id: string; title: string }[];
 }
 
 export interface Message {
@@ -173,6 +179,22 @@ export interface Message {
   createdAt: string;
   senderName?: string;
   senderRole?: UserRole;
+}
+
+export interface CoachChangeRequest {
+  id: string;
+  athleteId: string;
+  currentCoachId: string | null;
+  newCoachId: string;
+  reason: string;
+  status: 'pending' | 'approved' | 'rejected';
+  created_at: string;
+  approved_at?: string;
+  rejected_at?: string;
+  approved_by?: string;
+  rejected_by?: string;
+  athleteName?: string; // Optional, might need to be fetched separately or enriched by backend
+  athlete?: User; 
 }
 
 // ============================================
@@ -221,17 +243,17 @@ export interface TrainingPlan {
   title?: string;
   duration?: string;
   description: string;
-  weeks: TrainingWeek[];
-  startDate: string;
-  endDate: string;
+  weeks?: TrainingWeek[];
+  weekly_schedule?: any[];
+  progression_plan?: any[];
+  startDate?: string;
+  endDate?: string;
   status: 'active' | 'completed' | 'upcoming' | 'draft';
   generatedAt?: string;
   createdAt?: string;
   focus_areas?: string[];
   difficulty_level?: string;
   // AI Generated Fields
-  weekly_schedule?: any[];
-  progression_plan?: any[];
   coaching_tips?: string[];
   goal_focus?: string;
 }

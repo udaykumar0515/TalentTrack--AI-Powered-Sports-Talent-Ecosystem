@@ -181,13 +181,10 @@ export default function TrainingPlanPage() {
     );
   }
 
-  // --- COACH VIEW ---
+  // --- COACH REDIRECT ---
   if (user?.role === 'coach') {
-      return (
-          <AppLayout user={user}>
-              <CoachView userId={user.id} />
-          </AppLayout>
-      );
+      router.push('/athletes');
+      return null;
   }
 
   // --- ATHLETE VIEW ---

@@ -11,8 +11,8 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/auth-context';
 import { api } from '@/lib/api';
-import type { Athlete, Session } from '@/lib/types';
-import { Users, TrendingUp, AlertTriangle, Award, Loader2, Search, RefreshCw } from 'lucide-react';
+import type { Athlete, Session, InjuryAlert } from '@/lib/types';
+import { Users, TrendingUp, AlertTriangle, Award, Loader2, Search, RefreshCw, Trophy } from 'lucide-react';
 
 interface AthleteWithStats extends Athlete {
   sessionCount: number;
@@ -25,6 +25,7 @@ export default function AthletesPage() {
   const { user, isLoading: authLoading } = useAuth();
   const [athletes, setAthletes] = useState<AthleteWithStats[]>([]);
   const [allSessions, setAllSessions] = useState<Session[]>([]);
+  const [injuryAlerts, setInjuryAlerts] = useState<InjuryAlert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -47,17 +48,22 @@ export default function AthletesPage() {
       setError(null);
 
       try {
-        const [athletesData, sessionsData] = await Promise.all([
+        const [athletesData, sessionsData, alertsData] = await Promise.all([
           api.getAthletes(),
           api.getSessions({ coachId: user.id }),
+          api.getCoachInjuryAlerts(user.id).catch(() => []),
         ]);
 
         const sessionsList = Array.isArray(sessionsData) ? sessionsData : [];
         setAllSessions(sessionsList);
+        setInjuryAlerts(Array.isArray(alertsData) ? alertsData : []);
 
         // Calculate stats for each athlete
         const athletesList = Array.isArray(athletesData) ? athletesData : [];
-        const athletesWithStats: AthleteWithStats[] = athletesList.map(athlete => {
+        // Filter to show ONLY athletes assigned to this coach
+        const myAthletes = athletesList.filter(athlete => athlete.coachId === user.id);
+        
+        const athletesWithStats: AthleteWithStats[] = myAthletes.map(athlete => {
           const athleteSessions = sessionsList.filter(s => s.athleteId === athlete.id);
           const avgScore = athleteSessions.length > 0
             ? Math.round(athleteSessions.reduce((acc, s) => acc + (s.formScore || s.metrics?.formScore || 0), 0) / athleteSessions.length)
@@ -93,10 +99,15 @@ export default function AthletesPage() {
     if (!user) return;
     setIsLoading(true);
     try {
-      const athletesData = await api.getAthletes();
-      const sessionsData = await api.getSessions({ coachId: user.id });
+      const [athletesData, sessionsData, alertsData] = await Promise.all([
+        api.getAthletes(),
+        api.getSessions({ coachId: user.id }),
+        api.getCoachInjuryAlerts(user.id).catch(() => []),
+      ]);
+
       const sessionsList = Array.isArray(sessionsData) ? sessionsData : [];
       setAllSessions(sessionsList);
+      setInjuryAlerts(Array.isArray(alertsData) ? alertsData : []);
 
       const athletesList = Array.isArray(athletesData) ? athletesData : [];
       const athletesWithStats: AthleteWithStats[] = athletesList.map(athlete => {
@@ -158,7 +169,12 @@ export default function AthletesPage() {
   const avgTeamScore = athletes.length > 0
     ? Math.round(athletes.reduce((acc, a) => acc + a.avgFormScore, 0) / athletes.length)
     : 0;
+  
+  const activeAlerts = injuryAlerts.filter(a => a.status !== 'resolved');
   const needsAttentionCount = athletes.filter(a => a.status === 'needs-attention').length;
+  
+  // Top Performers Logic
+  const topPerformers = [...athletes].sort((a, b) => b.avgFormScore - a.avgFormScore).slice(0, 5);
 
   return (
     <AppLayout user={user}>
@@ -166,9 +182,9 @@ export default function AthletesPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">My Athletes</h1>
+            <h1 className="text-3xl font-bold text-foreground">Team Overview</h1>
             <p className="text-muted-foreground mt-1">
-              Monitor and guide your athletes&apos; performance
+              Manage performance, track risks, and guide your athletes
             </p>
           </div>
           <Button variant="outline" size="sm" onClick={refreshData} disabled={isLoading}>
@@ -192,7 +208,7 @@ export default function AthletesPage() {
             icon={Users}
           />
           <StatCard
-            title="Average Performance"
+            title="Team Avg Score"
             value={`${avgTeamScore}%`}
             icon={TrendingUp}
           />
@@ -203,21 +219,10 @@ export default function AthletesPage() {
             icon={Award}
           />
           <StatCard
-            title="Need Attention"
-            value={needsAttentionCount}
-            subtitle="Low score/activity"
+            title="Active Alerts"
+            value={activeAlerts.length}
+            subtitle={`${needsAttentionCount} need attention`}
             icon={AlertTriangle}
-          />
-        </div>
-
-        {/* Search */}
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search athletes..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
           />
         </div>
 
@@ -225,68 +230,170 @@ export default function AthletesPage() {
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="ml-2 text-muted-foreground">Loading athletes...</span>
-          </div>
-        ) : filteredAthletes.length > 0 ? (
-          /* Athletes Grid */
-          <div className="grid gap-4 md:grid-cols-2">
-            {filteredAthletes.map((athlete) => {
-              const athleteName = athlete.name || athlete.username || 'Athlete';
-              const initials = athleteName.split(' ').map(n => n[0]).join('').toUpperCase() || 'A';
-
-              return (
-                <Link key={athlete.id} href={`/athletes/${athlete.id}`}>
-                  <Card className="group p-6 border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold">
-                          {initials}
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                            {athleteName}
-                          </h3>
-                          <p className="text-sm text-muted-foreground">{athlete.email}</p>
-                        </div>
-                      </div>
-                      {getStatusBadge(athlete.status)}
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="space-y-1">
-                        <p className="text-xs text-muted-foreground">Sessions</p>
-                        <p className="text-xl font-bold text-foreground">{athlete.sessionCount}</p>
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-xs text-muted-foreground">Avg Form</p>
-                        <p className="text-xl font-bold text-foreground">{athlete.avgFormScore}%</p>
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-xs text-muted-foreground">Sport</p>
-                        <p className="text-sm font-medium text-muted-foreground truncate">
-                          {athlete.sport || 'General'}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 pt-4 border-t border-border/50">
-                      <p className="text-sm text-primary group-hover:underline">View Details →</p>
-                    </div>
-                  </Card>
-                </Link>
-              );
-            })}
+            <span className="ml-2 text-muted-foreground">Loading dashboard...</span>
           </div>
         ) : (
-          <Card className="p-12 text-center">
-            <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">No Athletes Found</h3>
-            <p className="text-muted-foreground">
-              {searchQuery 
-                ? 'No athletes match your search criteria.'
-                : 'No athletes have been assigned to you yet.'}
-            </p>
-          </Card>
+          <>
+            {/* Insights Section */}
+            <div className="grid gap-6 lg:grid-cols-2">
+              {/* Risk & Alerts */}
+              <Card className="p-6 border-warning/20">
+                <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-warning" />
+                  Risk & Alerts
+                </h2>
+                <div className="space-y-4">
+                   {/* Injury Alerts */}
+                   {activeAlerts.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold text-muted-foreground uppercase">Injury Alerts</p>
+                        {activeAlerts.slice(0, 3).map((alert) => (
+                          <div key={alert.id} className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-center justify-between">
+                            <div>
+                                <p className="font-medium text-destructive">{alert.athleteName}</p>
+                                <p className="text-xs text-muted-foreground">{alert.bodyPart}: {alert.description}</p>
+                            </div>
+                            <Badge variant="destructive">{alert.severity}</Badge>
+                          </div>
+                        ))}
+                      </div>
+                   )}
+
+                   {/* Needs Attention Athletes */}
+                   {athletes.filter(a => a.status === 'needs-attention').length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold text-muted-foreground uppercase">Needs Attention</p>
+                         {athletes.filter(a => a.status === 'needs-attention').slice(0, 3).map(athlete => (
+                            <div key={athlete.id} className="p-3 rounded-lg bg-warning/10 border border-warning/20 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 rounded-full bg-warning/20 flex items-center justify-center text-warning font-bold text-xs">
+                                     {(athlete.name || 'A')[0]}
+                                  </div>
+                                  <div>
+                                     <p className="font-medium text-foreground">{athlete.name || 'Athlete'}</p>
+                                     <p className="text-xs text-muted-foreground">Avg: {athlete.avgFormScore}% ({athlete.sessionCount} sessions)</p>
+                                  </div>
+                                </div>
+                                <Button size="sm" variant="ghost" onClick={() => router.push(`/athletes/${athlete.id}`)}>View</Button>
+                            </div>
+                         ))}
+                      </div>
+                   )}
+
+                   {activeAlerts.length === 0 && athletes.filter(a => a.status === 'needs-attention').length === 0 && (
+                      <p className="text-muted-foreground text-center py-4">No critical issues detected. Good job!</p>
+                   )}
+                </div>
+              </Card>
+
+              {/* Top Performers */}
+              <Card className="p-6">
+                <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-primary" />
+                  Top Performers
+                </h2>
+                <div className="space-y-4">
+                  {topPerformers.length > 0 ? topPerformers.map((athlete, index) => (
+                    <div key={athlete.id} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg transition-colors cursor-pointer" onClick={() => router.push(`/athletes/${athlete.id}`)}>
+                      <div className="flex items-center gap-3">
+                        <span className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold ${index === 0 ? 'bg-yellow-500/20 text-yellow-600' : index === 1 ? 'bg-gray-400/20 text-gray-600' : index === 2 ? 'bg-orange-500/20 text-orange-600' : 'bg-primary/10 text-primary'}`}>
+                          {index + 1}
+                        </span>
+                        <div>
+                          <p className="font-medium text-foreground">
+                            {athlete.name || athlete.username || 'Athlete'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {athlete.sessionCount} sessions
+                          </p>
+                        </div>
+                      </div>
+                      <Badge variant={athlete.avgFormScore >= 90 ? 'default' : 'secondary'}>
+                        {athlete.avgFormScore}%
+                      </Badge>
+                    </div>
+                  )) : (
+                    <p className="text-muted-foreground text-center py-4">No athlete data yet</p>
+                  )}
+                </div>
+              </Card>
+            </div>
+
+            {/* All Athletes */}
+            <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold">My Team</h2>
+                    {/* Search */}
+                    <div className="relative max-w-sm w-full">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search athletes..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
+                </div>
+
+                {filteredAthletes.length > 0 ? (
+                  /* Athletes Grid */
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {filteredAthletes.map((athlete) => {
+                      const athleteName = athlete.name || athlete.username || 'Athlete';
+                      const initials = athleteName.split(' ').map(n => n[0]).join('').toUpperCase() || 'A';
+
+                      return (
+                        <Link key={athlete.id} href={`/athletes/${athlete.id}`}>
+                          <Card className="group p-6 border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all">
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="flex items-center gap-3">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold">
+                                  {initials}
+                                </div>
+                                <div>
+                                  <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                                    {athleteName}
+                                  </h3>
+                                  <p className="text-sm text-muted-foreground">{athlete.email}</p>
+                                </div>
+                              </div>
+                              {getStatusBadge(athlete.status)}
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4">
+                              <div className="space-y-1">
+                                <p className="text-xs text-muted-foreground">Sessions</p>
+                                <p className="text-xl font-bold text-foreground">{athlete.sessionCount}</p>
+                              </div>
+                              <div className="space-y-1">
+                                <p className="text-xs text-muted-foreground">Avg Form</p>
+                                <p className="text-xl font-bold text-foreground">{athlete.avgFormScore}%</p>
+                              </div>
+                              <div className="space-y-1">
+                                <p className="text-xs text-muted-foreground">Sport</p>
+                                <p className="text-sm font-medium text-muted-foreground truncate">
+                                  {athlete.sport || 'General'}
+                                </p>
+                              </div>
+                            </div>
+                          </Card>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <Card className="p-12 text-center">
+                    <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-foreground mb-2">No Athletes Found</h3>
+                    <p className="text-muted-foreground">
+                      {searchQuery 
+                        ? 'No athletes match your search criteria.'
+                        : 'No athletes have been assigned to you yet.'}
+                    </p>
+                  </Card>
+                )}
+            </div>
+          </>
         )}
       </div>
     </AppLayout>

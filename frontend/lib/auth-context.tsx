@@ -11,6 +11,7 @@ interface AuthContextType {
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, role: 'athlete' | 'coach') => Promise<void>;
+  updateUser: (data: Partial<User>) => Promise<void>;
   logout: () => void;
 }
 
@@ -60,6 +61,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         username: userData.username,
         role: userData.role,
         createdAt: userData.created_at,
+        age: userData.age,
+        gender: userData.gender,
+        weight: userData.weight,
+        height: userData.height,
       };
       
       // Add athlete-specific fields if present
@@ -115,6 +120,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         username: userData.username,
         role: userData.role,
         createdAt: userData.created_at,
+        age: userData.age,
+        gender: userData.gender,
+        weight: userData.weight,
+        height: userData.height,
       };
       
       setUser(mappedUser);
@@ -133,6 +142,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('talenttrack_user');
   };
 
+  const updateUser = async (data: Partial<User>) => {
+    if (!user) return;
+    
+    // Optimistic update
+    const updatedUser = { ...user, ...data };
+    setUser(updatedUser);
+    localStorage.setItem('talenttrack_user', JSON.stringify(updatedUser));
+  };
+
   return (
     <AuthContext.Provider 
       value={{ 
@@ -141,6 +159,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error,
         login, 
         register, 
+        updateUser,
         logout,
       }}
     >

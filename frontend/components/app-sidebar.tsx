@@ -7,7 +7,6 @@ import {
   Activity,
   Calendar,
   Target,
-  BarChart3,
   Users,
   MessageSquare,
   User,
@@ -37,10 +36,7 @@ export function AppSidebar({ user }: SidebarProps) {
   const coachItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/sessions', label: 'Sessions', icon: Activity },
-    { href: '/training-plan', label: 'Training Plan', icon: Calendar },
-    { href: '/goals', label: 'Goals', icon: Target },
-    { href: '/analytics', label: 'Analytics', icon: BarChart3 },
-    { href: '/athletes', label: 'Athletes', icon: Users },
+    { href: '/athletes', label: 'MyTeam', icon: Users },
     { href: '/profile', label: 'Profile', icon: User },
   ];
 

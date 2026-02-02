@@ -63,13 +63,15 @@ export default function GoalsPage() {
     );
   }
 
+  // --- COACH REDIRECT ---
+  if (user?.role === 'coach') {
+      router.push('/athletes');
+      return null;
+  }
+
   return (
     <AppLayout user={user}>
-      {user.role === 'coach' ? (
-        <CoachGoalsManager coachId={user.id} coachName={user.name || user.username || 'Coach'} />
-      ) : (
-        <AthleteGoalsManager userId={user.id} />
-      )}
+      <AthleteGoalsManager userId={user.id} />
     </AppLayout>
   );
 }
@@ -610,26 +612,32 @@ function GoalCard({
     
     // Priority Colors
     const priorityColor = {
-        low: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-        medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-        high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
-        urgent: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+        low: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+        medium: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
+        high: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
+        urgent: 'bg-red-500/10 text-red-500 border-red-500/20'
     }[goal.priority || 'medium'];
 
     return (
-        <Card className={`p-5 flex flex-col ${isCompleted ? 'border-green-500/50 bg-green-50/50 dark:bg-green-950/10' : ''}`}>
+        <Card className={`p-5 flex flex-col transition-all duration-300 ${isCompleted 
+            ? 'border-green-500/30 bg-green-500/5 shadow-[0_0_15px_-3px_rgba(34,197,94,0.1)]' 
+            : 'hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5'}`}>
             <div className="flex justify-between items-start mb-4">
-                <div>
-                   <div className="flex items-center gap-2 mb-1">
-                       <Badge variant="outline" className={`capitalize border-0 ${priorityColor}`}>
+                <div className="space-y-2">
+                   <div className="flex items-center gap-2">
+                       <Badge variant="outline" className={`capitalize border ${priorityColor}`}>
                            {goal.priority || 'Medium'}
                        </Badge>
-                       {isCompleted && <Badge className="bg-green-500">Completed</Badge>}
+                       {isCompleted && (
+                           <Badge variant="default" className="bg-green-500 hover:bg-green-600 border-green-600 text-white shadow-sm">
+                               <CheckCircle className="h-3 w-3 mr-1" /> Completed
+                           </Badge>
+                       )}
                    </div>
-                   <h3 className="font-bold text-lg leading-tight">{goal.title}</h3>
+                   <h3 className={`font-bold text-lg leading-tight ${isCompleted ? 'text-foreground' : ''}`}>{goal.title}</h3>
                 </div>
                 {!readOnly && onDelete && (
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => onDelete(goal.id || goal.goalId!)}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onDelete(goal.id || goal.goalId!)}>
                         <Trash2 className="h-4 w-4" />
                     </Button>
                 )}
@@ -639,25 +647,29 @@ function GoalCard({
 
             <div className="mt-auto space-y-3">
                 <div className="flex justify-between text-sm font-medium">
-                    <span>{goal.current} / {goal.target} <span className="text-muted-foreground font-normal">{goal.unit}</span></span>
-                    <span>{progress}%</span>
+                    <span className={isCompleted ? "text-green-500" : ""}>{goal.current} / {goal.target} <span className="text-muted-foreground font-normal">{goal.unit}</span></span>
+                    <span className={isCompleted ? "text-green-500" : ""}>{progress}%</span>
                 </div>
-                <Progress value={progress} className={`h-2 ${isCompleted ? 'bg-green-200' : ''}`} indicatorClassName={isCompleted ? 'bg-green-500' : ''} />
+                <Progress 
+                    value={progress} 
+                    className={`h-2`} 
+                    indicatorClassName={isCompleted ? 'bg-green-500' : ''} 
+                />
                 
-                <div className="flex items-center justify-between pt-3 text-xs text-muted-foreground">
+                <div className="flex items-center justify-between pt-3 text-xs text-muted-foreground border-t border-border/50">
                     <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" /> due {new Date(goal.deadline).toLocaleDateString()}
                     </span>
                     
                     {!readOnly && onUpdate && !isCompleted && (
-                        <Button size="sm" variant="secondary" className="h-7" onClick={() => onUpdate(goal, goal.current + 1)}>
+                        <Button size="sm" variant="secondary" className="h-7 text-xs" onClick={() => onUpdate(goal, goal.current + 1)}>
                             +1 Log
                         </Button>
                     )}
 
                     {/* Coach Actions */}
                     {readOnly && onFeedback && (
-                        <Button size="sm" variant="ghost" className="h-7 px-2" onClick={onFeedback}>
+                        <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={onFeedback}>
                             <MessageSquare className="h-3 w-3 mr-1" /> Feedback
                         </Button>
                     )}

@@ -250,43 +250,7 @@ export default function SessionDetailPage() {
           </Card>
         </div>
 
-        {/* Risk Assessment Card */}
-        {cheatDetection && (
-          <Card className={`p-6 ${cheatDetection.riskLevel === 'high' ? 'border-destructive/30 bg-destructive/5' : cheatDetection.riskLevel === 'medium' ? 'border-warning/30 bg-warning/5' : 'border-success/30 bg-success/5'}`}>
-            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <Shield className={`h-5 w-5 ${getRiskColor(cheatDetection.riskLevel)}`} />
-              Risk Assessment
-            </h2>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <p className="text-2xl font-semibold mb-2">{cheatDetection.riskExplanation}</p>
-                {cheatDetection.riskFactors && cheatDetection.riskFactors.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {cheatDetection.riskFactors.map((factor, idx) => (
-                      <Badge key={idx} variant="outline" className="text-xs">
-                        {factor}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div className="p-3 bg-background rounded-lg border">
-                  <Eye className="h-5 w-5 text-muted-foreground mx-auto mb-1" />
-                  <p className={`text-2xl font-bold ${getConfidenceColor(cheatDetection.confidence)}`}>
-                    {cheatDetection.confidence}%
-                  </p>
-                  <p className="text-xs text-muted-foreground">Confidence</p>
-                </div>
-                <div className="p-3 bg-background rounded-lg border">
-                  <AlertTriangle className="h-5 w-5 text-muted-foreground mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-foreground">{cheatDetection.totalFlags ?? 0}</p>
-                  <p className="text-xs text-muted-foreground">Issues Found</p>
-                </div>
-              </div>
-            </div>
-          </Card>
-        )}
+
 
         {/* Form Analysis Flags */}
         {cheatDetection?.cheat_flags && (
