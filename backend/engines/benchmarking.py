@@ -165,7 +165,7 @@ class BenchmarkingEngine:
         return (reps_score * 0.4 + form_score_normalized * 0.4 + efficiency_score * 0.2)
     
     def generate_leaderboard(self, exercise: str, coach_id: str = None) -> List[Dict[str, Any]]:
-        """Generate leaderboard for specific exercise"""
+        """Generate leaderboard for specific exercise — one entry per athlete with aggregated stats"""
         
         sessions_file = "data/sessions/sessions.json"
         try:
@@ -174,36 +174,106 @@ class BenchmarkingEngine:
         except:
             return []
         
-        leaderboard = []
+        # Load athletes data to get coach information
+        athletes_file = "data/athletes/athletes.json"
+        athletes_data = {}
+        try:
+            with open(athletes_file, "r", encoding="utf-8") as f:
+                athletes_list = json.load(f)
+                for athlete in athletes_list:
+                    athletes_data[athlete["id"]] = athlete
+        except Exception as e:
+            # Continue without coach filtering if athletes file is not available
+            pass
+        
+        # Step 1: Collect all sessions per athlete for this exercise
+        athlete_sessions: Dict[str, List[Dict[str, Any]]] = {}
+        athlete_meta: Dict[str, Dict[str, Any]] = {}
         
         for athlete_id, athlete_data in all_sessions.items():
             if "sessions" in athlete_data:
+                athlete_profile = athletes_data.get(athlete_id, {})
+                athlete_coach_id = athlete_profile.get("coachId")
+                
+                # Filter by coach if specified
+                if coach_id and athlete_coach_id != coach_id:
+                    continue
+                
                 for session in athlete_data["sessions"]:
                     if session.get("exercise") == exercise:
-                        # Filter by coach if specified
-                        if coach_id and session.get("coachId") != coach_id:
-                            continue
-                            
-                        performance_score = self._calculate_performance_score(
-                            session.get("reps", 0),
-                            session.get("formScore", 0),
-                            session.get("durationSec", 0)
-                        )
-                        
-                        leaderboard.append({
-                            "athlete_id": athlete_id,
-                            "athlete_name": session.get("athleteName", "Unknown"),
-                            "coach_id": session.get("coachId"),
-                            "coach_name": session.get("coachName", "Unknown"),
-                            "reps": session.get("reps", 0),
-                            "form_score": session.get("formScore", 0),
-                            "duration": session.get("durationSec", 0),
-                            "performance_score": round(performance_score, 1),
-                            "timestamp": session.get("timestamp"),
-                            "session_id": session.get("sessionId")
-                        })
+                        if athlete_id not in athlete_sessions:
+                            athlete_sessions[athlete_id] = []
+                            athlete_meta[athlete_id] = {
+                                "athlete_name": session.get("athleteName", athlete_profile.get("username", "Unknown")),
+                                "coach_id": athlete_coach_id,
+                                "coach_name": athlete_profile.get("coachName", "Unknown"),
+                            }
+                        athlete_sessions[athlete_id].append(session)
         
-        # Sort by performance score (descending)
+        # Step 2: Aggregate per athlete and compute composite score
+        leaderboard = []
+        
+        for athlete_id, sessions in athlete_sessions.items():
+            meta = athlete_meta[athlete_id]
+            session_count = len(sessions)
+            
+            total_reps = sum(s.get("reps", 0) for s in sessions)
+            avg_reps = total_reps / session_count if session_count > 0 else 0
+            
+            total_form = sum(s.get("formScore", 0) for s in sessions)
+            avg_form = total_form / session_count if session_count > 0 else 0
+            
+            total_duration = sum(s.get("durationSec", 0) for s in sessions)
+            avg_duration = total_duration / session_count if session_count > 0 else 0
+            
+            # Per-session performance scores
+            perf_scores = [
+                self._calculate_performance_score(
+                    s.get("reps", 0), s.get("formScore", 0), s.get("durationSec", 0)
+                )
+                for s in sessions
+            ]
+            avg_performance = sum(perf_scores) / len(perf_scores) if perf_scores else 0
+            best_performance = max(perf_scores) if perf_scores else 0
+            
+            # ── Composite Leaderboard Score ──
+            # 40% average form score  (quality)
+            # 25% average performance score  (overall per-session quality)
+            # 20% consistency bonus  (more sessions → higher, capped at 100)
+            # 15% best session bonus  (peak capability)
+            consistency_bonus = min(100, session_count * 15)  # 7+ sessions = max
+            
+            composite_score = (
+                avg_form * 0.40 +
+                avg_performance * 0.25 +
+                consistency_bonus * 0.20 +
+                best_performance * 0.15
+            )
+            
+            # Find the most recent session timestamp
+            latest_timestamp = max(
+                (s.get("timestamp", "") for s in sessions),
+                default=""
+            )
+            
+            leaderboard.append({
+                "athlete_id": athlete_id,
+                "athlete_name": meta["athlete_name"],
+                "coach_id": meta["coach_id"],
+                "coach_name": meta["coach_name"],
+                "session_count": session_count,
+                "total_reps": total_reps,
+                "avg_reps": round(avg_reps, 1),
+                "avg_form_score": round(avg_form, 1),
+                "avg_performance": round(avg_performance, 1),
+                "best_performance": round(best_performance, 1),
+                "performance_score": round(composite_score, 1),
+                "reps": total_reps,
+                "form_score": round(avg_form, 1),
+                "timestamp": latest_timestamp,
+            })
+        
+        # Sort by composite score (descending)
         leaderboard.sort(key=lambda x: x["performance_score"], reverse=True)
         
         # Add rank

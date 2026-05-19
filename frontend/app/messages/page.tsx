@@ -150,9 +150,8 @@ export default function MessagesPage() {
         coachName: user.name || user.username || 'Coach',
         athleteId: selectedPartnerId!,
         athleteName: athletes.find(a => a.id === selectedPartnerId)?.name || 'Athlete',
-        // @ts-ignore
         content: newMessage,
-        message: newMessage, 
+        message: newMessage,
         timestamp,
         read: false,
         senderId: user.id,
@@ -173,7 +172,6 @@ export default function MessagesPage() {
         coachName: targetCoachName,
         athleteId: user.id,
         athleteName: user.name || user.username || 'Athlete',
-        // @ts-ignore
         content: newMessage,
         message: newMessage,
         timestamp,
@@ -300,7 +298,7 @@ export default function MessagesPage() {
                           )}
                         </div>
                         <p className={cn("text-xs truncate", hasUnread ? "text-foreground font-medium" : "text-muted-foreground")}>
-                          {lastMsg ? lastMsg.message : 'No messages yet'}
+                          {'View messages'}
                         </p>
                       </div>
                     </button>
@@ -399,7 +397,7 @@ export default function MessagesPage() {
                       className={`flex ${sentByMe ? 'justify-end' : 'justify-start'}`}
                     >
                       <div
-                        className={`flex items-end gap-2 max-w-[70%] ${
+                        className={`flex items-end gap-2 max-w-[80%] ${
                           sentByMe ? 'flex-row-reverse' : 'flex-row'
                         }`}
                       >
@@ -413,7 +411,7 @@ export default function MessagesPage() {
                         )}
 
                         <div
-                          className={`group relative px-4 py-2 rounded-2xl text-sm ${
+                          className={`group relative px-4 py-2 rounded-2xl text-sm max-w-full break-words ${
                             sentByMe
                               ? 'bg-primary text-primary-foreground rounded-br-none'
                               : 'bg-muted text-foreground rounded-bl-none'
@@ -429,7 +427,7 @@ export default function MessagesPage() {
                                   ))}
                               </div>
                           )}
-                          <p>{msg.message}</p>
+                          <p className="break-words">{msg.content || msg.message}</p>
                           <span className={`text-[10px] opacity-70 mt-1 block ${
                             sentByMe ? 'text-primary-foreground/70' : 'text-muted-foreground'
                           }`}>

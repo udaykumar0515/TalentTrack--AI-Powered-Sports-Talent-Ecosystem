@@ -8,10 +8,24 @@
     "created_at": "2026-01-28T12:32:03.926090",
     "age": 18,
     "gender": "Male",
-    "coachId": null,
-    "coachName": null,
+    "coachId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09",
+    "coachName": "david",
     "weight": "50",
     "height": "176",
-    "currentPlanId": "plan_f2076b42-bac5-4906-a029-fc79865f3f7a_c867df8f-9cdf-4e32-a29d-379c892b220f_4_1769780455"
+    "currentPlanId": "plan_f2076b42-bac5-4906-a029-fc79865f3f7a_c867df8f-9cdf-4e32-a29d-379c892b220f_1_1769775343"
+  },
+  {
+    "id": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+    "email": "shashi@gmail.com",
+    "password": "$2b$12$CDfksJVvDSdjA2sk/sE3b.EawDZLPkxdSqfPXH5IaSTy/n5T3Ek6G",
+    "username": "shashi",
+    "role": "athlete",
+    "created_at": "2026-05-11T23:57:40.400334",
+    "age": 18,
+    "gender": "Male",
+    "coachId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09",
+    "coachName": "david",
+    "weight": "80",
+    "height": "190"
   }
 ]

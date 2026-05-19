@@ -150,5 +150,50 @@
       "is_public": false,
       "motivation_notes": ""
     }
+  ],
+  "7c1811e9-af66-4b3e-b92e-d3564cb1bc27": [
+    {
+      "id": "goal_7c1811e9-af66-4b3e-b92e-d3564cb1bc27_1_1778524316",
+      "user_id": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+      "title": "5k ",
+      "description": "runs ",
+      "type": "reps",
+      "target": 10,
+      "current": 10,
+      "unit": "sessions",
+      "priority": "medium",
+      "status": "completed",
+      "start_date": "2026-05-12T00:01:56.122192",
+      "deadline": "2006-05-15",
+      "created_at": "2026-05-12T00:01:56.122463",
+      "updated_at": "2026-05-12T00:05:08.313072",
+      "progress_percentage": 100.0,
+      "milestones": [],
+      "tags": [],
+      "is_public": false,
+      "motivation_notes": "",
+      "completed_at": "2026-05-12T00:05:08.313096"
+    },
+    {
+      "id": "goal_7c1811e9-af66-4b3e-b92e-d3564cb1bc27_2_1778586422",
+      "user_id": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+      "title": "5k",
+      "description": "",
+      "type": "reps",
+      "target": 100,
+      "current": 2,
+      "unit": "sessions",
+      "priority": "medium",
+      "status": "active",
+      "start_date": "2026-05-12T17:17:02.091022",
+      "deadline": "2026-06-11T11:47:02.082Z",
+      "created_at": "2026-05-12T17:17:02.091037",
+      "updated_at": "2026-05-12T17:17:14.294913",
+      "progress_percentage": 0.0,
+      "milestones": [],
+      "tags": [],
+      "is_public": false,
+      "motivation_notes": ""
+    }
   ]
 }

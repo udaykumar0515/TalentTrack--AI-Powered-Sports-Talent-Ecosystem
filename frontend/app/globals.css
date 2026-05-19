@@ -137,3 +137,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom Scrollbar for Dark Theme */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}

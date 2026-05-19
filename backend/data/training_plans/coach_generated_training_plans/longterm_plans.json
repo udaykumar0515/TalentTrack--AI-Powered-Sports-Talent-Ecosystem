@@ -372,5 +372,104 @@
       "tags": [],
       "is_template": false
     }
+  ],
+  "3cf143c7-d190-4a36-b1b8-ea1673d3ca09": [
+    {
+      "id": "plan_3cf143c7-d190-4a36-b1b8-ea1673d3ca09_7c1811e9-af66-4b3e-b92e-d3564cb1bc27_1_1779166534",
+      "coach_id": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09",
+      "athlete_id": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+      "athlete_name": "shashi",
+      "title": "Road to Regionals 2026",
+      "description": "A comprehensive 12-week program focusing on strength, endurance, and agility.",
+      "phase": "development",
+      "priority": "medium",
+      "status": "draft",
+      "start_date": "2026-05-19T10:25:34.539010",
+      "end_date": "",
+      "duration_weeks": 3,
+      "created_at": "2026-05-19T10:25:34.539032",
+      "updated_at": "2026-05-19T10:43:02.282619",
+      "objectives": [
+        "Increase squat 1RM by 15%",
+        "Drop 5k time under 22 minutes",
+        "Improve core stability"
+      ],
+      "milestones": [],
+      "training_schedule": {
+        "weeks": [
+          {
+            "weekNumber": 1,
+            "focus": "Hypertrophy & Base Building",
+            "days": [
+              {
+                "dayName": "Weekly Tasks",
+                "focus": "Goals",
+                "exercises": [
+                  {
+                    "name": "Complete 3 sets of 30 pushups"
+                  },
+                  {
+                    "name": "Run 3 miles at a moderate pace"
+                  },
+                  {
+                    "name": "Hold a plank for 2 minutes"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "weekNumber": 2,
+            "focus": "Strength Integration",
+            "days": [
+              {
+                "dayName": "Weekly Tasks",
+                "focus": "Goals",
+                "exercises": [
+                  {
+                    "name": "Complete 4 sets of 15 pull-ups"
+                  },
+                  {
+                    "name": "Sprint intervals: 5x100m"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "weekNumber": 3,
+            "focus": "Hypertrophy & Base Building",
+            "days": [
+              {
+                "dayName": "Weekly Tasks",
+                "focus": "Goals",
+                "exercises": [
+                  {
+                    "name": "Complete 3 sets of 30 pushups"
+                  },
+                  {
+                    "name": "Run 3 miles at a moderate pace"
+                  },
+                  {
+                    "name": "Hold a plank for 2 minutes"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "assessment_criteria": {},
+      "progress_tracking": {
+        "current_phase": "foundation",
+        "phase_completion": 0.0,
+        "overall_progress": 0.0,
+        "last_assessment": null,
+        "next_milestone": null
+      },
+      "notes": "",
+      "tags": [],
+      "is_template": false
+    }
   ]
 }

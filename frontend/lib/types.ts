@@ -164,6 +164,7 @@ export interface CoachMessage {
   sessionId: string;
   type: 'retest' | 'feedback' | 'note' | 'text';
   message: string;
+  content?: string; // Backend uses 'content', frontend uses 'message' - both for compatibility
   timestamp: string;
   read: boolean;
   senderId?: string;

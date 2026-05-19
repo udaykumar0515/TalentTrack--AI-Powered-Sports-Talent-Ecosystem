@@ -235,5 +235,35 @@
         }
       }
     ]
+  },
+  "7c1811e9-af66-4b3e-b92e-d3564cb1bc27": {
+    "sessions": [
+      {
+        "sessionId": "58a7f4be",
+        "exercise": "squat",
+        "reps": 10,
+        "formScore": 89,
+        "durationSec": 17.69,
+        "timestamp": "2026-05-12T00:05:08.309070Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "/videos/athletes/7c1811e9-af66-4b3e-b92e-d3564cb1bc27/54c39627.mp4",
+        "userName": "shashi",
+        "analysis": {
+          "mode": "fallback",
+          "message": "Analysis performed in fallback mode (TensorFlow unavailable with Python 3.13+)",
+          "recommendation": "For full AI-powered analysis, use Python 3.10-3.12 with TensorFlow"
+        },
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 85.0,
+          "riskLevel": "low",
+          "flags": {},
+          "suspiciousPatterns": []
+        }
+      }
+    ]
   }
 }

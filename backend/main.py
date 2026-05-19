@@ -26,7 +26,6 @@ from engines.training_plans import training_plan_generator
 from engines.injury_alerts import injury_alert_system
 from engines.goal_setting import GoalSettingEngine
 from engines.longterm_plans import LongTermPlansEngine
-from services.offline_video_manager import OfflineVideoManager
 import bcrypt
 
 # Password hashing utilities
@@ -52,8 +51,6 @@ goal_setting_engine = GoalSettingEngine()
 # Initialize long-term plans engine
 longterm_plans_engine = LongTermPlansEngine()
 
-# Initialize offline video manager
-offline_video_manager = OfflineVideoManager()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -284,7 +281,7 @@ def _send_system_notification(athlete_id: str, coach_id: str, message_text: str)
 
 def init_data_directories():
     """Ensure all required data directories exist"""
-    directories = ["data", "data/sessions", "data/athletes", "data/gamification", "data/goals", "data/injury_alerts", "data/videos", "data/system", "videos", "videos/athletes", "videos/coaches"]
+    directories = ["data", "data/sessions", "data/athletes", "data/goals", "data/injury_alerts", "data/videos", "data/system", "videos", "videos/athletes", "videos/coaches"]
     for directory in directories:
         os.makedirs(directory, exist_ok=True)
     
@@ -1059,29 +1056,22 @@ async def submit_coach_change_request(request: CoachChangeRequest):
                 "tags": []
             }
 
-            # Save message to coach-messages directory
-            messages_dir = "data/coach_messages"
-            os.makedirs(messages_dir, exist_ok=True)
+            # Save message to centralized system notifications (standardizing with other messages)
+            messages_file = "data/system/coach_messages.json"
+            all_messages = []
+            if os.path.exists(messages_file):
+                try:
+                    with open(messages_file, "r", encoding="utf-8") as f:
+                        content = f.read().strip()
+                        if content:
+                            all_messages = json.loads(content)
+                except Exception:
+                    all_messages = []
             
-            # Use specific file for this coach-athlete pair if following that structure, 
-            # OR append to a general list? 
-            # Looking at other endpoints, it seems we might just append to a list or save individual file.
-            # Let's check create_coach_message pattern. 
-            # For simplicity and robustness given previous 500 errors, let's append to specific conversation file if exists, or create new.
-            # Actually, looking at `create_coach_message` (implied): it saves to `data/coach_messages/{coach_id}_{athlete_id}.json` or similar?
-            # Let's use the standard "append to list" pattern often used here.
+            all_messages.append(coach_message)
             
-            # Start: Safe Message Appending
-            # We will use the standard file naming convention: {coachId}_{athleteId}.json or central file?
-            # Creating a simpler pattern: Just save to a general "inbox" for the coach?
-            # No, looking at `get_coach_messages`, it probably reads from a structure.
-            # Let's assume `data/coach_messages/messages.json` or individual files.
-            # Wait, I see `get_athlete_messages` reads `api/coach-messages/{athlete_id}`.
-            
-            # Let's just create a new individual message file which is safe
-            msg_file = os.path.join(messages_dir, f"{message_id}.json")
-            with open(msg_file, 'w', encoding='utf-8') as f:
-                json.dump(coach_message, f, indent=2)
+            with open(messages_file, "w", encoding="utf-8") as f:
+                json.dump(all_messages, f, indent=2, ensure_ascii=False)
                 
             logger.info(f"Notification message sent to coach {request.newCoachId}")
 
@@ -2391,67 +2381,6 @@ async def get_video(session_id: str):
         logger.error(f"Error retrieving video: {e}")
         raise HTTPException(status_code=500, detail="Failed to retrieve video")
 
-# Gamification endpoints
-@app.get("/api/gamification/user/{user_id}")
-async def get_user_gamification_stats(user_id: str):
-    """Get users gamification statistics"""
-    try:
-        stats = gamification_engine.get_user_stats(user_id)
-        return stats
-    except Exception as e:
-        logger.error(f"Error getting user gamification stats: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/api/gamification/leaderboard")
-async def get_leaderboard(category: str = "total_points", limit: int = 10):
-    """Get leaderboard for a specific category"""
-    try:
-        leaderboard = gamification_engine.get_leaderboard(category, limit)
-        return {"leaderboard": leaderboard, "category": category}
-    except Exception as e:
-        logger.error(f"Error getting leaderboard: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/api/gamification/achievements")
-async def get_all_achievements():
-    """Get all available achievements"""
-    try:
-        achievements = gamification_engine.load_achievements()
-        return {"achievements": achievements}
-    except Exception as e:
-        logger.error(f"Error getting achievements: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/api/gamification/badges")
-async def get_all_badges():
-    """Get all available badges"""
-    try:
-        badges = gamification_engine.load_badges()
-        return {"badges": badges}
-    except Exception as e:
-        logger.error(f"Error getting badges: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/api/gamification/recalculate-all")
-async def recalculate_all_gamification_stats():
-    """Recalculate all user gamification stats from session data"""
-    try:
-        gamification_engine.recalculate_all_users_stats()
-        return {"status": "success", "message": "All user stats recalculated from session data"}
-    except Exception as e:
-        logger.error(f"Error recalculating all user stats: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/api/gamification/recalculate/{user_id}")
-async def recalculate_user_gamification_stats(user_id: str):
-    """Recalculate a specific user's gamification stats from session data"""
-    try:
-        user_data = gamification_engine.recalculate_user_stats_from_sessions(user_id)
-        return {"status": "success", "user_data": user_data}
-    except Exception as e:
-        logger.error(f"Error recalculating user stats for {user_id}: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
 # Goal Setting API endpoints
 @app.post("/api/goals")
 async def create_goal(goal_data: dict):
@@ -2707,201 +2636,6 @@ async def get_plan_templates(coach_id: str):
         logger.error(f"Error getting plan templates: {e}")
         raise HTTPException(status_code=500, detail="Failed to get plan templates")
 
-# Offline Video API endpoints
-@app.post("/api/offline-videos")
-async def store_offline_video(video_data: dict):
-    """Store a video recorded offline"""
-    try:
-        user_id = video_data.get("user_id")
-        if not user_id:
-            raise HTTPException(status_code=400, detail="user_id is required")
-        
-        offline_video = offline_video_manager.store_offline_video(user_id, video_data)
-        if not offline_video:
-            raise HTTPException(status_code=500, detail="Failed to store offline video")
-        
-        return offline_video
-    except Exception as e:
-        logger.error(f"Error storing offline video: {e}")
-        raise HTTPException(status_code=500, detail="Failed to store offline video")
-
-@app.get("/api/offline-videos/{user_id}")
-async def get_user_offline_videos(user_id: str, status: Optional[str] = None):
-    """Get all offline videos for a user"""
-    try:
-        videos = offline_video_manager.get_user_offline_videos(user_id, status)
-        return {"videos": videos}
-    except Exception as e:
-        logger.error(f"Error getting user offline videos: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get offline videos")
-
-@app.put("/api/offline-videos/{user_id}/{video_id}/analyze")
-async def analyze_offline_video(user_id: str, video_id: str, analysis_request: dict):
-    """Trigger analysis for an offline video"""
-    try:
-        # Get the offline video
-        user_videos = offline_video_manager.get_user_offline_videos(user_id)
-        video = next((v for v in user_videos if v["id"] == video_id), None)
-        
-        if not video:
-            raise HTTPException(status_code=404, detail="Offline video not found")
-        
-        if video["status"] != "pending_analysis":
-            raise HTTPException(status_code=400, detail="Video is not pending analysis")
-        
-        # Update status to analyzing
-        offline_video_manager.update_video_status(user_id, video_id, "analyzing")
-        
-        # Use the same analysis function as main analysis
-        try:
-            import subprocess
-            import json
-            import os
-            import tempfile
-            import shutil
-            
-            # Get the video file path
-            video_path = video["video_path"]
-            exercise_type = analysis_request.get("exercise_type", "squat")
-            
-            if not os.path.exists(video_path):
-                raise Exception(f"Video file not found: {video_path}")
-            
-            # Create a temporary file for the analysis (same as main analysis)
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp_file:
-                temp_file_path = temp_file.name
-                # Copy the video file to temp location
-                shutil.copy2(video_path, temp_file_path)
-            
-            try:
-                # Validate exercise name (same as main analysis)
-                exercise_internal = validate_exercise_name(exercise_type)
-                
-                # Run the same analysis command as main analysis
-                cmd = [
-                    PYTHON_EXECUTABLE, "services/exercise_counter.py",
-                    "--user-id", user_id,
-                    "--user-name", "Offline User",
-                    "--exercise", exercise_internal,
-                    "--video-file", temp_file_path
-                ]
-                
-                logger.info(f"Running offline analysis command: {' '.join(cmd)}")
-                
-                result = subprocess.run(cmd, capture_output=True, text=True, cwd=".", encoding='utf-8', errors='replace')
-                
-                if result.returncode == 0:
-                    # Parse the analysis results (same format as main analysis)
-                    analysis_data = json.loads(result.stdout)
-                    
-                    # Move video from offline folder to main athlete folder
-                    main_video_dir = f"videos/athletes/{user_id}"
-                    os.makedirs(main_video_dir, exist_ok=True)
-                    
-                    # New video path in main athlete folder
-                    new_video_path = os.path.join(main_video_dir, f"{video_id}.mp4")
-                    
-                    # Move the video file
-                    shutil.move(video_path, new_video_path)
-                    
-                    # Update video status to completed with analysis data
-                    offline_video_manager.update_video_status(user_id, video_id, "completed", analysis_data)
-                    
-                    # Create a session from the analysis (same as main analysis)
-                    import uuid
-                    session_data = {
-                        "sessionId": str(uuid.uuid4())[:8],  # Generate unique session ID
-                        "athleteId": user_id,
-                        "athleteName": "Offline User",
-                        "exercise": exercise_type,
-                        "reps": analysis_data.get("reps", 0),
-                        "formScore": analysis_data.get("formScore", 0.0),
-                        "timestamp": video["recorded_at"],
-                        "videoPath": new_video_path,
-                        "analysisData": analysis_data,
-                        "sessionType": "offline_analysis",
-                        "durationSec": analysis_data.get("durationSec", 0),
-                        "cheatDetection": analysis_data.get("cheatDetection", {})
-                    }
-                    
-                    # Use the same save function as main analysis
-                    save_session_result(session_data)
-                    
-                    # Update goal progress for all active goals
-                    try:
-                        updated_goals = goal_setting_engine.update_goals_from_session(user_id, session_data)
-                        if updated_goals:
-                            logger.info(f"Updated {len(updated_goals)} goals for user {user_id}")
-                    except Exception as e:
-                        logger.error(f"Error updating goals: {e}")
-                    
-                    # Remove the video from offline queue after successful analysis
-                    offline_video_manager.delete_offline_video(user_id, video_id)
-                    
-                    return {"message": "Video analyzed successfully", "video_id": video_id, "analysis": analysis_data}
-                else:
-                    # Analysis failed
-                    offline_video_manager.update_video_status(user_id, video_id, "failed")
-                    return {"message": "Video analysis failed", "error": result.stderr}
-                    
-            finally:
-                # Clean up temporary file
-                if os.path.exists(temp_file_path):
-                    os.unlink(temp_file_path)
-                
-        except Exception as analysis_error:
-            logger.error(f"Error during video analysis: {analysis_error}")
-            offline_video_manager.update_video_status(user_id, video_id, "failed")
-            return {"message": "Video analysis failed", "error": str(analysis_error)}
-    except Exception as e:
-        logger.error(f"Error analyzing offline video: {e}")
-        raise HTTPException(status_code=500, detail="Failed to analyze offline video")
-
-@app.delete("/api/offline-videos/{user_id}/{video_id}")
-async def delete_offline_video(user_id: str, video_id: str):
-    """Delete an offline video"""
-    try:
-        success = offline_video_manager.delete_offline_video(user_id, video_id)
-        if not success:
-            raise HTTPException(status_code=404, detail="Offline video not found")
-        
-        return {"success": True, "message": "Offline video deleted successfully"}
-    except Exception as e:
-        logger.error(f"Error deleting offline video: {e}")
-        raise HTTPException(status_code=500, detail="Failed to delete offline video")
-
-@app.get("/api/offline-videos/{user_id}/stats")
-async def get_offline_video_stats(user_id: str):
-    """Get statistics for user's offline videos"""
-    try:
-        stats = offline_video_manager.get_offline_video_stats(user_id)
-        return stats
-    except Exception as e:
-        logger.error(f"Error getting offline video stats: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get offline video stats")
-
-@app.get("/api/offline-videos/pending")
-async def get_pending_analysis_videos():
-    """Get all videos pending analysis (admin endpoint)"""
-    try:
-        videos = offline_video_manager.get_pending_analysis_videos()
-        return {"videos": videos}
-    except Exception as e:
-        logger.error(f"Error getting pending analysis videos: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get pending analysis videos")
-
-@app.post("/api/offline-videos/{video_id}/process")
-async def process_offline_video(video_id: str, analysis_result: dict):
-    """Process an offline video with analysis results"""
-    try:
-        success = offline_video_manager.process_offline_video(video_id, analysis_result)
-        if not success:
-            raise HTTPException(status_code=404, detail="Offline video not found")
-        
-        return {"success": True, "message": "Offline video processed successfully"}
-    except Exception as e:
-        logger.error(f"Error processing offline video: {e}")
-        raise HTTPException(status_code=500, detail="Failed to process offline video")
 
 
 

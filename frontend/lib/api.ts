@@ -307,6 +307,10 @@ class ApiClient {
     return this.request<TrainingPlan>(url);
   }
 
+  async getCoachTrainingPlan(athleteId: string) {
+    return this.request<TrainingPlan>(`/api/training-plans/coach-plan/${encodeURIComponent(athleteId)}`);
+  }
+
   async generateTrainingPlan(athleteId: string) {
     return this.request<TrainingPlan>(`/api/training-plans/athlete/${encodeURIComponent(athleteId)}/generate`, {
       method: 'POST',
@@ -359,6 +363,18 @@ class ApiClient {
     return this.request<InjuryAlert[]>(`/api/injury-alerts/coach/${encodeURIComponent(coachId)}`);
   }
 
+  async acknowledgeInjuryAlert(alertId: string, coachId: string) {
+    return this.request<{ success: boolean; message: string }>(`/api/injury-alerts/${encodeURIComponent(alertId)}/acknowledge?coach_id=${encodeURIComponent(coachId)}`, {
+      method: 'PUT',
+    });
+  }
+
+  async resolveInjuryAlert(alertId: string, coachId: string) {
+    return this.request<{ success: boolean; message: string }>(`/api/injury-alerts/${encodeURIComponent(alertId)}/resolve?coach_id=${encodeURIComponent(coachId)}`, {
+      method: 'PUT',
+    });
+  }
+
   // ============================================
   // BENCHMARKING
   // ============================================
@@ -399,6 +415,12 @@ class ApiClient {
     return this.request<{ success: boolean; message: string }>(`/api/longterm-plans/${encodeURIComponent(coachId)}/${encodeURIComponent(planId)}`, {
       method: 'PUT',
       body: JSON.stringify(updates),
+    });
+  }
+
+  async deleteLongTermPlan(coachId: string, planId: string) {
+    return this.request<{ success: boolean; message: string }>(`/api/longterm-plans/${encodeURIComponent(coachId)}/${encodeURIComponent(planId)}`, {
+      method: 'DELETE',
     });
   }
 

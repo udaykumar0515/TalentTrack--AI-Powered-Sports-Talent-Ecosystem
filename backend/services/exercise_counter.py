@@ -25,8 +25,37 @@ PYTHON_EXECUTABLE = sys.executable  # use the same Python running FastAPI
 logging.basicConfig(stream=sys.stderr, level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-mp_pose = mp.solutions.pose
-LM = mp_pose.PoseLandmark
+# Simple landmark definitions for compatibility
+class PoseLandmarkCompat:
+    LEFT_SHOULDER = 11
+    RIGHT_SHOULDER = 12
+    LEFT_ELBOW = 13
+    RIGHT_ELBOW = 14
+    LEFT_WRIST = 15
+    RIGHT_WRIST = 16
+    LEFT_HIP = 23
+    RIGHT_HIP = 24
+    LEFT_KNEE = 25
+    RIGHT_KNEE = 26
+    LEFT_ANKLE = 27
+    RIGHT_ANKLE = 28
+    NOSE = 0
+
+LM = PoseLandmarkCompat
+
+# Use MediaPipe with new API
+try:
+    from mediapipe.tasks.python.vision import PoseLandmarker
+    from mediapipe.tasks.python.core.base_options import BaseOptions
+    from mediapipe.tasks.python.vision.pose_landmarker import PoseLandmarkerOptions
+    USE_MEDIAPIPE = True
+    logger.info("MediaPipe new API available")
+except ImportError as e:
+    USE_MEDIAPIPE = False
+    logger.info(f"MediaPipe new API not available: {e}")
+    PoseLandmarker = None
+    BaseOptions = None
+    PoseLandmarkerOptions = None
 DATA_FILE = "data/sessions/sessions.json"
 
 # Create sessions directory if it doesn't exist
@@ -123,7 +152,7 @@ class EWMA:
         return self.value
 
 class RepetitionCounter:
-    def __init__(self, up_thresh, down_thresh, min_time_between=0.25):
+    def __init__(self, up_thresh, down_thresh, min_time_between=0.8):
         self.up_thresh = up_thresh
         self.down_thresh = down_thresh
         self.state = "unknown"
@@ -152,9 +181,9 @@ class RepetitionCounter:
                 self.state = "down"
                 self.last_transition_time = now
                 
-        if self.state in ("unknown", "down"):
+        elif self.state == "down":
             if value > self.up_thresh:
-                if prev_state == "down" and (now - self.last_count_time) > self.min_time_between:
+                if prev_state == "down":
                     self.count += 1
                     self.last_count_time = now
                 self.state = "up"
@@ -544,19 +573,19 @@ class ExerciseDetector:
         self.suspicious_patterns = []  # Track suspicious activities
 
         if exercise_name == "squat":
-            self.counter = RepetitionCounter(up_thresh=160.0, down_thresh=100.0, min_time_between=0.3)
+            self.counter = RepetitionCounter(up_thresh=140.0, down_thresh=100.0, min_time_between=0.3)
             self.required = [LM.LEFT_SHOULDER, LM.RIGHT_SHOULDER,
                              LM.LEFT_HIP, LM.RIGHT_HIP,
                              LM.LEFT_KNEE, LM.RIGHT_KNEE,
                              LM.LEFT_ANKLE, LM.RIGHT_ANKLE]
         elif exercise_name == "pushups":
-            self.counter = RepetitionCounter(up_thresh=150.0, down_thresh=95.0, min_time_between=0.25)
+            self.counter = RepetitionCounter(up_thresh=150.0, down_thresh=95.0, min_time_between=0.8)
             self.required = [LM.LEFT_WRIST, LM.RIGHT_WRIST,
                              LM.LEFT_SHOULDER, LM.RIGHT_SHOULDER,
                              LM.LEFT_HIP, LM.RIGHT_HIP]
         elif exercise_name == "jumping_jacks":
             # We use a custom JJ state-machine but keep counter for compatibility
-            self.counter = RepetitionCounter(up_thresh=1.6, down_thresh=1.15, min_time_between=0.25)
+            self.counter = RepetitionCounter(up_thresh=1.6, down_thresh=1.15, min_time_between=0.8)
             self.required = [LM.LEFT_SHOULDER, LM.RIGHT_SHOULDER,
                              LM.LEFT_WRIST, LM.RIGHT_WRIST,
                              LM.LEFT_HIP, LM.RIGHT_HIP,
@@ -1093,11 +1122,24 @@ def main():
     logger.info(f"Frame skip: every {FRAME_SKIP} frames (processing {100/FRAME_SKIP:.1f}% of frames)")
 
     detector = ExerciseDetector(exercise, new_w, new_h)
-    pose = mp_pose.Pose(static_image_mode=False,
-                        model_complexity=1,
-                        enable_segmentation=False,
-                        min_detection_confidence=0.5,
-                        min_tracking_confidence=0.5)
+    
+    if USE_MEDIAPIPE and PoseLandmarker:
+        # Use new MediaPipe API
+        base_options = BaseOptions(model_asset_path='pose_landmarker_lite.task')
+        options = PoseLandmarkerOptions(
+            base_options=base_options,
+            running_mode=mp.tasks.vision.RunningMode.VIDEO
+        )
+        pose = PoseLandmarker.create_from_options(options)
+    elif USE_MEDIAPIPE and mp_pose:
+        # Use legacy MediaPipe API
+        pose = mp_pose.Pose(static_image_mode=False,
+                            model_complexity=1,
+                            enable_segmentation=False,
+                            min_detection_confidence=0.5,
+                            min_tracking_confidence=0.5)
+    else:
+        pose = None
 
     last_frame_time = time.time()
     fps = 0.0
@@ -1132,8 +1174,22 @@ def main():
                 detector.img_h = new_h
 
             image_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            results = pose.process(image_rgb)
-            landmarks = results.pose_landmarks.landmark if results.pose_landmarks else None
+            
+            results = None
+            if USE_MEDIAPIPE and pose:
+                if PoseLandmarker:
+                    # Use new MediaPipe API
+                    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=image_rgb)
+                    frame_timestamp_ms = int(cap.get(cv2.CAP_PROP_POS_MSEC))
+                    results = pose.detect_for_video(mp_image, frame_timestamp_ms)
+                    landmarks = results.pose_landmarks[0] if results.pose_landmarks else None
+                else:
+                    # Use legacy MediaPipe API
+                    results = pose.process(image_rgb)
+                    landmarks = results.pose_landmarks.landmark if results.pose_landmarks else None
+            else:
+                # Fallback - no pose detection available
+                landmarks = None
 
             info = detector.process(landmarks) if landmarks else {
                 "count": detector.counter.count,
@@ -1150,15 +1206,31 @@ def main():
             missing_msg = info.get("missing_msg", None)
 
             # Draw landmarks only in interactive mode
-            if results.pose_landmarks and not non_interactive:
-                mp.solutions.drawing_utils.draw_landmarks(
-                    frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
-                    mp.solutions.drawing_utils.DrawingSpec(color=(0,200,0), thickness=2, circle_radius=2),
-                    mp.solutions.drawing_utils.DrawingSpec(color=(0,120,255), thickness=2, circle_radius=2)
-                )
+            if results and not non_interactive:
+                if PoseLandmarker and results.pose_landmarks:
+                    # New API - draw simple circles for landmarks
+                    for landmark in results.pose_landmarks[0]:
+                        x = int(landmark.x * new_w)
+                        y = int(landmark.y * new_h)
+                        cv2.circle(frame, (x, y), 3, (0, 200, 0), -1)
+                elif mp_pose and results.pose_landmarks:
+                    # Legacy API
+                    mp.solutions.drawing_utils.draw_landmarks(
+                        frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
+                        mp.solutions.drawing_utils.DrawingSpec(color=(0,200,0), thickness=2, circle_radius=2),
+                        mp.solutions.drawing_utils.DrawingSpec(color=(0,120,255), thickness=2, circle_radius=2)
+                    )
 
             # overlay only in interactive mode
             if not non_interactive:
+                # Draw pose landmarks if available
+                if landmarks and results and USE_MEDIAPIPE:
+                    mp.solutions.drawing_utils.draw_landmarks(
+                        frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
+                        mp.solutions.drawing_utils.DrawingSpec(color=(0,200,0), thickness=2, circle_radius=2),
+                        mp.solutions.drawing_utils.DrawingSpec(color=(0,120,255), thickness=2, circle_radius=2)
+                    )
+                
                 cv2.rectangle(frame, (0,0), (380, 140), (0,0,0), thickness=-1)
                 cv2.putText(frame, f"User: {user_name}", (10, 18), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200,200,200), 1)
                 cv2.putText(frame, f"Exercise: {exercise.replace('_',' ').title()}", (10, 36), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 1)
@@ -1205,7 +1277,8 @@ def main():
         cap.release()
         if not non_interactive:
             cv2.destroyAllWindows()
-        pose.close()
+        if pose and hasattr(pose, 'close'):
+            pose.close()
 
         session_end_time = time.time()
         analysis_time = session_end_time - session_start_time

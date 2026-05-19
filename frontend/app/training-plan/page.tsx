@@ -64,51 +64,49 @@ export default function TrainingPlanPage() {
     if (!user) return;
     try {
       // 1. Try to fetch the requested source
-      const data: any = await api.getTrainingPlan(user.id, source === 'ai' ? 'ai' : undefined);
+      let data: any;
+      if (source === 'assigned') {
+          data = await api.getCoachTrainingPlan(user.id);
+      } else {
+          data = await api.getTrainingPlan(user.id, 'ai');
+      }
       
       // 2. Check if we actually got what we wanted
-      if (data) {
-          // If we requested assigned, but got AI back (because no assigned exists), handle that
+      if (data && !('error' in data)) {
           if (source === 'assigned' && data.type === 'ai_generated') {
-              setHasAssignedPlan(false);
               setPlanSource('ai');
           } else if (source === 'assigned' && data.type === 'coach_assigned') {
               setHasAssignedPlan(true);
               setPlanSource('assigned');
           } else if (source === 'ai') {
-              // We explicitly asked for AI
               setPlanSource('ai');
           }
           
           setPlan(data);
           setStep('dashboard');
-
-          // If we fetched AI, assume fallback logic means no assigned plan OR user switched tab
-          if (source === 'assigned' && data.type === 'coach_assigned') {
-               // We found a coach plan
-               setHasAssignedPlan(true);
-          }
       } else {
-        // No plan at all
+        setPlanSource(source === 'ai' ? 'ai' : 'assigned');
         setStep('goal_input');
+        setPlan(null);
       }
 
-      // 3. Double Check: If we are in 'ai' mode, check if 'assigned' exists in background to show toggle
-      if (source === 'ai') {
-          // Verify if assigned plan exists separately to enable toggle button
-          try {
-             // We can check this by making a raw request for assigned plan
-             // If backend returns a coach plan, setHasAssignedPlan(true)
-             const check = await api.getTrainingPlan(user.id); // Default call
-             if (check && (check as any).type === 'coach_assigned') {
-                 setHasAssignedPlan(true);
-             }
-          } catch(e) {}
+      // 3. ALWAYS check if a coach-assigned plan exists in the background to show the toggle
+      try {
+        const coachPlan = await api.getCoachTrainingPlan(user.id);
+        if (coachPlan && !('error' in coachPlan) && Object.keys(coachPlan).length > 0) {
+          setHasAssignedPlan(true);
+        } else {
+          setHasAssignedPlan(false);
+        }
+      } catch(e) {
+        setHasAssignedPlan(false);
       }
 
     } catch (err) {
       console.log('No existing plan found, starting wizard');
+      setPlanSource(source as 'ai' | 'assigned');
       setStep('goal_input');
+      setPlan(null);
     }
   };
 
@@ -192,7 +190,7 @@ export default function TrainingPlanPage() {
     <AppLayout user={user!}>
         
         {/* TOP TOGGLE */}
-        {step === 'dashboard' && hasAssignedPlan && (
+        {(step === 'dashboard' || step === 'goal_input' || step === 'clarification') && hasAssignedPlan && (
             <div className="flex justify-center mb-6">
                 <Tabs value={planSource} onValueChange={handleToggleChange} className="w-[400px]">
                     <TabsList className="grid w-full grid-cols-2">
@@ -289,6 +287,11 @@ export default function TrainingPlanPage() {
                             <Badge variant="outline" className={`border-primary/30 ${plan.type === 'coach_assigned' ? 'bg-primary/10 text-primary' : 'bg-purple-100 text-purple-700'}`}>
                                 {plan.type === 'coach_assigned' ? 'Coach Assigned' : 'AI Generated'}
                             </Badge>
+                            {plan.type === 'coach_assigned' && (plan.phase || plan.progress_tracking?.current_phase) && (
+                                <Badge variant="secondary" className="capitalize">
+                                    Phase: {plan.phase || plan.progress_tracking?.current_phase}
+                                </Badge>
+                            )}
                             <span className="text-sm text-muted-foreground">{plan.duration || plan.duration_weeks + ' weeks'} program</span>
                         </div>
                         <h1 className="text-3xl font-bold">{plan.title || plan.name}</h1>
@@ -308,8 +311,13 @@ export default function TrainingPlanPage() {
                         <Card>
                             <CardHeader><CardTitle className="text-lg flex items-center gap-2"><Target className="h-4 w-4 text-primary" /> Focus Areas</CardTitle></CardHeader>
                             <CardContent>
-                                <div className="flex flex-wrap gap-2">
-                                    <Badge>{plan.goal_focus || plan.focus_areas?.[0] || 'General'}</Badge>
+                                <div className="space-y-2">
+                                    {(plan.focus_areas && Array.isArray(plan.focus_areas) ? plan.focus_areas : (plan.objectives && Array.isArray(plan.objectives) && plan.objectives.length > 0 ? plan.objectives : [plan.goal_focus || 'General'])).map((area: string, i: number) => (
+                                        <div key={i} className="flex items-start gap-2 text-sm">
+                                            <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                                            <span className="text-foreground leading-relaxed break-words">{area}</span>
+                                        </div>
+                                    ))}
                                 </div>
                             </CardContent>
                         </Card>
@@ -357,7 +365,25 @@ export default function TrainingPlanPage() {
                         <div className="space-y-4">
                             {/* Handle Both AI structure (weekly_schedule) and Coach structure (training_schedule.weeks) */}
                             {(() => {
-                                const weeks = plan.weekly_schedule || plan.training_schedule?.weeks || plan.weeks || [];
+                                let weeks = plan.weekly_schedule || plan.training_schedule?.weeks || plan.weeks || [];
+                                
+                                // Auto-expand Coach Structure
+                                if (plan.type === 'coach_assigned' && plan.duration_weeks && weeks.length > 0 && weeks[0].days) {
+                                    const totalWeeks = parseInt(plan.duration_weeks, 10);
+                                    if (totalWeeks > weeks.length) {
+                                        const originalWeeks = [...weeks];
+                                        weeks = [];
+                                        for (let i = 0; i < totalWeeks; i++) {
+                                            const templateWeek = originalWeeks[i % originalWeeks.length];
+                                            weeks.push({
+                                                ...templateWeek,
+                                                weekNumber: i + 1,
+                                                focus: templateWeek.focus ? `${templateWeek.focus} (Cycle ${Math.floor(i / originalWeeks.length) + 1})` : `Week ${i + 1}`
+                                            });
+                                        }
+                                    }
+                                }
+
                                 // If it's Coach structure (weeks array), we might need to flatten or just show first week for now
                                 // Or if it's AI structure (array of days)
                                 
@@ -367,7 +393,7 @@ export default function TrainingPlanPage() {
                                     return weeks.map((week: any, wIdx: number) => (
                                         <div key={wIdx} className="space-y-4">
                                             <h3 className="font-bold text-lg text-primary">Week {week.weekNumber}: {week.focus}</h3>
-                                            {week.days.map((day: any, dIdx: number) => (
+                                            {(week.days || []).map((day: any, dIdx: number) => (
                                                 <Card key={dIdx} className="overflow-hidden border-l-4 border-l-primary/40">
                                                     <div className="p-4 flex items-start gap-4">
                                                         <div className="min-w-[4rem] font-bold text-lg text-muted-foreground pt-1">{day.dayName}</div>
@@ -377,7 +403,7 @@ export default function TrainingPlanPage() {
                                                                 {day.exercises.map((ex: any, eIdx: number) => (
                                                                     <div key={eIdx} className="bg-secondary/20 p-2 rounded text-sm group">
                                                                         <div className="font-medium flex items-center gap-2"><Dumbbell className="h-3 w-3 opacity-50" /> {ex.name}</div>
-                                                                        <div className="text-xs text-muted-foreground mt-1">{ex.sets} sets x {ex.reps} reps {ex.weight ? `@ ${ex.weight}` : ''}</div>
+                                                                        {(ex.sets || ex.reps) && <div className="text-xs text-muted-foreground mt-1">{ex.sets && ex.reps ? `${ex.sets} sets x ${ex.reps} reps` : (ex.sets || ex.reps)} {ex.weight ? `@ ${ex.weight}` : ''}</div>}
                                                                         {ex.notes && <div className="text-xs text-muted-foreground italic mt-1">{ex.notes}</div>}
                                                                     </div>
                                                                 ))}

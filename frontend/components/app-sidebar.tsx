@@ -11,6 +11,10 @@ import {
   MessageSquare,
   User,
   Zap,
+  BarChart3,
+  ShieldAlert,
+  Trophy,
+  ClipboardList,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -29,14 +33,21 @@ export function AppSidebar({ user }: SidebarProps) {
     { href: '/sessions', label: 'Sessions', icon: Activity },
     { href: '/training-plan', label: 'Training Plan', icon: Calendar },
     { href: '/goals', label: 'Goals', icon: Target },
+    { href: '/analytics', label: 'Analytics', icon: BarChart3 },
+    { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
     { href: '/coaches', label: 'Find Coach', icon: Users },
+    { href: '/messages', label: 'Messages', icon: MessageSquare },
     { href: '/profile', label: 'Profile', icon: User },
   ];
 
   const coachItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/sessions', label: 'Sessions', icon: Activity },
-    { href: '/athletes', label: 'MyTeam', icon: Users },
+    { href: '/athletes', label: 'My Team', icon: Users },
+    { href: '/injury-alerts', label: 'Injury Alerts', icon: ShieldAlert },
+    { href: '/development-plans', label: 'Dev Plans', icon: ClipboardList },
+    { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
+    { href: '/messages', label: 'Messages', icon: MessageSquare },
     { href: '/profile', label: 'Profile', icon: User },
   ];
 
@@ -56,9 +67,9 @@ export function AppSidebar({ user }: SidebarProps) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 space-y-1 p-4">
+        <nav className="flex-1 space-y-1 p-4 overflow-y-auto">
           {items.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
             const Icon = item.icon;
 
             return (

@@ -493,20 +493,59 @@ class TrainingPlanGenerator:
             plan = plans[athlete_id]
             plan["type"] = "ai_generated"
             return plan
+            
+        # If explicitly asking for AI plan, don't fall back to coach plans
+        if source == 'ai':
+            return {"error": "No AI training plan found"}
         
-        # 3. Check for legacy coach-created plan format in ai_plans directory (fallback)
+        # 3. If the athlete has a coach long-term plan but no currentPlanId, return the latest coach plan
+        coach_plans = LongTermPlansEngine().get_athlete_plans(athlete_id)
+        if coach_plans:
+            latest_coach_plan = sorted(coach_plans, key=lambda p: p.get("created_at", ""), reverse=True)[0]
+            latest_coach_plan["type"] = "coach_assigned"
+            return latest_coach_plan
+
+        # 4. Check for legacy coach-created plan format in ai_plans directory (fallback)
         coach_plan_key = f"{athlete_id}_coach"
         if coach_plan_key in plans:
-            return plans[coach_plan_key]
+            plan = plans[coach_plan_key]
+            plan["type"] = "coach_assigned"
+            return plan
         
         return {"error": "No training plan found"}
     
     def get_coach_training_plan(self, athlete_id: str) -> Dict[str, Any]:
         """Get coach-created training plan for athlete"""
+        # First, try the current assigned coach plan referenced by the athlete record.
+        athletes = self._load_athletes()
+        athlete = next((a for a in athletes if a.get("id") == athlete_id), None)
+        current_plan_id = athlete.get("currentPlanId") if athlete else None
+
+        if current_plan_id:
+            all_plans_map = LongTermPlansEngine().load_plans()
+            for coach_id, plans in all_plans_map.items():
+                for plan in plans:
+                    if plan.get("id") == current_plan_id:
+                        plan["type"] = "coach_assigned"
+                        return plan
+
+        # Fall back to any coach long-term plan for this athlete
+        coach_plans = LongTermPlansEngine().get_athlete_plans(athlete_id)
+        if coach_plans:
+            latest_coach_plan = sorted(coach_plans, key=lambda p: p.get("created_at", ""), reverse=True)[0]
+            latest_coach_plan["type"] = "coach_assigned"
+            return latest_coach_plan
+
+        # Fall back to legacy coach-created plan storage key, if present.
         plans = self._load_training_plans()
         coach_plan_key = f"{athlete_id}_coach"
-        return plans.get(coach_plan_key, {"error": "No coach training plan found"})
-    
+        plan = plans.get(coach_plan_key)
+        if plan:
+            plan["type"] = "coach_assigned"
+            return plan
+
+        return {"error": "No coach training plan found"}
+
     def update_training_plan(self, athlete_id: str, updates: Dict[str, Any]) -> Dict[str, Any]:
         """Update existing training plan"""
         plans = self._load_training_plans()
