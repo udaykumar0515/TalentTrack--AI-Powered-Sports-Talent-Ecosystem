@@ -22,10 +22,12 @@
     "username": "david",
     "role": "coach",
     "created_at": "2026-02-02T17:43:48.253099",
-    "age": null,
-    "gender": null,
+    "age": 29,
+    "gender": "Male",
     "athleteCount": 2,
     "teamAvgPerformance": 66,
-    "goalsAchieved": 1
+    "goalsAchieved": 1,
+    "bio": "",
+    "specialization": "Strength & Conditioning"
   }
 ]

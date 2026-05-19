@@ -377,20 +377,49 @@ class InjuryAlertSystem:
         coach_id = athlete.get("coachId")
         coach = next((c for c in coaches if c["id"] == coach_id), None) if coach_id else None
         
+        # Generate a dynamic description based on risk factors
+        risk_factors = [k for k, v in analysis["analyses"].items() if v.get("risk")]
+        
+        description = "Routine analysis detected potential injury risks. "
+        body_part = "General"
+        factors = []
+        
+        if "form_deterioration" in risk_factors:
+            description += "Form has been consistently deteriorating over recent sessions. "
+            body_part = "Joints/Core"
+            factors.append("Declining form scores")
+        if "cheat_patterns" in risk_factors:
+            description += "Multiple cheat patterns detected, indicating potential compensation for fatigue or pain. "
+            factors.append("Inconsistent technique")
+        if "overtraining" in risk_factors:
+            description += "Training volume and frequency indicate severe overtraining without adequate rest. "
+            body_part = "Systemic"
+            factors.append("Lack of rest days")
+        if "fatigue_indicators" in risk_factors:
+            description += "Performance metrics show clear signs of systemic fatigue. "
+            factors.append("Performance plateau/decline")
+            
         # Create alert
         alert = {
             "id": f"alert_{athlete_id}_{int(datetime.now().timestamp())}",
             "athlete_id": athlete_id,
-            "athlete_name": athlete.get("username", "Unknown"),
+            "athleteName": athlete.get("username", "Unknown"),
             "coach_id": coach_id,
             "coach_name": coach.get("username", "Unknown") if coach else "Unassigned",
             "severity": analysis["overall_severity"],
-            "risk_factors": [k for k, v in analysis["analyses"].items() if v.get("risk")],
-            "recommendations": analysis["recommendations"],
-            "created_at": datetime.now().isoformat() + "Z",
             "status": "active",
+            "bodyPart": body_part,
+            "description": description.strip(),
+            "risk_factors": risk_factors,
+            "contributing_factors": factors,
+            "recommendations": analysis["recommendations"],
+            "detectedAt": datetime.now().isoformat() + "Z",
+            "createdAt": datetime.now().isoformat() + "Z",
             "acknowledged": False,
-            "acknowledged_at": None
+            "acknowledgedBy": None,
+            "acknowledgedAt": None,
+            "resolvedBy": None,
+            "resolvedAt": None
         }
         
         # Save alert
@@ -414,8 +443,7 @@ class InjuryAlertSystem:
         for athlete_id in athlete_ids:
             if athlete_id in alerts:
                 for alert in alerts[athlete_id]:
-                    if alert.get("status") == "active":
-                        coach_alerts.append(alert)
+                    coach_alerts.append(alert)
         
         # Sort by severity and creation time
         severity_order = {"high": 3, "medium": 2, "low": 1}

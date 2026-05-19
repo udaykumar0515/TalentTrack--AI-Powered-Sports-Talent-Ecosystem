@@ -94,6 +94,17 @@ function AthleteGoalsManager({ userId }: { userId: string }) {
     priority: 'medium' as 'low' | 'medium' | 'high',
   });
 
+  const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editForm, setEditForm] = useState({
+    title: '',
+    description: '',
+    target: 100,
+    unit: 'sessions',
+    deadline: '',
+    priority: 'medium' as 'low' | 'medium' | 'high',
+  });
+
   const getLocalISOString = () => {
     const tzOffset = (new Date()).getTimezoneOffset() * 60000; // offset in ms
     const localISOTime = (new Date(Date.now() - tzOffset)).toISOString().slice(0, -1);
@@ -171,6 +182,42 @@ function AthleteGoalsManager({ userId }: { userId: string }) {
       toast({ title: "Goal Deleted" });
     } catch (err) {
       console.error('Error deleting goal:', err);
+    }
+  };
+
+  const openEditDialog = (goal: Goal) => {
+    setEditingGoal(goal);
+    setEditForm({
+      title: goal.title,
+      description: goal.description || '',
+      target: goal.target,
+      unit: goal.unit || 'sessions',
+      deadline: goal.deadline ? goal.deadline.split('T')[0] : '',
+      priority: (goal.priority || 'medium') as 'low' | 'medium' | 'high',
+    });
+    setEditDialogOpen(true);
+  };
+
+  const handleEditGoal = async () => {
+    if (!editingGoal) return;
+    const goalId = editingGoal.id || editingGoal.goalId;
+    if (!goalId) return;
+    try {
+      await api.updateGoal(userId, goalId, {
+        title: editForm.title,
+        description: editForm.description,
+        target: editForm.target,
+        unit: editForm.unit,
+        deadline: editForm.deadline || editingGoal.deadline,
+        priority: editForm.priority,
+      });
+      setGoals(goals.map(g => (g.id || g.goalId) === goalId ? { ...g, ...editForm } : g));
+      setEditDialogOpen(false);
+      setEditingGoal(null);
+      toast({ title: "Goal Updated" });
+    } catch (err) {
+      console.error('Error updating goal:', err);
+      toast({ title: "Error", description: "Failed to update goal", variant: "destructive" });
     }
   };
 
@@ -255,6 +302,7 @@ function AthleteGoalsManager({ userId }: { userId: string }) {
                     goal={goal} 
                     onUpdate={handleUpdateProgress}
                     onDelete={handleDeleteGoal}
+                    onEdit={openEditDialog}
                 />
             ))}
             {completedGoals.length > 0 && (
@@ -269,6 +317,54 @@ function AthleteGoalsManager({ userId }: { userId: string }) {
             )}
         </div>
       )}
+
+      {/* Edit Goal Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Goal</DialogTitle>
+            <DialogDescription>Update goal details.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <div className="space-y-2">
+              <Label>Title</Label>
+              <Input value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} />
+            </div>
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Input value={editForm.description} onChange={e => setEditForm({...editForm, description: e.target.value})} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Target Value</Label>
+                <Input type="number" value={editForm.target} onChange={e => setEditForm({...editForm, target: Number(e.target.value)})} />
+              </div>
+              <div className="space-y-2">
+                <Label>Unit</Label>
+                <Input value={editForm.unit} onChange={e => setEditForm({...editForm, unit: e.target.value})} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Deadline</Label>
+                <Input type="date" value={editForm.deadline} onChange={e => setEditForm({...editForm, deadline: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <Label>Priority</Label>
+                <Select value={editForm.priority} onValueChange={(v: any) => setEditForm({...editForm, priority: v})}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <Button onClick={handleEditGoal} disabled={!editForm.title} className="w-full">Save Changes</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -599,12 +695,14 @@ function GoalCard({
     readOnly = false, 
     onUpdate, 
     onDelete,
+    onEdit,
     onFeedback
 }: { 
     goal: Goal; 
     readOnly?: boolean; 
     onUpdate?: (g: Goal, val: number) => void; 
     onDelete?: (id: string) => void;
+    onEdit?: (g: Goal) => void;
     onFeedback?: () => void;
 }) {
     const progress = goal.target > 0 ? Math.min(100, Math.round((goal.current / goal.target) * 100)) : 0;
@@ -636,10 +734,19 @@ function GoalCard({
                    </div>
                    <h3 className={`font-bold text-lg leading-tight ${isCompleted ? 'text-foreground' : ''}`}>{goal.title}</h3>
                 </div>
-                {!readOnly && onDelete && (
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onDelete(goal.id || goal.goalId!)}>
-                        <Trash2 className="h-4 w-4" />
-                    </Button>
+                {!readOnly && !isCompleted && (
+                    <div className="flex items-center gap-1">
+                        {onEdit && (
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => onEdit(goal)}>
+                                <Edit className="h-4 w-4" />
+                            </Button>
+                        )}
+                        {onDelete && (
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => onDelete(goal.id || goal.goalId!)}>
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        )}
+                    </div>
                 )}
             </div>
 

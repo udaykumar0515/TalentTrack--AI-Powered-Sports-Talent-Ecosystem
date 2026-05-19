@@ -1,1 +1,34 @@
-[]
+{
+  "7c1811e9-af66-4b3e-b92e-d3564cb1bc27": [
+    {
+      "id": "alert_7c1811e9-af66-4b3e-b92e-d3564cb1bc27_1779171001",
+      "athlete_id": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+      "athleteName": "shashi",
+      "coach_id": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09",
+      "coach_name": "david",
+      "severity": "medium",
+      "status": "resolved",
+      "bodyPart": "General",
+      "description": "Routine analysis detected potential injury risks. Performance metrics show clear signs of systemic fatigue.",
+      "risk_factors": [
+        "fatigue_indicators"
+      ],
+      "contributing_factors": [
+        "Performance plateau/decline"
+      ],
+      "recommendations": [
+        "Monitor for signs of overtraining",
+        "Consider deload week or active recovery"
+      ],
+      "detectedAt": "2026-05-19T11:40:01.466814Z",
+      "createdAt": "2026-05-19T11:40:01.466818Z",
+      "acknowledged": true,
+      "acknowledgedBy": null,
+      "acknowledgedAt": null,
+      "resolvedBy": null,
+      "resolvedAt": null,
+      "acknowledged_at": "2026-05-19T11:41:06.444024Z",
+      "resolved_at": "2026-05-19T11:41:10.013120Z"
+    }
+  ]
+}

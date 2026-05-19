@@ -1654,8 +1654,9 @@ async def get_athlete_injury_analysis(athlete_id: str):
 async def get_coach_injury_alerts(coach_id: str):
     """Get all injury alerts for coaches athletes"""
     try:
-        alerts = injury_alert_system.get_coach_alerts(coach_id)
-        return alerts
+        result = injury_alert_system.get_coach_alerts(coach_id)
+        # Frontend expects a flat array of alerts
+        return result.get("alerts", [])
     except Exception as e:
         logger.error(f"Error getting coach injury alerts: {e}")
         raise HTTPException(status_code=500, detail="Failed to get injury alerts")
@@ -1774,9 +1775,6 @@ async def delete_session(session_id: str):
         with open(sessions_file, "w", encoding="utf-8") as f:
             json.dump(sessions_data, f, indent=2, ensure_ascii=False)
         
-        # Recalculate gamification stats after deleting session
-        if deleted_user_id:
-            gamification_engine.recalculate_user_stats_from_sessions(deleted_user_id)
         
         # Also try to delete associated video file
         try:
@@ -2269,6 +2267,16 @@ async def analyze_video(
         # Save session result
         if save_session_result(session_data):
             logger.info(f"Video analysis completed for athlete {athleteId}: {session_data['reps']} reps, {session_data['formScore']}% form")
+            
+            # Run automatic injury risk analysis
+            try:
+                analysis = injury_alert_system.analyze_athlete_injury_risk(athleteId)
+                if analysis.get("overall_risk"):
+                    injury_alert_system.create_injury_alert(athleteId, analysis)
+                    logger.info(f"Generated injury alert for athlete {athleteId}")
+            except Exception as e:
+                logger.error(f"Error running automatic injury analysis: {e}")
+                
         else:
             logger.warning("Failed to save session result")
 
@@ -2756,6 +2764,59 @@ async def generate_ai_training_plan(request: GenerateAIPlanRequest):
         )
     except Exception as e:
         logger.error(f"Error generating AI plan: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================
+# INJURY ALERTS
+# ============================================
+
+@app.get("/api/injury-alerts/coach/{coach_id}")
+async def get_coach_injury_alerts(coach_id: str):
+    """Get all active alerts for a coach's athletes"""
+    try:
+        result = injury_alert_system.get_coach_alerts(coach_id)
+        # frontend expects a direct array of alerts
+        return result.get("alerts", [])
+    except Exception as e:
+        logger.error(f"Error getting coach injury alerts: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/injury-alerts/athlete/{athlete_id}")
+async def get_athlete_injury_alerts(athlete_id: str):
+    """Get all alerts for a specific athlete"""
+    try:
+        alerts_data = injury_alert_system._load_alerts()
+        return alerts_data.get(athlete_id, [])
+    except Exception as e:
+        logger.error(f"Error getting athlete injury alerts: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/api/injury-alerts/{alert_id}/acknowledge")
+async def acknowledge_injury_alert(alert_id: str, coach_id: str):
+    """Acknowledge an injury alert"""
+    try:
+        result = injury_alert_system.acknowledge_alert(alert_id, coach_id)
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        return {"success": True, "message": "Alert acknowledged", "alert": result["alert"]}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error acknowledging injury alert: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/api/injury-alerts/{alert_id}/resolve")
+async def resolve_injury_alert(alert_id: str, coach_id: str):
+    """Resolve an injury alert"""
+    try:
+        result = injury_alert_system.resolve_alert(alert_id, coach_id)
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        return {"success": True, "message": "Alert resolved", "alert": result["alert"]}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error resolving injury alert: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":

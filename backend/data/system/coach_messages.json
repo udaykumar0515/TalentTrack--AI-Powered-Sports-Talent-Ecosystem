@@ -535,7 +535,7 @@
     "type": "system",
     "message": "Your training plan 'nice' has been updated.",
     "timestamp": "2026-05-19T10:15:23.961422",
-    "read": false,
+    "read": true,
     "senderId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09"
   },
   {
@@ -547,7 +547,7 @@
     "type": "system",
     "message": "Your training plan 'nice' has been updated.",
     "timestamp": "2026-05-19T10:16:43.928978",
-    "read": false,
+    "read": true,
     "senderId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09"
   },
   {
@@ -559,7 +559,7 @@
     "type": "system",
     "message": "Your training plan 'Road to Regionals 2026' has been updated.",
     "timestamp": "2026-05-19T10:30:29.763752",
-    "read": false,
+    "read": true,
     "senderId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09"
   },
   {
@@ -571,7 +571,7 @@
     "type": "system",
     "message": "Your training plan 'Road to Regionals 2026' has been updated: Weeks 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 added",
     "timestamp": "2026-05-19T10:39:15.800532",
-    "read": false,
+    "read": true,
     "senderId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09"
   },
   {
@@ -583,7 +583,7 @@
     "type": "system",
     "message": "Your training plan 'Road to Regionals 2026' has been updated: 16 weeks removed",
     "timestamp": "2026-05-19T10:42:37.526024",
-    "read": false,
+    "read": true,
     "senderId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09"
   },
   {
@@ -595,7 +595,7 @@
     "type": "system",
     "message": "Your training plan 'Road to Regionals 2026' has been updated.",
     "timestamp": "2026-05-19T10:43:02.288458",
-    "read": false,
+    "read": true,
     "senderId": "3cf143c7-d190-4a36-b1b8-ea1673d3ca09"
   }
 ]

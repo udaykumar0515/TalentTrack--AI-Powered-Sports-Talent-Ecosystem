@@ -288,6 +288,447 @@
   "7c1811e9-af66-4b3e-b92e-d3564cb1bc27": {
     "sessions": [
       {
+        "sessionId": "demo0001",
+        "exercise": "squat",
+        "reps": 8,
+        "formScore": 72,
+        "durationSec": 45.0,
+        "timestamp": "2026-04-28T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": true,
+          "cheatPercentage": 6.0,
+          "totalFlags": 1,
+          "confidence": 82,
+          "riskLevel": "medium",
+          "riskExplanation": "Minor form issues",
+          "riskFactors": [
+            "minor form issues"
+          ],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0002",
+        "exercise": "pushups",
+        "reps": 12,
+        "formScore": 68,
+        "durationSec": 38.0,
+        "timestamp": "2026-04-29T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": true,
+          "cheatPercentage": 14.0,
+          "totalFlags": 1,
+          "confidence": 78,
+          "riskLevel": "medium",
+          "riskExplanation": "Minor form issues",
+          "riskFactors": [
+            "minor form issues"
+          ],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": true,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0003",
+        "exercise": "squat",
+        "reps": 10,
+        "formScore": 75,
+        "durationSec": 52.0,
+        "timestamp": "2026-04-30T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 85,
+          "riskLevel": "low",
+          "riskExplanation": "Good form",
+          "riskFactors": [],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0004",
+        "exercise": "jumping_jacks",
+        "reps": 15,
+        "formScore": 80,
+        "durationSec": 60.0,
+        "timestamp": "2026-05-02T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 90,
+          "riskLevel": "low",
+          "riskExplanation": "Good form",
+          "riskFactors": [],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0005",
+        "exercise": "pushups",
+        "reps": 14,
+        "formScore": 74,
+        "durationSec": 42.0,
+        "timestamp": "2026-05-03T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": true,
+          "cheatPercentage": 2.0,
+          "totalFlags": 1,
+          "confidence": 84,
+          "riskLevel": "medium",
+          "riskExplanation": "Minor form issues",
+          "riskFactors": [
+            "minor form issues"
+          ],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0006",
+        "exercise": "squat",
+        "reps": 12,
+        "formScore": 78,
+        "durationSec": 55.0,
+        "timestamp": "2026-05-04T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 88,
+          "riskLevel": "low",
+          "riskExplanation": "Good form",
+          "riskFactors": [],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0007",
+        "exercise": "squat",
+        "reps": 14,
+        "formScore": 82,
+        "durationSec": 58.0,
+        "timestamp": "2026-05-06T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 92,
+          "riskLevel": "low",
+          "riskExplanation": "Good form",
+          "riskFactors": [],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0008",
+        "exercise": "pushups",
+        "reps": 16,
+        "formScore": 79,
+        "durationSec": 48.0,
+        "timestamp": "2026-05-07T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 89,
+          "riskLevel": "low",
+          "riskExplanation": "Good form",
+          "riskFactors": [],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0009",
+        "exercise": "jumping_jacks",
+        "reps": 20,
+        "formScore": 85,
+        "durationSec": 65.0,
+        "timestamp": "2026-05-08T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 95,
+          "riskLevel": "low",
+          "riskExplanation": "Good form",
+          "riskFactors": [],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0010",
+        "exercise": "squat",
+        "reps": 15,
+        "formScore": 84,
+        "durationSec": 62.0,
+        "timestamp": "2026-05-10T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 94,
+          "riskLevel": "low",
+          "riskExplanation": "Good form",
+          "riskFactors": [],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0011",
+        "exercise": "pushups",
+        "reps": 18,
+        "formScore": 82,
+        "durationSec": 50.0,
+        "timestamp": "2026-05-11T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 92,
+          "riskLevel": "low",
+          "riskExplanation": "Good form",
+          "riskFactors": [],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0012",
+        "exercise": "squat",
+        "reps": 16,
+        "formScore": 86,
+        "durationSec": 68.0,
+        "timestamp": "2026-05-12T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 96,
+          "riskLevel": "low",
+          "riskExplanation": "Good form",
+          "riskFactors": [],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0013",
+        "exercise": "jumping_jacks",
+        "reps": 22,
+        "formScore": 88,
+        "durationSec": 70.0,
+        "timestamp": "2026-05-14T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 98,
+          "riskLevel": "low",
+          "riskExplanation": "Good form",
+          "riskFactors": [],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0014",
+        "exercise": "pushups",
+        "reps": 20,
+        "formScore": 85,
+        "durationSec": 55.0,
+        "timestamp": "2026-05-15T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 95,
+          "riskLevel": "low",
+          "riskExplanation": "Good form",
+          "riskFactors": [],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "demo0015",
+        "exercise": "squat",
+        "reps": 18,
+        "formScore": 89,
+        "durationSec": 72.0,
+        "timestamp": "2026-05-16T09:30:00Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "",
+        "cheatDetection": {
+          "cheatDetected": false,
+          "cheatPercentage": 0.0,
+          "totalFlags": 0,
+          "confidence": 99,
+          "riskLevel": "low",
+          "riskExplanation": "Good form",
+          "riskFactors": [],
+          "flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": false,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspiciousPatterns": []
+        }
+      },
+      {
         "sessionId": "58a7f4be",
         "exercise": "squat",
         "reps": 10,
