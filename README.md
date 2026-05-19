@@ -1,6 +1,5 @@
 # 🏃‍♂️ TalentTrack - AI-Powered Sports Talent Ecosystem
 
-[![Hackathon](https://img.shields.io/badge/Hackathon-HackWithHyderabad-blue)](https://hackwithhyderabad.com)
 [![AI](https://img.shields.io/badge/AI-Powered-green)](#)
 [![Sports](https://img.shields.io/badge/Sports-Tech-orange)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -133,5 +132,4 @@ Experience the platform from both perspectives:
 ---
 
 ## 📄 License & Acknowledgements
-- Built for **HackWithHyderabad 2025**.
 - Licensed under the MIT License.
