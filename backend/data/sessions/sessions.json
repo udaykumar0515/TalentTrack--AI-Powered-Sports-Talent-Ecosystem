@@ -233,6 +233,55 @@
           ],
           "totalFramesAnalyzed": 192
         }
+      },
+      {
+        "sessionId": "d017716b",
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 61,
+        "durationSec": 8.0,
+        "timestamp": "2026-05-19T10:53:57.510052Z",
+        "athleteId": "c867df8f-9cdf-4e32-a29d-379c892b220f",
+        "athleteName": "Udaykumar Haibathi",
+        "videoUrl": "/videos/athletes/c867df8f-9cdf-4e32-a29d-379c892b220f/2e376b3d.mp4",
+        "userName": "Udaykumar Haibathi",
+        "analysis": {
+          "mode": "mediapipe_tasks_v2",
+          "framesProcessed": 192,
+          "processingTimeSec": 10.67
+        },
+        "cheatDetection": {
+          "cheat_detected": true,
+          "cheat_percentage": 16.7,
+          "cheat_flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": true,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspicious_patterns": [],
+          "total_flags": 1,
+          "confidence": 86.7,
+          "riskLevel": "medium",
+          "riskExplanation": "⚡ Good effort! Focus on maintaining consistent form.",
+          "riskFactors": [
+            "low form score"
+          ]
+        },
+        "metrics": {
+          "avgAngle": 154.8,
+          "minAngle": 99.9,
+          "maxAngle": 178.8,
+          "angleRange": 78.9,
+          "formConsistency": 0.94,
+          "repFormScores": [
+            60,
+            60
+          ],
+          "totalFramesAnalyzed": 192
+        }
       }
     ]
   },
@@ -262,6 +311,55 @@
           "riskLevel": "low",
           "flags": {},
           "suspiciousPatterns": []
+        }
+      },
+      {
+        "sessionId": "ccfca8ee",
+        "exercise": "squat",
+        "reps": 2,
+        "formScore": 61,
+        "durationSec": 8.0,
+        "timestamp": "2026-05-19T10:56:09.167094Z",
+        "athleteId": "7c1811e9-af66-4b3e-b92e-d3564cb1bc27",
+        "athleteName": "shashi",
+        "videoUrl": "/videos/athletes/7c1811e9-af66-4b3e-b92e-d3564cb1bc27/e612a834.mp4",
+        "userName": "shashi",
+        "analysis": {
+          "mode": "mediapipe_tasks_v2",
+          "framesProcessed": 192,
+          "processingTimeSec": 11.09
+        },
+        "cheatDetection": {
+          "cheat_detected": true,
+          "cheat_percentage": 16.7,
+          "cheat_flags": {
+            "too_fast_reps": false,
+            "inconsistent_form": false,
+            "minimal_movement": true,
+            "suspicious_timing": false,
+            "form_deterioration": false,
+            "repetitive_pattern": false
+          },
+          "suspicious_patterns": [],
+          "total_flags": 1,
+          "confidence": 86.7,
+          "riskLevel": "medium",
+          "riskExplanation": "⚡ Good effort! Focus on maintaining consistent form.",
+          "riskFactors": [
+            "low form score"
+          ]
+        },
+        "metrics": {
+          "avgAngle": 154.8,
+          "minAngle": 99.9,
+          "maxAngle": 178.8,
+          "angleRange": 78.9,
+          "formConsistency": 0.94,
+          "repFormScores": [
+            60,
+            60
+          ],
+          "totalFramesAnalyzed": 192
         }
       }
     ]

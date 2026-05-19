@@ -173,19 +173,21 @@ export default function SessionDetailPage() {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Sessions
           </Button>
-          <Button 
-            variant="destructive" 
-            size="sm" 
-            onClick={handleDelete}
-            disabled={deleting}
-          >
-            {deleting ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <Trash2 className="h-4 w-4 mr-2" />
-            )}
-            Delete Session
-          </Button>
+          {user.role === 'athlete' && (
+            <Button 
+              variant="destructive" 
+              size="sm" 
+              onClick={handleDelete}
+              disabled={deleting}
+            >
+              {deleting ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Trash2 className="h-4 w-4 mr-2" />
+              )}
+              Delete Session
+            </Button>
+          )}
         </div>
 
         {/* Session Header */}
